@@ -1,0 +1,12 @@
+.idea/
+*.iml
+*.pyc
+.coverage
+*.log
+.venv
+htmlcov
+dist/
+build/
+tests/_build
+MANIFEST
+pygrok.egg-info
