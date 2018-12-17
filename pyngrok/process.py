@@ -61,7 +61,6 @@ def _start_process(ngrok_path, config_path=None):
     timeout = time.time() + 15
     while time.time() < timeout:
         line = process.stdout.readline()
-        print(line)
 
         if "starting web service" in line:
             api_url = "http://{}".format(line.split("addr=")[1].strip())
