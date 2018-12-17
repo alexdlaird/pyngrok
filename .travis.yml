@@ -13,6 +13,8 @@ install:
 script:
 - make test
 - make local
+after_success:
+- codecov
 deploy:
   provider: pypi
   user: alexdlaird
