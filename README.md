@@ -25,14 +25,14 @@ from pyngrok import ngrok
 ngrok.connect() # tunnel to port 80
 ngrok.connect(5000) # tunnel to port 5000
 
-# Wait a second to ensure the ngrok API is in sync before querying against existing tunnels
+# Wait a second to ensure ngrok API has synced
 time.sleep(1)
 
-tunnels = ngrok.tunnels()
-public_url = tunnels[0]["public_url"] # the public ngrok URL that tunnels to port 80 (ex. http://64e3ddef.ngrok.io)
+tunnels = ngrok.get_tunnels()
+public_url = tunnels[0]["public_url"] # a public ngrok URL that tunnels to port 80 (ex. http://64e3ddef.ngrok.io)
 
 ngrok_process = ngrok.get_ngrok_process().process
-api_url = ngrok_process.api_url # the ngrok client API URL
+api_url = ngrok_process.api_url # the ngrok client API URL (usually http://127.0.0.1:4040)
 ```
 
 Note that the `ngrok` process, after an initiating event (like `connect` or `get_tunnels`) will remain alive until the
@@ -60,7 +60,9 @@ you would like to specify a custom config file, pass the `config_path` parameter
 ```python
 from pyngrok import ngrok
 
-ngrok.connect(config_path="/opt/ngrok/config.yml")
+CONFIG_PATH = "/opt/ngrok/config.yml"
+
+ngrok.connect(config_path=CONFIG_PATH)
 ```
 
 ## custom binary options
@@ -71,9 +73,9 @@ be done one of two ways. You can either pass the `ngrok_path` argument to each c
 ```python
 from pyngrok import ngrok
 
-NGROK_BIN = "/usr/local/bin/ngrok"
+NGROK_PATH = "/usr/local/bin/ngrok"
 
-ngrok.get_tunnels(ngrok_path=NGROK_BIN)
+ngrok.get_tunnels(ngrok_path=NGROK_PATH)
 ```
 
 or you can override the packages `DEFAULT_NGROK_PATH` variable:
@@ -82,7 +84,6 @@ or you can override the packages `DEFAULT_NGROK_PATH` variable:
 from pyngrok import ngrok
 
 ngrok.DEFAULT_NGROK_PATH="/usr/local/bin/ngrok"
-NGROK_BIN = "/usr/local/bin/ngrok"
 
 ngrok.connect(5000)
 ```
