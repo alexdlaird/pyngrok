@@ -29,7 +29,7 @@ ngrok.connect(5000) # tunnel to port 5000
 time.sleep(1)
 
 tunnels = ngrok.get_tunnels()
-public_url = tunnels[0]["public_url"] # a public ngrok URL that tunnels to port 80 (ex. http://64e3ddef.ngrok.io)
+public_url = tunnels[0].public_url # a public ngrok URL that tunnels to port 80 (ex. http://64e3ddef.ngrok.io)
 
 ngrok_process = ngrok.get_ngrok_process()
 api_url = ngrok_process.api_url # the ngrok client API URL (usually http://127.0.0.1:4040)
