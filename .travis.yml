@@ -1,0 +1,25 @@
+sudo: required
+language: python
+python:
+- '2.7'
+- '3.5'
+- '3.6'
+install:
+- python -m pip install virtualenv
+- python -m virtualenv .venv
+- source .venv/bin/activate
+- python -m pip install -r requirements.txt
+- sudo -H pip install setuptools twine --upgrade
+script:
+- make test
+- make local
+after_success:
+- codecov
+deploy:
+  provider: pypi
+  user: alexdlaird
+  password:
+    secure: c7rpS+4/yWsmULDc9n/626/kFCFKUly0XvH7t49AbekGOP36oA04WQULVbDxZM9o8/Td21gAcZrV7aTcOq8lfxw16bYYIsJ1cbk0RFqHEXRhq3GvFKPQJEgk3Ad/GsFDE0Ak8dyuLwOi7qLfxK2pMCjDQlsWvEDDSwX2V+lGzUoCifIdqbNMQqIaQk6GG7lEpMmTbwOCo+OR/zVu/a+BxFWkQtFZpPTFVWZfPjBfo2oI5DgFnvg4Slm2QWEkwqExYgflIZC+Dx4L79eNRHF++r3FEVVnLakuxD8Jm3Og37+nWhT7L+1lmKC4kUnvYulStc0fGGLrborc1RlQgnVsNIwpYERcsiaIA5jRl7R0Y6ZMz+Pry72y4YxFDHCc2+15tMcN0Yi46NfDf7lOWD849Yx8xgjrXoEZXnyKSyIw1kYzQVypcij6Hk95hDN+b5ULBHnN1OhfTb5B4ycUJDHcoN6+sJIVfIIjlx0MpGjV0jaqi770P69uWA435hRUgyCkkYWK5m/z9jnhsO+DN+py/cB8BQuDDJxki+18LYN23bPmciQOz4qFapquNJOeqNBUBifNTJN/s1rSicXD/stouDQQ6hZPTRDKYvn+pr7WHZi1mK11NjxsLFHhyP4RtPOAKSW5dOeT53991iqoRYJm53K69fqU1fpTsRJ/cdUgNHY=
+  on:
+    tags: true
+    python: 3.6
