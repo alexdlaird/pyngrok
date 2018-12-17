@@ -17,6 +17,12 @@ install: virtualenv
 		python -m pip install -r requirements.txt; \
 	)
 
+test: virtualenv
+	@( \
+		source .venv/bin/activate; \
+		python `which nosetests`; \
+	)
+
 local:
 	@rm -rf dist
 	@( \

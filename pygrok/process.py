@@ -1,31 +1,63 @@
+import atexit
 import os
 import subprocess
-import atexit
 import time
 
-from pygrok.installer import get_ngrok_bin, install_ngrok
+from pygrok.installer import install_ngrok
 
 process = None
 
-def get_process(ngrok_path):
-    # TODO: add support for opts
-    if not os.path.exists(ngrok_path):
-        install_ngrok(ngrok_path)
 
+def get_process(ngrok_path=None):
+    # TODO: add support for opts
     if process:
         return process
-    else:
-        return _start_process(ngrok_path)
+    elif ngrok_path is not None:
+        if not os.path.exists(ngrok_path):
+            install_ngrok(ngrok_path)
 
-def kill_process(ngrok_path):
+        _start_process(ngrok_path)
+
+        return process
+    else:
+        raise Exception("An ngrok process is not already running, so 'ngrok_path' must be provided")
+
+
+def kill_process():
+    global process
+
     if process:
-        process.kill()
+        process[0].kill()
+
+        if hasattr(atexit, 'unregister'):
+            atexit.unregister(process[0].terminate)
+
+    process = None
+
 
 def _start_process(ngrok_path):
-    process = subprocess.Popen([ngrok_path, "start", "--none", "--log=stdout"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    atexit.register(process.terminate)
+    global process
 
-    # TODO: parse out the URL, in case it doesn't start as the default on 4040, also then removing sleep
-    time.sleep(1)
+    ngrok_proc = subprocess.Popen([ngrok_path, "start", "--none", "--log=stdout"], stdout=subprocess.PIPE,
+                                  stderr=subprocess.STDOUT, universal_newlines=True)
+    atexit.register(ngrok_proc.terminate)
 
-    return process
+    url = None
+    started = False
+    t_end = time.time() + 15
+    while time.time() < t_end:
+        line = ngrok_proc.stdout.readline()
+
+        if "starting web service" in line:
+            url = "http://{}/".format(line.split("addr=")[1].strip())
+        elif "tunnel session started" in line:
+            started = True
+            break
+        elif ngrok_proc.poll() is not None:
+            # TODO: process died, find a useful error and report it
+            break
+
+    if url is None or not started:
+        raise Exception("The ngrok process was unable to start")
+
+    process = ngrok_proc, url
