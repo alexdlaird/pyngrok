@@ -10,7 +10,7 @@ from pyngrok.ngrokexception import NgrokException
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
@@ -19,8 +19,10 @@ DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
 # TODO: add logging
 
 
-def set_auth_token(token, config_path=None):
-    process.set_auth_token(token, config_path)
+def set_auth_token(token, ngrok_path=None, config_path=None):
+    ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
+
+    process.set_auth_token(ngrok_path, token, config_path)
 
 
 def get_ngrok_process(ngrok_path=None):

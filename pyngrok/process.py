@@ -21,7 +21,7 @@ def set_auth_token(ngrok_path, token, config_path=None):
     if config_path:
         start.append("--config={}".format(config_path))
 
-    subprocess.Popen(config_path, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True).wait()
+    subprocess.Popen(start, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True).wait()
 
 
 def get_process(ngrok_path, config_path=None):
