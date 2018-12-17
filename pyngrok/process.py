@@ -4,60 +4,72 @@ import subprocess
 import time
 
 from pyngrok.installer import install_ngrok
+from pyngrok.ngrokexception import NgrokException
 
-process = None
+CURRENT_PROCESSES = {}
 
 
-def get_process(ngrok_path=None):
-    # TODO: add support for opts
-    if process:
-        return process
-    elif ngrok_path is not None:
+class Process:
+    def __init__(self, ngrok_path, process, api_url):
+        self.ngrok_path = ngrok_path
+        self.process = process
+        self.api_url = api_url
+
+
+def set_auth_token(ngrok_path, token, config_path=None):
+    start = [ngrok_path, "authtoken", token]
+    if config_path:
+        start.append("--config={}".format(config_path))
+
+    subprocess.Popen(config_path, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True).wait()
+
+
+def get_process(ngrok_path, config_path=None):
+    if ngrok_path in CURRENT_PROCESSES:
+        return CURRENT_PROCESSES[ngrok_path]
+    else:
         if not os.path.exists(ngrok_path):
             install_ngrok(ngrok_path)
 
-        _start_process(ngrok_path)
+        _start_process(ngrok_path, config_path)
 
-        return process
-    else:
-        raise Exception("A ngrok process is not already running, so 'ngrok_path' must be provided")
+        return CURRENT_PROCESSES[ngrok_path]
 
 
-def kill_process():
-    global process
-
-    if process:
-        process[0].kill()
+def kill_process(ngrok_path):
+    if ngrok_path in CURRENT_PROCESSES:
+        CURRENT_PROCESSES[ngrok_path].process.kill()
 
         if hasattr(atexit, 'unregister'):
-            atexit.unregister(process[0].terminate)
+            atexit.unregister(CURRENT_PROCESSES[ngrok_path].process.terminate)
 
-    process = None
+        del CURRENT_PROCESSES[ngrok_path]
 
 
-def _start_process(ngrok_path):
-    global process
+def _start_process(ngrok_path, config_path=None):
+    start = [ngrok_path, "start", "--none", "--log=stdout"]
+    if config_path:
+        start.append("--config={}".format(config_path))
 
-    ngrok_proc = subprocess.Popen([ngrok_path, "start", "--none", "--log=stdout"], stdout=subprocess.PIPE,
-                                  stderr=subprocess.STDOUT, universal_newlines=True)
-    atexit.register(ngrok_proc.terminate)
+    process = subprocess.Popen(start, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+    atexit.register(process.terminate)
 
-    url = None
-    started = False
-    t_end = time.time() + 15
-    while time.time() < t_end:
-        line = ngrok_proc.stdout.readline()
+    api_url = None
+    tunnel_started = False
+    timeout = time.time() + 15
+    while time.time() < timeout:
+        line = process.stdout.readline()
 
         if "starting web service" in line:
-            url = "http://{}".format(line.split("addr=")[1].strip())
+            api_url = "http://{}".format(line.split("addr=")[1].strip())
         elif "tunnel session started" in line:
-            started = True
+            tunnel_started = True
             break
-        elif ngrok_proc.poll() is not None:
-            # TODO: process died, find a useful error and report it
+        elif process.poll() is not None:
+            # TODO: process died, report a useful error here
             break
 
-    if url is None or not started:
-        raise Exception("The ngrok process was unable to start")
+    if not api_url or not tunnel_started:
+        raise NgrokException("The ngrok process was unable to start")
 
-    process = ngrok_proc, url
+    CURRENT_PROCESSES[ngrok_path] = Process(ngrok_path, process, api_url)

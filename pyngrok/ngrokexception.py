@@ -1,0 +1,2 @@
+class NgrokException(Exception):
+    pass

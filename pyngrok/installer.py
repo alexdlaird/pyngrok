@@ -3,7 +3,10 @@ import platform
 import shutil
 import tempfile
 import zipfile
+
 import requests
+
+from pyngrok.ngrokexception import NgrokException
 
 DARWIN_DOWNLOAD_URL = "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-darwin-amd64.zip"
 WINDOWS_DOWNLOAD_URL = "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip"
@@ -17,7 +20,7 @@ def get_ngrok_bin():
     elif system == "Windows":
         return "ngrok.exe"
     else:
-        raise Exception("{} is not supported".format(system))
+        raise NgrokException("{} is not supported".format(system))
 
 
 def install_ngrok(ngrok_path):
@@ -35,7 +38,7 @@ def install_ngrok(ngrok_path):
     elif system == "Linux":
         url = LINUX_DARWIN_DOWNLOAD_URL
     else:
-        raise Exception("{} is not supported".format(system))
+        raise NgrokException("{} is not supported".format(system))
 
     download_path = _download_file(url)
     with zipfile.ZipFile(download_path, "r") as zip_ref:
@@ -45,7 +48,7 @@ def install_ngrok(ngrok_path):
 
 
 def _get_ngrok_path(ngrok_dir):
-    if ngrok_dir is None:
+    if not ngrok_dir:
         ngrok_dir = tempfile.gettempdir()
 
     if not os.path.exists(ngrok_dir):

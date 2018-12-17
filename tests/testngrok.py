@@ -7,25 +7,25 @@ from .testcase import NgrokTestCase
 class TestNgrok(NgrokTestCase):
     def test_connect(self):
         # GIVEN
-        self.assertIsNone(process.process)
+        self.assertEqual(len(process.CURRENT_PROCESSES.keys()), 0)
 
         # WHEN
         url = ngrok.connect(5000)
-        p1 = process.get_process()[0]
+        current_process = ngrok.get_ngrok_process()
 
         # THEN
-        self.assertIsNone(p1.poll())
+        self.assertIsNotNone(current_process)
+        self.assertIsNone(current_process.process.poll())
         self.assertIsNotNone(url)
-        self.assertIsNotNone(process.process)
-        self.assertIsNotNone(process.get_process())
+        self.assertIsNotNone(process.get_process(ngrok.DEFAULT_NGROK_PATH))
 
     def test_multiple_connections_fails(self):
         # WHEN
         with self.assertRaises(Exception):
             ngrok.connect(5000)
-            time.sleep(1)
+            # time.sleep(1)
             ngrok.connect(5001)
-            time.sleep(1)
+            # time.sleep(1)
 
     def test_get_tunnels(self):
         # GIVEN
@@ -36,10 +36,13 @@ class TestNgrok(NgrokTestCase):
         tunnels = ngrok.get_tunnels()
 
         # THEN
-        self.assertTrue(len(tunnels), 1)
-        self.assertTrue(tunnels[0]["proto"], "http")
-        self.assertTrue(tunnels[0]["public_url"], url)
-        self.assertTrue(tunnels[0]["config"]["addr"], "localhost:80")
+        self.assertEqual(len(tunnels), 2)
+        self.assertEqual(tunnels[0]["proto"], "http")
+        self.assertEqual(tunnels[0]["public_url"], url)
+        self.assertEqual(tunnels[0]["config"]["addr"], "localhost:80")
+        self.assertEqual(tunnels[1]["proto"], "https")
+        self.assertEqual(tunnels[1]["public_url"], url.replace("http", "https"))
+        self.assertEqual(tunnels[1]["config"]["addr"], "localhost:80")
 
     def test_disconnect(self):
         # GIVEN
@@ -61,7 +64,7 @@ class TestNgrok(NgrokTestCase):
         # GIVEN
         ngrok.connect(5000)
         time.sleep(1)
-        p1 = process.get_process()[0]
+        p1 = process.get_process(ngrok.DEFAULT_NGROK_PATH).process
 
         # WHEN
         ngrok.kill()
@@ -69,4 +72,4 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertIsNotNone(p1.poll())
-        self.assertIsNone(process.process)
+        self.assertEqual(len(process.CURRENT_PROCESSES.keys()), 0)
