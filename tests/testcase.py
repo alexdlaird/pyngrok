@@ -1,6 +1,6 @@
 import unittest
 
-from pygrok import process
+from pyngrok import process
 
 
 class NgrokTestCase(unittest.TestCase):

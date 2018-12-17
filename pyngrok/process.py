@@ -3,7 +3,7 @@ import os
 import subprocess
 import time
 
-from pygrok.installer import install_ngrok
+from pyngrok.installer import install_ngrok
 
 process = None
 

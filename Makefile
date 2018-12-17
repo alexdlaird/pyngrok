@@ -27,7 +27,7 @@ local:
 	@rm -rf dist
 	@( \
 		python setup.py sdist; \
-		pip install dist/pygrok*.tar.gz; \
+		pip install dist/pyngrok*.tar.gz; \
 	)
 
 upload:

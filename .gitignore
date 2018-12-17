@@ -9,5 +9,5 @@ dist/
 build/
 tests/_build
 MANIFEST
-pygrok.egg-info
-pygrok/bin
+pyngrok.egg-info
+pyngrok/bin

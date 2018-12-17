@@ -1,6 +1,6 @@
 import time
 
-from pygrok import ngrok, process
+from pyngrok import ngrok, process
 from .testcase import NgrokTestCase
 
 

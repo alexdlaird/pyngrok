@@ -4,8 +4,8 @@ import uuid
 
 import requests
 
-from pygrok.installer import get_ngrok_bin
-from pygrok.process import get_process, kill_process
+from pyngrok.installer import get_ngrok_bin
+from pyngrok.process import get_process, kill_process
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
