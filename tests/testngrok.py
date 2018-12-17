@@ -39,12 +39,12 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(tunnels), 2)
         for tunnel in tunnels:
             if tunnel["proto"] == "http":
-                self.assertEqual(tunnels[0]["public_url"], url)
-                self.assertEqual(tunnels[0]["config"]["addr"], "localhost:80")
+                self.assertEqual(tunnel["public_url"], url)
+                self.assertEqual(tunnel["config"]["addr"], "localhost:80")
             else:
-                self.assertEqual(tunnels[1]["proto"], "https")
-                self.assertEqual(tunnels[1]["public_url"], url.replace("http", "https"))
-                self.assertEqual(tunnels[1]["config"]["addr"], "localhost:80")
+                self.assertEqual(tunnel["proto"], "https")
+                self.assertEqual(tunnel["public_url"], url.replace("http", "https"))
+                self.assertEqual(tunnel["config"]["addr"], "localhost:80")
 
     def test_disconnect(self):
         # GIVEN
