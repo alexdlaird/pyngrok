@@ -9,7 +9,7 @@ install:
 - python -m pip install -r requirements.txt
 - python -m pip install setuptools twine --upgrade
 script:
-- make test
+- python `which nosetests` --with-coverage --cover-erase --cover-package=. --cover-html --cover-html-dir=htmlcov
 - make local
 after_success:
 - codecov
