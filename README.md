@@ -5,13 +5,20 @@
 
 # pyngrok
 
-TBD
-
-## Prerequisites
-
-* Python (>=2.7, >= 3.5)
-* Pip (>= 9.0)
-
 ## Getting Started
 
-TBD
+Note: this package is still in early development.
+
+The `pyngrok` package is a [ngrok](https://ngrok.com/) wrapper for Python. The module will download
+and use its own `ngrok` binaries if none are provided.
+
+Here is an example of basic usage:
+
+```
+public_url = ngrok.connect() # http://localhost:80
+public_url = ngrok.connect(5000, "https") # https://localhost:5000
+
+tunnels = ngrok.get_tunnels()
+```
+
+More functionality and documentation will be published soon.
