@@ -19,6 +19,8 @@ setup(
     long_description_content_type="text/markdown",
     author="Alex Laird",
     author_email="contact@alexlaird.com",
+    url='https://github.com/alexdlaird/pyngrok',
+    download_url='https://github.com/alexdlaird/pyngrok/archive/{}.tar.gz'.format(__version__),
     license="MIT",
     classifiers=[
         "Programming Language :: Python :: 2.7",

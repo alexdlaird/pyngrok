@@ -31,7 +31,9 @@ local:
 	)
 
 upload:
+	@rm -rf dist
 	@( \
 		source .venv/bin/activate; \
-		python setup.py sdist upload; \
+		python setup.py sdist; \
+		twine upload dist/*; \
 	)
