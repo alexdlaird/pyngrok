@@ -7,7 +7,7 @@
 htmlcov
 dist/
 build/
-tests/_build
+tests/.ngrok2
 MANIFEST
 pyngrok.egg-info
 pyngrok/bin

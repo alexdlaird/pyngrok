@@ -10,6 +10,7 @@ setup(
     packages=["pyngrok"],
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     install_requires=[
+        "future",
         "requests",
     ],
     description="A Python wrapper for Ngrok.",
