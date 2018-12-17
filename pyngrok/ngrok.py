@@ -9,7 +9,7 @@ from pyngrok.process import get_process, kill_process
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
