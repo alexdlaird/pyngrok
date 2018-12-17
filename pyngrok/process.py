@@ -1,10 +1,13 @@
 import atexit
+import logging
 import os
 import subprocess
 import time
 
 from pyngrok.installer import install_ngrok
 from pyngrok.ngrokexception import NgrokException
+
+logger = logging.getLogger(__name__)
 
 CURRENT_PROCESSES = {}
 
@@ -17,13 +20,14 @@ class NgrokProcess:
 
 
 def set_auth_token(ngrok_path, token, config_path=None):
-    start = [ngrok_path, "authtoken", token]
+    start = [ngrok_path, "authtoken", token, "--log=stdout"]
     if config_path:
         start.append("--config={}".format(config_path))
 
-    subprocess.Popen(start, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).wait()
+    result = subprocess.check_output(start)
 
-    # TODO: check process stderr and report here if error
+    if "Authtoken saved" not in result:
+        raise NgrokException(result)
 
 
 def get_process(ngrok_path, config_path=None):
@@ -40,10 +44,14 @@ def get_process(ngrok_path, config_path=None):
 
 def kill_process(ngrok_path):
     if ngrok_path in CURRENT_PROCESSES:
-        CURRENT_PROCESSES[ngrok_path].process.kill()
+        ngrok_process = CURRENT_PROCESSES[ngrok_path]
+
+        logger.debug("Killing ngrok process: {}".format(ngrok_process.process.pid))
+
+        ngrok_process.process.kill()
 
         if hasattr(atexit, 'unregister'):
-            atexit.unregister(CURRENT_PROCESSES[ngrok_path].process.terminate)
+            atexit.unregister(ngrok_process.process.terminate)
 
         del CURRENT_PROCESSES[ngrok_path]
 
@@ -51,13 +59,18 @@ def kill_process(ngrok_path):
 def _start_process(ngrok_path, config_path=None):
     start = [ngrok_path, "start", "--none", "--log=stdout"]
     if config_path:
+        logger.debug("Starting ngrok with config file: {}".format(config_path))
+
         start.append("--config={}".format(config_path))
 
-    process = subprocess.Popen(start, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+    process = subprocess.Popen(start, stdout=subprocess.PIPE, universal_newlines=True)
     atexit.register(process.terminate)
+
+    logger.debug("ngrok process started: {}".format(process.pid))
 
     api_url = None
     tunnel_started = False
+    errors = []
     timeout = time.time() + 15
     while time.time() < timeout:
         line = process.stdout.readline()
@@ -67,11 +80,17 @@ def _start_process(ngrok_path, config_path=None):
         elif "tunnel session started" in line:
             tunnel_started = True
             break
+        elif "lvl=error" in line or "lvl=crit" in line:
+            errors.append(line)
         elif process.poll() is not None:
-            # TODO: process died, report a useful error here
             break
 
-    if not api_url or not tunnel_started:
-        raise NgrokException("The ngrok process was unable to start")
+    if not api_url or not tunnel_started or len(errors) > 0:
+        if len(errors) > 0:
+            raise NgrokException(errors)
+        else:
+            raise NgrokException("The ngrok process was unable to start")
+
+    logger.debug("ngrok web service started: {}".format(api_url))
 
     CURRENT_PROCESSES[ngrok_path] = NgrokProcess(ngrok_path, process, api_url)

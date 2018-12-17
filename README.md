@@ -35,7 +35,10 @@ ngrok_process = ngrok.get_ngrok_process()
 api_url = ngrok_process.api_url # the ngrok client API URL (usually http://127.0.0.1:4040)
 ```
 
-Note that the `ngrok` process, after an initiating event (like `connect` or `get_tunnels`) will remain alive until the
+You are also able to pass an `options` parameter (dict), as defined in [the ngrok documentation](https://ngrok.com/docs#tunnel-definitions),
+when calling `connect`.
+
+The `ngrok` process, after an initiating event (like `connect` or `get_tunnels`) will remain alive until the
 Python process terminates. If your app is long-lived, this means the above processes will remain alive until you call
 `ngrok.disconnect(5000)` to shutdown a port or `ngrok.kill()` to terminate the entire process.
 

@@ -51,6 +51,7 @@ class TestNgrok(NgrokTestCase):
         url = ngrok.connect(config_path=self.config_path)
         time.sleep(1)
         tunnels = ngrok.get_tunnels()
+        # Two tunnels, as one each was created for "http" and "https"
         self.assertEqual(len(tunnels), 2)
 
         # WHEN
@@ -76,7 +77,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNotNone(p1.poll())
         self.assertEqual(len(process.CURRENT_PROCESSES.keys()), 0)
 
-    def test_auth_token(self):
+    def test_set_auth_token(self):
         # WHEN
         ngrok.set_auth_token("807ad30a-73be-48d8", config_path=self.config_path)
         contents = open(self.config_path, "r").read()

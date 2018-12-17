@@ -1,11 +1,13 @@
 import json
+import logging
 import os
 import uuid
+
+from future.standard_library import install_aliases
 
 from pyngrok import process
 from pyngrok.installer import get_ngrok_bin
 from pyngrok.ngrokexception import NgrokException
-from future.standard_library import install_aliases
 
 install_aliases()
 
@@ -16,14 +18,17 @@ __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
 __version__ = "0.3.0"
 
+logger = logging.getLogger(__name__)
+
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
 
 
-# TODO: add logging
-
 class NgrokTunnel:
-    def __init__(self, data={}):
+    def __init__(self, data=None):
+        if data is None:
+            data = {}
+
         self.name = data["name"] if data else None
         self.proto = data["proto"] if data else None
         self.uri = data["uri"] if data else None
@@ -44,22 +49,26 @@ def get_ngrok_process(ngrok_path=None):
     return process.get_process(ngrok_path)
 
 
-def connect(port=80, proto="http", name=None, ngrok_path=None, config_path=None):
+def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, config_path=None):
+    if options is None:
+        options = {}
+
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
-    # TODO: refactor to accept generic "options" that can be passed directly to ngrok command
     config = {
         "name": name if name else str(uuid.uuid4()),
         "addr": str(port),
         "proto": proto
     }
+    options.update(config)
 
     current_process = process.get_process(ngrok_path, config_path)
 
-    tunnel = NgrokTunnel(_request("{}/api/{}".format(current_process.api_url, "tunnels"), "POST", data=config))
+    logger.debug("Connecting tunnel with options: {}".format(options))
 
-    # TODO: when bind_tls param is added to "options", add check for != "false" here
-    if proto == "http":
+    tunnel = NgrokTunnel(_request("{}/api/{}".format(current_process.api_url, "tunnels"), "POST", data=options))
+
+    if proto == "http" and ("bind_tls" not in options or options["bind_tls"] != False):
         tunnel.public_url = tunnel.public_url.replace("https", "http")
 
     return tunnel.public_url
@@ -73,6 +82,8 @@ def disconnect(public_url=None, ngrok_path=None):
     tunnels = get_tunnels(ngrok_path)
     for tunnel in tunnels:
         if tunnel.public_url == public_url:
+            logger.debug("Disconnecting tunnel: {}".format(tunnel.public_url))
+
             _request("{}{}".format(api_url, tunnel.uri.replace("+", "%20")), "DELETE")
 
 
@@ -110,13 +121,23 @@ def _request(uri, method="GET", data=None, params=None):
     request = Request(uri, method=method.upper())
     request.add_header("Content-Type", "application/json")
 
+    logger.debug("Making {} request to {} with data: {}".format(method, uri, data))
+
     with urlopen(request, data) as response:
         try:
             response_data = response.read().decode('utf-8')
 
-            if str(response.getcode())[0] != '2':
-                raise NgrokException(response.text)
+            status_code = response.getcode()
+            logger.debug("Response status code: {}".format(status_code))
+            logger.debug("Response: {}".format(response_data))
+
+            if str(status_code)[0] != '2':
+                raise NgrokException(response_data)
+            elif status_code == 204:
+                return None
             else:
                 return json.loads(response_data)
-        except:
+        except Exception as e:
+            logger.debug("Request exception: {}".format(e))
+
             return None

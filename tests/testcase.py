@@ -1,6 +1,6 @@
 import os
-import unittest
 import shutil
+import unittest
 
 from pyngrok import ngrok
 from pyngrok import process
