@@ -20,7 +20,7 @@ def get_process(ngrok_path=None):
 
         return process
     else:
-        raise Exception("An ngrok process is not already running, so 'ngrok_path' must be provided")
+        raise Exception("A ngrok process is not already running, so 'ngrok_path' must be provided")
 
 
 def kill_process():
@@ -49,7 +49,7 @@ def _start_process(ngrok_path):
         line = ngrok_proc.stdout.readline()
 
         if "starting web service" in line:
-            url = "http://{}/".format(line.split("addr=")[1].strip())
+            url = "http://{}".format(line.split("addr=")[1].strip())
         elif "tunnel session started" in line:
             started = True
             break

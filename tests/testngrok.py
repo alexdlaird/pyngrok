@@ -19,37 +19,43 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNotNone(process.process)
         self.assertIsNotNone(process.get_process())
 
+    def test_multiple_connections_fails(self):
+        # WHEN
+        with self.assertRaises(Exception):
+            ngrok.connect(5000)
+            time.sleep(1)
+            ngrok.connect(5001)
+            time.sleep(1)
+
     def test_get_tunnels(self):
         # GIVEN
-        url1 = ngrok.connect(5000)
-        time.sleep(1)
-        url2 = ngrok.connect(5001)
+        url = ngrok.connect()
         time.sleep(1)
 
         # WHEN
         tunnels = ngrok.get_tunnels()
 
         # THEN
-        self.assertTrue(len(tunnels), 2)
+        self.assertTrue(len(tunnels), 1)
         self.assertTrue(tunnels[0]["proto"], "http")
-        self.assertTrue(tunnels[0]["public_url"], url1)
-        self.assertTrue(tunnels[0]["config"]["addr"], "localhost:5000")
-        self.assertTrue(tunnels[1]["proto"], "http")
-        self.assertTrue(tunnels[0]["public_url"], url2)
-        self.assertTrue(tunnels[1]["config"]["addr"], "localhost:5001")
+        self.assertTrue(tunnels[0]["public_url"], url)
+        self.assertTrue(tunnels[0]["config"]["addr"], "localhost:80")
 
-    # def test_disconnect(self):
-    #     # GIVEN
-    #     url = ngrok.connect(5000)
-    #     time.sleep(1)
-    #
-    #     # WHEN
-    #     ngrok.disconnect(url)
-    #     time.sleep(1)
-    #     tunnels = ngrok.get_tunnels()
-    #
-    #     # THEN
-    #     self.assertEqual(len(tunnels), 0)
+    def test_disconnect(self):
+        # GIVEN
+        url = ngrok.connect()
+        time.sleep(1)
+        tunnels = ngrok.get_tunnels()
+        self.assertEqual(len(tunnels), 2)
+
+        # WHEN
+        ngrok.disconnect(url)
+        time.sleep(1)
+        tunnels = ngrok.get_tunnels()
+
+        # THEN
+        # There is still one tunnel left, as we only disconnected the http tunnel
+        self.assertEqual(len(tunnels), 1)
 
     def test_kill(self):
         # GIVEN

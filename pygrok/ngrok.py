@@ -2,15 +2,10 @@ import json
 import os
 import uuid
 
-from future.standard_library import install_aliases
+import requests
 
 from pygrok.installer import get_ngrok_bin
 from pygrok.process import get_process, kill_process
-
-install_aliases()
-
-from urllib.parse import urlencode
-from urllib.request import urlopen, Request
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
@@ -18,17 +13,13 @@ __version__ = "0.1.0"
 
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
-TUNNELS = {}
 
-# TODO: clean this up, it's not great practice
-WEB_SERVICE_URL = None
+WEB_SERVICE_URLS = {}
 
 
 # TODO: add logging
 
-def connect(port, proto="http", name=None, ngrok_path=None):
-    global WEB_SERVICE_URL
-
+def connect(port=80, proto="http", name=None, ngrok_path=None):
     if ngrok_path is None:
         ngrok_path = NGROK_PATH
 
@@ -40,56 +31,62 @@ def connect(port, proto="http", name=None, ngrok_path=None):
     }
 
     process, url = get_process(ngrok_path)
-    WEB_SERVICE_URL = url
+    WEB_SERVICE_URLS[ngrok_path] = url
 
-    response = _api("tunnels", "POST", data=config)
+    response = _request("{}/api/{}".format(WEB_SERVICE_URLS[ngrok_path], "tunnels"), "POST", data=config)
 
     if proto == "http":
-        response["name"] += " (http)"
         response["public_url"] = response["public_url"].replace("https", "http")
-        response["proto"] = "http"
-        response["uri"] += "+%28http%29"
-
-    TUNNELS[response["public_url"]] = response
 
     return response["public_url"]
 
 
-# TODO: implement manual disconnect (current impl is not properly disconnecting http tunnels
-# def disconnect(public_url=None):
-#     _api(TUNNELS[public_url]["uri"][5:], "DELETE")
-#     del TUNNELS[public_url]
+def disconnect(public_url=None, ngrok_path=None):
+    if ngrok_path is None:
+        ngrok_path = NGROK_PATH
+
+    tunnels = get_tunnels(ngrok_path)
+    for tunnel in tunnels:
+        if tunnel["public_url"] == public_url:
+            _request("{}{}".format(WEB_SERVICE_URLS[ngrok_path], tunnel["uri"].replace("+", "%20")), "DELETE")
 
 
-def get_tunnels():
-    tunnels = []
-    for tunnel in _api("tunnels")["tunnels"]:
-        tunnels.append(tunnel)
-    return tunnels
+def get_tunnels(ngrok_path=None):
+    if ngrok_path is None:
+        ngrok_path = NGROK_PATH
+
+    if ngrok_path not in WEB_SERVICE_URLS:
+        raise Exception("A ngrok process is not running at the given 'ngrok_path'")
+
+    return _request("{}/api/{}".format(WEB_SERVICE_URLS[ngrok_path], "tunnels"))["tunnels"]
 
 
-def kill():
-    global WEB_SERVICE_URL, TUNNELS
+def kill(ngrok_path=None):
+    if ngrok_path is None:
+        ngrok_path = NGROK_PATH
+
+    if ngrok_path not in WEB_SERVICE_URLS:
+        raise Exception("A ngrok process is not running at the given 'ngrok_path'")
 
     kill_process()
 
-    WEB_SERVICE_URL = None
-    TUNNELS = {}
+    del WEB_SERVICE_URLS[ngrok_path]
 
 
-def _api(endpoint, method="GET", data=None, params=None):
-    if params is None:
-        params = []
+def _request(uri, method="GET", data=None, params=None):
+    headers = {
+        "Content-Type": "application/json"
+    }
 
-    if params:
-        endpoint += "?%s" % urlencode([(x, params[x]) for x in params])
-    data = urlencode(data).encode() if data else None
-    request = Request("%sapi/%s" % (WEB_SERVICE_URL, endpoint))
-    if method != "GET":
-        request.get_method = lambda: method
-    request.add_header("Content-Type", "application/json")
-    response = urlopen(request, data)
-    try:
-        return json.loads(response.read().decode("utf-8"))
-    except:
+    data = json.dumps(data) if data else None
+
+    method = getattr(requests, method.lower())
+    response = method(uri, headers=headers, data=data, params=params)
+
+    if str(response.status_code)[0] != '2':
+        raise Exception(response.text)
+
+    if response.status_code != 204:
+        return response.json()
+    else:
         return None
