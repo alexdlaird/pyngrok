@@ -17,7 +17,7 @@ def get_ngrok_bin():
     system = platform.system()
     if system in ["Darwin", "Linux"]:
         return "ngrok"
-    elif system == "Windows":
+    elif system == "Windows":  # pragma: no cover
         return "ngrok.exe"
     else:
         raise NgrokException("{} is not supported".format(system))
@@ -33,9 +33,9 @@ def install_ngrok(ngrok_path):
     system = platform.system()
     if system == "Darwin":
         url = DARWIN_DOWNLOAD_URL
-    elif system == "Windows":
+    elif system == "Windows":  # pragma: no cover
         url = WINDOWS_DOWNLOAD_URL
-    elif system == "Linux":
+    elif system == "Linux":  # pragma: no cover
         url = LINUX_DARWIN_DOWNLOAD_URL
     else:
         raise NgrokException("{} is not supported".format(system))
@@ -48,8 +48,7 @@ def install_ngrok(ngrok_path):
 
 
 def _get_ngrok_path(ngrok_dir):
-    if not ngrok_dir:
-        ngrok_dir = tempfile.gettempdir()
+    ngrok_dir = ngrok_dir if ngrok_dir else tempfile.gettempdir()
 
     if not os.path.exists(ngrok_dir):
         os.mkdir(ngrok_dir)

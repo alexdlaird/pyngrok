@@ -20,7 +20,7 @@ install: virtualenv
 test: virtualenv
 	@( \
 		source .venv/bin/activate; \
-		python `which nosetests`; \
+		python `which nosetests` --with-coverage --cover-erase --cover-package=. --cover-html --cover-html-dir=htmlcov; \
 	)
 
 local:
