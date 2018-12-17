@@ -26,7 +26,7 @@ def set_auth_token(ngrok_path, token, config_path=None):
 
     result = subprocess.check_output(start)
 
-    if "Authtoken saved" not in result:
+    if "Authtoken saved" not in str(result):
         raise NgrokException(result)
 
 
