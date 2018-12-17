@@ -10,3 +10,4 @@ build/
 tests/_build
 MANIFEST
 pygrok.egg-info
+pygrok/bin
