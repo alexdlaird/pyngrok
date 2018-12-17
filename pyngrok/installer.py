@@ -3,12 +3,7 @@ import platform
 import shutil
 import tempfile
 import zipfile
-
-from future.standard_library import install_aliases
-
-install_aliases()
-
-from urllib.request import urlopen
+import requests
 
 DARWIN_DOWNLOAD_URL = "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-darwin-amd64.zip"
 WINDOWS_DOWNLOAD_URL = "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip"
@@ -61,10 +56,10 @@ def _get_ngrok_path(ngrok_dir):
 
 def _download_file(url):
     local_filename = url.split("/")[-1]
-    response = urlopen(url)
+    response = requests.get(url, stream=True)
     download_path = os.path.join(tempfile.gettempdir(), local_filename)
 
     with open(download_path, "wb") as f:
-        shutil.copyfileobj(response, f)
+        shutil.copyfileobj(response.raw, f)
 
     return download_path
