@@ -10,7 +10,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(process.CURRENT_PROCESSES.keys()), 0)
 
         # WHEN
-        url = ngrok.connect(5000)
+        url = ngrok.connect(5000, config_path=self.config_path)
         current_process = ngrok.get_ngrok_process()
 
         # THEN
@@ -22,14 +22,14 @@ class TestNgrok(NgrokTestCase):
     def test_multiple_connections_fails(self):
         # WHEN
         with self.assertRaises(Exception):
-            ngrok.connect(5000)
+            ngrok.connect(5000, config_path=self.config_path)
             # time.sleep(1)
-            ngrok.connect(5001)
+            ngrok.connect(5001, config_path=self.config_path)
             # time.sleep(1)
 
     def test_get_tunnels(self):
         # GIVEN
-        url = ngrok.connect()
+        url = ngrok.connect(config_path=self.config_path)
         time.sleep(1)
 
         # WHEN
@@ -48,7 +48,7 @@ class TestNgrok(NgrokTestCase):
 
     def test_disconnect(self):
         # GIVEN
-        url = ngrok.connect()
+        url = ngrok.connect(config_path=self.config_path)
         time.sleep(1)
         tunnels = ngrok.get_tunnels()
         self.assertEqual(len(tunnels), 2)
@@ -64,7 +64,7 @@ class TestNgrok(NgrokTestCase):
 
     def test_kill(self):
         # GIVEN
-        ngrok.connect(5000)
+        ngrok.connect(5000, config_path=self.config_path)
         time.sleep(1)
         p1 = process.get_process(ngrok.DEFAULT_NGROK_PATH).process
 
@@ -75,3 +75,11 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertIsNotNone(p1.poll())
         self.assertEqual(len(process.CURRENT_PROCESSES.keys()), 0)
+
+    def test_auth_token(self):
+        # WHEN
+        ngrok.set_auth_token("807ad30a-73be-48d8", config_path=self.config_path)
+        contents = open(self.config_path, "r").read()
+
+        # THEN
+        self.assertIn("807ad30a-73be-48d8", contents)

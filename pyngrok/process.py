@@ -9,7 +9,7 @@ from pyngrok.ngrokexception import NgrokException
 CURRENT_PROCESSES = {}
 
 
-class Process:
+class NgrokProcess:
     def __init__(self, ngrok_path, process, api_url):
         self.ngrok_path = ngrok_path
         self.process = process
@@ -21,7 +21,9 @@ def set_auth_token(ngrok_path, token, config_path=None):
     if config_path:
         start.append("--config={}".format(config_path))
 
-    subprocess.Popen(start, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True).wait()
+    subprocess.Popen(start, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).wait()
+
+    # TODO: check process stderr and report here if error
 
 
 def get_process(ngrok_path, config_path=None):
@@ -59,6 +61,7 @@ def _start_process(ngrok_path, config_path=None):
     timeout = time.time() + 15
     while time.time() < timeout:
         line = process.stdout.readline()
+        print(line)
 
         if "starting web service" in line:
             api_url = "http://{}".format(line.split("addr=")[1].strip())
@@ -72,4 +75,4 @@ def _start_process(ngrok_path, config_path=None):
     if not api_url or not tunnel_started:
         raise NgrokException("The ngrok process was unable to start")
 
-    CURRENT_PROCESSES[ngrok_path] = Process(ngrok_path, process, api_url)
+    CURRENT_PROCESSES[ngrok_path] = NgrokProcess(ngrok_path, process, api_url)

@@ -12,7 +12,7 @@ class TestNgrok(NgrokTestCase):
         self.assertFalse(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
 
         # WHEN
-        ngrok.connect(5000)
+        ngrok.connect(5000, config_path=self.config_path)
 
         # THEN
         self.assertTrue(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
