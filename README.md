@@ -40,7 +40,8 @@ accomplished with the `get_tunnels()` method, which returns a list of `NgrokTunn
 from pyngrok import ngrok
 
 tunnels = ngrok.get_tunnels()
-public_url = tunnels[0].public_url # a public ngrok URL that tunnels to port 80 (ex. http://<public_sub>.ngrok.io)
+# A public ngrok URL that tunnels to port 80 (ex. http://<public_sub>.ngrok.io)
+public_url = tunnels[0].public_url
 ```
 
 ## closing a tunnel
@@ -68,7 +69,8 @@ process so tunnels stay open until the user intervenes. We can do that by access
 from pyngrok import ngrok
 
 ngrok_process = ngrok.get_ngrok_process()
-ngrok_process.process.wait() # block until CTRL-C or some other terminating event
+# Block until CTRL-C or some other terminating event
+ngrok_process.process.wait()
 ```
 
 The `NgrokProcess` also contains an `api_url` variable, usually initialized to
