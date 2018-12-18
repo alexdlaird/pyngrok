@@ -19,35 +19,40 @@ specify a path to a binary when establishing a connection.
 ## connect
 
 ```python
-import time
 from pyngrok import ngrok
 
-ngrok.connect() # tunnel to port 80
-ngrok.connect(5000) # tunnel to port 5000
+public_url1 = ngrok.connect() # tunnel to port 80
+public_url2 = ngrok.connect(5000) # tunnel to port 5000
+```
 
-# Wait a second to ensure ngrok API has synced
-time.sleep(1)
+The `connect` method also takes an optional `options` dictionary, which can accept any arbitrary parameter defined in [the ngrok documentation](https://ngrok.com/docs#tunnel-definitions).
 
+Retreiving a list of active `NgrokTunnel` objects is just as easy.
+
+```python
 tunnels = ngrok.get_tunnels()
 public_url = tunnels[0].public_url # a public ngrok URL that tunnels to port 80 (ex. http://64e3ddef.ngrok.io)
+```
 
+The `ngrok` process itself is also available to you in the `NgrokProcess` object. This object also holds reference to the client API URL.
+
+```python
 ngrok_process = ngrok.get_ngrok_process()
 api_url = ngrok_process.api_url # the ngrok client API URL (usually http://127.0.0.1:4040)
 ```
 
-You are also able to pass an `options` parameter (dict), as defined in [the ngrok documentation](https://ngrok.com/docs#tunnel-definitions),
-when calling `connect`.
+After the `ngrok` process is invoked (by calling `connect` or `get_tunnels`), it will remain alive until the Python process terminates. If your app is long-lived, this means the tunnels will stay open until you call
+`ngrok.disconnect(5000)` to shutdown a port, `ngrok.kill()` to end the `ngrok` process, or kill the entire process.
 
-The `ngrok` process, after an initiating event (like `connect` or `get_tunnels`) will remain alive until the
-Python process terminates. If your app is long-lived, this means the above processes will remain alive until you call
-`ngrok.disconnect(5000)` to shutdown a port or `ngrok.kill()` to terminate the entire process.
+If you have a short-lived app, like a CLI, but want the tunnels to remain open until the user terminates, do the following on the `ngrok_process` retrieved above:
 
-If you have a short-lived app but want it to remain running until the `ngrok` process terminates (for instance, a CLI
-tool), get the `ngrok_process` as shown above and do `ngrok_process.process.wait()`
+```python
+ngrok_process.process.wait() # block until CTRL-C or some other terminating event
+```
 
 ## authtoken
 
-If you have an `ngrok` account, you can set the `authtoken` to enable your account's features.
+If you have a [`ngrok` account](https://dashboard.ngrok.com), you can set your `authtoken` to enable your account's features with this package.
 
 ```python
 from pyngrok import ngrok
@@ -68,10 +73,10 @@ CONFIG_PATH = "/opt/ngrok/config.yml"
 ngrok.connect(config_path=CONFIG_PATH)
 ```
 
-## custom binary options
+## binary path
 
-If you would like to use your own `ngrok` binary instead of relying on the one that comes with this package, this can
-be done one of two ways. You can either pass the `ngrok_path` argument to each command:
+If you would like to use your own `ngrok` binary instead of the one that comes with this package, you can
+do this in one of two ways. Either pass the `ngrok_path` argument to each command:
 
 ```python
 from pyngrok import ngrok
@@ -81,12 +86,12 @@ NGROK_PATH = "/usr/local/bin/ngrok"
 ngrok.get_tunnels(ngrok_path=NGROK_PATH)
 ```
 
-or you can override the packages `DEFAULT_NGROK_PATH` variable:
+or override the `DEFAULT_NGROK_PATH` variable:
 
 ```python
 from pyngrok import ngrok
 
-ngrok.DEFAULT_NGROK_PATH="/usr/local/bin/ngrok"
+ngrok.DEFAULT_NGROK_PATH = "/usr/local/bin/ngrok"
 
 ngrok.connect(5000)
 ```
