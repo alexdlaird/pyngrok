@@ -16,7 +16,7 @@ from urllib.request import urlopen, Request
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 
 logger = logging.getLogger(__name__)
 
