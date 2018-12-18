@@ -40,6 +40,8 @@ class NgrokTunnel:
 def set_auth_token(token, ngrok_path=None, config_path=None):
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
+    process.ensure_ngrok_installed(ngrok_path)
+
     process.set_auth_token(ngrok_path, token, config_path)
 
 
@@ -91,7 +93,7 @@ def get_tunnels(ngrok_path=None):
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
     if ngrok_path not in process.CURRENT_PROCESSES:
-        raise NgrokException("A ngrok process is not running at the given 'ngrok_path'")
+        raise NgrokException("ngrok is not running for the 'ngrok_path': {}".format(ngrok_path))
 
     tunnels = []
     for tunnel in _request("{}/api/{}".format(get_ngrok_process(ngrok_path).api_url, "tunnels"))["tunnels"]:
@@ -104,7 +106,7 @@ def kill(ngrok_path=None):
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
     if ngrok_path not in process.CURRENT_PROCESSES:
-        raise NgrokException("A ngrok process is not running at the given 'ngrok_path'")
+        raise NgrokException("ngrok is not running for the 'ngrok_path': {}".format(ngrok_path))
 
     process.kill_process(ngrok_path)
 
@@ -132,7 +134,7 @@ def _request(uri, method="GET", data=None, params=None):
             logger.debug("Response: {}".format(response_data))
 
             if str(status_code)[0] != '2':
-                raise NgrokException(response_data)
+                raise NgrokException("ngrok client API return {}: {}".format(status_code, response_data))
             elif status_code == 204:
                 return None
             else:

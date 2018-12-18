@@ -19,6 +19,11 @@ class NgrokProcess:
         self.api_url = api_url
 
 
+def ensure_ngrok_installed(ngrok_path):
+    if not os.path.exists(ngrok_path):
+        install_ngrok(ngrok_path)
+
+
 def set_auth_token(ngrok_path, token, config_path=None):
     start = [ngrok_path, "authtoken", token, "--log=stdout"]
     if config_path:
@@ -27,15 +32,14 @@ def set_auth_token(ngrok_path, token, config_path=None):
     result = subprocess.check_output(start)
 
     if "Authtoken saved" not in str(result):
-        raise NgrokException(result)
+        raise NgrokException("An error occurred when saving the auth token: {}".format(result))
 
 
 def get_process(ngrok_path, config_path=None):
     if ngrok_path in CURRENT_PROCESSES:
         return CURRENT_PROCESSES[ngrok_path]
     else:
-        if not os.path.exists(ngrok_path):
-            install_ngrok(ngrok_path)
+        ensure_ngrok_installed(ngrok_path)
 
         _start_process(ngrok_path, config_path)
 
@@ -81,13 +85,13 @@ def _start_process(ngrok_path, config_path=None):
             tunnel_started = True
             break
         elif "lvl=error" in line or "lvl=crit" in line:
-            errors.append(line)
+            errors.append(line.strip())
         elif process.poll() is not None:
             break
 
     if not api_url or not tunnel_started or len(errors) > 0:
         if len(errors) > 0:
-            raise NgrokException(errors)
+            raise NgrokException("The ngrok process was unable to start: {}".format(errors))
         else:
             raise NgrokException("The ngrok process was unable to start")
 

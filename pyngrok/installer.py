@@ -27,7 +27,7 @@ def get_ngrok_bin():
     elif system == "Windows":  # pragma: no cover
         return "ngrok.exe"
     else:
-        raise NgrokException("{} is not supported".format(system))
+        raise NgrokException("'{}' is not a supported platform".format(system))
 
 
 def install_ngrok(ngrok_path):
@@ -46,14 +46,18 @@ def install_ngrok(ngrok_path):
     elif system == "Linux":  # pragma: no cover
         url = LINUX_DARWIN_DOWNLOAD_URL
     else:
-        raise NgrokException("{} is not supported".format(system))
+        raise NgrokException("'{}' is not a supported platform".format(system))
 
-    download_path = _download_file(url)
-    with zipfile.ZipFile(download_path, "r") as zip_ref:
-        logger.debug("Extracting ngrok binary ...".format(url))
-        zip_ref.extractall(os.path.dirname(ngrok_path))
+    try:
+        download_path = _download_file(url)
 
-    os.chmod(ngrok_path, int('777', 8))
+        with zipfile.ZipFile(download_path, "r") as zip_ref:
+            logger.debug("Extracting ngrok binary ...".format(url))
+            zip_ref.extractall(os.path.dirname(ngrok_path))
+
+        os.chmod(ngrok_path, int('777', 8))
+    except Exception as e:
+        raise NgrokException("An error occurred while downloading ngrok from {}: {}".format(url, e))
 
 
 def _get_ngrok_path(ngrok_dir):
