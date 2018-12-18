@@ -13,6 +13,10 @@ install_aliases()
 
 from urllib.request import urlopen
 
+__author__ = "Alex Laird"
+__copyright__ = "Copyright 2018, Alex Laird"
+__version__ = "1.0.0"
+
 logger = logging.getLogger(__name__)
 
 DARWIN_DOWNLOAD_URL = "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-darwin-amd64.zip"
@@ -26,7 +30,7 @@ def get_ngrok_bin():
         return "ngrok"
     elif system == "Windows":  # pragma: no cover
         return "ngrok.exe"
-    else:
+    else:  # pragma: no cover
         raise NgrokException("'{}' is not a supported platform".format(system))
 
 
@@ -45,7 +49,7 @@ def install_ngrok(ngrok_path):
         url = WINDOWS_DOWNLOAD_URL
     elif system == "Linux":  # pragma: no cover
         url = LINUX_DARWIN_DOWNLOAD_URL
-    else:
+    else:  # pragma: no cover
         raise NgrokException("'{}' is not a supported platform".format(system))
 
     try:
@@ -58,15 +62,6 @@ def install_ngrok(ngrok_path):
         os.chmod(ngrok_path, int('777', 8))
     except Exception as e:
         raise NgrokException("An error occurred while downloading ngrok from {}: {}".format(url, e))
-
-
-def _get_ngrok_path(ngrok_dir):
-    ngrok_dir = ngrok_dir if ngrok_dir else tempfile.gettempdir()
-
-    if not os.path.exists(ngrok_dir):
-        os.mkdir(ngrok_dir)
-
-    return os.path.join(ngrok_dir, get_ngrok_bin())
 
 
 def _download_file(url):

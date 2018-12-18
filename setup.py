@@ -1,5 +1,8 @@
 from setuptools import setup
-from pyngrok.ngrok import __version__
+
+__author__ = "Alex Laird"
+__copyright__ = "Copyright 2018, Alex Laird"
+__version__ = "1.0.0"
 
 with open("README.md") as f:
     long_description = f.read()

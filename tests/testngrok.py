@@ -3,6 +3,10 @@ import time
 from pyngrok import ngrok, process
 from .testcase import NgrokTestCase
 
+__author__ = "Alex Laird"
+__copyright__ = "Copyright 2018, Alex Laird"
+__version__ = "1.0.0"
+
 
 class TestNgrok(NgrokTestCase):
     def test_connect(self):
@@ -23,9 +27,9 @@ class TestNgrok(NgrokTestCase):
         # WHEN
         with self.assertRaises(Exception):
             ngrok.connect(5000, config_path=self.config_path)
-            # time.sleep(1)
+            time.sleep(1)
             ngrok.connect(5001, config_path=self.config_path)
-            # time.sleep(1)
+            time.sleep(1)
 
     def test_get_tunnels(self):
         # GIVEN

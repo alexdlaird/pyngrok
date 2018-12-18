@@ -5,6 +5,10 @@ import unittest
 from pyngrok import ngrok
 from pyngrok import process
 
+__author__ = "Alex Laird"
+__copyright__ = "Copyright 2018, Alex Laird"
+__version__ = "1.0.0"
+
 
 class NgrokTestCase(unittest.TestCase):
     def setUp(self):

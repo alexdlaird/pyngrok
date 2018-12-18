@@ -16,12 +16,13 @@ from urllib.request import urlopen, Request
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "0.3.2"
+__version__ = "1.0.0"
 
 logger = logging.getLogger(__name__)
 
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
+DEFAULT_CONFIG_PATH = None
 
 
 class NgrokTunnel:
@@ -39,6 +40,7 @@ class NgrokTunnel:
 
 def set_auth_token(token, ngrok_path=None, config_path=None):
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
+    config_path = config_path if config_path else DEFAULT_CONFIG_PATH
 
     process.ensure_ngrok_installed(ngrok_path)
 
@@ -56,6 +58,7 @@ def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, con
         options = {}
 
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
+    config_path = config_path if config_path else DEFAULT_CONFIG_PATH
 
     config = {
         "name": name if name else str(uuid.uuid4()),
@@ -68,7 +71,7 @@ def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, con
 
     logger.debug("Connecting tunnel with options: {}".format(options))
 
-    tunnel = NgrokTunnel(_request("{}/api/{}".format(current_process.api_url, "tunnels"), "POST", data=options))
+    tunnel = NgrokTunnel(api_request("{}/api/{}".format(current_process.api_url, "tunnels"), "POST", data=options))
 
     if proto == "http" and ("bind_tls" not in options or options["bind_tls"] != False):
         tunnel.public_url = tunnel.public_url.replace("https", "http")
@@ -86,7 +89,7 @@ def disconnect(public_url=None, ngrok_path=None):
         if tunnel.public_url == public_url:
             logger.debug("Disconnecting tunnel: {}".format(tunnel.public_url))
 
-            _request("{}{}".format(api_url, tunnel.uri.replace("+", "%20")), "DELETE")
+            api_request("{}{}".format(api_url, tunnel.uri.replace("+", "%20")), "DELETE")
 
 
 def get_tunnels(ngrok_path=None):
@@ -96,7 +99,7 @@ def get_tunnels(ngrok_path=None):
         raise NgrokException("ngrok is not running for the 'ngrok_path': {}".format(ngrok_path))
 
     tunnels = []
-    for tunnel in _request("{}/api/{}".format(get_ngrok_process(ngrok_path).api_url, "tunnels"))["tunnels"]:
+    for tunnel in api_request("{}/api/{}".format(get_ngrok_process(ngrok_path).api_url, "tunnels"))["tunnels"]:
         tunnels.append(NgrokTunnel(tunnel))
 
     return tunnels
@@ -111,7 +114,7 @@ def kill(ngrok_path=None):
     process.kill_process(ngrok_path)
 
 
-def _request(uri, method="GET", data=None, params=None):
+def api_request(uri, method="GET", data=None, params=None):
     if not params:
         params = []
 
