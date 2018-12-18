@@ -56,7 +56,7 @@ public_url = "http://<public_sub>.ngrok.io"
 ngrok.disconnect(public_url)
 ```
 
-# the ngrok process
+## the ngrok process
 
 Opening a tunnel will start the `ngrok` process. This process will remain alive, and the tunnels
 open, until `ngrok.kill()` is invoked, or until the Python process terminates.
