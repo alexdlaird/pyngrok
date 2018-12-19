@@ -63,7 +63,7 @@ Opening a tunnel will start the `ngrok` process. This process will remain alive,
 open, until `ngrok.kill()` is invoked, or until the Python process terminates.
 
 If we are building a short-lived app, for instance a CLI, we may want to block on the `ngrok`
-process so tunnels stay open until the user intervenes. We can do that by access the `NgrokProcess`.
+process so tunnels stay open until the user intervenes. We can do that by accessing the `NgrokProcess`.
 
 ```python
 from pyngrok import ngrok
@@ -74,9 +74,9 @@ ngrok_process.process.wait()
 ```
 
 The `NgrokProcess` also contains an `api_url` variable, usually initialized to
-`http://127.0.0.1:4040`, which is the [ngrok client API](https://ngrok.com/docs#client-api). If we
-want to do something that is not a feature of this package, this API is exposed to us via the
-`api_request()` method. Additionally, `NgrokTunnel` objects axpose a `uri` variable, which contains
+`http://127.0.0.1:4040`, from which we can access the [ngrok client API](https://ngrok.com/docs#client-api).
+If some feature we need is not available in this package, the client API is accessible to us via the
+`api_request()` method. Additionally, `NgrokTunnel` objects expose a `uri` variable, which contains
 the relative path used to manipulate that resource against the client API.
 
 ## other useful configuration
@@ -85,7 +85,7 @@ the relative path used to manipulate that resource against the client API.
 
 Running `ngrok` with an auth token enables additional features available on our account (for
 instance, the ability to open more tunnels concurrently). We can obtain our auth token from
-the [ngrok dashboatrd](https://dashboard.ngrok.com) and install it like this:
+the [ngrok dashboard](https://dashboard.ngrok.com) and install it like this:
 
 ```python
 from pyngrok import ngrok
@@ -93,9 +93,9 @@ from pyngrok import ngrok
 ngrok.set_auth_token("<NGROK_AUTH_TOKEN>")
 ```
 
-This will set the auth token in our config file. We can also set it in a one-off fashion by
-passing it in [the "auth" key](https://ngrok.com/docs#tunnel-definitions) on the `options`
-to `connect()`.
+This will set the auth token in the config file. We can also set it in a one-off fashion by
+setting it for [the "auth" key](https://ngrok.com/docs#tunnel-definitions) of the `options` parameter
+passed to `connect()`.
 
 ### config file
 
