@@ -7,7 +7,7 @@ import zipfile
 
 from future.standard_library import install_aliases
 
-from pyngrok.ngrokexception import NgrokException
+from pyngrok.exception import PyngrokNgrokInstallException
 
 install_aliases()
 
@@ -15,7 +15,7 @@ from urllib.request import urlopen
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ def get_ngrok_bin():
     elif system == "Windows":  # pragma: no cover
         return "ngrok.exe"
     else:  # pragma: no cover
-        raise NgrokException("'{}' is not a supported platform".format(system))
+        raise PyngrokNgrokInstallException("'{}' is not a supported platform".format(system))
 
 
 def install_ngrok(ngrok_path):
@@ -50,7 +50,7 @@ def install_ngrok(ngrok_path):
     elif system == "Linux":  # pragma: no cover
         url = LINUX_DARWIN_DOWNLOAD_URL
     else:  # pragma: no cover
-        raise NgrokException("'{}' is not a supported platform".format(system))
+        raise PyngrokNgrokInstallException("'{}' is not a supported platform".format(system))
 
     try:
         download_path = _download_file(url)
@@ -59,9 +59,9 @@ def install_ngrok(ngrok_path):
             logger.debug("Extracting ngrok binary ...".format(url))
             zip_ref.extractall(os.path.dirname(ngrok_path))
 
-        os.chmod(ngrok_path, int('777', 8))
+        os.chmod(ngrok_path, int("777", 8))
     except Exception as e:
-        raise NgrokException("An error occurred while downloading ngrok from {}: {}".format(url, e))
+        raise PyngrokNgrokInstallException("An error occurred while downloading ngrok from {}: {}".format(url, e))
 
 
 def _download_file(url):
@@ -69,6 +69,13 @@ def _download_file(url):
 
     local_filename = url.split("/")[-1]
     response = urlopen(url)
+
+    status_code = response.getcode()
+    logger.debug("Response status code: {}".format(status_code))
+
+    if status_code != 200:
+        return None
+
     download_path = os.path.join(tempfile.gettempdir(), local_filename)
 
     with open(download_path, "wb") as f:

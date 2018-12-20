@@ -4,12 +4,12 @@ import os
 import subprocess
 import time
 
+from pyngrok.exception import PyngrokNgrokException
 from pyngrok.installer import install_ngrok
-from pyngrok.ngrokexception import NgrokException
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ def set_auth_token(ngrok_path, token, config_path=None):
     result = subprocess.check_output(start)
 
     if "Authtoken saved" not in str(result):
-        raise NgrokException("An error occurred when saving the auth token: {}".format(result))
+        raise PyngrokNgrokException("An error occurred when saving the auth token: {}".format(result))
 
 
 def get_process(ngrok_path, config_path=None):
@@ -58,7 +58,7 @@ def kill_process(ngrok_path):
 
         ngrok_process.process.kill()
 
-        if hasattr(atexit, 'unregister'):
+        if hasattr(atexit, "unregister"):
             atexit.unregister(ngrok_process.process.terminate)
 
         del CURRENT_PROCESSES[ngrok_path]
@@ -95,9 +95,9 @@ def _start_process(ngrok_path, config_path=None):
 
     if not api_url or not tunnel_started or len(errors) > 0:
         if len(errors) > 0:
-            raise NgrokException("The ngrok process was unable to start: {}".format(errors))
+            raise PyngrokNgrokException("The ngrok process was unable to start: {}".format(errors))
         else:
-            raise NgrokException("The ngrok process was unable to start")
+            raise PyngrokNgrokException("The ngrok process was unable to start")
 
     logger.debug("ngrok web service started: {}".format(api_url))
 
