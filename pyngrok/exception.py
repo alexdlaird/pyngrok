@@ -3,13 +3,16 @@ __copyright__ = "Copyright 2018, Alex Laird"
 __version__ = "1.1.0"
 
 
-class PyngrokException(Exception):
+class PyngrokError(Exception):
     pass
 
 
-class PyngrokNgrokInstallException(PyngrokException):
+class PyngrokNgrokInstallError(PyngrokError):
     pass
 
 
-class PyngrokNgrokException(PyngrokException):
+class PyngrokNgrokError(PyngrokError):
+    pass
+
+class PyngrokNgrokHTTPError(PyngrokNgrokError):
     pass

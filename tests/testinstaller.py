@@ -3,7 +3,7 @@ import os
 from mock import mock
 
 from pyngrok import ngrok
-from pyngrok.exception import PyngrokNgrokInstallException
+from pyngrok.exception import PyngrokNgrokInstallError
 from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
@@ -36,7 +36,7 @@ class TestNgrok(NgrokTestCase):
         self.assertFalse(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
 
         # WHEN
-        with self.assertRaises(PyngrokNgrokInstallException):
+        with self.assertRaises(PyngrokNgrokInstallError):
             ngrok.connect(config_path=self.config_path)
 
         # THEN

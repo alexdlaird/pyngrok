@@ -1,7 +1,7 @@
 import time
 
 from pyngrok import ngrok, process
-from pyngrok.exception import PyngrokNgrokException
+from pyngrok.exception import PyngrokNgrokHTTPError
 from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
@@ -26,14 +26,14 @@ class TestNgrok(NgrokTestCase):
 
     def test_multiple_connections_fails(self):
         # WHEN
-        with self.assertRaises(PyngrokNgrokException) as cm:
+        with self.assertRaises(PyngrokNgrokHTTPError) as cm:
             ngrok.connect(5000, config_path=self.config_path)
             time.sleep(1)
             ngrok.connect(5001, config_path=self.config_path)
             time.sleep(1)
 
         # THEN
-        self.assertIn("account may not run more than 2 tunnels", cm.exception.message)
+        self.assertIn("account may not run more than 2 tunnels", cm.exception.args[0].read().decode("utf-8"))
 
     def test_get_tunnels(self):
         # GIVEN

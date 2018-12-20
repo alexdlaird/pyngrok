@@ -6,7 +6,7 @@ import uuid
 from future.standard_library import install_aliases
 
 from pyngrok import process
-from pyngrok.exception import PyngrokException, PyngrokNgrokException
+from pyngrok.exception import PyngrokError, PyngrokNgrokHTTPError
 from pyngrok.installer import get_ngrok_bin
 
 install_aliases()
@@ -96,7 +96,7 @@ def get_tunnels(ngrok_path=None):
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
     if ngrok_path not in process.CURRENT_PROCESSES:
-        raise PyngrokException("ngrok is not running for the 'ngrok_path': {}".format(ngrok_path))
+        raise PyngrokError("ngrok is not running for the 'ngrok_path': {}".format(ngrok_path))
 
     tunnels = []
     for tunnel in api_request("{}/api/{}".format(get_ngrok_process(ngrok_path).api_url, "tunnels"))["tunnels"]:
@@ -109,7 +109,7 @@ def kill(ngrok_path=None):
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
     if ngrok_path not in process.CURRENT_PROCESSES:
-        raise PyngrokException("ngrok is not running for the 'ngrok_path': {}".format(ngrok_path))
+        raise PyngrokError("ngrok is not running for the 'ngrok_path': {}".format(ngrok_path))
 
     process.kill_process(ngrok_path)
 
@@ -137,19 +137,16 @@ def api_request(uri, method="GET", data=None, params=None):
         logger.debug("Response: {}".format(response_data))
 
         if str(status_code)[0] != "2":
-            raise PyngrokException("ngrok client API return {}: {}".format(status_code, response_data))
+            raise PyngrokError("ngrok client API return {}: {}".format(status_code, response_data))
         elif status_code == 204:
             return None
 
         return json.loads(response_data)
-    except PyngrokException as e:
+    except PyngrokError as e:
         raise e
     except HTTPError as e:
-        err_data = e.read().decode("utf-8")
-        logger.debug("HTTP request error: {}".format(err_data))
-
-        raise PyngrokNgrokException(err_data)
+        raise PyngrokNgrokHTTPError(e)
     except Exception as e:
         logger.debug("Request exception: {}".format(e))
 
-        raise PyngrokException(e)
+        raise PyngrokError(e)

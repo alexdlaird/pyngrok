@@ -7,7 +7,7 @@ import zipfile
 
 from future.standard_library import install_aliases
 
-from pyngrok.exception import PyngrokNgrokInstallException
+from pyngrok.exception import PyngrokNgrokInstallError
 
 install_aliases()
 
@@ -31,7 +31,7 @@ def get_ngrok_bin():
     elif system == "Windows":  # pragma: no cover
         return "ngrok.exe"
     else:  # pragma: no cover
-        raise PyngrokNgrokInstallException("'{}' is not a supported platform".format(system))
+        raise PyngrokNgrokInstallError("'{}' is not a supported platform".format(system))
 
 
 def install_ngrok(ngrok_path):
@@ -50,7 +50,7 @@ def install_ngrok(ngrok_path):
     elif system == "Linux":  # pragma: no cover
         url = LINUX_DARWIN_DOWNLOAD_URL
     else:  # pragma: no cover
-        raise PyngrokNgrokInstallException("'{}' is not a supported platform".format(system))
+        raise PyngrokNgrokInstallError("'{}' is not a supported platform".format(system))
 
     try:
         download_path = _download_file(url)
@@ -61,7 +61,7 @@ def install_ngrok(ngrok_path):
 
         os.chmod(ngrok_path, int("777", 8))
     except Exception as e:
-        raise PyngrokNgrokInstallException("An error occurred while downloading ngrok from {}: {}".format(url, e))
+        raise PyngrokNgrokInstallError("An error occurred while downloading ngrok from {}: {}".format(url, e))
 
 
 def _download_file(url):
