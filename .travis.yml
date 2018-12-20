@@ -1,3 +1,4 @@
+sudo: required
 language: python
 python:
 - '2.7'
@@ -6,8 +7,11 @@ python:
 - '3.6'
 - '3.7-dev'
 install:
+- python -m pip install virtualenv
+- python -m virtualenv .venv
+- source .venv/bin/activate
 - python -m pip install -r requirements.txt
-- python -m pip install setuptools twine --upgrade
+- sudo -H pip install setuptools twine --upgrade
 script:
 - make test
 - make local
