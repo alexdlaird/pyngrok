@@ -56,7 +56,7 @@ def install_ngrok(ngrok_path):
         download_path = _download_file(url)
 
         with zipfile.ZipFile(download_path, "r") as zip_ref:
-            logger.debug("Extracting ngrok binary ...".format(url))
+            logger.debug("Extracting ngrok binary to {} ...".format(download_path)))
             zip_ref.extractall(os.path.dirname(ngrok_path))
 
         os.chmod(ngrok_path, int("777", 8))
