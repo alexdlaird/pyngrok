@@ -10,7 +10,7 @@
 `pyngrok` is available on [PyPI](https://pypi.org/project/pyngrok/) and can be installed
 using `pip`.
 
-```
+```sh
 pip install pyngrok
 ```
 
