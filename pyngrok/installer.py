@@ -15,7 +15,7 @@ from urllib.request import urlopen
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.1.0"
+__version__ = "1.1.3"
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ def get_ngrok_bin():
     elif system == "Windows":  # pragma: no cover
         return "ngrok.exe"
     else:  # pragma: no cover
-        raise PyngrokNgrokInstallError("'{}' is not a supported platform".format(system))
+        raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
 
 
 def install_ngrok(ngrok_path):
@@ -50,7 +50,7 @@ def install_ngrok(ngrok_path):
     elif system == "Linux":  # pragma: no cover
         url = LINUX_DARWIN_DOWNLOAD_URL
     else:  # pragma: no cover
-        raise PyngrokNgrokInstallError("'{}' is not a supported platform".format(system))
+        raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
 
     try:
         download_path = _download_file(url)

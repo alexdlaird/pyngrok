@@ -16,7 +16,7 @@ from urllib.request import urlopen, Request, HTTPError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.1.0"
+__version__ = "1.1.3"
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +96,7 @@ def get_tunnels(ngrok_path=None):
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
     if ngrok_path not in process.CURRENT_PROCESSES:
-        raise PyngrokError("ngrok is not running for the 'ngrok_path': {}".format(ngrok_path))
+        raise PyngrokError("ngrok is not running for the \"ngrok_path\": {}".format(ngrok_path))
 
     tunnels = []
     for tunnel in api_request("{}/api/{}".format(get_ngrok_process(ngrok_path).api_url, "tunnels"))["tunnels"]:
@@ -109,7 +109,7 @@ def kill(ngrok_path=None):
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
     if ngrok_path not in process.CURRENT_PROCESSES:
-        raise PyngrokError("ngrok is not running for the 'ngrok_path': {}".format(ngrok_path))
+        raise PyngrokError("ngrok is not running for the \"ngrok_path\": {}".format(ngrok_path))
 
     process.kill_process(ngrok_path)
 
