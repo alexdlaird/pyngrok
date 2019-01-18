@@ -158,7 +158,7 @@ def api_request(uri, method="GET", data=None, params=None):
         body = e.read().decode("utf-8")
         response_data = json.loads(body)
 
-        logger.info("Response status code: {}".format(e.status))
+        logger.info("Response status code: {}".format(e.getcode()))
         logger.info("Response: {}".format(response_data))
 
         raise PyngrokNgrokHTTPError(HTTPError(e.url, e.code, e.msg, e.hdrs, BytesIO(body.encode("utf-8"))))
