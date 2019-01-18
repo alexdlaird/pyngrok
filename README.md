@@ -2,6 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/pyngrok.svg)](https://badge.fury.io/py/pyngrok)
 [![image](https://img.shields.io/pypi/pyversions/pyngrok.svg)](https://pypi.org/project/pyngrok/)
+[![image](https://img.shields.io/pypi/implementation/pyngrok.svg)](https://pypi.org/project/pyngrok/)
 [![codecov](https://codecov.io/gh/alexdlaird/pyngrok/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdlaird/pyngrok)
 [![Build Status](https://travis-ci.org/alexdlaird/pyngrok.svg?branch=master)](https://travis-ci.org/alexdlaird/pyngrok)
 
@@ -14,8 +15,11 @@ using `pip`.
 pip install pyngrok
 ```
 
-The `pyngrok` package manages its own [ngrok](https://ngrok.com/) binary, though this is
-configurable.
+That's it! `pyngrok` is now available [as a package to our Python projects](#open-a-tunnel),
+and [ngrok](https://ngrok.com/) is now available [from the command line](#command-line-usage).
+
+Note that, by default, the `pyngrok` package manages its own `ngrok` binary. This is
+configurable, [as shown below](#binary-path).
 
 ## open a tunnel
 
@@ -75,9 +79,11 @@ ngrok_process.process.wait()
 
 The `NgrokProcess` also contains an `api_url` variable, usually initialized to
 `http://127.0.0.1:4040`, from which we can access the [ngrok client API](https://ngrok.com/docs#client-api).
+
 If some feature we need is not available in this package, the client API is accessible to us via the
-`api_request()` method. Additionally, `NgrokTunnel` objects expose a `uri` variable, which contains
-the relative path used to manipulate that resource against the client API.
+`api_request()` method. Additionally, the `NgrokTunnel` objects expose a `uri` variable, which contains
+the relative path used to manipulate that resource against the client API. This package also gives us
+access to `ngrok` from the command line, [as shown below](#command-line-usage).
 
 ## other useful configuration
 
@@ -143,6 +149,17 @@ ngrok.DEFAULT_NGROK_PATH = "/usr/local/bin/ngrok"
 
 ngrok.connect(5000)
 ```
+
+## command line usage
+
+This package puts the default `ngrok` binary on our path, so all features of `ngrok` are also
+available on the command line.
+
+```sh
+ngrok http 80
+```
+
+For details on how to fully leverage command line usage, see [ngrok's official documentation](https://ngrok.com/docs).
 
 ## contributing
 
