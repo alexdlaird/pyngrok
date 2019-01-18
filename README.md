@@ -15,7 +15,10 @@ using `pip`.
 pip install pyngrok
 ```
 
-The `pyngrok` package manages its own [ngrok](https://ngrok.com/) binary, though this is
+That's it! `pyngrok` is now available [as a package to our Python projects](#open-a-tunnel),
+and [ngrok](https://ngrok.com/) is now available [from the command line](#command-line-usage).
+
+Note that, by default, the `pyngrok` package manages its own `ngrok` binary. This is
 configurable, [as shown below](#binary-path).
 
 ## open a tunnel
@@ -79,8 +82,8 @@ The `NgrokProcess` also contains an `api_url` variable, usually initialized to
 
 If some feature we need is not available in this package, the client API is accessible to us via the
 `api_request()` method. Additionally, the `NgrokTunnel` objects expose a `uri` variable, which contains
-the relative path used to manipulate that resource against the client API. This package also makes the
-the `ngrok` binary directly available on the command line, [as shown below](#command-line-usage).
+the relative path used to manipulate that resource against the client API. This package also gives us
+access to `ngrok` from the command line, [as shown below](#command-line-usage).
 
 ## other useful configuration
 
@@ -149,8 +152,8 @@ ngrok.connect(5000)
 
 ## command line usage
 
-This package puts the default `ngrok` binary on the path, so all features of `ngrok` are
-available also available on the command line.
+This package puts the default `ngrok` binary on our path, so all features of `ngrok` are also
+available on the command line.
 
 ```sh
 ngrok http 80
