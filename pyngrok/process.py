@@ -9,7 +9,7 @@ from pyngrok.installer import install_ngrok
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.2.1"
+__version__ = "1.2.2"
 
 logger = logging.getLogger(__name__)
 
