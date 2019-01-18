@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import sys
 import uuid
 
 from future.standard_library import install_aliases
@@ -16,7 +17,7 @@ from urllib.request import urlopen, Request, HTTPError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.1.3"
+__version__ = "1.2.0"
 
 logger = logging.getLogger(__name__)
 
@@ -150,3 +151,11 @@ def api_request(uri, method="GET", data=None, params=None):
         logger.debug("Request exception: {}".format(e))
 
         raise PyngrokError(e)
+
+
+def main():
+    process.run_process(DEFAULT_NGROK_PATH, sys.argv[1:])
+
+
+if __name__ == '__main__':
+    main()
