@@ -4,6 +4,7 @@ import os
 import sys
 import uuid
 
+from io import BytesIO
 from future.standard_library import install_aliases
 
 from pyngrok import process
@@ -17,7 +18,7 @@ from urllib.request import urlopen, Request, HTTPError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,14 @@ class NgrokTunnel:
         self.public_url = data["public_url"] if data else None
         self.config = data["config"] if data else {}
         self.metrics = data["metrics"] if data else None
+
+    def __repr__(self):
+        return "<NgrokTunnel: \"{}\" -> \"{}\">".format(self.public_url, self.config["addr"]) if self.config.get(
+            "addr", None) else "<pending Tunnel>"
+
+    def __str__(self):
+        return "NgrokTunnel: \"{}\" -> \"{}\"".format(self.public_url, self.config["addr"]) if self.config.get(
+            "addr", None) else "<pending Tunnel>"
 
 
 def set_auth_token(token, ngrok_path=None, config_path=None):
@@ -146,7 +155,13 @@ def api_request(uri, method="GET", data=None, params=None):
     except PyngrokError as e:
         raise e
     except HTTPError as e:
-        raise PyngrokNgrokHTTPError(e)
+        body = e.read().decode("utf-8")
+        response_data = json.loads(body)
+
+        logger.info("Response status code: {}".format(e.status))
+        logger.info("Response: {}".format(response_data))
+
+        raise PyngrokNgrokHTTPError(HTTPError(e.url, e.code, e.msg, e.hdrs, BytesIO(body.encode("utf-8"))))
     except Exception as e:
         logger.debug("Request exception: {}".format(e))
 

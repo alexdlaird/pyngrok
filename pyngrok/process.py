@@ -9,7 +9,7 @@ from pyngrok.installer import install_ngrok
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +21,12 @@ class NgrokProcess:
         self.ngrok_path = ngrok_path
         self.process = process
         self.api_url = api_url
+
+    def __repr__(self):
+        return "<NgrokProcess: \"{}\">".format(self.api_url)
+
+    def __str__(self):
+        return "NgrokProcess: \"{}\"".format(self.api_url)
 
 
 def ensure_ngrok_installed(ngrok_path):

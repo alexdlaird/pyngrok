@@ -1,6 +1,6 @@
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.1.3"
+__version__ = "1.2.1"
 
 
 class PyngrokError(Exception):
@@ -13,6 +13,7 @@ class PyngrokNgrokInstallError(PyngrokError):
 
 class PyngrokNgrokError(PyngrokError):
     pass
+
 
 class PyngrokNgrokHTTPError(PyngrokNgrokError):
     pass
