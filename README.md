@@ -6,6 +6,10 @@
 [![codecov](https://codecov.io/gh/alexdlaird/pyngrok/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdlaird/pyngrok)
 [![Build Status](https://travis-ci.org/alexdlaird/pyngrok.svg?branch=master)](https://travis-ci.org/alexdlaird/pyngrok)
 
+`pyngrok` is a Python wrapper for [ngrok](https://ngrok.com/) that manages its own binary and puts
+it on our path, making `ngrok` readily available from anywhere on the command line and via a
+convenient Python API.
+
 ## install
 
 `pyngrok` is available on [PyPI](https://pypi.org/project/pyngrok/) and can be installed
@@ -16,10 +20,7 @@ pip install pyngrok
 ```
 
 That's it! `pyngrok` is now available [as a package to our Python projects](#open-a-tunnel),
-and [ngrok](https://ngrok.com/) is now available [from the command line](#command-line-usage).
-
-Note that, by default, the `pyngrok` package manages its own `ngrok` binary. This is
-configurable, [as shown below](#binary-path).
+and `ngrok` is now available [from the command line](#command-line-usage).
 
 ## open a tunnel
 
@@ -32,12 +33,12 @@ from pyngrok import ngrok
 public_url = ngrok.connect()
 ```
 
-The `connect()` can also take an `options` parameter, which allows us to pass additional options
-that are [supported by ngrok](https://ngrok.com/docs#tunnel-definitions).
+The `connect()` method can also take an `options` parameter, which allows us to pass additional
+options that are [supported by ngrok](https://ngrok.com/docs#tunnel-definitions).
 
 ## get active tunnels
 
-It can be useful to ask the `ngrok` client what tunnels are currently open, which can be
+It can be useful to ask the `ngrok` client what tunnels are currently open. This can be
 accomplished with the `get_tunnels()` method, which returns a list of `NgrokTunnel` objects.
 
 ```python
@@ -51,7 +52,7 @@ public_url = tunnels[0].public_url
 ## closing a tunnel
 
 All open tunnels will automatically be closed when the Python process terminates, but we can
-close them manually.
+also close them manually.
 
 ```python
 from pyngrok import ngrok
@@ -97,6 +98,10 @@ the [ngrok dashboard](https://dashboard.ngrok.com) and install it like this:
 from pyngrok import ngrok
 
 ngrok.set_auth_token("<NGROK_AUTH_TOKEN>")
+
+# Once an auth token is set, we are able to open multiple tunnels at the same time
+ngrok.connect()
+ngrok.connect(8000)
 ```
 
 This will set the auth token in the config file. We can also set it in a one-off fashion by
@@ -147,7 +152,7 @@ from pyngrok import ngrok
 
 ngrok.DEFAULT_NGROK_PATH = "/usr/local/bin/ngrok"
 
-ngrok.connect(5000)
+ngrok.connect()
 ```
 
 ## command line usage
