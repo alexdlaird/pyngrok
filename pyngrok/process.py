@@ -9,7 +9,7 @@ from pyngrok.installer import install_ngrok
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.2.2"
+__version__ = "1.3.0"
 
 logger = logging.getLogger(__name__)
 
@@ -80,11 +80,8 @@ def kill_process(ngrok_path):
         del CURRENT_PROCESSES[ngrok_path]
 
 
-def _start_process(ngrok_path, config_path=None, default_args=None):
-    if default_args is None:
-        default_args = ["start", "--none", "--log=stdout"]
-
-    start = [ngrok_path] + default_args
+def _start_process(ngrok_path, config_path=None):
+    start = [ngrok_path, "start", "--none", "--log=stdout"]
     if config_path:
         logger.debug("Starting ngrok with config file: {}".format(config_path))
 

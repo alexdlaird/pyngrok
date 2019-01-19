@@ -1,4 +1,7 @@
 import time
+import uuid
+
+import mock
 
 from pyngrok import ngrok, process
 from pyngrok.exception import PyngrokNgrokHTTPError
@@ -6,10 +9,18 @@ from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.1.3"
+__version__ = "1.3.0"
 
 
 class TestNgrok(NgrokTestCase):
+    @mock.patch("subprocess.call")
+    def test_main(self, mock_call):
+        # WHEN
+        ngrok.main()
+
+        # THEN
+        mock_call.assert_called_once()
+
     def test_connect(self):
         # GIVEN
         self.assertEqual(len(process.CURRENT_PROCESSES.keys()), 0)
@@ -33,7 +44,8 @@ class TestNgrok(NgrokTestCase):
             time.sleep(1)
 
         # THEN
-        self.assertIn("account may not run more than 2 tunnels", cm.exception.args[0].read().decode("utf-8"))
+        self.assertEqual(502, cm.exception.status_code)
+        self.assertIn("account may not run more than 2 tunnels", str(cm.exception))
 
     def test_get_tunnels(self):
         # GIVEN
@@ -92,3 +104,21 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertIn("807ad30a-73be-48d8", contents)
+
+    def test_api_request_fails(self):
+        # GIVEN
+        current_process = ngrok.get_ngrok_process()
+        bad_options = {
+            "name": str(uuid.uuid4()),
+            "addr": "8080",
+            "proto": "invalid-proto"
+        }
+
+        # WHEN
+        with self.assertRaises(PyngrokNgrokHTTPError) as cm:
+            ngrok.api_request("{}/api/{}".format(current_process.api_url, "tunnels"), "POST", data=bad_options)
+
+        # THEN
+        self.assertEqual(400, cm.exception.status_code)
+        self.assertIn("invalid tunnel configuration", str(cm.exception))
+        self.assertIn("protocol name", str(cm.exception))

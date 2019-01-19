@@ -2,12 +2,14 @@ import os
 import shutil
 import unittest
 
+import yaml
+
 from pyngrok import ngrok
 from pyngrok import process
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.1.3"
+__version__ = "1.3.0"
 
 
 class NgrokTestCase(unittest.TestCase):
@@ -22,3 +24,14 @@ class NgrokTestCase(unittest.TestCase):
         process.kill_process(ngrok.DEFAULT_NGROK_PATH)
         if os.path.exists(self.config_dir):
             shutil.rmtree(self.config_dir)
+
+    def _add_config(self, new_configs):
+        with open(self.config_path, "r") as config_file:
+            config = yaml.safe_load(config_file)
+            if config is None:
+                config = {}
+
+            config.update(new_configs)
+
+        with open(self.config_path, "w") as config_file:
+            yaml.dump(config, config_file)

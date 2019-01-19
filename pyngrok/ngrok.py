@@ -4,7 +4,6 @@ import os
 import sys
 import uuid
 
-from io import BytesIO
 from future.standard_library import install_aliases
 
 from pyngrok import process
@@ -147,25 +146,21 @@ def api_request(uri, method="GET", data=None, params=None):
         logger.debug("Response: {}".format(response_data))
 
         if str(status_code)[0] != "2":
-            raise PyngrokError("ngrok client API return {}: {}".format(status_code, response_data))
+            raise PyngrokNgrokHTTPError("ngrok client API returned {}: {}".format(status_code, response_data), uri,
+                                        status_code, None, request.headers, response_data)
         elif status_code == 204:
             return None
 
         return json.loads(response_data)
-    except PyngrokError as e:
-        raise e
     except HTTPError as e:
-        body = e.read().decode("utf-8")
-        response_data = json.loads(body)
+        response_data = e.read().decode("utf-8")
 
-        logger.info("Response status code: {}".format(e.getcode()))
-        logger.info("Response: {}".format(response_data))
+        status_code = e.getcode()
+        logger.debug("Response status code: {}".format(status_code))
+        logger.debug("Response: {}".format(response_data))
 
-        raise PyngrokNgrokHTTPError(HTTPError(e.url, e.code, e.msg, e.hdrs, BytesIO(body.encode("utf-8"))))
-    except Exception as e:
-        logger.debug("Request exception: {}".format(e))
-
-        raise PyngrokError(e)
+        raise PyngrokNgrokHTTPError("ngrok client API returned {}: {}".format(status_code, response_data), e.url,
+                                    status_code, e.msg, e.hdrs, response_data)
 
 
 def main():

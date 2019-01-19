@@ -8,10 +8,10 @@ from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.1.3"
+__version__ = "1.3.0"
 
 
-class TestNgrok(NgrokTestCase):
+class TestInstaller(NgrokTestCase):
     def test_installer(self):
         # GIVEN
         if os.path.exists(ngrok.DEFAULT_NGROK_PATH):
