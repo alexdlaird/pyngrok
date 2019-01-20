@@ -38,11 +38,29 @@ class NgrokProcess:
 
 
 def ensure_ngrok_installed(ngrok_path):
+    """
+    Ensure `ngrok` is installed at the given path, downloading and installing the binary for
+    the current system if not.
+
+    :param ngrok_path: The path to the `ngrok` binary.
+    :type ngrok_path: string
+    """
     if not os.path.exists(ngrok_path):
         install_ngrok(ngrok_path)
 
 
 def set_auth_token(ngrok_path, token, config_path=None):
+    """
+    Set the `ngrok` auth token in the config file, enabling authenticated features (for instance,
+    more concurrent tunnels, custom subdomains, etc.).
+
+    :param ngrok_path: The path to the `ngrok` binary.
+    :type ngrok_path: string
+    :param token: The auth token to set.
+    :type token: string
+    :param config_path: A config path override.
+    :type config_path: string, optional
+    """
     start = [ngrok_path, "authtoken", token, "--log=stdout"]
     if config_path:
         start.append("--config={}".format(config_path))
@@ -54,6 +72,17 @@ def set_auth_token(ngrok_path, token, config_path=None):
 
 
 def get_process(ngrok_path, config_path=None):
+    """
+    Retrieve the current `ngrok` process for the given path. If `ngrok` is not currently running for the
+    given path, a new process will be started and returned.
+
+    :param ngrok_path: The path to the `ngrok` binary.
+    :type ngrok_path: string
+    :param config_path: A config path override.
+    :type config_path: string, optional
+    :return: The `ngrok` process.
+    :rtype: NgrokProcess
+    """
     if ngrok_path in CURRENT_PROCESSES:
         return CURRENT_PROCESSES[ngrok_path]
     else:
@@ -65,6 +94,14 @@ def get_process(ngrok_path, config_path=None):
 
 
 def run_process(ngrok_path, args):
+    """
+    Start a blocking `ngrok` process with the given args.
+
+    :param ngrok_path: The path to the `ngrok` binary.
+    :type ngrok_path: string
+    :param args: The args to pass to `ngrok`.
+    :type args: list
+    """
     if ngrok_path in CURRENT_PROCESSES:
         raise PyngrokNgrokError("ngrok is already running for the \"ngrok_path\": {}".format(ngrok_path))
 
@@ -75,6 +112,12 @@ def run_process(ngrok_path, args):
 
 
 def kill_process(ngrok_path):
+    """
+    Terminate any running `ngrok` processes for the given path.
+
+    :param ngrok_path: The path to the `ngrok` binary.
+    :type ngrok_path: string
+    """
     if ngrok_path in CURRENT_PROCESSES:
         ngrok_process = CURRENT_PROCESSES[ngrok_path]
 

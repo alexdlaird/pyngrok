@@ -61,7 +61,7 @@ class NgrokTunnel:
 def set_auth_token(token, ngrok_path=None, config_path=None):
     """
     Set the `ngrok` auth token in the config file, enabling authenticated features (for instance,
-    more concurrent tunnels).
+    more concurrent tunnels, custom subdomains, etc.).
 
     :param token: The auth token to set.
     :type token: string
@@ -85,7 +85,7 @@ def get_ngrok_process(ngrok_path=None):
 
     :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
     :type ngrok_path: string, optional
-    :return: the `ngrok` process.
+    :return: The `ngrok` process.
     :rtype: NgrokProcess
     """
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
@@ -98,19 +98,19 @@ def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, con
     Establish a new `ngrok` tunnel to the given port and protocol, returning the connected
     public URL that tunnels to the local port.
 
-    :param port: the local port to which to tunnel, defaults to 80.
+    :param port: The local port to which to tunnel, defaults to 80.
     :type port: int, optional
-    :param proto: the protocol to tunnel, defaults to "http".
+    :param proto: The protocol to tunnel, defaults to "http".
     :type proto: string, optional
-    :param name: a friendly name for the tunnel.
+    :param name: A friendly name for the tunnel.
     :type name: string, optional
-    :param options: arbitrary `options to pass to ngrok <https://ngrok.com/docs#tunnel-definitions>`_.
+    :param options: Arbitrary `options to pass to ngrok <https://ngrok.com/docs#tunnel-definitions>`_.
     :type options: dict, optional
     :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
     :type ngrok_path: string, optional
     :param config_path: A config path override.
     :type config_path: string, optional
-    :return: the connected public URL.
+    :return: The connected public URL.
     :rtype: string
     """
     if options is None:
@@ -142,7 +142,7 @@ def disconnect(public_url, ngrok_path=None):
     """
     Disconnect the `ngrok` tunnel for the given URL.
 
-    :param public_url: the public URL of the tunnel to disconnect.
+    :param public_url: The public URL of the tunnel to disconnect.
     :type public_url: string
     :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
     :type ngrok_path: string, optional
@@ -165,7 +165,7 @@ def get_tunnels(ngrok_path=None):
 
     :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
     :type ngrok_path: string, optional
-    :return: the currently active `ngrok` tunnels.
+    :return: The currently active `ngrok` tunnels.
     :rtype: list[NgrokTunnel]
     """
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
@@ -199,15 +199,15 @@ def api_request(uri, method="GET", data=None, params=None):
     """
     Invoke an API request to the given URI.
 
-    :param uri: the request URI.
+    :param uri: The request URI.
     :type uri: string
-    :param method: the HTTP method, defaults to "GET".
+    :param method: The HTTP method, defaults to "GET".
     :type method: string, optional
-    :param data: the request body.
+    :param data: The request body.
     :type data: dict, optional
-    :param params: the URL parameters.
+    :param params: The URL parameters.
     :type params: list, optional
-    :return: the response from the request.
+    :return: The response from the request.
     :rtype: dict
     """
     if not params:

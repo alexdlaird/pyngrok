@@ -28,7 +28,7 @@ def get_ngrok_bin():
     """
     Retrieve the `ngrok` command for the current system.
 
-    :return: the `ngrok` command.
+    :return: The `ngrok` command.
     :rtype: string
     """
     system = platform.system()
