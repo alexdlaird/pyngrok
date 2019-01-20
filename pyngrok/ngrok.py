@@ -16,8 +16,8 @@ from urllib.parse import urlencode
 from urllib.request import urlopen, Request, HTTPError
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
-__version__ = "1.2.2"
+__copyright__ = "Copyright 2019, Alex Laird"
+__version__ = "1.3.0"
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +27,17 @@ DEFAULT_CONFIG_PATH = None
 
 
 class NgrokTunnel:
+    """
+    An object containing information about an `ngrok` tunnel.
+
+    :var string name: The name of the tunnel.
+    :var string proto: A valid `tunnel protocol <https://ngrok.com/docs#tunnel-definitions>`_.
+    :var string uri: The tunnel URI, a relative path that can be used to make requests to the `ngrok` web interface.
+    :var string public_url: The public `ngrok` URL.
+    :var dict config: The config for the tunnel.
+    :var dict metrics: Metrics for `the tunnel <https://ngrok.com/docs#list-tunnels>`_.
+    """
+
     def __init__(self, data=None):
         if data is None:
             data = {}
@@ -159,7 +170,8 @@ def api_request(uri, method="GET", data=None, params=None):
         logger.debug("Response status code: {}".format(status_code))
         logger.debug("Response: {}".format(response_data))
 
-        raise PyngrokNgrokHTTPError("ngrok client exception, API returned {}: {}".format(status_code, response_data), e.url,
+        raise PyngrokNgrokHTTPError("ngrok client exception, API returned {}: {}".format(status_code, response_data),
+                                    e.url,
                                     status_code, e.msg, e.hdrs, response_data)
 
 

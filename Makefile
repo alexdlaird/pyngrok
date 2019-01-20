@@ -1,4 +1,4 @@
-.PHONY: all virtualenv install local upload
+.PHONY: all virtualenv install local upload docs
 
 SHELL := /usr/bin/env bash
 PYTHON_BIN ?= python
@@ -21,6 +21,12 @@ test: virtualenv
 	@( \
 		source .venv/bin/activate; \
 		python `which nosetests` -s --with-coverage --cover-erase --cover-package=. --cover-html --cover-html-dir=htmlcov; \
+	)
+
+docs: virtualenv
+	@( \
+		source .venv/bin/activate; \
+		sphinx-build -M html docs _build; \
 	)
 
 local:

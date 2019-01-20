@@ -8,7 +8,7 @@ from pyngrok.exception import PyngrokNgrokError
 from pyngrok.installer import install_ngrok
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
+__copyright__ = "Copyright 2019, Alex Laird"
 __version__ = "1.3.0"
 
 logger = logging.getLogger(__name__)
@@ -17,6 +17,14 @@ CURRENT_PROCESSES = {}
 
 
 class NgrokProcess:
+    """
+    An object containing information about the `ngrok` process.
+
+    :var string ngrok_path: The path to the `ngrok` binary used to start this process.
+    :var object process: The child process running `ngrok`.
+    :var string api_url: The API URL for the `ngrok` web interface.
+    """
+
     def __init__(self, ngrok_path, process, api_url):
         self.ngrok_path = ngrok_path
         self.process = process

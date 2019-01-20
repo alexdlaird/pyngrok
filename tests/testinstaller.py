@@ -7,7 +7,7 @@ from pyngrok.exception import PyngrokNgrokInstallError
 from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2018, Alex Laird"
+__copyright__ = "Copyright 2019, Alex Laird"
 __version__ = "1.3.0"
 
 

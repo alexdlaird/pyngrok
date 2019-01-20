@@ -1,5 +1,7 @@
 from setuptools import setup
 
+from pyngrok import ngrok
+
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2018, Alex Laird"
 __version__ = "1.3.0"
@@ -9,12 +11,12 @@ with open("README.md", "r") as f:
 
 setup(
     name="pyngrok",
-    version=__version__,
+    version=ngrok.__version__,
     packages=["pyngrok"],
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     install_requires=[
         "future",
-        "pyyaml>=4.2b1"
+        "pyyaml"
     ],
     entry_points="""
         [console_scripts]
