@@ -123,7 +123,9 @@ def _ensure_path_ready(ngrok_path):
     :param ngrok_path: The path to the `ngrok` binary.
     """
     if not os.path.exists(ngrok_path):
-        raise PyngrokNgrokError("ngrok binary was not found. Be sure to call `ensure_ngrok_installed()` first.")
+        raise PyngrokNgrokError(
+            "ngrok binary was not found. Be sure to call `ensure_ngrok_installed()` first for "
+            "\"ngrok_path\": {}".format(ngrok_path))
 
     if ngrok_path in CURRENT_PROCESSES:
         raise PyngrokNgrokError("ngrok is already running for the \"ngrok_path\": {}".format(ngrok_path))
