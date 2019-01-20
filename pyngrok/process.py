@@ -54,6 +54,9 @@ def set_auth_token(ngrok_path, token, config_path=None):
     Set the `ngrok` auth token in the config file, enabling authenticated features (for instance,
     more concurrent tunnels, custom subdomains, etc.).
 
+    If `ngrok` is not installed at the given path, calling this method will first download
+    and install `ngrok`.
+
     :param ngrok_path: The path to the `ngrok` binary.
     :type ngrok_path: string
     :param token: The auth token to set.
@@ -61,6 +64,8 @@ def set_auth_token(ngrok_path, token, config_path=None):
     :param config_path: A config path override.
     :type config_path: string, optional
     """
+    ensure_ngrok_installed(ngrok_path)
+
     start = [ngrok_path, "authtoken", token, "--log=stdout"]
     if config_path:
         start.append("--config={}".format(config_path))
@@ -75,6 +80,11 @@ def get_process(ngrok_path, config_path=None):
     """
     Retrieve the current `ngrok` process for the given path. If `ngrok` is not currently running for the
     given path, a new process will be started and returned.
+
+    If `ngrok` is not installed at the given path, calling this method will first download
+    and install `ngrok`.
+
+    If `ngrok` is not running, calling this method will start a process for the given path.
 
     :param ngrok_path: The path to the `ngrok` binary.
     :type ngrok_path: string
@@ -96,6 +106,9 @@ def get_process(ngrok_path, config_path=None):
 def run_process(ngrok_path, args):
     """
     Start a blocking `ngrok` process with the given args.
+
+    If `ngrok` is not installed at the given path, calling this method will first download
+    and install `ngrok`.
 
     :param ngrok_path: The path to the `ngrok` binary.
     :type ngrok_path: string

@@ -20,7 +20,7 @@ setup(
     ],
     entry_points="""
         [console_scripts]
-        ngrok=pyngrok.ngrok:main
+        ngrok=pyngrok.ngrok:run
     """,
     description="A Python wrapper for Ngrok.",
     long_description=long_description,
