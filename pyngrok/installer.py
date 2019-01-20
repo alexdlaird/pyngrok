@@ -25,6 +25,12 @@ LINUX_DARWIN_DOWNLOAD_URL = "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-l
 
 
 def get_ngrok_bin():
+    """
+    Retrieve the `ngrok` command for the current system.
+
+    :return: the `ngrok` command.
+    :rtype: string
+    """
     system = platform.system()
     if system in ["Darwin", "Linux"]:
         return "ngrok"
@@ -35,6 +41,12 @@ def get_ngrok_bin():
 
 
 def install_ngrok(ngrok_path):
+    """
+    Download and install `ngrok` for the current system in the given location.
+
+    :param ngrok_path: The path to where the `ngrok` binary will be downloaded.
+    :type ngrok_path: string
+    """
     logger.debug("Binary not found at {}, installing ngrok ...".format(ngrok_path))
 
     ngrok_dir = os.path.dirname(ngrok_path)

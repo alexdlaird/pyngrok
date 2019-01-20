@@ -16,7 +16,7 @@ class TestNgrok(NgrokTestCase):
     @mock.patch("subprocess.call")
     def test_main(self, mock_call):
         # WHEN
-        ngrok.main()
+        ngrok._run()
 
         # THEN
         mock_call.assert_called_once()

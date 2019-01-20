@@ -59,6 +59,17 @@ class NgrokTunnel:
 
 
 def set_auth_token(token, ngrok_path=None, config_path=None):
+    """
+    Set the `ngrok` auth token in the config file, enabling authenticated features (for instance,
+    more concurrent tunnels).
+
+    :param token: The auth token to set.
+    :type token: string
+    :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
+    :type ngrok_path: string, optional
+    :param config_path: A config path override.
+    :type config_path: string, optional
+    """
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
     config_path = config_path if config_path else DEFAULT_CONFIG_PATH
 
@@ -68,12 +79,40 @@ def set_auth_token(token, ngrok_path=None, config_path=None):
 
 
 def get_ngrok_process(ngrok_path=None):
+    """
+    Retrieve the current `ngrok` process for the given path. If `ngrok` is not currently running for the
+    given path, a new process will be started and returned.
+
+    :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
+    :type ngrok_path: string, optional
+    :return: the `ngrok` process.
+    :rtype: NgrokProcess
+    """
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
     return process.get_process(ngrok_path)
 
 
 def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, config_path=None):
+    """
+    Establish a new `ngrok` tunnel to the given port and protocol, returning the connected
+    public URL that tunnels to the local port.
+
+    :param port: the local port to which to tunnel, defaults to 80.
+    :type port: int, optional
+    :param proto: the protocol to tunnel, defaults to "http".
+    :type proto: string, optional
+    :param name: a friendly name for the tunnel.
+    :type name: string, optional
+    :param options: arbitrary `options to pass to ngrok <https://ngrok.com/docs#tunnel-definitions>`_.
+    :type options: dict, optional
+    :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
+    :type ngrok_path: string, optional
+    :param config_path: A config path override.
+    :type config_path: string, optional
+    :return: the connected public URL.
+    :rtype: string
+    """
     if options is None:
         options = {}
 
@@ -99,7 +138,15 @@ def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, con
     return tunnel.public_url
 
 
-def disconnect(public_url=None, ngrok_path=None):
+def disconnect(public_url, ngrok_path=None):
+    """
+    Disconnect the `ngrok` tunnel for the given URL.
+
+    :param public_url: the public URL of the tunnel to disconnect.
+    :type public_url: string
+    :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
+    :type ngrok_path: string, optional
+    """
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
     api_url = get_ngrok_process(ngrok_path).api_url
@@ -113,6 +160,14 @@ def disconnect(public_url=None, ngrok_path=None):
 
 
 def get_tunnels(ngrok_path=None):
+    """
+    Retrieve a list of all active `ngrok` tunnels.
+
+    :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
+    :type ngrok_path: string, optional
+    :return: the currently active `ngrok` tunnels.
+    :rtype: list[NgrokTunnel]
+    """
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
     if ngrok_path not in process.CURRENT_PROCESSES:
@@ -126,6 +181,12 @@ def get_tunnels(ngrok_path=None):
 
 
 def kill(ngrok_path=None):
+    """
+    Terminate any running `ngrok` processes for the given path.
+
+    :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
+    :type ngrok_path: string, optional
+    """
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
     if ngrok_path not in process.CURRENT_PROCESSES:
@@ -135,6 +196,20 @@ def kill(ngrok_path=None):
 
 
 def api_request(uri, method="GET", data=None, params=None):
+    """
+    Invoke an API request to the given URI.
+
+    :param uri: the request URI.
+    :type uri: string
+    :param method: the HTTP method, defaults to "GET".
+    :type method: string, optional
+    :param data: the request body.
+    :type data: dict, optional
+    :param params: the URL parameters.
+    :type params: list, optional
+    :return: the response from the request.
+    :rtype: dict
+    """
     if not params:
         params = []
 
@@ -175,9 +250,9 @@ def api_request(uri, method="GET", data=None, params=None):
                                     status_code, e.msg, e.hdrs, response_data)
 
 
-def main():
+def _run():
     process.run_process(DEFAULT_NGROK_PATH, sys.argv[1:])
 
 
 if __name__ == '__main__':
-    main()
+    _run()
