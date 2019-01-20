@@ -7,8 +7,8 @@ import uuid
 from future.standard_library import install_aliases
 
 from pyngrok import process
-from pyngrok.exception import PyngrokError, PyngrokNgrokHTTPError
-from pyngrok.installer import get_ngrok_bin
+from pyngrok.exception import PyngrokNgrokHTTPError
+from pyngrok.installer import get_ngrok_bin, install_ngrok
 
 install_aliases()
 
@@ -17,7 +17,7 @@ from urllib.request import urlopen, Request, HTTPError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 
 logger = logging.getLogger(__name__)
 
@@ -58,6 +58,18 @@ class NgrokTunnel:
             "addr", None) else "<pending Tunnel>"
 
 
+def ensure_ngrok_installed(ngrok_path):
+    """
+    Ensure `ngrok` is installed at the given path, downloading and installing the binary for
+    the current system if not.
+
+    :param ngrok_path: The path to the `ngrok` binary.
+    :type ngrok_path: string
+    """
+    if not os.path.exists(ngrok_path):
+        install_ngrok(ngrok_path)
+
+
 def set_auth_token(token, ngrok_path=None, config_path=None):
     """
     Set the `ngrok` auth token in the config file, enabling authenticated features (for instance,
@@ -76,7 +88,7 @@ def set_auth_token(token, ngrok_path=None, config_path=None):
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
     config_path = config_path if config_path else DEFAULT_CONFIG_PATH
 
-    process.ensure_ngrok_installed(ngrok_path)
+    ensure_ngrok_installed(ngrok_path)
 
     process.set_auth_token(ngrok_path, token, config_path)
 
@@ -99,6 +111,8 @@ def get_ngrok_process(ngrok_path=None, config_path=None):
     """
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
     config_path = config_path if config_path else DEFAULT_CONFIG_PATH
+
+    ensure_ngrok_installed(ngrok_path)
 
     return process.get_process(ngrok_path, config_path)
 
@@ -197,9 +211,6 @@ def get_tunnels(ngrok_path=None):
     """
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
-    if ngrok_path not in process.CURRENT_PROCESSES:
-        raise PyngrokError("ngrok is not running for the \"ngrok_path\": {}".format(ngrok_path))
-
     api_url = get_ngrok_process(ngrok_path).api_url
 
     tunnels = []
@@ -217,9 +228,6 @@ def kill(ngrok_path=None):
     :type ngrok_path: string, optional
     """
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
-
-    if ngrok_path not in process.CURRENT_PROCESSES:
-        raise PyngrokError("ngrok is not running for the \"ngrok_path\": {}".format(ngrok_path))
 
     process.kill_process(ngrok_path)
 
@@ -283,6 +291,8 @@ def run():
     """
     Start a blocking `ngrok` process with the default binary and the system's command line args.
     """
+    ensure_ngrok_installed(DEFAULT_NGROK_PATH)
+
     process.run_process(DEFAULT_NGROK_PATH, sys.argv[1:])
 
 

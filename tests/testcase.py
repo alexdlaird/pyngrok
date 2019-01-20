@@ -9,7 +9,7 @@ from pyngrok import process
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 
 
 class NgrokTestCase(unittest.TestCase):
@@ -35,3 +35,10 @@ class NgrokTestCase(unittest.TestCase):
 
         with open(self.config_path, "w") as config_file:
             yaml.dump(config, config_file)
+
+    def given_ngrok_installed(self, ngrok_path):
+        ngrok.ensure_ngrok_installed(ngrok_path)
+
+    def given_ngrok_not_installed(self, ngrok_path):
+        if os.path.exists(ngrok_path):
+            os.remove(ngrok_path)

@@ -5,11 +5,10 @@ import subprocess
 import time
 
 from pyngrok.exception import PyngrokNgrokError
-from pyngrok.installer import install_ngrok
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 
 logger = logging.getLogger(__name__)
 
@@ -37,25 +36,10 @@ class NgrokProcess:
         return "NgrokProcess: \"{}\"".format(self.api_url)
 
 
-def ensure_ngrok_installed(ngrok_path):
-    """
-    Ensure `ngrok` is installed at the given path, downloading and installing the binary for
-    the current system if not.
-
-    :param ngrok_path: The path to the `ngrok` binary.
-    :type ngrok_path: string
-    """
-    if not os.path.exists(ngrok_path):
-        install_ngrok(ngrok_path)
-
-
 def set_auth_token(ngrok_path, token, config_path=None):
     """
     Set the `ngrok` auth token in the config file, enabling authenticated features (for instance,
     more concurrent tunnels, custom subdomains, etc.).
-
-    If `ngrok` is not installed at the given path, calling this method will first download
-    and install `ngrok`.
 
     :param ngrok_path: The path to the `ngrok` binary.
     :type ngrok_path: string
@@ -64,8 +48,6 @@ def set_auth_token(ngrok_path, token, config_path=None):
     :param config_path: A config path override.
     :type config_path: string, optional
     """
-    ensure_ngrok_installed(ngrok_path)
-
     start = [ngrok_path, "authtoken", token, "--log=stdout"]
     if config_path:
         start.append("--config={}".format(config_path))
@@ -81,9 +63,6 @@ def get_process(ngrok_path, config_path=None):
     Retrieve the current `ngrok` process for the given path. If `ngrok` is not currently running for the
     given path, a new process will be started and returned.
 
-    If `ngrok` is not installed at the given path, calling this method will first download
-    and install `ngrok`.
-
     If `ngrok` is not running, calling this method will start a process for the given path.
 
     :param ngrok_path: The path to the `ngrok` binary.
@@ -96,8 +75,6 @@ def get_process(ngrok_path, config_path=None):
     if ngrok_path in CURRENT_PROCESSES:
         return CURRENT_PROCESSES[ngrok_path]
     else:
-        ensure_ngrok_installed(ngrok_path)
-
         _start_process(ngrok_path, config_path)
 
         return CURRENT_PROCESSES[ngrok_path]
@@ -107,18 +84,12 @@ def run_process(ngrok_path, args):
     """
     Start a blocking `ngrok` process with the given args.
 
-    If `ngrok` is not installed at the given path, calling this method will first download
-    and install `ngrok`.
-
     :param ngrok_path: The path to the `ngrok` binary.
     :type ngrok_path: string
     :param args: The args to pass to `ngrok`.
     :type args: list
     """
-    if ngrok_path in CURRENT_PROCESSES:
-        raise PyngrokNgrokError("ngrok is already running for the \"ngrok_path\": {}".format(ngrok_path))
-
-    ensure_ngrok_installed(ngrok_path)
+    _ensure_path_ready(ngrok_path)
 
     start = [ngrok_path] + args
     subprocess.call(start)
@@ -144,9 +115,33 @@ def kill_process(ngrok_path):
         del CURRENT_PROCESSES[ngrok_path]
 
 
-def _start_process(ngrok_path, config_path=None):
+def _ensure_path_ready(ngrok_path):
+    """
+    Ensure the binary for `ngrok` at the given path is ready to be started, raise a relevant
+    exception if not.
+
+    :param ngrok_path: The path to the `ngrok` binary.
+    """
+    if not os.path.exists(ngrok_path):
+        raise PyngrokNgrokError("ngrok binary was not found. Be sure to call `ensure_ngrok_installed()` first.")
+
     if ngrok_path in CURRENT_PROCESSES:
         raise PyngrokNgrokError("ngrok is already running for the \"ngrok_path\": {}".format(ngrok_path))
+
+
+def _start_process(ngrok_path, config_path=None):
+    """
+    Start a `ngrok` process with no tunnels. This will start the `ngrok` web interface, against
+    which HTTP requests can be made to create, interact with, and destroy tunnels.
+
+    :param ngrok_path: The path to the `ngrok` binary.
+    :type ngrok_path: string
+    :param config_path: A config path override.
+    :type config_path: string, optional
+    :return: The `ngrok` process.
+    :rtype: NgrokProcess
+    """
+    _ensure_path_ready(ngrok_path)
 
     start = [ngrok_path, "start", "--none", "--log=stdout"]
     if config_path:
@@ -185,7 +180,6 @@ def _start_process(ngrok_path, config_path=None):
     logger.debug("ngrok web service started: {}".format(api_url))
 
     ngrok_process = NgrokProcess(ngrok_path, process, api_url)
-
     CURRENT_PROCESSES[ngrok_path] = ngrok_process
 
     return ngrok_process
