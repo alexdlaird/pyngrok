@@ -25,7 +25,7 @@ class NgrokTestCase(unittest.TestCase):
         if os.path.exists(self.config_dir):
             shutil.rmtree(self.config_dir)
 
-    def _add_config(self, new_configs):
+    def given_config(self, new_configs):
         with open(self.config_path, "r") as config_file:
             config = yaml.safe_load(config_file)
             if config is None:

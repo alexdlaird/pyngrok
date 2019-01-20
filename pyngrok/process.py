@@ -132,7 +132,6 @@ def kill_process(ngrok_path):
 
 
 def _start_process(ngrok_path, config_path=None):
-    # TODO: refactor so multiple instances of the same bin can be used, them remove this check
     if ngrok_path in CURRENT_PROCESSES:
         raise PyngrokNgrokError("ngrok is already running for the \"ngrok_path\": {}".format(ngrok_path))
 
