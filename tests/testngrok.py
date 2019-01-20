@@ -34,6 +34,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNone(current_process.process.poll())
         self.assertIsNotNone(url)
         self.assertIsNotNone(process.get_process(ngrok.DEFAULT_NGROK_PATH))
+        self.assertEqual(len(process.CURRENT_PROCESSES.keys()), 1)
 
     def test_multiple_connections_fails(self):
         # WHEN
@@ -87,14 +88,14 @@ class TestNgrok(NgrokTestCase):
         # GIVEN
         ngrok.connect(5000, config_path=self.config_path)
         time.sleep(1)
-        p1 = process.get_process(ngrok.DEFAULT_NGROK_PATH).process
+        ngrok_process = process.get_process(ngrok.DEFAULT_NGROK_PATH)
 
         # WHEN
         ngrok.kill()
         time.sleep(1)
 
         # THEN
-        self.assertIsNotNone(p1.poll())
+        self.assertIsNotNone(ngrok_process.process.poll())
         self.assertEqual(len(process.CURRENT_PROCESSES.keys()), 0)
 
     def test_set_auth_token(self):

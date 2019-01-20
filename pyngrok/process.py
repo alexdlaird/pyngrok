@@ -25,7 +25,7 @@ class NgrokProcess:
     def __repr__(self):
         return "<NgrokProcess: \"{}\">".format(self.api_url)
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return "NgrokProcess: \"{}\"".format(self.api_url)
 
 
@@ -81,6 +81,10 @@ def kill_process(ngrok_path):
 
 
 def _start_process(ngrok_path, config_path=None):
+    # TODO: refactor so multiple instances of the same bin can be used, them remove this check
+    if ngrok_path in CURRENT_PROCESSES:
+        raise PyngrokNgrokError("ngrok is already running for the \"ngrok_path\": {}".format(ngrok_path))
+
     start = [ngrok_path, "start", "--none", "--log=stdout"]
     if config_path:
         logger.debug("Starting ngrok with config file: {}".format(config_path))
@@ -117,4 +121,8 @@ def _start_process(ngrok_path, config_path=None):
 
     logger.debug("ngrok web service started: {}".format(api_url))
 
-    CURRENT_PROCESSES[ngrok_path] = NgrokProcess(ngrok_path, process, api_url)
+    ngrok_process = NgrokProcess(ngrok_path, process, api_url)
+
+    CURRENT_PROCESSES[ngrok_path] = ngrok_process
+
+    return ngrok_process

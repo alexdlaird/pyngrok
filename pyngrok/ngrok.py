@@ -42,7 +42,7 @@ class NgrokTunnel:
         return "<NgrokTunnel: \"{}\" -> \"{}\">".format(self.public_url, self.config["addr"]) if self.config.get(
             "addr", None) else "<pending Tunnel>"
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return "NgrokTunnel: \"{}\" -> \"{}\"".format(self.public_url, self.config["addr"]) if self.config.get(
             "addr", None) else "<pending Tunnel>"
 
@@ -159,7 +159,7 @@ def api_request(uri, method="GET", data=None, params=None):
         logger.debug("Response status code: {}".format(status_code))
         logger.debug("Response: {}".format(response_data))
 
-        raise PyngrokNgrokHTTPError("ngrok client API returned {}: {}".format(status_code, response_data), e.url,
+        raise PyngrokNgrokHTTPError("ngrok client exception, API returned {}: {}".format(status_code, response_data), e.url,
                                     status_code, e.msg, e.hdrs, response_data)
 
 
