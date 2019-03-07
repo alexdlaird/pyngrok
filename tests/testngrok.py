@@ -61,11 +61,11 @@ class TestNgrok(NgrokTestCase):
         for tunnel in tunnels:
             if tunnel.proto == "http":
                 self.assertEqual(tunnel.public_url, url)
-                self.assertEqual(tunnel.config["addr"], "localhost:80")
+                self.assertEqual(tunnel.config["addr"], "http://localhost:80")
             else:
                 self.assertEqual(tunnel.proto, "https")
                 self.assertEqual(tunnel.public_url, url.replace("http", "https"))
-                self.assertEqual(tunnel.config["addr"], "localhost:80")
+                self.assertEqual(tunnel.config["addr"], "http://localhost:80")
 
     def test_disconnect(self):
         # GIVEN
