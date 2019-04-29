@@ -8,7 +8,7 @@ from pyngrok.exception import PyngrokNgrokError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.1"
+__version__ = "1.3.2"
 
 logger = logging.getLogger(__name__)
 
@@ -128,7 +128,7 @@ def _ensure_path_ready(ngrok_path):
         raise PyngrokNgrokError("ngrok is already running for the \"ngrok_path\": {}".format(ngrok_path))
 
 
-def _exit_terminate(process):
+def _terminate_process(process):
     if process is None:
         return
 
@@ -159,7 +159,7 @@ def _start_process(ngrok_path, config_path=None):
         start.append("--config={}".format(config_path))
 
     process = subprocess.Popen(start, stdout=subprocess.PIPE, universal_newlines=True)
-    atexit.register(_exit_terminate, process)
+    atexit.register(_terminate_process, process)
 
     logger.debug("ngrok process started: {}".format(process.pid))
 
