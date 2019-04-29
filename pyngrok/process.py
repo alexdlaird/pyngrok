@@ -109,9 +109,6 @@ def kill_process(ngrok_path):
 
         ngrok_process.process.kill()
 
-        if hasattr(atexit, "unregister"):
-            atexit.unregister(ngrok_process.process.terminate)
-
         del CURRENT_PROCESSES[ngrok_path]
 
 
@@ -129,6 +126,16 @@ def _ensure_path_ready(ngrok_path):
 
     if ngrok_path in CURRENT_PROCESSES:
         raise PyngrokNgrokError("ngrok is already running for the \"ngrok_path\": {}".format(ngrok_path))
+
+
+def _exit_terminate(process):
+    if process is None:
+        return
+
+    try:
+        process.terminate()
+    except OSError:
+        logger.info("ngrok process already terminated: {}".format(process.pid))
 
 
 def _start_process(ngrok_path, config_path=None):
@@ -152,7 +159,7 @@ def _start_process(ngrok_path, config_path=None):
         start.append("--config={}".format(config_path))
 
     process = subprocess.Popen(start, stdout=subprocess.PIPE, universal_newlines=True)
-    atexit.register(process.terminate)
+    atexit.register(_exit_terminate, process)
 
     logger.debug("ngrok process started: {}".format(process.pid))
 
