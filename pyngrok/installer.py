@@ -15,13 +15,24 @@ from urllib.request import urlopen
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.0"
+__version__ = "1.3.3"
 
 logger = logging.getLogger(__name__)
 
-DARWIN_DOWNLOAD_URL = "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-darwin-amd64.zip"
-WINDOWS_DOWNLOAD_URL = "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip"
-LINUX_DARWIN_DOWNLOAD_URL = "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip"
+CDN_URL_PREFIX = "https://bin.equinox.io/c/4VmDzA7iaHb/"
+PLATFORMS = {
+    'darwin_x86_64': CDN_URL_PREFIX + "ngrok-stable-darwin-amd64.zip",
+    'darwin_i386': CDN_URL_PREFIX + "ngrok-stable-darwin-386.zip",
+    'windows_x86_64': CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
+    'windows_i386': CDN_URL_PREFIX + "ngrok-stable-windows-386.zip",
+    # TODO: need to validate the ARM keys
+    'linux_arm64': CDN_URL_PREFIX + "ngrok-stable-linux-arm64.zip",
+    'linux_arm': CDN_URL_PREFIX + "ngrok-stable-linux-arm.zip",
+    'linux_i386': CDN_URL_PREFIX + "ngrok-stable-linux-386.zip",
+    'linux_x86_64': CDN_URL_PREFIX + "ngrok-stable-linux-amd64.zip",
+    'freebsd_x86_64': CDN_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip",
+    'freebsd_i386': CDN_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
+}
 
 
 def get_ngrok_bin():
@@ -54,15 +65,12 @@ def install_ngrok(ngrok_path):
     if not os.path.exists(ngrok_dir):
         os.mkdir(ngrok_dir)
 
-    system = platform.system()
-    if system == "Darwin":
-        url = DARWIN_DOWNLOAD_URL
-    elif system == "Windows":  # pragma: no cover
-        url = WINDOWS_DOWNLOAD_URL
-    elif system == "Linux":  # pragma: no cover
-        url = LINUX_DARWIN_DOWNLOAD_URL
-    else:  # pragma: no cover
-        raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
+    try:
+        plat = platform.system().lower() + "_" + platform.machine()
+
+        url = PLATFORMS[plat]
+    except KeyError:
+        raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(plat))
 
     try:
         download_path = _download_file(url)
