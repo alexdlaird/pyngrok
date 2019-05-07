@@ -65,13 +65,14 @@ def install_ngrok(ngrok_path):
     if not os.path.exists(ngrok_dir):
         os.mkdir(ngrok_dir)
 
+    arch = 'x86_64' if sys.maxsize > 2 ** 32 else 'i386'
+    if 'arm' in os.uname()[4]:
+        arch += '_arm'
+    plat = platform.system().lower() + "_" + arch
     try:
-        arch = 'x86_64' if sys.maxsize > 2 ** 32 else 'i386'
-        if 'arm' in os.uname()[4]:
-            arch += '_arm'
-        plat = platform.system().lower() + "_" + arch
-
         url = PLATFORMS[plat]
+
+        logger.debug("Platform to download: {}".format(plat))
     except KeyError:
         raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(plat))
 
