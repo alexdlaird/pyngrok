@@ -2,6 +2,7 @@ import logging
 import os
 import platform
 import shutil
+import sys
 import tempfile
 import zipfile
 
@@ -25,9 +26,8 @@ PLATFORMS = {
     'darwin_i386': CDN_URL_PREFIX + "ngrok-stable-darwin-386.zip",
     'windows_x86_64': CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
     'windows_i386': CDN_URL_PREFIX + "ngrok-stable-windows-386.zip",
-    # TODO: need to validate the ARM keys
-    'linux_arm64': CDN_URL_PREFIX + "ngrok-stable-linux-arm64.zip",
-    'linux_arm': CDN_URL_PREFIX + "ngrok-stable-linux-arm.zip",
+    'linux_x86_64_arm': CDN_URL_PREFIX + "ngrok-stable-linux-arm64.zip",
+    'linux_i386_arm': CDN_URL_PREFIX + "ngrok-stable-linux-arm.zip",
     'linux_i386': CDN_URL_PREFIX + "ngrok-stable-linux-386.zip",
     'linux_x86_64': CDN_URL_PREFIX + "ngrok-stable-linux-amd64.zip",
     'freebsd_x86_64': CDN_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip",
@@ -66,7 +66,10 @@ def install_ngrok(ngrok_path):
         os.mkdir(ngrok_dir)
 
     try:
-        plat = platform.system().lower() + "_" + platform.machine()
+        arch = 'x86_64' if sys.maxsize > 2 ** 32 else 'i386'
+        if 'arm' in os.uname()[4]:
+            arch += '_arm'
+        plat = platform.system().lower() + "_" + arch
 
         url = PLATFORMS[plat]
     except KeyError:
