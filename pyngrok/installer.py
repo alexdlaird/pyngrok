@@ -66,7 +66,7 @@ def install_ngrok(ngrok_path):
         os.mkdir(ngrok_dir)
 
     arch = 'x86_64' if sys.maxsize > 2 ** 32 else 'i386'
-    if 'arm' in os.uname()[4]:
+    if 'arm' in platform.uname()[4]:
         arch += '_arm'
     plat = platform.system().lower() + "_" + arch
     try:
