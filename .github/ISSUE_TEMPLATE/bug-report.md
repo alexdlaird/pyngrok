@@ -1,8 +1,8 @@
 ---
 name: Bug Report
-about: Create a report to help us improve
+about: Found a bug? Help us squash it.
 title: ''
-labels: ''
+labels: bug
 assignees: ''
 
 ---
@@ -10,10 +10,10 @@ assignees: ''
 **Describe the Bug**
 A clear and concise description of what the bug is.
 
-**To Reproduce**
-A snippet of the code used to reproduce the behavior.
+**Steps to Reproduce**
+A snippet of the minimal code used to reproduce the behavior.
 
-If applicable, please also include the correlated working `ngrok` command.
+If applicable, please also include the correlated `ngrok` command that works.
 
 **Expected Behavior**
 A brief description of what you expected to happen.
