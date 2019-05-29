@@ -17,7 +17,7 @@ from urllib.request import urlopen, Request, HTTPError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.1"
+__version__ = "1.3.5"
 
 logger = logging.getLogger(__name__)
 
@@ -287,14 +287,17 @@ def api_request(uri, method="GET", data=None, params=None):
                                     status_code, e.msg, e.hdrs, response_data)
 
 
-def run():
+def run(args=[]):
     """
     Start a blocking `ngrok` process with the default binary and the system's command line args.
+
+    :param args: Arguments to be passed to the `ngrok` process.
+    :type args: list, optional
     """
     ensure_ngrok_installed(DEFAULT_NGROK_PATH)
 
-    process.run_process(DEFAULT_NGROK_PATH, sys.argv[1:])
+    process.run_process(DEFAULT_NGROK_PATH, args)
 
 
 if __name__ == '__main__':
-    run()
+    run(sys.argv[1:])

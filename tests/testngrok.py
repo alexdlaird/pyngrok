@@ -9,7 +9,7 @@ from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.0"
+__version__ = "1.3.5"
 
 
 class TestNgrok(NgrokTestCase):
@@ -23,7 +23,7 @@ class TestNgrok(NgrokTestCase):
 
     def test_connect(self):
         # GIVEN
-        self.assertEqual(len(process.CURRENT_PROCESSES.keys()), 0)
+        self.assertEqual(len(process._current_processes.keys()), 0)
 
         # WHEN
         url = ngrok.connect(5000, config_path=self.config_path)
@@ -34,7 +34,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNone(current_process.process.poll())
         self.assertIsNotNone(url)
         self.assertIsNotNone(process.get_process(ngrok.DEFAULT_NGROK_PATH))
-        self.assertEqual(len(process.CURRENT_PROCESSES.keys()), 1)
+        self.assertEqual(len(process._current_processes.keys()), 1)
 
     def test_multiple_connections_fails(self):
         # WHEN
@@ -96,7 +96,7 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertIsNotNone(ngrok_process.process.poll())
-        self.assertEqual(len(process.CURRENT_PROCESSES.keys()), 0)
+        self.assertEqual(len(process._current_processes.keys()), 0)
 
     def test_set_auth_token(self):
         # WHEN

@@ -8,11 +8,11 @@ from pyngrok.exception import PyngrokNgrokError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.2"
+__version__ = "1.3.5"
 
 logger = logging.getLogger(__name__)
 
-CURRENT_PROCESSES = {}
+_current_processes = {}
 
 
 class NgrokProcess:
@@ -72,12 +72,12 @@ def get_process(ngrok_path, config_path=None):
     :return: The `ngrok` process.
     :rtype: NgrokProcess
     """
-    if ngrok_path in CURRENT_PROCESSES:
-        return CURRENT_PROCESSES[ngrok_path]
+    if ngrok_path in _current_processes:
+        return _current_processes[ngrok_path]
     else:
         _start_process(ngrok_path, config_path)
 
-        return CURRENT_PROCESSES[ngrok_path]
+        return _current_processes[ngrok_path]
 
 
 def run_process(ngrok_path, args):
@@ -102,14 +102,14 @@ def kill_process(ngrok_path):
     :param ngrok_path: The path to the `ngrok` binary.
     :type ngrok_path: string
     """
-    if ngrok_path in CURRENT_PROCESSES:
-        ngrok_process = CURRENT_PROCESSES[ngrok_path]
+    if ngrok_path in _current_processes:
+        ngrok_process = _current_processes[ngrok_path]
 
-        logger.debug("Killing ngrok process: {}".format(ngrok_process.process.pid))
+        logger.info("Killing ngrok process: {}".format(ngrok_process.process.pid))
 
         ngrok_process.process.kill()
 
-        del CURRENT_PROCESSES[ngrok_path]
+        del _current_processes[ngrok_path]
 
 
 def _ensure_path_ready(ngrok_path):
@@ -124,7 +124,7 @@ def _ensure_path_ready(ngrok_path):
             "ngrok binary was not found. Be sure to call `ensure_ngrok_installed()` first for "
             "\"ngrok_path\": {}".format(ngrok_path))
 
-    if ngrok_path in CURRENT_PROCESSES:
+    if ngrok_path in _current_processes:
         raise PyngrokNgrokError("ngrok is already running for the \"ngrok_path\": {}".format(ngrok_path))
 
 
@@ -135,7 +135,7 @@ def _terminate_process(process):
     try:
         process.terminate()
     except OSError:
-        logger.info("ngrok process already terminated: {}".format(process.pid))
+        logger.debug("ngrok process already terminated: {}".format(process.pid))
 
 
 def _start_process(ngrok_path, config_path=None):
@@ -154,14 +154,14 @@ def _start_process(ngrok_path, config_path=None):
 
     start = [ngrok_path, "start", "--none", "--log=stdout"]
     if config_path:
-        logger.debug("Starting ngrok with config file: {}".format(config_path))
+        logger.info("Starting ngrok with config file: {}".format(config_path))
 
         start.append("--config={}".format(config_path))
 
     process = subprocess.Popen(start, stdout=subprocess.PIPE, universal_newlines=True)
     atexit.register(_terminate_process, process)
 
-    logger.debug("ngrok process started: {}".format(process.pid))
+    logger.info("ngrok process started: {}".format(process.pid))
 
     api_url = None
     tunnel_started = False
@@ -169,6 +169,7 @@ def _start_process(ngrok_path, config_path=None):
     timeout = time.time() + 15
     while time.time() < timeout:
         line = process.stdout.readline()
+        logger.debug(line)
 
         if "starting web service" in line:
             api_url = "http://{}".format(line.split("addr=")[1].strip())
@@ -186,9 +187,9 @@ def _start_process(ngrok_path, config_path=None):
         else:
             raise PyngrokNgrokError("The ngrok process was unable to start")
 
-    logger.debug("ngrok web service started: {}".format(api_url))
+    logger.info("ngrok web service started: {}".format(api_url))
 
     ngrok_process = NgrokProcess(ngrok_path, process, api_url)
-    CURRENT_PROCESSES[ngrok_path] = ngrok_process
+    _current_processes[ngrok_path] = ngrok_process
 
     return ngrok_process
