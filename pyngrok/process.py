@@ -58,7 +58,7 @@ def set_auth_token(ngrok_path, token, config_path=None):
         raise PyngrokNgrokError("An error occurred when saving the auth token: {}".format(result))
 
 
-def get_process(ngrok_path, config_path=None):
+def get_process(ngrok_path, config_path):
     """
     Retrieve the current `ngrok` process for the given path. If `ngrok` is not currently running for the
     given path, a new process will be started and returned.
@@ -68,16 +68,14 @@ def get_process(ngrok_path, config_path=None):
     :param ngrok_path: The path to the `ngrok` binary.
     :type ngrok_path: string
     :param config_path: A config path override.
-    :type config_path: string, optional
+    :type config_path: string
     :return: The `ngrok` process.
     :rtype: NgrokProcess
     """
     if ngrok_path in _current_processes:
         return _current_processes[ngrok_path]
     else:
-        _start_process(ngrok_path, config_path)
-
-        return _current_processes[ngrok_path]
+        return _start_process(ngrok_path, config_path)
 
 
 def run_process(ngrok_path, args):
@@ -110,6 +108,8 @@ def kill_process(ngrok_path):
         ngrok_process.process.kill()
 
         del _current_processes[ngrok_path]
+    else:
+        logger.debug("\"ngrok_path\" {} is not running with \"config_path\" {}".format(ngrok_path, config_path))
 
 
 def _ensure_path_ready(ngrok_path):

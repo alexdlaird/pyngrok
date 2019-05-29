@@ -247,7 +247,7 @@ def api_request(uri, method="GET", data=None, params=None):
     :return: The response from the request.
     :rtype: dict
     """
-    if not params:
+    if params is None:
         params = []
 
     data = json.dumps(data).encode("utf-8") if data else None
@@ -287,13 +287,16 @@ def api_request(uri, method="GET", data=None, params=None):
                                     status_code, e.msg, e.hdrs, response_data)
 
 
-def run(args=[]):
+def run(args=None):
     """
     Start a blocking `ngrok` process with the default binary and the system's command line args.
 
     :param args: Arguments to be passed to the `ngrok` process.
     :type args: list, optional
     """
+    if args is None:
+        args = []
+
     ensure_ngrok_installed(DEFAULT_NGROK_PATH)
 
     process.run_process(DEFAULT_NGROK_PATH, args)
