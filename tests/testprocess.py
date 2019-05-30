@@ -1,3 +1,6 @@
+import time
+from mock import mock
+
 from pyngrok import ngrok, process
 from pyngrok.exception import PyngrokNgrokError
 from .testcase import NgrokTestCase
@@ -51,3 +54,40 @@ class TestProcess(NgrokTestCase):
         # THEN
         self.assertIn("20: bind: permission denied", str(cm.exception))
         self.assertEqual(len(process._current_processes.keys()), 0)
+
+    def test_process_external_kill(self):
+        # GIVEN
+        self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
+        ngrok_process = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        self.assertEqual(len(process._current_processes.keys()), 1)
+
+        # WHEN
+        # Kill the process by external means, pyngrok still thinks process is active
+        ngrok_process.process.kill()
+        ngrok_process.process.wait()
+        self.assertEqual(len(process._current_processes.keys()), 1)
+
+        # Try to kill the process via pyngrok, no error, just update state
+        process.kill_process(ngrok.DEFAULT_NGROK_PATH)
+        self.assertEqual(len(process._current_processes.keys()), 0)
+
+    def test_process_external_kill_get_process_restart(self):
+        # GIVEN
+        self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
+        ngrok_process1 = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        self.assertEqual(len(process._current_processes.keys()), 1)
+
+        # WHEN
+        # Kill the process by external means, pyngrok still thinks process is active
+        ngrok_process1.process.kill()
+        ngrok_process1.process.wait()
+        self.assertEqual(len(process._current_processes.keys()), 1)
+
+        # THEN
+        # Try to get process via pyngrok, it has been killed, restart and correct state
+        with mock.patch("atexit.register") as mock_atexit:
+            ngrok_process2 = process.get_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+            self.assertNotEqual(ngrok_process1.process.pid, ngrok_process2.process.pid)
+            self.assertEqual(len(process._current_processes.keys()), 1)
+
+            mock_atexit.assert_called_once()

@@ -20,12 +20,14 @@ class NgrokProcess:
     An object containing information about the `ngrok` process.
 
     :var string ngrok_path: The path to the `ngrok` binary used to start this process.
+    :var string config_path: The path to the `ngrok` config used.
     :var object process: The child process running `ngrok`.
     :var string api_url: The API URL for the `ngrok` web interface.
     """
 
-    def __init__(self, ngrok_path, process, api_url):
+    def __init__(self, ngrok_path, config_path, process, api_url):
         self.ngrok_path = ngrok_path
+        self.config_path = config_path
         self.process = process
         self.api_url = api_url
 
@@ -73,9 +75,13 @@ def get_process(ngrok_path, config_path=None):
     :rtype: NgrokProcess
     """
     if ngrok_path in _current_processes:
-        return _current_processes[ngrok_path]
-    else:
-        return _start_process(ngrok_path, config_path)
+        # Ensure the process is still running and hasn't been killed externally
+        if _current_processes[ngrok_path].process.poll() is None:
+            return _current_processes[ngrok_path]
+        else:
+            _current_processes.pop(ngrok_path, None)
+
+    return _start_process(ngrok_path, config_path)
 
 
 def run_process(ngrok_path, args):
@@ -95,7 +101,8 @@ def run_process(ngrok_path, args):
 
 def kill_process(ngrok_path):
     """
-    Terminate any running `ngrok` processes for the given path.
+    Terminate the `ngrok` processes, if running, for the given path. This method will not block, it will just issue
+    a kill request.
 
     :param ngrok_path: The path to the `ngrok` binary.
     :type ngrok_path: string
@@ -105,9 +112,14 @@ def kill_process(ngrok_path):
 
         logger.info("Killing ngrok process: {}".format(ngrok_process.process.pid))
 
-        ngrok_process.process.kill()
+        try:
+            ngrok_process.process.kill()
+        except OSError as e:
+            # If the process was already killed, nothing to do but cleanup state
+            if e.errno != 3:
+                raise e
 
-        del _current_processes[ngrok_path]
+        _current_processes.pop(ngrok_path, None)
     else:
         logger.debug("\"ngrok_path\" {} is not running a process".format(ngrok_path))
 
@@ -189,7 +201,7 @@ def _start_process(ngrok_path, config_path=None):
 
     logger.info("ngrok web service started: {}".format(api_url))
 
-    ngrok_process = NgrokProcess(ngrok_path, process, api_url)
+    ngrok_process = NgrokProcess(ngrok_path, config_path, process, api_url)
     _current_processes[ngrok_path] = ngrok_process
 
     return ngrok_process

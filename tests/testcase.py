@@ -21,7 +21,13 @@ class NgrokTestCase(unittest.TestCase):
         open(self.config_path, "w").close()
 
     def tearDown(self):
-        process.kill_process(ngrok.DEFAULT_NGROK_PATH)
+        for p in process._current_processes.values():
+            try:
+                process.kill_process(p.ngrok_path)
+                p.process.wait()
+            except OSError:
+                pass
+
         if os.path.exists(self.config_dir):
             shutil.rmtree(self.config_dir)
 

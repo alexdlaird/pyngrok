@@ -222,7 +222,8 @@ def get_tunnels(ngrok_path=None):
 
 def kill(ngrok_path=None):
     """
-    Terminate any running `ngrok` processes for the given path.
+    Terminate the `ngrok` processes, if running, for the given path. This method will not block, it will just issue
+    a kill request.
 
     :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
     :type ngrok_path: string, optional
