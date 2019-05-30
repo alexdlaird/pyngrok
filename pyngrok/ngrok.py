@@ -17,7 +17,7 @@ from urllib.request import urlopen, Request, HTTPError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.5"
+__version__ = "1.3.6"
 
 logger = logging.getLogger(__name__)
 

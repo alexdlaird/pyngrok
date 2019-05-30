@@ -1,4 +1,3 @@
-import time
 from mock import mock
 
 from pyngrok import ngrok, process
@@ -7,7 +6,7 @@ from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.5"
+__version__ = "1.3.6"
 
 
 class TestProcess(NgrokTestCase):
