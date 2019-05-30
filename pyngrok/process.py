@@ -109,7 +109,7 @@ def kill_process(ngrok_path):
 
         del _current_processes[ngrok_path]
     else:
-        logger.debug("\"ngrok_path\" {} is not running with \"config_path\" {}".format(ngrok_path, config_path))
+        logger.debug("\"ngrok_path\" {} is not running a process".format(ngrok_path))
 
 
 def _ensure_path_ready(ngrok_path):
