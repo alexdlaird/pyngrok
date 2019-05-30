@@ -21,7 +21,7 @@ class NgrokTestCase(unittest.TestCase):
         open(self.config_path, "w").close()
 
     def tearDown(self):
-        for p in process._current_processes.values():
+        for p in list(process._current_processes.values()):
             try:
                 process.kill_process(p.ngrok_path)
                 p.process.wait()
