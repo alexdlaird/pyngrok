@@ -1,8 +1,15 @@
+import os
+
+from future.standard_library import install_aliases
 from mock import mock
 
 from pyngrok import ngrok, process
 from pyngrok.exception import PyngrokNgrokError
 from .testcase import NgrokTestCase
+
+install_aliases()
+
+from urllib.parse import urlparse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
@@ -43,16 +50,23 @@ class TestProcess(NgrokTestCase):
     def test_start_process_port_in_use(self):
         # GIVEN
         self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
-        self.given_config({"web_addr": "localhost:20"})
         self.assertEqual(len(process._current_processes.keys()), 0)
+        ngrok_process = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        port = urlparse(ngrok_process.api_url).port
+        self.assertEqual(len(process._current_processes.keys()), 1)
+
+        ngrok_path2 = os.path.join(ngrok.BIN_DIR, "2", ngrok.get_ngrok_bin())
+        self.given_ngrok_installed(ngrok_path2)
+        config_path2 = os.path.join(self.config_dir, "config2.yml")
+        self.given_config(config_path2, {"web_addr": ngrok_process.api_url.lstrip("http://")})
 
         # WHEN
         with self.assertRaises(PyngrokNgrokError) as cm:
-            process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+            process._start_process(ngrok_path2, config_path=config_path2)
 
         # THEN
-        self.assertIn("20: bind: permission denied", str(cm.exception))
-        self.assertEqual(len(process._current_processes.keys()), 0)
+        self.assertIn("{}: bind: address already in use".format(port), str(cm.exception))
+        self.assertEqual(len(process._current_processes.keys()), 1)
 
     def test_process_external_kill(self):
         # GIVEN
@@ -90,3 +104,27 @@ class TestProcess(NgrokTestCase):
             self.assertEqual(len(process._current_processes.keys()), 1)
 
             mock_atexit.assert_called_once()
+
+    def test_multiple_processes(self):
+        # GIVEN
+        self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
+        self.assertEqual(len(process._current_processes.keys()), 0)
+        self.given_config(self.config_path, {"web_addr": "localhost:4040"})
+
+        ngrok_path2 = os.path.join(ngrok.BIN_DIR, "2", ngrok.get_ngrok_bin())
+        self.given_ngrok_installed(ngrok_path2)
+        config_path2 = os.path.join(self.config_dir, "config2.yml")
+        self.given_config(config_path2, {"web_addr": "localhost:4041"})
+
+        # WHEN
+        ngrok_process1 = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        ngrok_process2 = process._start_process(ngrok_path2, config_path=config_path2)
+
+        # THEN
+        self.assertEqual(len(process._current_processes.keys()), 2)
+        self.assertIsNotNone(ngrok_process1)
+        self.assertIsNone(ngrok_process1.process.poll())
+        self.assertTrue("4040" in ngrok_process1.api_url)
+        self.assertIsNotNone(ngrok_process2)
+        self.assertIsNone(ngrok_process2.process.poll())
+        self.assertTrue("4041" in ngrok_process2.api_url)
