@@ -108,7 +108,7 @@ class TestNgrok(NgrokTestCase):
 
     def test_api_request_fails(self):
         # GIVEN
-        current_process = ngrok.get_ngrok_process()
+        current_process = ngrok.get_ngrok_process(config_path=self.config_path)
         bad_options = {
             "name": str(uuid.uuid4()),
             "addr": "8080",
