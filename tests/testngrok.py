@@ -9,7 +9,7 @@ from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.5"
+__version__ = "1.3.7"
 
 
 class TestNgrok(NgrokTestCase):

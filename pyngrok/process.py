@@ -8,7 +8,7 @@ from pyngrok.exception import PyngrokNgrokError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.6"
+__version__ = "1.3.7"
 
 logger = logging.getLogger(__name__)
 
@@ -194,10 +194,7 @@ def _start_process(ngrok_path, config_path=None):
             break
 
     if not api_url or not tunnel_started or len(errors) > 0:
-        if len(errors) > 0:
-            raise PyngrokNgrokError("The ngrok process was unable to start: {}".format(errors))
-        else:
-            raise PyngrokNgrokError("The ngrok process was unable to start")
+        raise PyngrokNgrokError("The ngrok process was unable to start.", errors)
 
     logger.info("ngrok web service started: {}".format(api_url))
 

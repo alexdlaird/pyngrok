@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.6"
+__version__ = "1.3.7"
 
 
 class TestProcess(NgrokTestCase):
@@ -48,7 +48,7 @@ class TestProcess(NgrokTestCase):
             process._start_process(ngrok_path2, config_path=config_path2)
 
         # THEN
-        self.assertIn("{}: bind: address already in use".format(port), str(cm.exception))
+        self.assertIn("{}: bind: address already in use".format(port), str(cm.exception.ngrok_errors))
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     def test_process_external_kill(self):

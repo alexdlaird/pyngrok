@@ -9,7 +9,7 @@ from pyngrok import process
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.6"
+__version__ = "1.3.7"
 
 
 class NgrokTestCase(unittest.TestCase):
