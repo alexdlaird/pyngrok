@@ -8,12 +8,17 @@ assignees: ''
 ---
 
 **Describe the Bug**
-A clear and concise description of what the bug is.
+A clear and concise description of what the bug is, including exceptions thrown.
+
+Enable [DEBUG level logging and run your code from the Python console](https://stackoverflow.com/questions/14058453/making-python-loggers-output-all-messages-to-stdout-in-addition-to-log-file)
+before submitting a bug report. Include the logs here if after debugging it still looks like a bug specific
+to `pyngrok`.
 
 **Steps to Reproduce**
 A snippet of the minimal code used to reproduce the behavior.
 
-If applicable, please also include the correlated `ngrok` command that works.
+If applicable, given the correlated `ngrok` command that works. Also include your config file if it has been
+changed from the default (be sure to redact your auth token, if present).
 
 **Expected Behavior**
 A brief description of what you expected to happen.
