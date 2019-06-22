@@ -16,7 +16,7 @@ from urllib.request import urlopen
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.7"
+__version__ = "1.3.8"
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +33,7 @@ PLATFORMS = {
     'freebsd_x86_64': CDN_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip",
     'freebsd_i386': CDN_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
 }
+DEFAULT_DOWNLOAD_TIMEOUT = 10
 
 
 def get_ngrok_bin():
@@ -51,13 +52,17 @@ def get_ngrok_bin():
         raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
 
 
-def install_ngrok(ngrok_path):
+def install_ngrok(ngrok_path, timeout=None):
     """
     Download and install `ngrok` for the current system in the given location.
 
     :param ngrok_path: The path to where the `ngrok` binary will be downloaded.
     :type ngrok_path: string
+    :param timeout: The request timeout, in seconds.
+    :type timeout: float, optional
     """
+    timeout = timeout if timeout else DEFAULT_DOWNLOAD_TIMEOUT
+
     logger.debug("Binary not found at {}, installing ngrok ...".format(ngrok_path))
 
     ngrok_dir = os.path.dirname(ngrok_path)
@@ -77,7 +82,7 @@ def install_ngrok(ngrok_path):
         raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(plat))
 
     try:
-        download_path = _download_file(url)
+        download_path = _download_file(url, timeout)
 
         with zipfile.ZipFile(download_path, "r") as zip_ref:
             logger.debug("Extracting ngrok binary to {} ...".format(download_path))
@@ -88,11 +93,11 @@ def install_ngrok(ngrok_path):
         raise PyngrokNgrokInstallError("An error occurred while downloading ngrok from {}: {}".format(url, e))
 
 
-def _download_file(url):
+def _download_file(url, timeout):
     logger.debug("Download ngrok from {} ...".format(url))
 
     local_filename = url.split("/")[-1]
-    response = urlopen(url)
+    response = urlopen(url, timeout=timeout)
 
     status_code = response.getcode()
     logger.debug("Response status code: {}".format(status_code))

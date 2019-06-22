@@ -17,7 +17,7 @@ from urllib.request import urlopen, Request, HTTPError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.7"
+__version__ = "1.3.8"
 
 logger = logging.getLogger(__name__)
 
@@ -233,7 +233,7 @@ def kill(ngrok_path=None):
     process.kill_process(ngrok_path)
 
 
-def api_request(uri, method="GET", data=None, params=None):
+def api_request(uri, method="GET", data=None, params=None, timeout=4):
     """
     Invoke an API request to the given URI, returning JSON data from the response as a dict.
 
@@ -245,6 +245,8 @@ def api_request(uri, method="GET", data=None, params=None):
     :type data: dict, optional
     :param params: The URL parameters.
     :type params: list, optional
+    :param timeout: The request timeout, in seconds.
+    :type timeout: float, optional
     :return: The response from the request.
     :rtype: dict
     """
@@ -262,7 +264,7 @@ def api_request(uri, method="GET", data=None, params=None):
     logger.debug("Making {} request to {} with data: {}".format(method, uri, data))
 
     try:
-        response = urlopen(request, data)
+        response = urlopen(request, data, timeout)
         response_data = response.read().decode("utf-8")
 
         status_code = response.getcode()
