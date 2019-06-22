@@ -33,7 +33,7 @@ PLATFORMS = {
     'freebsd_x86_64': CDN_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip",
     'freebsd_i386': CDN_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
 }
-DEFAULT_DOWNLOAD_TIMEOUT = 10
+DEFAULT_DOWNLOAD_TIMEOUT = 6
 
 
 def get_ngrok_bin():

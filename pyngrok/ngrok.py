@@ -7,13 +7,13 @@ import uuid
 from future.standard_library import install_aliases
 
 from pyngrok import process
-from pyngrok.exception import PyngrokNgrokHTTPError
+from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError
 from pyngrok.installer import get_ngrok_bin, install_ngrok
 
 install_aliases()
 
 from urllib.parse import urlencode
-from urllib.request import urlopen, Request, HTTPError
+from urllib.request import urlopen, Request, HTTPError, URLError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
@@ -288,6 +288,8 @@ def api_request(uri, method="GET", data=None, params=None, timeout=4):
         raise PyngrokNgrokHTTPError("ngrok client exception, API returned {}: {}".format(status_code, response_data),
                                     e.url,
                                     status_code, e.msg, e.hdrs, response_data)
+    except URLError as e:
+        raise PyngrokNgrokURLError("ngrok client exception, URLError: {}".format(e.reason), e.reason)
 
 
 def run(args=None):

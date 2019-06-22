@@ -1,6 +1,6 @@
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.7"
+__version__ = "1.3.8"
 
 
 class PyngrokError(Exception):
@@ -23,6 +23,7 @@ class PyngrokNgrokError(PyngrokError):
 
     :var list ngrok_errors: A list of errors reported by the `ngrok` process.
     """
+
     def __init__(self, error, ngrok_errors=None):
         super(PyngrokNgrokError, self).__init__(error)
 
@@ -52,3 +53,16 @@ class PyngrokNgrokHTTPError(PyngrokNgrokError):
         self.message = message
         self.headers = headers
         self.body = body
+
+
+class PyngrokNgrokURLError(PyngrokNgrokError):
+    """
+    Raised when an error occurs when trying to initiate an API request.
+
+    :var string reason: The reason for the URL error.
+    """
+
+    def __init__(self, error, reason):
+        super(PyngrokNgrokURLError, self).__init__(error)
+
+        self.reason = reason
