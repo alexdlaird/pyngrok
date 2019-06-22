@@ -157,10 +157,13 @@ class TestNgrok(NgrokTestCase):
     def test_api_request_timeout(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(config_path=self.config_path)
+        ngrok.connect(config_path=self.config_path)
+        time.sleep(1)
+        tunnels = ngrok.get_tunnels()
 
         # WHEN
         with self.assertRaises(PyngrokNgrokURLError) as cm:
-            ngrok.api_request("{}/api/{}".format(current_process.api_url, "tunnels"), "DELETE", timeout=0.0001)
+            ngrok.api_request("{}/api/{}".format(current_process.api_url, tunnels[0].uri.replace("+", "%20")), "DELETE", timeout=0.0001)
 
         # THEN
         self.assertIn("timed out", cm.exception.reason)

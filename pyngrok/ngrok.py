@@ -194,6 +194,8 @@ def disconnect(public_url, ngrok_path=None, config_path=None):
 
             api_request("{}{}".format(api_url, tunnel.uri.replace("+", "%20")), "DELETE")
 
+            break
+
 
 def get_tunnels(ngrok_path=None):
     """
