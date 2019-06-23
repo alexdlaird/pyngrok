@@ -26,6 +26,7 @@ test: virtualenv
 docs: virtualenv
 	@( \
 		source .venv/bin/activate; \
+		python -m pip install -r docs/requirements.txt; \
 		sphinx-build -M html docs _build; \
 	)
 

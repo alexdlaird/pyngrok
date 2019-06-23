@@ -21,6 +21,7 @@ class PyngrokNgrokError(PyngrokError):
     """
     Raised when an error occurs interacting directly with the `ngrok` binary.
 
+    :var string error: A description of the error being thrown.
     :var list ngrok_errors: A list of errors reported by the `ngrok` process.
     """
 
@@ -38,6 +39,7 @@ class PyngrokNgrokHTTPError(PyngrokNgrokError):
     Raised when an error occurs making a request to the `ngrok` web interface. The `body`
     contains the error response received from `ngrok`.
 
+    :var string error: A description of the error being thrown.
     :var string url: The request URL that failed.
     :var int status_code: The response status code from `ngrok`.
     :var string message: The response message from `ngrok`.
@@ -59,6 +61,7 @@ class PyngrokNgrokURLError(PyngrokNgrokError):
     """
     Raised when an error occurs when trying to initiate an API request.
 
+    :var string error: A description of the error being thrown.
     :var string reason: The reason for the URL error.
     """
 
