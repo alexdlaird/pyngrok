@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import socket
 import sys
 import uuid
 
@@ -280,6 +281,8 @@ def api_request(uri, method="GET", data=None, params=None, timeout=4):
             return None
 
         return json.loads(response_data)
+    except socket.timeout:
+        raise PyngrokNgrokURLError("ngrok client exception, URLError: timed out", "timed out")
     except HTTPError as e:
         response_data = e.read().decode("utf-8")
 
