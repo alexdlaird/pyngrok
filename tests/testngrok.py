@@ -163,7 +163,7 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         with self.assertRaises(PyngrokNgrokURLError) as cm:
-            ngrok.api_request("{}/api/{}".format(current_process.api_url, tunnels[0].uri.replace("+", "%20")), "DELETE", timeout=0.0001)
+            ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri.replace("+", "%20")), "DELETE", timeout=0.0001)
 
         # THEN
         self.assertIn("timed out", cm.exception.reason)
