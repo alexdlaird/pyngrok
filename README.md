@@ -1,6 +1,7 @@
 # pyngrok - a Python wrapper for ngrok
 
 [![PyPI version](https://badge.fury.io/py/pyngrok.svg)](https://badge.fury.io/py/pyngrok)
+[![Documentation Status](https://readthedocs.org/projects/pyngrok/badge/?version=latest)](https://pyngrok.readthedocs.io/en/latest/?badge=latest)
 [![image](https://img.shields.io/pypi/pyversions/pyngrok.svg)](https://pypi.org/project/pyngrok/)
 [![image](https://img.shields.io/pypi/implementation/pyngrok.svg)](https://pypi.org/project/pyngrok/)
 [![codecov](https://codecov.io/gh/alexdlaird/pyngrok/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdlaird/pyngrok)
