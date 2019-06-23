@@ -1,23 +1,24 @@
 import json
 import logging
 import os
+import socket
 import sys
 import uuid
 
 from future.standard_library import install_aliases
 
 from pyngrok import process
-from pyngrok.exception import PyngrokNgrokHTTPError
+from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError
 from pyngrok.installer import get_ngrok_bin, install_ngrok
 
 install_aliases()
 
 from urllib.parse import urlencode
-from urllib.request import urlopen, Request, HTTPError
+from urllib.request import urlopen, Request, HTTPError, URLError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.7"
+__version__ = "1.3.8"
 
 logger = logging.getLogger(__name__)
 
@@ -194,6 +195,8 @@ def disconnect(public_url, ngrok_path=None, config_path=None):
 
             api_request("{}{}".format(api_url, tunnel.uri.replace("+", "%20")), "DELETE")
 
+            break
+
 
 def get_tunnels(ngrok_path=None):
     """
@@ -233,7 +236,7 @@ def kill(ngrok_path=None):
     process.kill_process(ngrok_path)
 
 
-def api_request(uri, method="GET", data=None, params=None):
+def api_request(uri, method="GET", data=None, params=None, timeout=4):
     """
     Invoke an API request to the given URI, returning JSON data from the response as a dict.
 
@@ -245,6 +248,8 @@ def api_request(uri, method="GET", data=None, params=None):
     :type data: dict, optional
     :param params: The URL parameters.
     :type params: list, optional
+    :param timeout: The request timeout, in seconds.
+    :type timeout: float, optional
     :return: The response from the request.
     :rtype: dict
     """
@@ -262,7 +267,7 @@ def api_request(uri, method="GET", data=None, params=None):
     logger.debug("Making {} request to {} with data: {}".format(method, uri, data))
 
     try:
-        response = urlopen(request, data)
+        response = urlopen(request, data, timeout)
         response_data = response.read().decode("utf-8")
 
         status_code = response.getcode()
@@ -276,6 +281,8 @@ def api_request(uri, method="GET", data=None, params=None):
             return None
 
         return json.loads(response_data)
+    except socket.timeout:
+        raise PyngrokNgrokURLError("ngrok client exception, URLError: timed out", "timed out")
     except HTTPError as e:
         response_data = e.read().decode("utf-8")
 
@@ -286,6 +293,8 @@ def api_request(uri, method="GET", data=None, params=None):
         raise PyngrokNgrokHTTPError("ngrok client exception, API returned {}: {}".format(status_code, response_data),
                                     e.url,
                                     status_code, e.msg, e.hdrs, response_data)
+    except URLError as e:
+        raise PyngrokNgrokURLError("ngrok client exception, URLError: {}".format(e.reason), e.reason)
 
 
 def run(args=None):

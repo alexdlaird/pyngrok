@@ -4,12 +4,12 @@ import uuid
 import mock
 
 from pyngrok import ngrok, process
-from pyngrok.exception import PyngrokNgrokHTTPError
+from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError
 from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.7"
+__version__ = "1.3.8"
 
 
 class TestNgrok(NgrokTestCase):
@@ -106,6 +106,36 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertIn("807ad30a-73be-48d8", contents)
 
+    def test_api_get_request_success(self):
+        # GIVEN
+        current_process = ngrok.get_ngrok_process(config_path=self.config_path)
+        ngrok.connect(config_path=self.config_path)
+        time.sleep(1)
+        tunnel = ngrok.get_tunnels()[0]
+
+        # WHEN
+        response = ngrok.api_request("{}{}".format(current_process.api_url, tunnel.uri.replace("+", "%20")), "GET")
+
+        # THEN
+        self.assertEqual(tunnel.name, response['name'])
+
+    def test_api_request_delete_data_updated(self):
+        # GIVEN
+        current_process = ngrok.get_ngrok_process(config_path=self.config_path)
+        ngrok.connect(config_path=self.config_path)
+        time.sleep(1)
+        tunnels = ngrok.get_tunnels()
+        self.assertEqual(len(tunnels), 2)
+
+        # WHEN
+        response = ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri.replace("+", "%20")),
+                                     "DELETE")
+
+        # THEN
+        self.assertIsNone(response)
+        tunnels = ngrok.get_tunnels()
+        self.assertEqual(len(tunnels), 1)
+
     def test_api_request_fails(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(config_path=self.config_path)
@@ -123,3 +153,17 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(400, cm.exception.status_code)
         self.assertIn("invalid tunnel configuration", str(cm.exception))
         self.assertIn("protocol name", str(cm.exception))
+
+    def test_api_request_timeout(self):
+        # GIVEN
+        current_process = ngrok.get_ngrok_process(config_path=self.config_path)
+        ngrok.connect(config_path=self.config_path)
+        time.sleep(1)
+        tunnels = ngrok.get_tunnels()
+
+        # WHEN
+        with self.assertRaises(PyngrokNgrokURLError) as cm:
+            ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri.replace("+", "%20")), "DELETE", timeout=0.0001)
+
+        # THEN
+        self.assertIn("timed out", cm.exception.reason)
