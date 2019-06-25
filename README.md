@@ -55,3 +55,7 @@ For more advanced usage, the full documentation is available at [http://pyngrok.
 
 If you find issues, [report them on GitHub](https://github.com/alexdlaird/pyngrok/issues). Pull
 requests for fixes and features are also warmly welcomed.
+
+Be sure to review the [Contribution Guide](https://github.com/alexdlaird/pyngrok/blob/master/CONTRIBUTING.md) and
+[Code of Conduct](https://github.com/alexdlaird/pyngrok/blob/master/CODE_OF_CONDUCT.md) before submitting issues
+or pull requests.
