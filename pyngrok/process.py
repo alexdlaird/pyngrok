@@ -8,7 +8,7 @@ from pyngrok.exception import PyngrokNgrokError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.7"
+__version__ = "1.4.0"
 
 logger = logging.getLogger(__name__)
 
@@ -21,15 +21,18 @@ class NgrokProcess:
 
     :var string ngrok_path: The path to the `ngrok` binary used to start this process.
     :var string config_path: The path to the `ngrok` config used.
-    :var object process: The child process running `ngrok`.
+    :var object proc: The child `subprocess.Popen <https://docs.python.org/3/library/subprocess.html#subprocess.Popen>`_ that is running `ngrok`.
     :var string api_url: The API URL for the `ngrok` web interface.
     """
 
-    def __init__(self, ngrok_path, config_path, process, api_url):
+    def __init__(self, ngrok_path, config_path, proc, api_url):
         self.ngrok_path = ngrok_path
         self.config_path = config_path
-        self.process = process
+        self.proc = proc
         self.api_url = api_url
+
+        # Legacy, maintained for backwards compatibility, but use should be avoided as it shadows the module name.
+        self.process = proc
 
     def __repr__(self):
         return "<NgrokProcess: \"{}\">".format(self.api_url)

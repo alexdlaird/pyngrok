@@ -42,13 +42,10 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.coverage",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
-    "sphinx.ext.napoleon",
+    "m2r",
 ]
-
-napoleon_google_docstring = False
-napoleon_use_param = False
-napoleon_use_ivar = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -74,22 +71,29 @@ language = None
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", ".venv"]
 
+# If true, '()' will be appended to :func: etc. cross-reference text.
+add_function_parentheses = False
+
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_rtd_theme"
+html_theme = "alabaster"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
 html_theme_options = {
-    'display_version': True,
+    "show_powered_by": False,
+    "github_user": "alexdlaird",
+    "github_repo": "pyngrok",
+    "github_banner": True,
+    "show_related": False,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -105,8 +109,25 @@ html_theme_options = {
 # default: ``["localtoc.html", "relations.html", "sourcelink.html",
 # "searchbox.html"]``.
 #
-# html_sidebars = {}
+html_sidebars = {
+    "index": [
+        "sidebartoc.html",
+        "usefullinks.html",
+        "searchbox.html",
+    ],
+    "**": [
+        "sidebartoc.html",
+        "localtoc.html",
+        "usefullinks.html",
+        "searchbox.html",
+    ],
+}
 
+# If true, links to the reST sources are added to the pages.
+html_show_sourcelink = False
+
+# If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
+html_show_sphinx = False
 
 # -- Options for HTMLHelp output ---------------------------------------------
 

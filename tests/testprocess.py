@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.8"
+__version__ = "1.4.0"
 
 
 class TestProcess(NgrokTestCase):
@@ -59,8 +59,8 @@ class TestProcess(NgrokTestCase):
 
         # WHEN
         # Kill the process by external means, pyngrok still thinks process is active
-        ngrok_process.process.kill()
-        ngrok_process.process.wait()
+        ngrok_process.proc.kill()
+        ngrok_process.proc.wait()
         self.assertEqual(len(process._current_processes.keys()), 1)
 
         # Try to kill the process via pyngrok, no error, just update state
@@ -75,15 +75,15 @@ class TestProcess(NgrokTestCase):
 
         # WHEN
         # Kill the process by external means, pyngrok still thinks process is active
-        ngrok_process1.process.kill()
-        ngrok_process1.process.wait()
+        ngrok_process1.proc.kill()
+        ngrok_process1.proc.wait()
         self.assertEqual(len(process._current_processes.keys()), 1)
 
         # THEN
         # Try to get process via pyngrok, it has been killed, restart and correct state
         with mock.patch("atexit.register") as mock_atexit:
             ngrok_process2 = process.get_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
-            self.assertNotEqual(ngrok_process1.process.pid, ngrok_process2.process.pid)
+            self.assertNotEqual(ngrok_process1.proc.pid, ngrok_process2.proc.pid)
             self.assertEqual(len(process._current_processes.keys()), 1)
 
             mock_atexit.assert_called_once()
@@ -106,10 +106,10 @@ class TestProcess(NgrokTestCase):
         # THEN
         self.assertEqual(len(process._current_processes.keys()), 2)
         self.assertIsNotNone(ngrok_process1)
-        self.assertIsNone(ngrok_process1.process.poll())
+        self.assertIsNone(ngrok_process1.proc.poll())
         self.assertTrue("4040" in ngrok_process1.api_url)
         self.assertIsNotNone(ngrok_process2)
-        self.assertIsNone(ngrok_process2.process.poll())
+        self.assertIsNone(ngrok_process2.proc.poll())
         self.assertTrue("4041" in ngrok_process2.api_url)
 
     def test_multiple_processes_same_binary_fails(self):
@@ -125,6 +125,6 @@ class TestProcess(NgrokTestCase):
         # THEN
         self.assertIn("ngrok is already running", str(cm.exception))
         self.assertIsNotNone(ngrok_process1)
-        self.assertIsNone(ngrok_process1.process.poll())
+        self.assertIsNone(ngrok_process1.proc.poll())
         self.assertEqual(ngrok_process1, process.get_process(ngrok.DEFAULT_NGROK_PATH))
         self.assertEqual(len(process._current_processes.keys()), 1)

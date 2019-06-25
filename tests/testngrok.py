@@ -9,7 +9,7 @@ from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.8"
+__version__ = "1.4.0"
 
 
 class TestNgrok(NgrokTestCase):
@@ -95,7 +95,7 @@ class TestNgrok(NgrokTestCase):
         time.sleep(1)
 
         # THEN
-        self.assertIsNotNone(ngrok_process.process.poll())
+        self.assertIsNotNone(ngrok_process.proc.poll())
         self.assertEqual(len(process._current_processes.keys()), 0)
 
     def test_set_auth_token(self):
