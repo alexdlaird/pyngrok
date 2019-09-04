@@ -167,3 +167,13 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertIn("timed out", cm.exception.reason)
+
+    def test_work_without_config(self):
+        # GIVEN
+        config_path = None
+
+        # WHEN
+        ngrok.connect(config_path=config_path)
+
+        # THEN
+        pass
