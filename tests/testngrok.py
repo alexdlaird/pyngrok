@@ -172,8 +172,13 @@ class TestNgrok(NgrokTestCase):
         # GIVEN
         config_path = None
 
+        # if i dont do this, test will pass on your machine but fail on any that doesn't have ~/.ngrok2/config.yml
+        tmp = ngrok.DEFAULT_CONFIG_PATH
+        ngrok.DEFAULT_CONFIG_PATH = "/doesntexist.yml"
+
         # WHEN
         ngrok.connect(config_path=config_path)
 
         # THEN
+        ngrok.DEFAULT_CONFIG_PATH = tmp # packup necessary?
         pass
