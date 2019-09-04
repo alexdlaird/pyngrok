@@ -46,7 +46,8 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertEqual(502, cm.exception.status_code)
-        self.assertIn("account may not run more than 2 tunnels", str(cm.exception))
+        self.assertIn("account may not run more than 2 tunnels",
+                      str(cm.exception))
 
     def test_get_tunnels(self):
         # GIVEN
@@ -64,7 +65,8 @@ class TestNgrok(NgrokTestCase):
                 self.assertEqual(tunnel.config["addr"], "http://localhost:80")
             else:
                 self.assertEqual(tunnel.proto, "https")
-                self.assertEqual(tunnel.public_url, url.replace("http", "https"))
+                self.assertEqual(tunnel.public_url,
+                                 url.replace("http", "https"))
                 self.assertEqual(tunnel.config["addr"], "http://localhost:80")
 
     def test_disconnect(self):
@@ -100,8 +102,10 @@ class TestNgrok(NgrokTestCase):
 
     def test_set_auth_token(self):
         # WHEN
-        ngrok.set_auth_token("807ad30a-73be-48d8", config_path=self.config_path)
-        contents = open(self.config_path, "r").read()
+        ngrok.set_auth_token("807ad30a-73be-48d8",
+                             config_path=self.config_path)
+        with open(self.config_path, "r") as config_file:
+            contents = config_file.read()
 
         # THEN
         self.assertIn("807ad30a-73be-48d8", contents)
@@ -114,7 +118,8 @@ class TestNgrok(NgrokTestCase):
         tunnel = ngrok.get_tunnels()[0]
 
         # WHEN
-        response = ngrok.api_request("{}{}".format(current_process.api_url, tunnel.uri.replace("+", "%20")), "GET")
+        response = ngrok.api_request("{}{}".format(
+            current_process.api_url, tunnel.uri.replace("+", "%20")), "GET")
 
         # THEN
         self.assertEqual(tunnel.name, response['name'])
@@ -147,7 +152,8 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         with self.assertRaises(PyngrokNgrokHTTPError) as cm:
-            ngrok.api_request("{}/api/{}".format(current_process.api_url, "tunnels"), "POST", data=bad_options)
+            ngrok.api_request(
+                "{}/api/{}".format(current_process.api_url, "tunnels"), "POST", data=bad_options)
 
         # THEN
         self.assertEqual(400, cm.exception.status_code)
@@ -163,7 +169,18 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         with self.assertRaises(PyngrokNgrokURLError) as cm:
-            ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri.replace("+", "%20")), "DELETE", timeout=0.0001)
+            ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri.replace(
+                "+", "%20")), "DELETE", timeout=0.0001)
 
         # THEN
         self.assertIn("timed out", cm.exception.reason)
+
+    def test_works_without_ngrok_config(self):
+        # GIVEN
+        config_path = None
+
+        # WHEN
+        ngrok.connect(98765, config_path=config_path)
+
+        # THEN
+        pass
