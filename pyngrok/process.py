@@ -191,7 +191,8 @@ def _start_process(ngrok_path, config_path=None):
         elif "tunnel session started" in line:
             tunnel_started = True
             break
-        elif "lvl=error" in line or "lvl=crit" in line or ("err=" in line and "err=nil" not in line):
+        elif "lvl=error" in line or "lvl=crit" in line or ("err=" in line and "err=nil" not in line and 'msg="open config file"' not in line):
+            print("GOT ERROR", line.strip())
             errors.append(line.strip())
         elif process.poll() is not None:
             break
