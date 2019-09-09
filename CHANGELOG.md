@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/1.4.0...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/1.4.1...HEAD)
+
+## [1.4.1](https://github.com/alexdlaird/pyngrok/compare/1.4.0...1.4.1) - 2019-09-09
+### Fixed
+- Issue where arguments passed from the command line to `ngrok` were being dropped (and thus `ngrok help` was always being displayed).
 
 ## [1.4.0](https://github.com/alexdlaird/pyngrok/compare/1.3.8...1.4.0) - 2019-06-25
 ### Added
@@ -16,7 +20,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Renamed `NgrokProcess`'s instance variable `process` to `proc` due to module shadowing (`process` is still set for backwards compatibility, but it should no longer be relied upon as it will be removed in a future release)
 
 ### Fixed
-- Documentation issues. 
+- Documentation issues.
 
 ## [1.3.8](https://github.com/alexdlaird/pyngrok/compare/1.3.7...1.3.8) - 2019-06-22
 ### Added

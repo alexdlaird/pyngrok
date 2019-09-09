@@ -18,7 +18,7 @@ from urllib.request import urlopen, Request, HTTPError, URLError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.4.0"
+__version__ = "1.4.1"
 
 logger = logging.getLogger(__name__)
 
@@ -318,5 +318,12 @@ def run(args=None):
     process.run_process(DEFAULT_NGROK_PATH, args)
 
 
-if __name__ == '__main__':
+def main():
+    """
+    Entry point for console_scripts.
+    """
     run(sys.argv[1:])
+
+
+if __name__ == '__main__':
+    main()
