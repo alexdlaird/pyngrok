@@ -1,5 +1,5 @@
 future==0.17.1
-PyYAML==3.13
+PyYAML==5.1.2
 twine==1.12.1
 coverage==4.5.2
 codecov==2.0.15
