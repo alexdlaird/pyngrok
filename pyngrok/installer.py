@@ -6,6 +6,7 @@ import sys
 import tempfile
 import zipfile
 
+import yaml
 from future.standard_library import install_aliases
 
 from pyngrok.exception import PyngrokNgrokInstallError
@@ -16,7 +17,7 @@ from urllib.request import urlopen
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.8"
+__version__ = "1.4.1"
 
 logger = logging.getLogger(__name__)
 
@@ -91,6 +92,32 @@ def install_ngrok(ngrok_path, timeout=None):
         os.chmod(ngrok_path, int("777", 8))
     except Exception as e:
         raise PyngrokNgrokInstallError("An error occurred while downloading ngrok from {}: {}".format(url, e))
+
+
+def install_default_config(config_path, data=""):
+    """
+    Install the default `ngrok` config if one is not already present.
+
+    :param config_path: The path to where the `ngrok` config should be installed.
+    :type config_path: string
+    :param data: A JSON string of things to add to the default config.
+    :type data: string, optional
+    """
+    config_dir = os.path.dirname(config_path)
+    if not os.path.exists(config_dir):
+        os.makedirs(config_dir)
+    if not os.path.exists(config_path):
+        open(config_path, "w").close()
+
+    with open(config_path, "r") as config_file:
+        config = yaml.safe_load(config_file)
+        if config is None:
+            config = {}
+
+        config.update(data)
+
+    with open(config_path, "w") as config_file:
+        yaml.dump(config, config_file)
 
 
 def _download_file(url, timeout):

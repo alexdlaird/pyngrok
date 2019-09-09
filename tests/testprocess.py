@@ -3,7 +3,7 @@ import os
 from future.standard_library import install_aliases
 from mock import mock
 
-from pyngrok import ngrok, process
+from pyngrok import ngrok, process, installer
 from pyngrok.exception import PyngrokNgrokError
 from .testcase import NgrokTestCase
 
@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.4.0"
+__version__ = "1.4.1"
 
 
 class TestProcess(NgrokTestCase):
@@ -41,7 +41,7 @@ class TestProcess(NgrokTestCase):
         ngrok_path2 = os.path.join(ngrok.BIN_DIR, "2", ngrok.get_ngrok_bin())
         self.given_ngrok_installed(ngrok_path2)
         config_path2 = os.path.join(self.config_dir, "config2.yml")
-        self.given_config(config_path2, {"web_addr": ngrok_process.api_url.lstrip("http://")})
+        installer.install_default_config(config_path2, {"web_addr": ngrok_process.api_url.lstrip("http://")})
 
         # WHEN
         with self.assertRaises(PyngrokNgrokError) as cm:
@@ -92,12 +92,12 @@ class TestProcess(NgrokTestCase):
         # GIVEN
         self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
         self.assertEqual(len(process._current_processes.keys()), 0)
-        self.given_config(self.config_path, {"web_addr": "localhost:4040"})
+        installer.install_default_config(self.config_path, {"web_addr": "localhost:4040"})
 
         ngrok_path2 = os.path.join(ngrok.BIN_DIR, "2", ngrok.get_ngrok_bin())
         self.given_ngrok_installed(ngrok_path2)
         config_path2 = os.path.join(self.config_dir, "config2.yml")
-        self.given_config(config_path2, {"web_addr": "localhost:4041"})
+        installer.install_default_config(config_path2, {"web_addr": "localhost:4041"})
 
         # WHEN
         ngrok_process1 = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)

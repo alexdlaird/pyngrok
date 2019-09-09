@@ -8,7 +8,7 @@ from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.3.0"
+__version__ = "1.4.1"
 
 
 class TestInstaller(NgrokTestCase):
@@ -23,6 +23,18 @@ class TestInstaller(NgrokTestCase):
 
         # THEN
         self.assertTrue(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
+
+    def test_config_provisioned(self):
+        # GIVEN
+        if os.path.exists(self.config_path):
+            os.remove(self.config_path)
+        self.assertFalse(os.path.exists(self.config_path))
+
+        # WHEN
+        ngrok.connect(config_path=self.config_path)
+
+        # THEN
+        self.assertTrue(os.path.exists(self.config_path))
 
     @mock.patch("pyngrok.installer.urlopen")
     def test_installer_download_fails(self, mock_urlopen):

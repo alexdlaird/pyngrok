@@ -9,7 +9,7 @@ from future.standard_library import install_aliases
 
 from pyngrok import process
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError
-from pyngrok.installer import get_ngrok_bin, install_ngrok
+from pyngrok.installer import get_ngrok_bin, install_ngrok, install_default_config
 
 install_aliases()
 
@@ -25,6 +25,8 @@ logger = logging.getLogger(__name__)
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
 DEFAULT_CONFIG_PATH = None
+
+_DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ngrok.yml")
 
 
 class NgrokTunnel:
@@ -69,6 +71,9 @@ def ensure_ngrok_installed(ngrok_path):
     """
     if not os.path.exists(ngrok_path):
         install_ngrok(ngrok_path)
+
+    if not os.path.exists(_DEFAULT_NGROK_CONFIG_PATH):
+        install_default_config(_DEFAULT_NGROK_CONFIG_PATH)
 
 
 def set_auth_token(token, ngrok_path=None, config_path=None):
