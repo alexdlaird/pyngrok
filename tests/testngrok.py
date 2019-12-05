@@ -31,7 +31,7 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertIsNotNone(current_process)
-        self.assertIsNone(current_process.process.poll())
+        self.assertIsNone(current_process.proc.poll())
         self.assertIsNotNone(url)
         self.assertIsNotNone(process.get_process(ngrok.DEFAULT_NGROK_PATH))
         self.assertEqual(len(process._current_processes.keys()), 1)

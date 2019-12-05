@@ -45,8 +45,8 @@ class TestProcess(NgrokTestCase):
         installer.install_default_config(config_path2, {"web_addr": ngrok_process.api_url.lstrip("http://")})
 
         # FIXME: `_start_process needs to be investigated to understand why, infrequently, the process hasn't fully
-        #  started and this sleep is necessary. See: https://github.com/alexdlaird/pyngrok/issues/20
-        time.sleep(1)
+        #  started and this sleep is necessary. See: https://github.com/alexdlaird/pyngrok/issues/24
+        # time.sleep(1)
 
         # WHEN
         with self.assertRaises(PyngrokNgrokError) as cm:
