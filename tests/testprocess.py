@@ -46,7 +46,7 @@ class TestProcess(NgrokTestCase):
 
         # FIXME: `_start_process needs to be investigated to understand why, infrequently, the process hasn't fully
         #  started and this sleep is necessary. See: https://github.com/alexdlaird/pyngrok/issues/24
-        # time.sleep(1)
+        time.sleep(1)
 
         # WHEN
         with self.assertRaises(PyngrokNgrokError) as cm:
