@@ -1,14 +1,21 @@
 import atexit
 import logging
 import os
+import socket
 import subprocess
 import time
 
+from future.standard_library import install_aliases
+
 from pyngrok.exception import PyngrokNgrokError
+
+install_aliases()
+
+from urllib.parse import urlparse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.4.0"
+__version__ = "2.0.0"
 
 logger = logging.getLogger(__name__)
 
@@ -23,22 +30,52 @@ class NgrokProcess:
     :var string config_path: The path to the `ngrok` config used.
     :var object proc: The child `subprocess.Popen <https://docs.python.org/3/library/subprocess.html#subprocess.Popen>`_ that is running `ngrok`.
     :var string api_url: The API URL for the `ngrok` web interface.
+    :var string startup_logs: The `ngrok` startup logs.
+    :var string startup_error: If `ngrok` startup failed, this will be the log of the failure.
     """
 
-    def __init__(self, ngrok_path, config_path, proc, api_url):
+    def __init__(self, ngrok_path, config_path, proc):
         self.ngrok_path = ngrok_path
         self.config_path = config_path
         self.proc = proc
-        self.api_url = api_url
+        self.api_url = None
+        self.startup_logs = []
+        self.startup_error = None
 
-        # Legacy, maintained for backwards compatibility, but use should be avoided as it shadows the module name.
-        self.process = proc
+        self._tunnel_started = False
+        self._client_connected = False
 
     def __repr__(self):
         return "<NgrokProcess: \"{}\">".format(self.api_url)
 
     def __str__(self):  # pragma: no cover
         return "NgrokProcess: \"{}\"".format(self.api_url)
+
+    def _line_has_error(self, line):
+        return "lvl=error" in line or "lvl=eror" in line or \
+               "lvl=crit" in line or \
+               ("err=" in line and "err=nil" not in line)
+
+    def healthy(self):
+        return self.api_url and \
+               self._tunnel_started and self._client_connected and \
+               self.proc.poll() is None and \
+               self.startup_error is None
+
+    def log_boot_line(self, line):
+        logger.debug(line)
+        self.startup_logs.append(line)
+
+        if self._line_has_error(line):
+            self.startup_error = line
+        else:
+            # Log that `ngrok` came up in a healthy state
+            if "starting web service" in line:
+                self.api_url = "http://{}".format(line.split("addr=")[1])
+            elif "tunnel session started" in line:
+                self._tunnel_started = True
+            elif "client session established" in line:
+                self._client_connected = True
 
 
 def set_auth_token(ngrok_path, token, config_path=None):
@@ -79,7 +116,7 @@ def get_process(ngrok_path, config_path=None):
     """
     if ngrok_path in _current_processes:
         # Ensure the process is still running and hasn't been killed externally
-        if _current_processes[ngrok_path].process.poll() is None:
+        if _current_processes[ngrok_path].proc.poll() is None:
             return _current_processes[ngrok_path]
         else:
             _current_processes.pop(ngrok_path, None)
@@ -113,10 +150,10 @@ def kill_process(ngrok_path):
     if ngrok_path in _current_processes:
         ngrok_process = _current_processes[ngrok_path]
 
-        logger.info("Killing ngrok process: {}".format(ngrok_process.process.pid))
+        logger.info("Killing ngrok process: {}".format(ngrok_process.proc.pid))
 
         try:
-            ngrok_process.process.kill()
+            ngrok_process.proc.kill()
         except OSError as e:
             # If the process was already killed, nothing to do but cleanup state
             if e.errno != 3:
@@ -176,32 +213,31 @@ def _start_process(ngrok_path, config_path=None):
     process = subprocess.Popen(start, stdout=subprocess.PIPE, universal_newlines=True)
     atexit.register(_terminate_process, process)
 
-    logger.info("ngrok process started: {}".format(process.pid))
+    logger.info("ngrok process starting: {}".format(process.pid))
 
-    api_url = None
-    tunnel_started = False
-    errors = []
+    ngrok_process = NgrokProcess(ngrok_path, config_path, process)
+    _current_processes[ngrok_path] = ngrok_process
+
     timeout = time.time() + 15
     while time.time() < timeout:
         line = process.stdout.readline()
-        logger.debug(line)
+        ngrok_process.log_boot_line(line.strip())
 
-        if "starting web service" in line:
-            api_url = "http://{}".format(line.split("addr=")[1].strip())
-        elif "tunnel session started" in line:
-            tunnel_started = True
-            break
-        elif "lvl=error" in line or "lvl=crit" in line or ("err=" in line and "err=nil" not in line):
-            errors.append(line.strip())
-        elif process.poll() is not None:
+        if ngrok_process.healthy() or \
+                ngrok_process.startup_error is not None or \
+                ngrok_process.proc.poll() is not None:
             break
 
-    if not api_url or not tunnel_started or len(errors) > 0:
-        raise PyngrokNgrokError("The ngrok process was unable to start.", errors)
+    if not ngrok_process.healthy():
+        # If the process did not come up in a healthy state, clean up the state
+        kill_process(ngrok_path)
 
-    logger.info("ngrok web service started: {}".format(api_url))
+        if ngrok_process.startup_error is not None:
+            raise PyngrokNgrokError("The ngrok process errored on start.", ngrok_process.startup_logs,
+                                    ngrok_process.startup_error)
+        else:
+            raise PyngrokNgrokError("The ngrok process was unable to start.", ngrok_process.startup_logs)
 
-    ngrok_process = NgrokProcess(ngrok_path, config_path, process, api_url)
-    _current_processes[ngrok_path] = ngrok_process
+    logger.info("ngrok process has started: {}".format(ngrok_process.api_url))
 
     return ngrok_process
