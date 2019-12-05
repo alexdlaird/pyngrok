@@ -69,7 +69,7 @@ class NgrokProcess:
         if self._line_has_error(line):
             self.startup_error = line
         else:
-            # Log that `ngrok` came up in a healthy state
+            # Log `ngrok` boot states as they come up
             if "starting web service" in line:
                 self.api_url = "http://{}".format(line.split("addr=")[1])
             elif "tunnel session started" in line:
