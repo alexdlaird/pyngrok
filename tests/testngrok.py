@@ -1,3 +1,4 @@
+import http
 import time
 import uuid
 
@@ -9,7 +10,7 @@ from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.4.0"
+__version__ = "2.0.0"
 
 
 class TestNgrok(NgrokTestCase):
@@ -150,7 +151,7 @@ class TestNgrok(NgrokTestCase):
             ngrok.api_request("{}/api/{}".format(current_process.api_url, "tunnels"), "POST", data=bad_options)
 
         # THEN
-        self.assertEqual(400, cm.exception.status_code)
+        self.assertEqual(http.HTTPStatus.BAD_REQUEST, cm.exception.status_code)
         self.assertIn("invalid tunnel configuration", str(cm.exception))
         self.assertIn("protocol name", str(cm.exception))
 
@@ -163,7 +164,8 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         with self.assertRaises(PyngrokNgrokURLError) as cm:
-            ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri.replace("+", "%20")), "DELETE", timeout=0.0001)
+            ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri.replace("+", "%20")), "DELETE",
+                              timeout=0.0001)
 
         # THEN
         self.assertIn("timed out", cm.exception.reason)

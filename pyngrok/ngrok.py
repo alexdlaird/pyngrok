@@ -1,3 +1,4 @@
+import http
 import json
 import logging
 import os
@@ -18,7 +19,7 @@ from urllib.request import urlopen, Request, HTTPError, URLError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.4.1"
+__version__ = "2.0.0"
 
 logger = logging.getLogger(__name__)
 
@@ -288,7 +289,7 @@ def api_request(uri, method="GET", data=None, params=None, timeout=4):
         if str(status_code)[0] != "2":
             raise PyngrokNgrokHTTPError("ngrok client API returned {}: {}".format(status_code, response_data), uri,
                                         status_code, None, request.headers, response_data)
-        elif status_code == 204:
+        elif status_code == http.HTTPStatus.NO_CONTENT:
             return None
 
         return json.loads(response_data)

@@ -1,5 +1,4 @@
 import os
-import time
 
 from future.standard_library import install_aliases
 from mock import mock
@@ -55,7 +54,7 @@ class TestProcess(NgrokTestCase):
         # THEN
         self.assertIsNotNone(cm.exception.ngrok_error)
         self.assertIn("{}: bind: address already in use".format(port), cm.exception.ngrok_error)
-        self.assertEqual(len(process._current_processes.keys()), 1)
+        self.assertEqual(len(process._current_processes.keys()), 2)
 
     def test_process_external_kill(self):
         # GIVEN

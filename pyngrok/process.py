@@ -1,7 +1,7 @@
 import atexit
+import http
 import logging
 import os
-import socket
 import subprocess
 import time
 
@@ -11,7 +11,7 @@ from pyngrok.exception import PyngrokNgrokError
 
 install_aliases()
 
-from urllib.parse import urlparse
+from urllib.request import urlopen, Request
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
@@ -56,12 +56,6 @@ class NgrokProcess:
                "lvl=crit" in line or \
                ("err=" in line and "err=nil" not in line)
 
-    def healthy(self):
-        return self.api_url and \
-               self._tunnel_started and self._client_connected and \
-               self.proc.poll() is None and \
-               self.startup_error is None
-
     def log_boot_line(self, line):
         logger.debug(line)
         self.startup_logs.append(line)
@@ -76,6 +70,20 @@ class NgrokProcess:
                 self._tunnel_started = True
             elif "client session established" in line:
                 self._client_connected = True
+
+    def healthy(self):
+        if self.api_url is None or \
+                not self._tunnel_started or not self._client_connected:
+            return False
+
+        # Ensure the process is available for requests before registering it as healthy
+        request = Request("{}/api/tunnels".format(self.api_url))
+        response = urlopen(request)
+        if response.getcode() != http.HTTPStatus.OK:
+            return False
+
+        return self.proc.poll() is None and \
+               self.startup_error is None
 
 
 def set_auth_token(ngrok_path, token, config_path=None):
@@ -223,8 +231,10 @@ def _start_process(ngrok_path, config_path=None):
         line = process.stdout.readline()
         ngrok_process.log_boot_line(line.strip())
 
-        if ngrok_process.healthy() or \
-                ngrok_process.startup_error is not None or \
+        if ngrok_process.healthy():
+            logger.info("ngrok process has started: {}".format(ngrok_process.api_url))
+            break
+        elif ngrok_process.startup_error is not None or \
                 ngrok_process.proc.poll() is not None:
             break
 
@@ -237,7 +247,5 @@ def _start_process(ngrok_path, config_path=None):
                                     ngrok_process.startup_error)
         else:
             raise PyngrokNgrokError("The ngrok process was unable to start.", ngrok_process.startup_logs)
-
-    logger.info("ngrok process has started: {}".format(ngrok_process.api_url))
 
     return ngrok_process

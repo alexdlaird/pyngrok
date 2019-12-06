@@ -1,3 +1,4 @@
+import http
 import logging
 import os
 import platform
@@ -17,7 +18,7 @@ from urllib.request import urlopen
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.4.1"
+__version__ = "2.0.0"
 
 logger = logging.getLogger(__name__)
 
@@ -129,7 +130,7 @@ def _download_file(url, timeout):
     status_code = response.getcode()
     logger.debug("Response status code: {}".format(status_code))
 
-    if status_code != 200:
+    if status_code != http.HTTPStatus.OK:
         return None
 
     download_path = os.path.join(tempfile.gettempdir(), local_filename)
