@@ -1,7 +1,7 @@
 from setuptools import setup
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2019, Alex Laird"
+__copyright__ = "Copyright 2020, Alex Laird"
 __version__ = "1.4.3"
 
 with open("README.md", "r") as f:

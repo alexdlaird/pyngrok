@@ -8,8 +8,8 @@ from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError
 from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.4.0"
+__copyright__ = "Copyright 2020, Alex Laird"
+__version__ = "1.4.3"
 
 
 class TestNgrok(NgrokTestCase):

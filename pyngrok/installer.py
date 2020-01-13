@@ -16,8 +16,8 @@ install_aliases()
 from urllib.request import urlopen
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "1.4.1"
+__copyright__ = "Copyright 2020, Alex Laird"
+__version__ = "1.4.3"
 
 logger = logging.getLogger(__name__)
 
