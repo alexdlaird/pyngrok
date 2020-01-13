@@ -7,6 +7,7 @@
 [![image](https://img.shields.io/pypi/pyversions/pyngrok.svg)](https://pypi.org/project/pyngrok/)
 [![image](https://img.shields.io/pypi/implementation/pyngrok.svg)](https://pypi.org/project/pyngrok/)
 [![PyPI license](https://img.shields.io/pypi/l/pyngrok.svg)](https://pypi.org/project/pyngrok/)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/alexdlaird)
 
 `pyngrok` is a Python wrapper for [ngrok](https://ngrok.com/) that manages its own binary and puts
 it on our path, making `ngrok` readily available from anywhere on the command line and via a
@@ -59,3 +60,6 @@ requests for fixes and features are also warmly welcomed.
 Be sure to review the [Contribution Guide](https://github.com/alexdlaird/pyngrok/blob/master/CONTRIBUTING.md) and
 [Code of Conduct](https://github.com/alexdlaird/pyngrok/blob/master/CODE_OF_CONDUCT.md) before submitting issues
 or pull requests.
+
+Want to contribute financially? If you've found `pyngrok` useful, [a donation](https://www.paypal.me/alexdlaird) would
+also be greatly appreciated!
