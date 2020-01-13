@@ -60,3 +60,6 @@ requests for fixes and features are also warmly welcomed.
 Be sure to review the [Contribution Guide](https://github.com/alexdlaird/pyngrok/blob/master/CONTRIBUTING.md) and
 [Code of Conduct](https://github.com/alexdlaird/pyngrok/blob/master/CODE_OF_CONDUCT.md) before submitting issues
 or pull requests.
+
+Want to contribute financially? If you've found `pyngrok` useful, [a donation](https://www.paypal.me/alexdlaird) would
+also be greatly appreciated!
