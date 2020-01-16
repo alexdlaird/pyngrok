@@ -330,6 +330,11 @@ def main():
     """
     run(sys.argv[1:])
 
+    if len(sys.argv) == 1:
+        print("\nPYNGROK VERSION:\n   {}".format(__version__))
+    elif len(sys.argv) == 2 and sys.argv[1] == "version":
+        print("pyngrok version {}".format(__version__))
+
 
 if __name__ == '__main__':
     main()

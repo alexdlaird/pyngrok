@@ -1,8 +1,10 @@
 from setuptools import setup
 
+from pyngrok import ngrok
+
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2019, Alex Laird"
-__version__ = "2.0.0"
+__version__ = ngrok.__version__
 
 with open("README.md", "r") as f:
     long_description = f.read()
@@ -19,6 +21,7 @@ setup(
     entry_points="""
         [console_scripts]
         ngrok=pyngrok.ngrok:main
+        pyngrok=pyngrok.ngrok:main
     """,
     description="A Python wrapper for Ngrok.",
     long_description=long_description,
