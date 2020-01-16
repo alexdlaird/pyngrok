@@ -17,7 +17,7 @@ try:
 except ImportError:
     try:
         from http import client as StatusCodes
-    except ImportError:
+    except ImportError:  # pragma: no cover
         import httplib as StatusCodes
 
 __author__ = "Alex Laird"

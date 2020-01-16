@@ -1,3 +1,4 @@
+import sys
 import time
 import uuid
 
@@ -22,9 +23,17 @@ __version__ = "2.0.0"
 
 class TestNgrok(NgrokTestCase):
     @mock.patch("subprocess.call")
-    def test_main(self, mock_call):
+    def test_run(self, mock_call):
         # WHEN
         ngrok.run()
+
+        # THEN
+        mock_call.assert_called_once()
+
+    @mock.patch("subprocess.call")
+    def test_main(self, mock_call):
+        # WHEN
+        ngrok.main()
 
         # THEN
         mock_call.assert_called_once()

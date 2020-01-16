@@ -1,4 +1,5 @@
 import os
+import time
 
 from future.standard_library import install_aliases
 from mock import mock
@@ -17,6 +18,19 @@ __version__ = "2.0.0"
 
 
 class TestProcess(NgrokTestCase):
+    def test_terminate_process(self):
+        # GIVEN
+        self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
+        ngrok_process1 = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        self.assertIsNone(ngrok_process1.proc.poll())
+
+        # WHEN
+        process._terminate_process(ngrok_process1.proc)
+        time.sleep(1)
+
+        # THEN
+        self.assertIsNotNone(ngrok_process1.proc.poll())
+
     def test_get_process_no_binary(self):
         # GIVEN
         self.given_ngrok_not_installed(ngrok.DEFAULT_NGROK_PATH)
