@@ -3,7 +3,7 @@ from setuptools import setup
 from pyngrok import ngrok
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2019, Alex Laird"
+__copyright__ = "Copyright 2020, Alex Laird"
 __version__ = ngrok.__version__
 
 with open("README.md", "r") as f:

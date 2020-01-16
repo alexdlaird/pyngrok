@@ -1,4 +1,3 @@
-import http
 import time
 import uuid
 
@@ -8,8 +7,16 @@ from pyngrok import ngrok, process
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError
 from .testcase import NgrokTestCase
 
+try:
+    from http import HTTPStatus as StatusCodes
+except ImportError:
+    try:
+        from http import client as StatusCodes
+    except ImportError:
+        import httplib as StatusCodes
+
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2019, Alex Laird"
+__copyright__ = "Copyright 2020, Alex Laird"
 __version__ = "2.0.0"
 
 
@@ -151,7 +158,7 @@ class TestNgrok(NgrokTestCase):
             ngrok.api_request("{}/api/{}".format(current_process.api_url, "tunnels"), "POST", data=bad_options)
 
         # THEN
-        self.assertEqual(http.HTTPStatus.BAD_REQUEST, cm.exception.status_code)
+        self.assertEqual(StatusCodes.BAD_REQUEST, cm.exception.status_code)
         self.assertIn("invalid tunnel configuration", str(cm.exception))
         self.assertIn("protocol name", str(cm.exception))
 

@@ -1,4 +1,3 @@
-import http
 import logging
 import os
 import platform
@@ -16,8 +15,16 @@ install_aliases()
 
 from urllib.request import urlopen
 
+try:
+    from http import HTTPStatus as StatusCodes
+except ImportError:
+    try:
+        from http import client as StatusCodes
+    except ImportError:
+        import httplib as StatusCodes
+
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2019, Alex Laird"
+__copyright__ = "Copyright 2020, Alex Laird"
 __version__ = "2.0.0"
 
 logger = logging.getLogger(__name__)
@@ -130,7 +137,7 @@ def _download_file(url, timeout):
     status_code = response.getcode()
     logger.debug("Response status code: {}".format(status_code))
 
-    if status_code != http.HTTPStatus.OK:
+    if status_code != StatusCodes.OK:
         return None
 
     download_path = os.path.join(tempfile.gettempdir(), local_filename)

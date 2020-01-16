@@ -1,5 +1,4 @@
 import atexit
-import http
 import logging
 import os
 import subprocess
@@ -13,8 +12,16 @@ install_aliases()
 
 from urllib.request import urlopen, Request
 
+try:
+    from http import HTTPStatus as StatusCodes
+except ImportError:
+    try:
+        from http import client as StatusCodes
+    except ImportError:
+        import httplib as StatusCodes
+
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2019, Alex Laird"
+__copyright__ = "Copyright 2020, Alex Laird"
 __version__ = "2.0.0"
 
 logger = logging.getLogger(__name__)
@@ -79,7 +86,7 @@ class NgrokProcess:
         # Ensure the process is available for requests before registering it as healthy
         request = Request("{}/api/tunnels".format(self.api_url))
         response = urlopen(request)
-        if response.getcode() != http.HTTPStatus.OK:
+        if response.getcode() != StatusCodes.OK:
             return False
 
         return self.proc.poll() is None and \

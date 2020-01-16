@@ -6,7 +6,7 @@ from pyngrok import ngrok
 from pyngrok import process
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2019, Alex Laird"
+__copyright__ = "Copyright 2020, Alex Laird"
 __version__ = "2.0.0"
 
 
