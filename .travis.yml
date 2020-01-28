@@ -1,9 +1,6 @@
 sudo: required
 os: linux
 dist: xenial
-arch:
-- "amd64"
-- "arm64"
 language: python
 python:
 - "2.7"
@@ -32,3 +29,7 @@ deploy:
   on:
     tags: true
     python: 3.6
+jobs:
+  include:
+    - python: "3.7"
+    arch: "arm64"

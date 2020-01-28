@@ -16,6 +16,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 - Refactored the boot loop for improved stability and accessibility
 
+### Fixed
+- Properly identify more ARM processors, including `aarch64` 
+
 ### Removed
 - Removed `NgrokProcess`'s `process` variable (previously deprecated in `1.4.0`, use `proc` now instead)
 
