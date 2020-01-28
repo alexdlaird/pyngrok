@@ -35,8 +35,7 @@ jobs:
       python: "3.7"
     - os: "osx"
       python: "3.7"
-      language: "generic"
-      env: TOXENV=py37
+      osx_image: xcode11.2
     - os: "windows"
       python: "3.7"
       language: sh
