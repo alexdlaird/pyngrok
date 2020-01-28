@@ -29,6 +29,7 @@ deploy:
   on:
     tags: true
     python: 3.6
+  skip_cleanup: true
 jobs:
   include:
     - name: "ARM, Python: 3.7"
