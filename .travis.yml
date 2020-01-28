@@ -41,6 +41,7 @@ jobs:
       before_install:
         - python3 -m pip install virtualenv
         - python3 -m virtualenv .venv
+        - python3 --version
     - name: "Windows, Python: 3.7"
       os: "windows"
       language: minimal
