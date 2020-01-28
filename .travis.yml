@@ -31,9 +31,16 @@ deploy:
     python: 3.7
 jobs:
   include:
-    - python: "3.7"
-      arch: "arm64"
-    - python: "3.7"
-      os: "osx"
-    - python: "3.7"
-      os: "windows"
+    - arch: "arm64"
+      python: "3.7"
+    - os: "osx"
+      python: "3.6"
+    - os: "windows"
+      language: sh
+      before_install:
+        - git clone https://github.com/pyenv-win/pyenv-win.git $HOME/.pyenv
+        - export PATH="$HOME/.pyenv/pyenv-win/bin:$HOME/.pyenv/pyenv-win/shims:$PATH"
+        - pyenv install -q 3.7.1
+        - pyenv rehash
+        - pyenv local 3.7.1
+        - python --version
