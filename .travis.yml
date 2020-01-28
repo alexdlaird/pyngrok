@@ -31,15 +31,21 @@ deploy:
     python: 3.7
 jobs:
   include:
-    - arch: "arm64"
+    - name: "ARM64, Python: 3.7"
+      arch: "arm64"
       python: "3.7"
-    - os: "osx"
-      python: "3.7"
-      language: generic
+    - name: "OS X, Python: 3.7"
+      os: "osx"
+      language: minimal
       osx_image: "xcode11.2"
-    - os: "windows"
-      python: "3.7"
-      language: sh
+      install:
+        - python3 -m pip install virtualenv
+        - python3 -m virtualenv .venv
+        - source .venv/bin/activate
+        - python3 -m pip install -r requirements.txt
+    - name: "Windows, Python: 3.7"
+      os: "windows"
+      language: minimal
       before_install:
         - git clone https://github.com/pyenv-win/pyenv-win.git $HOME/.pyenv
         - export PATH="$HOME/.pyenv/pyenv-win/bin:$HOME/.pyenv/pyenv-win/shims:$PATH"
