@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/1.4.1...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/1.4.4...HEAD)
+
+## [1.4.4](https://github.com/alexdlaird/pyngrok/compare/1.4.0...1.4.4) - 2020-01-28
+### Fixed
+- Properly identify more ARM processors, including `aarch64` 
 
 ## [1.4.1](https://github.com/alexdlaird/pyngrok/compare/1.4.0...1.4.1) - 2019-09-09
 ### Fixed

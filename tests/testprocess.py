@@ -1,4 +1,5 @@
 import os
+import platform
 import time
 
 from future.standard_library import install_aliases
@@ -53,7 +54,10 @@ class TestProcess(NgrokTestCase):
             process._start_process(ngrok_path2, config_path=config_path2)
 
         # THEN
-        self.assertIn("{}: bind: address already in use".format(port), str(cm.exception.ngrok_errors))
+        if platform.system() == "Windows":
+            self.assertIn("{}: bind: Only one usage of each socket address".format(port), cm.exception.ngrok_error)
+        else:
+            self.assertIn("{}: bind: address already in use".format(port), cm.exception.ngrok_error)
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     def test_process_external_kill(self):
