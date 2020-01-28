@@ -48,6 +48,7 @@ jobs:
         - pyenv rehash
         - pyenv local 3.7.2
         - python --version
+        - export PATH="$HOME/.pyenv/pyenv-win/versions/3.7.2/Scripts:$PATH"
       install:
         - pip install -r requirements.txt
       script:
