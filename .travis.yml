@@ -34,9 +34,10 @@ jobs:
     - arch: "arm64"
       python: "3.7"
     - os: "osx"
-      python: "2.7"
+      language: "generic"
+      env: TOXENV=py37
     - os: "windows"
-      language: sh
+      language: "sh"
       before_install:
         - git clone https://github.com/pyenv-win/pyenv-win.git $HOME/.pyenv
         - export PATH="$HOME/.pyenv/pyenv-win/bin:$HOME/.pyenv/pyenv-win/shims:$PATH"
@@ -48,4 +49,4 @@ jobs:
       install:
         - pip install -r requirements.txt
       script:
-        - python `which nosetests` -s
+        - python nosetests -s
