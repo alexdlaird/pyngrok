@@ -82,6 +82,7 @@ def install_ngrok(ngrok_path, timeout=None):
     arch = 'x86_64' if sys.maxsize > 2 ** 32 else 'i386'
     if 'arm' in platform.uname()[4]:
         arch += '_arm'
+    logger.debug(platform.uname())
     plat = platform.system().lower() + "_" + arch
     try:
         url = PLATFORMS[plat]
