@@ -44,3 +44,5 @@ jobs:
         - pyenv rehash
         - pyenv local 3.7.1
         - python --version
+      install:
+        - pip install -r requirements.txt
