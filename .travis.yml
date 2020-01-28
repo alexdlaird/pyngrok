@@ -1,5 +1,9 @@
 sudo: required
+os: linux
 dist: xenial
+arch:
+- "amd64"
+- "arm64"
 language: python
 python:
 - "2.7"
