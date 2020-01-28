@@ -39,8 +39,8 @@ jobs:
       language: minimal
       osx_image: "xcode11.2"
       before_install:
+        - python3 -m pip install virtualenv
         - python3 -m virtualenv .venv
-        - source .venv/bin/activate
     - name: "Windows, Python: 3.7"
       os: "windows"
       language: minimal
