@@ -9,7 +9,7 @@ python:
 - "3.7"
 - "3.8"
 - "pypy"
-- "pypy3.5"
+- "pypy3"
 install:
 - python -m pip install virtualenv
 - python -m virtualenv .venv
@@ -39,7 +39,8 @@ jobs:
       language: minimal
       osx_image: "xcode11.2"
       before_install:
-        - alias python="python3"
+        - python3 -m virtualenv .venv
+        - source .venv/bin/activate
     - name: "Windows, Python: 3.7"
       os: "windows"
       language: minimal
