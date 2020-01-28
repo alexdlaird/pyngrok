@@ -34,7 +34,7 @@ jobs:
     - arch: "arm64"
       python: "3.7"
     - os: "osx"
-      python: "3.6"
+      python: "3.5"
     - os: "windows"
       language: sh
       before_install:
