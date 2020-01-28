@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/2.0.0...HEAD)
 
-## [2.0.0](https://github.com/alexdlaird/pyngrok/compare/1.4.1...2.0.0) - TBD
+## [2.0.0](https://github.com/alexdlaird/pyngrok/compare/1.4.1...2.0.0) - 2020-01-28
 ### Added
 - `api_url` variable to `NgrokProcess` class
 - `startup_logs` variable to `NgrokProcess` class
