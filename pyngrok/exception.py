@@ -1,6 +1,6 @@
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "1.4.3"
+__version__ = "2.0.0"
 
 
 class PyngrokError(Exception):
@@ -22,16 +22,18 @@ class PyngrokNgrokError(PyngrokError):
     Raised when an error occurs interacting directly with the `ngrok` binary.
 
     :var string error: A description of the error being thrown.
-    :var list ngrok_errors: A list of errors reported by the `ngrok` process.
+    :var string ngrok_logs: The `ngrok` logs, which may be useful for debugging the error.
+    :var string ngrok_error: The error that caused the `ngrok` process to fail.
     """
 
-    def __init__(self, error, ngrok_errors=None):
+    def __init__(self, error, ngrok_logs=None, ngrok_error=None):
         super(PyngrokNgrokError, self).__init__(error)
 
-        if ngrok_errors is None:
-            ngrok_errors = []
+        if ngrok_logs is None:
+            ngrok_logs = []
 
-        self.ngrok_errors = ngrok_errors
+        self.ngrok_logs = ngrok_logs
+        self.ngrok_error = ngrok_error
 
 
 class PyngrokNgrokHTTPError(PyngrokNgrokError):

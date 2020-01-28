@@ -7,7 +7,7 @@ from pyngrok import process
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "1.4.3"
+__version__ = "2.0.0"
 
 
 class NgrokTestCase(unittest.TestCase):
@@ -21,7 +21,7 @@ class NgrokTestCase(unittest.TestCase):
         for p in list(process._current_processes.values()):
             try:
                 process.kill_process(p.ngrok_path)
-                p.process.wait()
+                p.proc.wait()
             except OSError:
                 pass
 

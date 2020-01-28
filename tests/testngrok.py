@@ -1,3 +1,4 @@
+import sys
 import time
 import uuid
 
@@ -7,16 +8,32 @@ from pyngrok import ngrok, process
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError
 from .testcase import NgrokTestCase
 
+try:
+    from http import HTTPStatus as StatusCodes
+except ImportError:
+    try:
+        from http import client as StatusCodes
+    except ImportError:
+        import httplib as StatusCodes
+
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "1.4.3"
+__version__ = "2.0.0"
 
 
 class TestNgrok(NgrokTestCase):
     @mock.patch("subprocess.call")
-    def test_main(self, mock_call):
+    def test_run(self, mock_call):
         # WHEN
         ngrok.run()
+
+        # THEN
+        mock_call.assert_called_once()
+
+    @mock.patch("subprocess.call")
+    def test_main(self, mock_call):
+        # WHEN
+        ngrok.main()
 
         # THEN
         mock_call.assert_called_once()
@@ -31,7 +48,7 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertIsNotNone(current_process)
-        self.assertIsNone(current_process.process.poll())
+        self.assertIsNone(current_process.proc.poll())
         self.assertIsNotNone(url)
         self.assertIsNotNone(process.get_process(ngrok.DEFAULT_NGROK_PATH))
         self.assertEqual(len(process._current_processes.keys()), 1)
@@ -150,7 +167,7 @@ class TestNgrok(NgrokTestCase):
             ngrok.api_request("{}/api/{}".format(current_process.api_url, "tunnels"), "POST", data=bad_options)
 
         # THEN
-        self.assertEqual(400, cm.exception.status_code)
+        self.assertEqual(StatusCodes.BAD_REQUEST, cm.exception.status_code)
         self.assertIn("invalid tunnel configuration", str(cm.exception))
         self.assertIn("protocol name", str(cm.exception))
 
@@ -163,7 +180,8 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         with self.assertRaises(PyngrokNgrokURLError) as cm:
-            ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri.replace("+", "%20")), "DELETE", timeout=0.0001)
+            ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri.replace("+", "%20")), "DELETE",
+                              timeout=0.0001)
 
         # THEN
         self.assertIn("timed out", cm.exception.reason)

@@ -3,7 +3,21 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/1.4.1...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/2.0.0...HEAD)
+
+## [2.0.0](https://github.com/alexdlaird/pyngrok/compare/1.4.1...2.0.0) - TBD
+### Added
+- `api_url` variable to `NgrokProcess` class
+- `startup_logs` variable to `NgrokProcess` class
+- `startup_errors` variable to `NgrokProcess` class
+- `pyngrok` console alias that mirrors `ngrok`
+- `pyngrok`'s version is now also reported alongside `ngrok`'s version when invoked via the console
+
+### Changed
+- Refactored the boot loop for improved stability and accessibility
+
+### Removed
+- Removed `NgrokProcess`'s `process` variable (previously deprecated in `1.4.0`, use `proc` now instead)
 
 ## [1.4.1](https://github.com/alexdlaird/pyngrok/compare/1.4.0...1.4.1) - 2019-09-09
 ### Fixed

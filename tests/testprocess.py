@@ -14,10 +14,23 @@ from urllib.parse import urlparse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "1.4.3"
+__version__ = "2.0.0"
 
 
 class TestProcess(NgrokTestCase):
+    def test_terminate_process(self):
+        # GIVEN
+        self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
+        ngrok_process1 = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        self.assertIsNone(ngrok_process1.proc.poll())
+
+        # WHEN
+        process._terminate_process(ngrok_process1.proc)
+        time.sleep(1)
+
+        # THEN
+        self.assertIsNotNone(ngrok_process1.proc.poll())
+
     def test_get_process_no_binary(self):
         # GIVEN
         self.given_ngrok_not_installed(ngrok.DEFAULT_NGROK_PATH)
@@ -44,8 +57,6 @@ class TestProcess(NgrokTestCase):
         config_path2 = os.path.join(self.config_dir, "config2.yml")
         installer.install_default_config(config_path2, {"web_addr": ngrok_process.api_url.lstrip("http://")})
 
-        # FIXME: `_start_process needs to be investigated to understand why, infrequently, the process hasn't fully
-        #  started and this sleep is necessary. See: https://github.com/alexdlaird/pyngrok/issues/20
         time.sleep(1)
 
         # WHEN
@@ -53,7 +64,8 @@ class TestProcess(NgrokTestCase):
             process._start_process(ngrok_path2, config_path=config_path2)
 
         # THEN
-        self.assertIn("{}: bind: address already in use".format(port), str(cm.exception.ngrok_errors))
+        self.assertIsNotNone(cm.exception.ngrok_error)
+        self.assertIn("{}: bind: address already in use".format(port), cm.exception.ngrok_error)
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     def test_process_external_kill(self):
@@ -112,10 +124,10 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 2)
         self.assertIsNotNone(ngrok_process1)
         self.assertIsNone(ngrok_process1.proc.poll())
-        self.assertTrue("4040" in ngrok_process1.api_url)
+        self.assertTrue(urlparse(ngrok_process1.api_url).port, "4040")
         self.assertIsNotNone(ngrok_process2)
         self.assertIsNone(ngrok_process2.proc.poll())
-        self.assertTrue("4041" in ngrok_process2.api_url)
+        self.assertTrue(urlparse(ngrok_process2.api_url).port, "4041")
 
     def test_multiple_processes_same_binary_fails(self):
         # GIVEN
