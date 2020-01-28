@@ -30,7 +30,7 @@ deploy:
   on:
     tags: true
     python: 3.6
-jobs:
+matrix:
   include:
     - python: "3.7"
     arch: "arm64"
