@@ -26,7 +26,7 @@ except ImportError:
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 logger = logging.getLogger(__name__)
 
