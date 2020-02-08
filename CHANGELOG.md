@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/2.0.1...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/2.0.2...HEAD)
+
+## [2.0.2](https://github.com/alexdlaird/pyngrok/compare/2.0.1...2.0.2) - 2020-02-08
+### Changed
+- Added `DEFAULT_RETRY_COUNT` for use in `installer._download_file`
 
 ## [2.0.1](https://github.com/alexdlaird/pyngrok/compare/2.0.0...2.0.1) - 2020-02-01
 ### Fixed
