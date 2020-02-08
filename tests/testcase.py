@@ -16,7 +16,7 @@ class NgrokTestCase(unittest.TestCase):
         self.config_path = os.path.join(self.config_dir, "config.yml")
 
         ngrok._DEFAULT_NGROK_CONFIG_PATH = self.config_path
-        installer.DEFAULT_RETRY_COUNT = 2
+        installer.DEFAULT_RETRY_COUNT = 1
 
     def tearDown(self):
         for p in list(process._current_processes.values()):

@@ -58,7 +58,6 @@ class TestInstaller(NgrokTestCase):
     @mock.patch("pyngrok.installer.urlopen")
     def test_installer_retry(self, mock_urlopen):
         # GIVEN
-        installer.DEFAULT_RETRY_COUNT = 1
         mock_urlopen.side_effect = socket.timeout("The read operation timed out")
 
         if os.path.exists(ngrok.DEFAULT_NGROK_PATH):
