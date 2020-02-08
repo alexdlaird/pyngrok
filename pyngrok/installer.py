@@ -2,8 +2,10 @@ import logging
 import os
 import platform
 import shutil
+import socket
 import sys
 import tempfile
+import time
 import zipfile
 
 import yaml
@@ -25,7 +27,7 @@ except ImportError:
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "2.0.0"
+__version__ = "2.0.2"
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +45,7 @@ PLATFORMS = {
     'freebsd_i386': CDN_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
 }
 DEFAULT_DOWNLOAD_TIMEOUT = 6
+DEFAULT_RETRY_COUNT = 0
 
 
 def get_ngrok_bin():
@@ -128,21 +131,29 @@ def install_default_config(config_path, data=""):
         yaml.dump(config, config_file)
 
 
-def _download_file(url, timeout):
-    logger.debug("Download ngrok from {} ...".format(url))
+def _download_file(url, timeout, retries=0):
+    try:
+        logger.debug("Download ngrok from {} ...".format(url))
 
-    local_filename = url.split("/")[-1]
-    response = urlopen(url, timeout=timeout)
+        local_filename = url.split("/")[-1]
+        response = urlopen(url, timeout=timeout)
 
-    status_code = response.getcode()
-    logger.debug("Response status code: {}".format(status_code))
+        status_code = response.getcode()
+        logger.debug("Response status code: {}".format(status_code))
 
-    if status_code != StatusCodes.OK:
-        return None
+        if status_code != StatusCodes.OK:
+            return None
 
-    download_path = os.path.join(tempfile.gettempdir(), local_filename)
+        download_path = os.path.join(tempfile.gettempdir(), local_filename)
 
-    with open(download_path, "wb") as f:
-        shutil.copyfileobj(response, f)
+        with open(download_path, "wb") as f:
+            shutil.copyfileobj(response, f)
 
-    return download_path
+        return download_path
+    except socket.timeout as e:
+        if retries < DEFAULT_RETRY_COUNT:
+            time.sleep(0.5)
+
+            return _download_file(url, timeout, retries + 1)
+        else:
+            raise e

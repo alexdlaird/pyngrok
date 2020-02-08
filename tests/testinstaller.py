@@ -1,4 +1,5 @@
 import os
+import socket
 
 from mock import mock
 
@@ -8,7 +9,7 @@ from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "1.4.3"
+__version__ = "2.0.2"
 
 
 class TestInstaller(NgrokTestCase):
@@ -52,4 +53,21 @@ class TestInstaller(NgrokTestCase):
             ngrok.connect(config_path=self.config_path)
 
         # THEN
+        self.assertFalse(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
+
+    @mock.patch("pyngrok.installer.urlopen")
+    def test_installer_retry(self, mock_urlopen):
+        # GIVEN
+        mock_urlopen.side_effect = socket.timeout("The read operation timed out")
+
+        if os.path.exists(ngrok.DEFAULT_NGROK_PATH):
+            os.remove(ngrok.DEFAULT_NGROK_PATH)
+        self.assertFalse(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
+
+        # WHEN
+        with self.assertRaises(PyngrokNgrokInstallError):
+            ngrok.connect(config_path=self.config_path)
+
+        # THEN
+        self.assertEqual(mock_urlopen.call_count, 3)
         self.assertFalse(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
