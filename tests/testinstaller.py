@@ -3,7 +3,7 @@ import socket
 
 from mock import mock
 
-from pyngrok import ngrok, installer
+from pyngrok import ngrok
 from pyngrok.exception import PyngrokNgrokInstallError
 from .testcase import NgrokTestCase
 
