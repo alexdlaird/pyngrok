@@ -40,8 +40,8 @@ docs: virtualenv
 local:
 	@rm -rf dist
 	@( \
-		python setup.py sdist; \
-		python -m pip install dist/pyngrok*.tar.gz; \
+		$(PYTHON_BIN) setup.py sdist; \
+		$(PYTHON_BIN) -m pip install dist/pyngrok*.tar.gz; \
 	)
 
 upload:
