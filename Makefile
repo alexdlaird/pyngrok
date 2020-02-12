@@ -17,6 +17,13 @@ install: virtualenv
 		python -m pip install -r requirements.txt; \
 	)
 
+nopyc:
+	find . -name '*.pyc' | xargs rm -f || true
+	find . -name __pycache__ | xargs rm -rf || true
+
+clean: nopyc
+	rm -rf build dist pyngrok.egg-info venv
+
 test: virtualenv
 	@( \
 		source .venv/bin/activate; \
@@ -34,7 +41,7 @@ local:
 	@rm -rf dist
 	@( \
 		python setup.py sdist; \
-		pip install dist/pyngrok*.tar.gz; \
+		python -m pip install dist/pyngrok*.tar.gz; \
 	)
 
 upload:
@@ -42,5 +49,5 @@ upload:
 	@( \
 		source .venv/bin/activate; \
 		python setup.py sdist; \
-		twine upload dist/*; \
+		python -m twine upload dist/*; \
 	)
