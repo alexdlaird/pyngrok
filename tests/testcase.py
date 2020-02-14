@@ -7,7 +7,7 @@ from pyngrok import process
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "2.0.2"
+__version__ = "2.0.3"
 
 
 class NgrokTestCase(unittest.TestCase):
