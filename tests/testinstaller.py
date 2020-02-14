@@ -3,8 +3,8 @@ import socket
 
 from mock import mock
 
-from pyngrok import ngrok
-from pyngrok.exception import PyngrokNgrokInstallError
+from pyngrok import ngrok, installer
+from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError
 from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
@@ -71,3 +71,8 @@ class TestInstaller(NgrokTestCase):
         # THEN
         self.assertEqual(mock_urlopen.call_count, 2)
         self.assertFalse(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
+
+    def test_download_file_security_error(self):
+        # WHEN
+        with self.assertRaises(PyngrokSecurityError):
+            installer._download_file("file:{}".format(__file__), 10)

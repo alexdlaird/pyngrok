@@ -6,7 +6,7 @@ import time
 
 from future.standard_library import install_aliases
 
-from pyngrok.exception import PyngrokNgrokError
+from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError
 
 install_aliases()
 
@@ -58,7 +58,8 @@ class NgrokProcess:
     def __str__(self):  # pragma: no cover
         return "NgrokProcess: \"{}\"".format(self.api_url)
 
-    def _line_has_error(self, line):
+    @staticmethod
+    def _line_has_error(line):
         return "lvl=error" in line or "lvl=eror" in line or \
                "lvl=crit" in line or \
                ("err=" in line and "err=nil" not in line)
@@ -82,6 +83,9 @@ class NgrokProcess:
         if self.api_url is None or \
                 not self._tunnel_started or not self._client_connected:
             return False
+
+        if not self.api_url.lower().startswith('http'):
+            raise PyngrokSecurityError("URL must start with 'http': {}".format(self.api_url))
 
         # Ensure the process is available for requests before registering it as healthy
         request = Request("{}/api/tunnels".format(self.api_url))

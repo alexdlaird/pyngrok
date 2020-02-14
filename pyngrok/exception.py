@@ -10,6 +10,13 @@ class PyngrokError(Exception):
     pass
 
 
+class PyngrokSecurityError(PyngrokError):
+    """
+    Raised when a `pyngrok` security error has occurred.
+    """
+    pass
+
+
 class PyngrokNgrokInstallError(PyngrokError):
     """
     Raised when an error has occurred while downloading and installing the `ngrok` binary.

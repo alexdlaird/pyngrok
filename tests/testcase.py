@@ -29,9 +29,11 @@ class NgrokTestCase(unittest.TestCase):
         if os.path.exists(self.config_dir):
             shutil.rmtree(self.config_dir)
 
-    def given_ngrok_installed(self, ngrok_path):
+    @staticmethod
+    def given_ngrok_installed(ngrok_path):
         ngrok.ensure_ngrok_installed(ngrok_path)
 
-    def given_ngrok_not_installed(self, ngrok_path):
+    @staticmethod
+    def given_ngrok_not_installed(ngrok_path):
         if os.path.exists(ngrok_path):
             os.remove(ngrok_path)

@@ -4,7 +4,7 @@ import uuid
 import mock
 
 from pyngrok import ngrok, process
-from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError
+from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError
 from .testcase import NgrokTestCase
 
 try:
@@ -184,3 +184,8 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertIn("timed out", cm.exception.reason)
+
+    def test_api_request_security_error(self):
+        # WHEN
+        with self.assertRaises(PyngrokSecurityError):
+            ngrok.api_request("file:{}".format(__file__))

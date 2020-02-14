@@ -11,7 +11,7 @@ import zipfile
 import yaml
 from future.standard_library import install_aliases
 
-from pyngrok.exception import PyngrokNgrokInstallError
+from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError
 
 install_aliases()
 
@@ -133,6 +133,9 @@ def install_default_config(config_path, data=""):
 
 def _download_file(url, timeout, retries=0):
     try:
+        if not url.lower().startswith('http'):
+            raise PyngrokSecurityError("URL must start with 'http': {}".format(url))
+
         logger.debug("Download ngrok from {} ...".format(url))
 
         local_filename = url.split("/")[-1]

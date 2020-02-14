@@ -8,7 +8,7 @@ import uuid
 from future.standard_library import install_aliases
 
 from pyngrok import process
-from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError
+from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError
 from pyngrok.installer import get_ngrok_bin, install_ngrok, install_default_config
 
 install_aliases()
@@ -255,12 +255,12 @@ def kill(ngrok_path=None):
     process.kill_process(ngrok_path)
 
 
-def api_request(uri, method="GET", data=None, params=None, timeout=4):
+def api_request(url, method="GET", data=None, params=None, timeout=4):
     """
     Invoke an API request to the given URI, returning JSON data from the response as a dict.
 
-    :param uri: The request URI.
-    :type uri: string
+    :param url: The request URI.
+    :type url: string
     :param method: The HTTP method, defaults to "GET".
     :type method: string, optional
     :param data: The request body.
@@ -275,15 +275,18 @@ def api_request(uri, method="GET", data=None, params=None, timeout=4):
     if params is None:
         params = []
 
+    if not url.lower().startswith('http'):
+        raise PyngrokSecurityError("URL must start with 'http': {}".format(url))
+
     data = json.dumps(data).encode("utf-8") if data else None
 
     if params:
-        uri += "?{}".format(urlencode([(x, params[x]) for x in params]))
+        url += "?{}".format(urlencode([(x, params[x]) for x in params]))
 
-    request = Request(uri, method=method.upper())
+    request = Request(url, method=method.upper())
     request.add_header("Content-Type", "application/json")
 
-    logger.debug("Making {} request to {} with data: {}".format(method, uri, data))
+    logger.debug("Making {} request to {} with data: {}".format(method, url, data))
 
     try:
         response = urlopen(request, data, timeout)
@@ -294,7 +297,7 @@ def api_request(uri, method="GET", data=None, params=None, timeout=4):
         logger.debug("Response: {}".format(response_data))
 
         if str(status_code)[0] != "2":
-            raise PyngrokNgrokHTTPError("ngrok client API returned {}: {}".format(status_code, response_data), uri,
+            raise PyngrokNgrokHTTPError("ngrok client API returned {}: {}".format(status_code, response_data), url,
                                         status_code, None, request.headers, response_data)
         elif status_code == StatusCodes.NO_CONTENT:
             return None
