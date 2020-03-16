@@ -12,9 +12,7 @@ python:
 install:
   - python -m pip install virtualenv
   - python -m virtualenv .venv
-  - source .venv/bin/activate
-  - python -m pip install -r requirements.txt -r requirements-dev.txt
-  - sudo -H python -m pip install setuptools twine --upgrade
+  - make install
 script:
   - make test
   - make local
@@ -41,9 +39,7 @@ jobs:
       install:
         - python3 -m pip install virtualenv
         - python3 -m virtualenv .venv
-        - source .venv/bin/activate
-        - python -m pip install -r requirements.txt
-        - python -m pip install -r requirements-dev.txt
+        - make install
     - name: "Windows, Python: 3.7"
       os: "windows"
       language: minimal
@@ -57,7 +53,6 @@ jobs:
         - python --version
         - export PATH="$HOME/.pyenv/pyenv-win/versions/3.7.2/Scripts:$PATH"
       install:
-        - pip install -r requirements.txt
-        - pip install -r requirements-dev.txt
+        - pip install -r requirements.txt -r requirements-dev.txt
       script:
         - nosetests -s
