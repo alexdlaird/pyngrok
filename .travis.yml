@@ -15,7 +15,7 @@ install:
   - source .venv/bin/activate
   - python -m pip install -r requirements.txt
   - python -m pip install -r requirements-dev.txt
-  - sudo -H python -m pip install setuptools twine --upgrade
+  - sudo -H pip install setuptools twine --upgrade
 script:
   - make test
   - make local
