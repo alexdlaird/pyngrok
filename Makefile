@@ -48,6 +48,7 @@ upload:
 	@rm -rf dist
 	@( \
 		source .venv/bin/activate; \
+		pip install twine
 		python setup.py sdist; \
 		python -m twine upload dist/*; \
 	)
