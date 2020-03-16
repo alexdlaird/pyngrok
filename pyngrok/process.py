@@ -14,10 +14,10 @@ from urllib.request import urlopen, Request
 
 try:
     from http import HTTPStatus as StatusCodes
-except ImportError:
+except ImportError:  # pragma: no cover
     try:
         from http import client as StatusCodes
-    except ImportError:  # pragma: no cover
+    except ImportError:
         import httplib as StatusCodes
 
 __author__ = "Alex Laird"
