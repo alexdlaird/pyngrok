@@ -1,4 +1,4 @@
-.PHONY: all virtualenv install local upload docs
+.PHONY: all virtualenv install nopyc clean test docs local upload
 
 SHELL := /usr/bin/env bash
 PYTHON_BIN ?= python
@@ -14,7 +14,7 @@ virtualenv:
 install: virtualenv
 	@( \
 		source .venv/bin/activate; \
-		python -m pip install -r requirements.txt; \
+		python -m pip install -r requirements.txt -r requirements-dev.txt; \
 	)
 
 nopyc:
@@ -24,13 +24,13 @@ nopyc:
 clean: nopyc
 	rm -rf build dist pyngrok.egg-info venv
 
-test: virtualenv
+test: install
 	@( \
 		source .venv/bin/activate; \
 		python `which nosetests` -s --with-coverage --cover-erase --cover-package=. --cover-html --cover-html-dir=htmlcov; \
 	)
 
-docs: virtualenv
+docs: install
 	@( \
 		source .venv/bin/activate; \
 		python -m pip install -r docs/requirements.txt; \

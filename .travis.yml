@@ -3,7 +3,6 @@ dist: xenial
 language: python
 python:
   - "2.7"
-  - "3.4"
   - "3.5"
   - "3.6"
   - "3.7"
@@ -13,14 +12,14 @@ python:
 install:
   - python -m pip install virtualenv
   - python -m virtualenv .venv
-  - source .venv/bin/activate
-  - python -m pip install -r requirements.txt
-  - sudo -H pip install setuptools twine --upgrade
+  - make install
 script:
   - make test
   - make local
 after_success:
   - codecov
+before_deploy:
+  - sudo -H python -m pip install setuptools twine --upgrade
 deploy:
   provider: pypi
   username: alexdlaird
@@ -29,24 +28,26 @@ deploy:
   on:
     tags: true
     python: 3.6
-  skip_cleanup: true
 jobs:
   include:
     - name: "ARM, Python: 3.7"
       arch: "arm64"
       python: "3.7"
+      before_install:
+        - python -m pip install virtualenv
+        - python -m virtualenv .venv
+        - source .venv/bin/activate
+        - python -m pip install twine==2.0.0
     - name: "OS X, Python: 3.7"
       os: "osx"
-      language: minimal
+      language: shell
       osx_image: "xcode11.2"
-      install:
+      before_install:
         - python3 -m pip install virtualenv
-        - python3 -m virtualenv .venv
-        - source .venv/bin/activate
-        - python -m pip install -r requirements.txt
+        - python3 -m virtualenv .ven
     - name: "Windows, Python: 3.7"
       os: "windows"
-      language: minimal
+      language: shell
       before_install:
         - git clone https://github.com/pyenv-win/pyenv-win.git $HOME/.pyenv
         - export PATH="$HOME/.pyenv/pyenv-win/bin:$HOME/.pyenv/pyenv-win/shims:$PATH"
@@ -57,6 +58,6 @@ jobs:
         - python --version
         - export PATH="$HOME/.pyenv/pyenv-win/versions/3.7.2/Scripts:$PATH"
       install:
-        - pip install -r requirements.txt
+        - pip install -r requirements.txt -r requirements-dev.txt
       script:
         - nosetests -s
