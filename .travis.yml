@@ -44,6 +44,7 @@ jobs:
         - python3 -m virtualenv .venv
         - source .venv/bin/activate
         - python -m pip install -r requirements.txt
+        - python -m pip install -r requirements-dev.txt
     - name: "Windows, Python: 3.7"
       os: "windows"
       language: minimal
@@ -58,5 +59,6 @@ jobs:
         - export PATH="$HOME/.pyenv/pyenv-win/versions/3.7.2/Scripts:$PATH"
       install:
         - pip install -r requirements.txt
+        - pip install -r requirements-dev.txt
       script:
         - nosetests -s
