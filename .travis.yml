@@ -12,7 +12,6 @@ python:
 install:
   - python -m pip install virtualenv
   - python -m virtualenv .venv
-  - sudo -H python -m pip install setuptools twine --upgrade
   - make install
 script:
   - make test
@@ -20,6 +19,8 @@ script:
 after_success:
   - codecov
 deploy:
+  before_deploy:
+    - sudo -H python -m pip install setuptools twine --upgrade
   provider: pypi
   username: alexdlaird
   password:
