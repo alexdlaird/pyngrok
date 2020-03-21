@@ -1,3 +1,4 @@
+import os
 import time
 import uuid
 
@@ -50,6 +51,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNone(current_process.proc.poll())
         self.assertIsNotNone(url)
         self.assertIsNotNone(process.get_process(ngrok.DEFAULT_NGROK_PATH))
+        self.assertIn('http://', url)
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     def test_multiple_connections_fails(self):
@@ -189,3 +191,48 @@ class TestNgrok(NgrokTestCase):
         # WHEN
         with self.assertRaises(PyngrokSecurityError):
             ngrok.api_request("file:{}".format(__file__))
+
+    def test_regional_tcp(self):
+        if 'NGROK_AUTHTOKEN' not in os.environ:
+            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+
+        # GIVEN
+        self.assertEqual(len(process._current_processes.keys()), 0)
+
+        # WHEN
+        url = ngrok.connect(5000, 'tcp', config_path=self.config_path, auth_token=os.environ['NGROK_AUTHTOKEN'],
+                            region='au', options={'subdomain': 'alaird.tweek'})
+        current_process = ngrok.get_ngrok_process()
+
+        # THEN
+        self.assertIsNotNone(current_process)
+        self.assertIsNone(current_process.proc.poll())
+        self.assertIsNotNone(url)
+        self.assertIsNotNone(process.get_process(ngrok.DEFAULT_NGROK_PATH))
+        self.assertIn('tcp://', url)
+        self.assertIn('.au.', url)
+        self.assertEqual(len(process._current_processes.keys()), 1)
+
+    def test_regional_subdomain(self):
+        if 'NGROK_AUTHTOKEN' not in os.environ:
+            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+        if 'NGROK_SUBDOMAIN' not in os.environ:
+            self.skipTest("NGROK_SUBDOMAIN environment variable not set")
+
+        # GIVEN
+        self.assertEqual(len(process._current_processes.keys()), 0)
+
+        # WHEN
+        url = ngrok.connect(5000, config_path=self.config_path, auth_token=os.environ['NGROK_AUTHTOKEN'],
+                            region='au', options={'subdomain': os.environ['NGROK_SUBDOMAIN']})
+        current_process = ngrok.get_ngrok_process()
+
+        # THEN
+        self.assertIsNotNone(current_process)
+        self.assertIsNone(current_process.proc.poll())
+        self.assertIsNotNone(url)
+        self.assertIsNotNone(process.get_process(ngrok.DEFAULT_NGROK_PATH))
+        self.assertIn('http://', url)
+        self.assertIn('.au.', url)
+        self.assertIn(os.environ['NGROK_SUBDOMAIN'], url)
+        self.assertEqual(len(process._current_processes.keys()), 1)

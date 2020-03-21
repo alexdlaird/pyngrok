@@ -42,7 +42,7 @@ To open a tunnel, use the :code:`connect()` method, which returns the public URL
    # Open a tunnel on the default port 80
    public_url = ngrok.connect()
 
-The :code:`connect()` method can also take an :code:`options` parameter, which allows us to pass additional
+The :code:`connect()` method takes an optional :code:`options` parameter, which allows us to pass additional
 options that are `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_.
 
 ## get active tunnels

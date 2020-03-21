@@ -36,7 +36,7 @@ from pyngrok import ngrok
 public_url = ngrok.connect()
 ```
 
-The `connect()` method can also take an `options` parameter, which allows us to pass additional
+The `connect()` method takes an optional `options` parameter, which allows us to pass additional
 options that are [supported by ngrok](https://ngrok.com/docs#tunnel-definitions).
 
 This package also puts the default `ngrok` binary on our path, so all features of `ngrok` are also

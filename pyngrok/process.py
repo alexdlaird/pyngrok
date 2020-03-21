@@ -119,7 +119,7 @@ def set_auth_token(ngrok_path, token, config_path=None):
         raise PyngrokNgrokError("An error occurred when saving the auth token: {}".format(result))
 
 
-def get_process(ngrok_path, config_path=None):
+def get_process(ngrok_path, config_path=None, auth_token=None, region=None):
     """
     Retrieve the current `ngrok` process for the given path. If `ngrok` is not currently running for the
     given path, a new process will be started and returned.
@@ -128,8 +128,12 @@ def get_process(ngrok_path, config_path=None):
 
     :param ngrok_path: The path to the `ngrok` binary.
     :type ngrok_path: string
-    :param config_path: A config path override.
+    :param config_path: A config path override. Ignored if `ngrok` is already running.
     :type config_path: string, optional
+    :param auth_token: An authtoken override. Ignored if `ngrok` is already running.
+    :type auth_token: string, optional
+    :param region: A region override. Ignored if `ngrok` is already running.
+    :type region: string, optional
     :return: The `ngrok` process.
     :rtype: NgrokProcess
     """
@@ -140,7 +144,7 @@ def get_process(ngrok_path, config_path=None):
         else:
             _current_processes.pop(ngrok_path, None)
 
-    return _start_process(ngrok_path, config_path)
+    return _start_process(ngrok_path, config_path, auth_token, region)
 
 
 def run_process(ngrok_path, args):
@@ -209,7 +213,7 @@ def _terminate_process(process):
         logger.debug("ngrok process already terminated: {}".format(process.pid))
 
 
-def _start_process(ngrok_path, config_path=None):
+def _start_process(ngrok_path, config_path=None, auth_token=None, region=None):
     """
     Start a `ngrok` process with no tunnels. This will start the `ngrok` web interface, against
     which HTTP requests can be made to create, interact with, and destroy tunnels.
@@ -218,6 +222,10 @@ def _start_process(ngrok_path, config_path=None):
     :type ngrok_path: string
     :param config_path: A config path override.
     :type config_path: string, optional
+    :param auth_token: An authtoken override.
+    :type auth_token: string, optional
+    :param region: A region override.
+    :type region: string, optional
     :return: The `ngrok` process.
     :rtype: NgrokProcess
     """
@@ -226,8 +234,13 @@ def _start_process(ngrok_path, config_path=None):
     start = [ngrok_path, "start", "--none", "--log=stdout"]
     if config_path:
         logger.info("Starting ngrok with config file: {}".format(config_path))
-
         start.append("--config={}".format(config_path))
+    if auth_token:
+        logger.info("Overriding default auth token")
+        start.append("--authtoken={}".format(auth_token))
+    if region:
+        logger.info("Starting ngrok in region: {}".format(region))
+        start.append("--region={}".format(region))
 
     process = subprocess.Popen(start, stdout=subprocess.PIPE, universal_newlines=True)
     atexit.register(_terminate_process, process)

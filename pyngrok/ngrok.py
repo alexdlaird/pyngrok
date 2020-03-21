@@ -107,7 +107,7 @@ def set_auth_token(token, ngrok_path=None, config_path=None):
     process.set_auth_token(ngrok_path, token, config_path)
 
 
-def get_ngrok_process(ngrok_path=None, config_path=None):
+def get_ngrok_process(ngrok_path=None, config_path=None, auth_token=None, region=None):
     """
     Retrieve the current `ngrok` process for the given path.
 
@@ -118,9 +118,13 @@ def get_ngrok_process(ngrok_path=None, config_path=None):
 
     :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
     :type ngrok_path: string, optional
-    :return: The `ngrok` process.
-    :param config_path: A config path override.
+    :param config_path: A config path override. Ignored if `ngrok` is already running.
     :type config_path: string, optional
+    :param auth_token: An authtoken override. Ignored if `ngrok` is already running.
+    :type auth_token: string, optional
+    :param region: A region override. Ignored if `ngrok` is already running.
+    :type region: string, optional
+    :return: The `ngrok` process.
     :rtype: NgrokProcess
     """
     ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
@@ -128,10 +132,11 @@ def get_ngrok_process(ngrok_path=None, config_path=None):
 
     ensure_ngrok_installed(ngrok_path)
 
-    return process.get_process(ngrok_path, config_path)
+    return process.get_process(ngrok_path, config_path, auth_token, region)
 
 
-def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, config_path=None, timeout=4):
+def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, config_path=None, timeout=4,
+            auth_token=None, region=None):
     """
     Establish a new `ngrok` tunnel to the given port and protocol, returning the connected
     public URL that tunnels to the local port.
@@ -147,14 +152,18 @@ def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, con
     :type proto: string, optional
     :param name: A friendly name for the tunnel.
     :type name: string, optional
-    :param options: Arbitrary `options to pass to ngrok <https://ngrok.com/docs#tunnel-definitions>`_.
+    :param options: Parameters passed to `configuration for the ngrok tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
     :type options: dict, optional
     :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
     :type ngrok_path: string, optional
-    :param config_path: A config path override.
+    :param config_path: A config path override. Ignored if `ngrok` is already running.
     :type config_path: string, optional
     :param timeout: The request timeout, in seconds.
     :type timeout: float, optional
+    :param auth_token: An authtoken override. Ignored if `ngrok` is already running.
+    :type auth_token: string, optional
+    :param region: A region override. Ignored if `ngrok` is already running.
+    :type region: string, optional
     :return: The connected public URL.
     :rtype: string
     """
@@ -171,7 +180,7 @@ def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, con
     }
     options.update(config)
 
-    api_url = get_ngrok_process(ngrok_path, config_path).api_url
+    api_url = get_ngrok_process(ngrok_path, config_path, auth_token, region).api_url
 
     logger.debug("Connecting tunnel with options: {}".format(options))
 
