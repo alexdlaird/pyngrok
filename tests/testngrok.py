@@ -1,4 +1,6 @@
 import os
+import platform
+import sys
 import time
 import uuid
 
@@ -216,15 +218,13 @@ class TestNgrok(NgrokTestCase):
     def test_regional_subdomain(self):
         if 'NGROK_AUTHTOKEN' not in os.environ:
             self.skipTest("NGROK_AUTHTOKEN environment variable not set")
-        if 'NGROK_SUBDOMAIN' not in os.environ:
-            self.skipTest("NGROK_SUBDOMAIN environment variable not set")
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
+        subdomain = 'pyngrok-{}-{}-{}{}'.format(platform.system(), platform.python_implementation(), sys.version_info[0], sys.version_info[1]).lower()
 
         # WHEN
-        url = ngrok.connect(5000, config_path=self.config_path, auth_token=os.environ['NGROK_AUTHTOKEN'],
-                            region='au', options={'subdomain': os.environ['NGROK_SUBDOMAIN']})
+        url = ngrok.connect(5000, config_path=self.config_path, auth_token=os.environ['NGROK_AUTHTOKEN'], region='au', options={'subdomain': subdomain})
         current_process = ngrok.get_ngrok_process()
 
         # THEN
@@ -234,5 +234,5 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNotNone(process.get_process(ngrok.DEFAULT_NGROK_PATH))
         self.assertIn('http://', url)
         self.assertIn('.au.', url)
-        self.assertIn(os.environ['NGROK_SUBDOMAIN'], url)
+        self.assertIn(subdomain, url)
         self.assertEqual(len(process._current_processes.keys()), 1)
