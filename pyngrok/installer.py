@@ -43,6 +43,7 @@ PLATFORMS = {
     'linux_x86_64': CDN_URL_PREFIX + "ngrok-stable-linux-amd64.zip",
     'freebsd_x86_64': CDN_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip",
     'freebsd_i386': CDN_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
+    'cygwin_x86_64': CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
 }
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
@@ -58,7 +59,7 @@ def get_ngrok_bin():
     system = platform.system()
     if system in ["Darwin", "Linux"]:
         return "ngrok"
-    elif system == "Windows":  # pragma: no cover
+    elif system == "Windows" or "cygwin" in system.lower():  # pragma: no cover
         return "ngrok.exe"
     else:  # pragma: no cover
         raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
@@ -82,10 +83,14 @@ def install_ngrok(ngrok_path, timeout=None):
     if not os.path.exists(ngrok_dir):
         os.makedirs(ngrok_dir)
 
-    arch = 'x86_64' if sys.maxsize > 2 ** 32 else 'i386'
+    arch = "x86_64" if sys.maxsize > 2 ** 32 else "i386"
     if platform.uname()[4].startswith("arm") or platform.uname()[4].startswith("aarch64"):
-        arch += '_arm'
-    plat = platform.system().lower() + "_" + arch
+        arch += "_arm"
+    system = platform.system().lower()
+    if "cygwin" in system:
+        system = "cygwin"
+    
+    plat = system + "_" + arch
     try:
         url = PLATFORMS[plat]
 
