@@ -28,6 +28,11 @@ setup(
     author_email="contact@alexlaird.com",
     url="https://github.com/alexdlaird/pyngrok",
     download_url="https://github.com/alexdlaird/pyngrok/archive/{}.tar.gz".format(__version__),
+    project_urls={
+        'Documentation': 'https://pyngrok.readthedocs.io',
+        'Changelog': 'https://github.com/alexdlaird/pyngrok/blob/master/CHANGELOG.md',
+        'Sponsor': 'https://www.paypal.me/alexdlaird'
+    },
     keywords=["ngrok", "tunnel", "tunneling", "webhook", "localhost"],
     license="MIT",
     classifiers=[
