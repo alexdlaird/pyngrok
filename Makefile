@@ -22,30 +22,30 @@ nopyc:
 	find . -name __pycache__ | xargs rm -rf || true
 
 clean: nopyc
-	rm -rf build dist pyngrok.egg-info venv
+	rm -rf _build dist *.egg-info .venv
 
 test: install
 	@( \
 		source .venv/bin/activate; \
-		python `which nosetests` -s --with-coverage --cover-erase --cover-package=. --cover-html --cover-html-dir=htmlcov; \
+		python `which nosetests` -s --with-coverage --cover-erase --cover-package=. --cover-html --cover-html-dir=_build/coverage; \
 	)
 
 docs: install
 	@( \
 		source .venv/bin/activate; \
 		python -m pip install -r docs/requirements.txt; \
-		sphinx-build -M html docs _build; \
+		sphinx-build -M html docs _build/docs; \
 	)
 
 local:
-	@rm -rf dist
+	@rm -rf *.egg-info dist
 	@( \
 		$(PYTHON_BIN) setup.py sdist; \
-		$(PYTHON_BIN) -m pip install dist/pyngrok*.tar.gz; \
+		$(PYTHON_BIN) -m pip install dist/*.tar.gz; \
 	)
 
 upload:
-	@rm -rf dist
+	@rm -rf *.egg-info dist
 	@( \
 		source .venv/bin/activate; \
 		python setup.py sdist; \

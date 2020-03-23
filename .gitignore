@@ -5,7 +5,6 @@
 coverage.xml
 *.log
 .venv
-htmlcov
 dist/
 tests/.ngrok2
 MANIFEST

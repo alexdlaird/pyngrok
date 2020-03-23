@@ -18,3 +18,4 @@ exclude_lines =
 
 [html]
 title = pyngrok Coverage Report
+directory = _build/coverage
