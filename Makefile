@@ -38,7 +38,7 @@ docs: install
 	)
 
 local:
-	@rm -rf dist
+	@rm -rf pyngrok.egg-info dist
 	@( \
 		$(PYTHON_BIN) setup.py sdist; \
 		$(PYTHON_BIN) -m pip install dist/pyngrok*.tar.gz; \
