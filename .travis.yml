@@ -19,6 +19,7 @@ script:
 after_success:
   - codecov
 before_deploy:
+  - make docs
   - sudo -H python -m pip install setuptools twine --upgrade
 deploy:
   provider: pypi

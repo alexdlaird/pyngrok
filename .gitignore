@@ -5,10 +5,9 @@
 coverage.xml
 *.log
 .venv
-htmlcov
 dist/
 tests/.ngrok2
 MANIFEST
 pyngrok.egg-info
 pyngrok/bin
-_build
+build
