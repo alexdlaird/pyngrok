@@ -22,7 +22,7 @@ nopyc:
 	find . -name __pycache__ | xargs rm -rf || true
 
 clean: nopyc
-	rm -rf _build dist pyngrok.egg-info .venv
+	rm -rf _build dist *.egg-info .venv
 
 test: install
 	@( \
@@ -38,14 +38,14 @@ docs: install
 	)
 
 local:
-	@rm -rf pyngrok.egg-info dist
+	@rm -rf *.egg-info dist
 	@( \
 		$(PYTHON_BIN) setup.py sdist; \
-		$(PYTHON_BIN) -m pip install dist/pyngrok*.tar.gz; \
+		$(PYTHON_BIN) -m pip install dist/*.tar.gz; \
 	)
 
 upload:
-	@rm -rf dist
+	@rm -rf *.egg-info dist
 	@( \
 		source .venv/bin/activate; \
 		python setup.py sdist; \
