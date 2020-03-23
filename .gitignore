@@ -10,4 +10,4 @@ tests/.ngrok2
 MANIFEST
 pyngrok.egg-info
 pyngrok/bin
-build
+_build
