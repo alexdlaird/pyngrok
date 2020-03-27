@@ -21,6 +21,7 @@ after_success:
 before_deploy:
   - make docs
   - sudo -H python -m pip install setuptools twine --upgrade
+  - make validate-release VERSION=$TRAVIS_TAG
 deploy:
   provider: pypi
   username: alexdlaird
