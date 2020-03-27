@@ -1,4 +1,4 @@
-.PHONY: all virtualenv install nopyc clean test docs local upload
+.PHONY: all virtualenv install nopyc clean test docs local validate-release upload
 
 SHELL := /usr/bin/env bash
 PYTHON_BIN ?= python
@@ -43,6 +43,9 @@ local:
 		$(PYTHON_BIN) setup.py sdist; \
 		$(PYTHON_BIN) -m pip install dist/*.tar.gz; \
 	)
+
+validate-release:
+	echo "test"
 
 upload:
 	@rm -rf *.egg-info dist
