@@ -39,7 +39,7 @@ public_url = ngrok.connect()
 The `connect()` method takes an optional `options` parameter, which allows us to pass additional
 options that are [supported by ngrok](https://ngrok.com/docs#tunnel-definitions).
 
-This package also puts the default `ngrok` binary on our path, so all features of `ngrok` are also
+This package also puts the default `ngrok` binary on our path, so all features of `ngrok` are
 available on the command line.
 
 ```sh
@@ -55,7 +55,7 @@ For more advanced usage, the full documentation is available at [http://pyngrok.
 ## Contributing
 
 If you find issues, [report them on GitHub](https://github.com/alexdlaird/pyngrok/issues). Pull
-requests for fixes and features are also warmly welcomed.
+requests for fixes and features are warmly welcomed.
 
 Be sure to review the [Contribution Guide](https://github.com/alexdlaird/pyngrok/blob/master/CONTRIBUTING.md) and
 [Code of Conduct](https://github.com/alexdlaird/pyngrok/blob/master/CODE_OF_CONDUCT.md) before submitting issues

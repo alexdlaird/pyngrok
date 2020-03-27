@@ -43,7 +43,8 @@ To open a tunnel, use the :code:`connect()` method, which returns the public URL
    public_url = ngrok.connect()
 
 The :code:`connect()` method takes an optional :code:`options` parameter, which allows us to pass additional
-options that are `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_.
+options that are `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_,
+`as shown below <#passing-options>`__.
 
 ## get active tunnels
 
@@ -95,7 +96,7 @@ The :code:`NgrokProcess` also contains an :code:`api_url` variable, usually init
 If some feature we need is not available in this package, the client API is accessible to us via the
 :code:`api_request()` method. Additionally, the :code:`NgrokTunnel` objects expose a :code:`uri` variable, which
 contains the relative path used to manipulate that resource against the client API. This package also gives us
-access to :code:`ngrok` from the command line, `as shown below <#command-line-usage>`_.
+access to :code:`ngrok` from the command line, `as shown below <#command-line-usage>`__.
 
 Configuration
 -------------
@@ -104,7 +105,7 @@ Setting the :code:`authtoken`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Running :code:`ngrok` with an auth token enables additional features available on our account (for
-instance, the ability to open more tunnels concurrently). We can obtain our auth token from
+instance, the ability to open multiple tunnels concurrently). We can obtain our auth token from
 the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it like this:
 
 .. code-block:: python
@@ -117,9 +118,43 @@ the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it like this:
    ngrok.connect()
    ngrok.connect(8000)
 
-This will set the auth token in the config file. We can also set it in a one-off fashion by
-setting it for `the "auth" key <https://ngrok.com/docs#tunnel-definitions>`_ of the `options` parameter
-passed to :code:`connect()`.
+We can also override the auth token when necessary with:
+
+.. code-block:: python
+
+   from pyngrok import ngrok
+
+   ngrok.connect(auth_token="<NGROK_AUTH_TOKEN>")
+
+The above will only work when :code:`ngrok` is first starting, so if a tunnel has already
+been started in the session, we will need to :code:`kill()` it first.
+
+Setting the :code:`region`
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, :code:`ngrok` will open a tunnel in the :code:`us` region. To override this, use
+the :code:`region` parameter:
+
+.. code-block:: python
+
+   from pyngrok import ngrok
+
+   url = ngrok.connect(region="au")
+
+Passing :code:`options`
+~~~~~~~~~~~~~~~~~~~~~~~
+
+It is also possible to configure the tunnel when it is created, for instance adding authentication,
+a subdomain, or other tunnel parameters `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_.
+These can be passed to the tunnel with the :code:`options` parameter. Here is an example
+starting :code:`ngrok` in Australia, then opening a tunnel for with subdomain :code:`foo` that
+requires basic authentication for requests.
+
+.. code-block:: python
+
+   from pyngrok import ngrok
+
+   url = ngrok.connect(region="au", options={"subdomain": "foo", "auth": "username:password"})
 
 Config File
 ~~~~~~~~~~~
