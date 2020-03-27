@@ -46,7 +46,8 @@ The :code:`connect()` method takes an optional :code:`options` parameter, which 
 options that are `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_,
 `as shown below <#passing-options>`__.
 
-## get active tunnels
+Get Active Tunnels
+------------------
 
 It can be useful to ask the :code:`ngrok` client what tunnels are currently open. This can be
 accomplished with the :code:`get_tunnels()` method, which returns a list of :code:`NgrokTunnel` objects.
