@@ -147,9 +147,10 @@ Passing :code:`options`
 
 It is also possible to configure the tunnel when it is created, for instance adding authentication,
 a subdomain, or other tunnel parameters `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_.
-These can be passed to the tunnel with the :code:`options` parameter. Here is an example
-starting :code:`ngrok` in Australia, then opening a tunnel for with subdomain :code:`foo` that
-requires basic authentication for requests.
+These can be passed to the tunnel with the :code:`options` parameter.
+
+Here is an example starting :code:`ngrok` in Australia, then opening a tunnel for with subdomain
+:code:`foo` that requires basic authentication for requests.
 
 .. code-block:: python
 
