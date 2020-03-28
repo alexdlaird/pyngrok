@@ -98,7 +98,25 @@ Now Django can be started by the usual means and setting :code:`USE_NGROK`.
 
 AWS Lambda (Local)
 ------------------
-TBD
+Lambdas deployed to AWS can easily be developed locally using :code:`pyngrok` and extending the
+`Flask example shown above <#flask>`_. In addition to effortless local development, this gives us flexibility
+to write tests, leverage a CI, manage revisions, etc.
+
+To start, we make Flask routes in to a shim that funnels requests to the Lambda handlers instead.
+
+.. code-block:: python
+
+    @app.route("/foo")
+    def route_foo():
+        event = {
+            "someQueryParam": request.args.get("someQueryParam")
+        }
+
+        return json.dumps(aqi_route.lambda_handler(event, {}))
+
+For a complete example of how we can leverage all these utilities together for to rapidly and reliable develop, test,
+and deploy AWS Lambda's, see `the Air Quality Bot repository <https://github.com/alexdlaird/air-quality-bot>`_,
+starting in :code:`devserver.py`.
 
 Python HTTP Server
 ------------------
