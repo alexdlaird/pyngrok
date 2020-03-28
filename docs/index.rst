@@ -25,7 +25,7 @@ using :code:`pip`.
 
 .. code-block:: sh
 
-   pip install pyngrok
+    pip install pyngrok
 
 That's it! :code:`pyngrok` is now available `as a package to our Python projects <#open-a-tunnel>`_,
 and :code:`ngrok` is now available `from the command line <#command-line-usage>`_.
@@ -37,10 +37,12 @@ To open a tunnel, use the :code:`connect()` method, which returns the public URL
 
 .. code-block:: python
 
-   from pyngrok import ngrok
+    from pyngrok import ngrok
 
-   # Open a tunnel on the default port 80
-   public_url = ngrok.connect()
+    # Open a HTTP tunnel on the default port 80
+    public_url = ngrok.connect()
+    # Open a SSH tunnel
+    ssh_url = ngrok.connect(22, "tcp")
 
 The :code:`connect()` method takes an optional :code:`options` parameter, which allows us to pass additional
 options that are `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_,
@@ -54,11 +56,11 @@ accomplished with the :code:`get_tunnels()` method, which returns a list of :cod
 
 .. code-block:: python
 
-   from pyngrok import ngrok
+    from pyngrok import ngrok
 
-   tunnels = ngrok.get_tunnels()
-   # A public ngrok URL that tunnels to port 80 (ex. http://<public_sub>.ngrok.io)
-   public_url = tunnels[0].public_url
+    tunnels = ngrok.get_tunnels()
+    # A public ngrok URL that tunnels to port 80 (ex. http://<public_sub>.ngrok.io)
+    public_url = tunnels[0].public_url
 
 Close a Tunnel
 --------------
@@ -68,11 +70,11 @@ also close them manually.
 
 .. code-block:: python
 
-   from pyngrok import ngrok
+    from pyngrok import ngrok
 
-   public_url = "http://<public_sub>.ngrok.io"
+    public_url = "http://<public_sub>.ngrok.io"
 
-   ngrok.disconnect(public_url)
+    ngrok.disconnect(public_url)
 
 The :code:`ngrok` Process
 -------------------------
@@ -85,17 +87,17 @@ process so tunnels stay open until the user intervenes. We can do that by access
 
 .. code-block:: python
 
-   from pyngrok import ngrok
+    from pyngrok import ngrok
 
-   ngrok_process = ngrok.get_ngrok_process()
+    ngrok_process = ngrok.get_ngrok_process()
 
-   try:
-       # Block until CTRL-C or some other terminating event
-       ngrok_process.process.wait()
-   except KeyboardInterrupt:
-       print(' Shutting down server.')
+    try:
+        # Block until CTRL-C or some other terminating event
+        ngrok_process.process.wait()
+    except KeyboardInterrupt:
+        print(" Shutting down server.")
 
-       ngrok.kill()
+        ngrok.kill()
 
 The :code:`NgrokProcess` also contains an :code:`api_url` variable, usually initialized to
 :code:`http://127.0.0.1:4040`, from which we can access the `ngrok client API <https://ngrok.com/docs#client-api>`_.
@@ -108,19 +110,15 @@ access to :code:`ngrok` from the command line, `as shown below <#command-line-us
 Expose Other Service
 --------------------
 
-Using :code:`ngrok` you can expose any number of non-HTTP services, for instance SSH tunnels, datatbase connections,
-etc. This can also be accomplished with :code:`pyngrok` by opening a :code:`tcp` tunnel to the desired service.
+Using :code:`ngrok` you can expose any number of non-HTTP services, for instances database. This can also be
+accomplished with :code:`pyngrok` by opening a :code:`tcp` tunnel to the desired service.
 
 .. code-block:: python
 
-   from pyngrok import ngrok
+    from pyngrok import ngrok
 
-   # Open a tunnel to SSH
-   ngrok.connect(22, 'tcp')
-   # Open a tunnel to MySQL
-   ngrok.connect(3306, 'tcp)
-   # Open a tunnel to Redis
-   ngrok.connect(6379, 'tcp)
+    # Open a tunnel to MySQL with a Reserved TCP Address
+    ngrok.connect(3306, "tcp", options={"remoteaddr": "1.tcp.ngrok.io:12345")
 
 
 Configuration
@@ -135,21 +133,21 @@ the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it like this:
 
 .. code-block:: python
 
-   from pyngrok import ngrok
+    from pyngrok import ngrok
 
-   ngrok.set_auth_token("<NGROK_AUTH_TOKEN>")
+    ngrok.set_auth_token("<NGROK_AUTH_TOKEN>")
 
-   # Once an auth token is set, we are able to open multiple tunnels at the same time
-   ngrok.connect()
-   ngrok.connect(8000)
+    # Once an auth token is set, we are able to open multiple tunnels at the same time
+    ngrok.connect()
+    ngrok.connect(8000)
 
 We can also override the auth token when necessary with:
 
 .. code-block:: python
 
-   from pyngrok import ngrok
+    from pyngrok import ngrok
 
-   ngrok.connect(auth_token="<NGROK_AUTH_TOKEN>")
+    ngrok.connect(auth_token="<NGROK_AUTH_TOKEN>")
 
 The above will only work when :code:`ngrok` is first starting, so if a tunnel has already
 been started in the session, we will need to :code:`kill()` it first.
@@ -162,9 +160,9 @@ the :code:`region` parameter:
 
 .. code-block:: python
 
-   from pyngrok import ngrok
+    from pyngrok import ngrok
 
-   url = ngrok.connect(region="au")
+    url = ngrok.connect(region="au")
 
 Passing :code:`options`
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -178,9 +176,9 @@ Here is an example starting :code:`ngrok` in Australia, then opening a tunnel fo
 
 .. code-block:: python
 
-   from pyngrok import ngrok
+    from pyngrok import ngrok
 
-   url = ngrok.connect(region="au", options={"subdomain": "foo", "auth": "username:password"})
+    url = ngrok.connect(region="au", options={"subdomain": "foo", "auth": "username:password"})
 
 Config File
 ~~~~~~~~~~~
@@ -191,21 +189,21 @@ directory's :code:`.ngrok2` folder. We can change this in one of two ways. Eithe
 
 .. code-block:: python
 
-   from pyngrok import ngrok
+    from pyngrok import ngrok
 
-   CONFIG_PATH = "/opt/ngrok/config.yml"
+    CONFIG_PATH = "/opt/ngrok/config.yml"
 
-   ngrok.connect(config_path=CONFIG_PATH)
+    ngrok.connect(config_path=CONFIG_PATH)
 
 or override the :code:`DEFAULT_CONFIG_PATH` variable:
 
 .. code-block:: python
 
-   from pyngrok import ngrok
+    from pyngrok import ngrok
 
-   ngrok.DEFAULT_CONFIG_PATH = "/opt/ngrok/config.yml"
+    ngrok.DEFAULT_CONFIG_PATH = "/opt/ngrok/config.yml"
 
-   ngrok.set_auth_token("<NGROK_AUTH_TOKEN>")
+    ngrok.set_auth_token("<NGROK_AUTH_TOKEN>")
 
 Binary Path
 ~~~~~~~~~~~
@@ -215,21 +213,21 @@ want in one of two ways.  Either pass the :code:`ngrok_path` parameter to method
 
 .. code-block:: python
 
-   from pyngrok import ngrok
+    from pyngrok import ngrok
 
-   NGROK_PATH = "/usr/local/bin/ngrok"
+    NGROK_PATH = "/usr/local/bin/ngrok"
 
-   ngrok.get_tunnels(ngrok_path=NGROK_PATH)
+    ngrok.get_tunnels(ngrok_path=NGROK_PATH)
 
 or override the :code:`DEFAULT_NGROK_PATH` variable:
 
 .. code-block:: python
 
-   from pyngrok import ngrok
+    from pyngrok import ngrok
 
-   ngrok.DEFAULT_NGROK_PATH = "/usr/local/bin/ngrok"
+    ngrok.DEFAULT_NGROK_PATH = "/usr/local/bin/ngrok"
 
-   ngrok.connect()
+    ngrok.connect()
 
 Command Line Usage
 ------------------
@@ -239,7 +237,7 @@ available on the command line.
 
 .. code-block:: sh
 
-   ngrok http 80
+    ngrok http 80
 
 For details on how to fully leverage `ngrok` from the command line, see `ngrok's official documentation <https://ngrok.com/docs>`_.
 

@@ -32,8 +32,10 @@ To open a tunnel, use the `connect()` method, which returns the public URL gener
 ```python
 from pyngrok import ngrok
 
-# Open a tunnel on the default port 80
+# Open a HTTP tunnel on the default port 80
 public_url = ngrok.connect()
+# Open a SSH tunnel
+ssh_url = ngrok.connect(22, "tcp")
 ```
 
 The `connect()` method takes an optional `options` parameter, which allows us to pass additional
