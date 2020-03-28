@@ -111,7 +111,7 @@ Expose Other Service
 --------------------
 
 Using :code:`ngrok` we can expose any number of non-HTTP services, for instances database. This can also be
-accomplished with :code:`pyngrok` by opening a :code:`tcp` tunnel to the desired service.
+accomplished by using :code:`pyngrok` to open a :code:`tcp` tunnel to the desired service.
 
 .. code-block:: python
 
