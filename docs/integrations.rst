@@ -162,7 +162,7 @@ Here is an example of a simple TCP ping/pong server. It opens a local socket, us
 socket, then the client/server communicate via the publicly exposed address.
 
 For this code to run, we first need to go to
-`ngrok's Reserved TCP Addresses <https://dashboard.ngrok.com/reserved>`_ and make a reservation. Set the URL and PORT
+`ngrok's Reserved TCP Addresses <https://dashboard.ngrok.com/reserved>`_ and make a reservation. Set the HOST and PORT
 environment variables pointing to that reserved address.
 
 Now create :code:`server.py` with the following code:
@@ -174,7 +174,7 @@ Now create :code:`server.py` with the following code:
 
     from pyngrok import ngrok
 
-    url = os.environ.get("URL")
+    host = os.environ.get("HOST")
     port = int(os.environ.get("PORT"))
 
 
@@ -186,7 +186,7 @@ Now create :code:`server.py` with the following code:
     sock.listen(1)
 
     # Open a ngrok tunnel to the socket
-    public_url = ngrok.connect(port, "tcp", options={"remote_addr": "{}:{}".format(url, port)})
+    public_url = ngrok.connect(port, "tcp", options={"remote_addr": "{}:{}".format(host, port)})
     print("ngrok tunnel \"{}\" -> \"tcp://127.0.0.1:{}/\"".format(public_url, port))
 
     while True:
@@ -222,7 +222,7 @@ In a terminal window, we can now start our socket server:
 
 .. code-block:: sh
 
-    python server.py
+    HOST=1.tcp.ngrok.io PORT=12345 python server.py
 
 It's now waiting for incoming connections, so let's write a client to connect to it and send it something.
 
@@ -233,7 +233,7 @@ Create :code:`client.py` with the following code:
     import os
     import socket
 
-    url = os.environ.get("URL")
+    host = os.environ.get("HOST")
     port = int(os.environ.get("PORT"))
 
     # Create a TCP socket
@@ -264,6 +264,6 @@ In another terminal window, we can run our client:
 
 .. code-block:: sh
 
-    python client.py
+    HOST=1.tcp.ngrok.io PORT=12345 python client.py
 
 And that's it! Data was sent and received from a socket via our :code:`ngrok` tunnel.
