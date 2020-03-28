@@ -155,7 +155,3 @@ We can then run this script to start the server.
 .. code-block:: sh
 
     python server.py
-
-Python TCP Socket
------------------
-TBD
