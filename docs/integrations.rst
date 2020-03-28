@@ -9,6 +9,7 @@ for instance to test locally without having to deploy or configure anything. Bel
 
 Flask
 -----
+
 In :code:`server.py`, where our Flask app is initialized, we should add a variable that let's us configure from an
 environment variable whether or not we want to tunnel to :code:`localhost` with :code:`ngrok`. We can initializes
 the :code:`ngrok` tunnel in this same place.
@@ -98,6 +99,7 @@ Now Django can be started by the usual means and setting :code:`USE_NGROK`.
 
 AWS Lambda (Local)
 ------------------
+
 Lambdas deployed to AWS can easily be developed locally using :code:`pyngrok` and extending the
 `Flask example shown above <#flask>`_. In addition to effortless local development, this gives us flexibility
 to write tests, leverage a CI, manage revisions, etc.
@@ -120,6 +122,7 @@ starting in :code:`devserver.py`.
 
 Python HTTP Server
 ------------------
+
 Python's `http.server module <https://docs.python.org/3/library/http.server.html>`_ also makes for a useful development
 server. We can use :code:`pyngrok` to expose it to the web via a tunnel, as show in :code:`server.py` here:
 
@@ -154,40 +157,42 @@ We can then run this script to start the server.
 
 Python TCP Server and Client
 ----------------------------
-TBD
+
+Here is an example of a simple TCP ping/pong server. It opens a local socket, uses :code:`ngrok` to tunnel to that
+socket, then the client/server communicate via the publicly exposed address.
+
+For this code to run, we first need to go to
+`ngrok's Reserved TCP Addresses <https://dashboard.ngrok.com/reserved>`_ and make a reservation. Set the URL and PORT
+environment variables pointing to that reserved address.
+
+Now create :code:`server.py` with the following code:
 
 .. code-block:: python
 
     import os
     import socket
-    import sys
 
-    from urllib.parse import urlparse
     from pyngrok import ngrok
 
-    port = os.environ.get("PORT", 10000)
+    url = os.environ.get("URL")
+    port = int(os.environ.get("PORT"))
 
-    # Create a local TCP socket
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    # Bind the socket to the desired port
+    # Bind a local socket to the port
     server_address = ("localhost", port)
     sock.bind(server_address)
     sock.listen(1)
 
     # Open a ngrok tunnel to the socket
-    public_url = ngrok.connect(port, "tcp")
+    public_url = ngrok.connect(port, "tcp", options={"remote_addr": "{}:{}".format(url, port)})
     print("ngrok tunnel \"{}\" -> \"tcp://127.0.0.1:{}/\"".format(public_url, port))
-
-    # Spit out env vars for the client
-    addrport = urlparse(public_url)
-    print("export URL={}".format(addrport.hostname))
-    print("export PORT={}".format(addrport.port))
 
     while True:
         connection = None
         try:
-            # Block until a connection or a terminating event is received
+            # Wait for a connection
             print("\nWaiting for a connection ...")
             connection, client_address = sock.accept()
 
@@ -213,13 +218,20 @@ TBD
 
     sock.close()
 
-TBD
+In a terminal window, we can now start our socket server:
+
+.. code-block:: sh
+
+    python server.py
+
+It's now waiting for incoming connections, so let's write a client to connect to it and send it something.
+
+Create :code:`client.py` with the following code:
 
 .. code-block:: python
 
     import os
     import socket
-    import sys
 
     url = os.environ.get("URL")
     port = int(os.environ.get("PORT"))
@@ -248,4 +260,10 @@ TBD
 
     sock.close()
 
-TBD
+In another terminal window, we can run our client:
+
+.. code-block:: sh
+
+    python client.py
+
+And that's it! Data was sent and received from a socket via our :code:`ngrok` tunnel.

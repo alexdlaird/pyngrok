@@ -105,6 +105,24 @@ If some feature we need is not available in this package, the client API is acce
 contains the relative path used to manipulate that resource against the client API. This package also gives us
 access to :code:`ngrok` from the command line, `as shown below <#command-line-usage>`__.
 
+Expose Other Service
+--------------------
+
+Using :code:`ngrok` you can expose any number of non-HTTP services, for instance SSH tunnels, datatbase connections,
+etc. This can also be accomplished with :code:`pyngrok` by opening a :code:`tcp` tunnel to the desired service.
+
+.. code-block:: python
+
+   from pyngrok import ngrok
+
+   # Open a tunnel to SSH
+   ngrok.connect(22, 'tcp')
+   # Open a tunnel to MySQL
+   ngrok.connect(3306, 'tcp)
+   # Open a tunnel to Redis
+   ngrok.connect(6379, 'tcp)
+
+
 Configuration
 -------------
 
