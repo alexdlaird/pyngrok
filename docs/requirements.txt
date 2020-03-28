@@ -1,4 +1,4 @@
-Sphinx==1.8.3
-PyYAML==5.1.2
-sphinx_rtd_theme==0.4.3
-m2r==0.2.1
+Sphinx
+PyYAML
+sphinx_rtd_theme
+m2r
