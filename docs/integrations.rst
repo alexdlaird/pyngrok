@@ -177,11 +177,11 @@ Now create :code:`server.py` with the following code:
     host = os.environ.get("HOST")
     port = int(os.environ.get("PORT"))
 
-
+    # Create a TCP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind a local socket to the port
-    server_address = ("localhost", port)
+    server_address = ("", port)
     sock.bind(server_address)
     sock.listen(1)
 
@@ -222,7 +222,7 @@ In a terminal window, we can now start our socket server:
 
 .. code-block:: sh
 
-    HOST=1.tcp.ngrok.io PORT=12345 python server.py
+    HOST="1.tcp.ngrok.io" PORT=12345 python server.py
 
 It's now waiting for incoming connections, so let's write a client to connect to it and send it something.
 
@@ -239,7 +239,7 @@ Create :code:`client.py` with the following code:
     # Create a TCP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    # Connect to the server via the socket
+    # Connect to the server with the socket via our ngrok tunnel
     server_address = (url, port)
     sock.connect(server_address)
     print("Connected to {}:{}".format(url, port))
@@ -250,12 +250,12 @@ Create :code:`client.py` with the following code:
     sock.sendall(message.encode("utf-8"))
 
     # Await a response
-    amount_received = 0
-    amount_expected = len(message)
+    data_received = 0
+    data_expected = len(message)
 
-    while amount_received < amount_expected:
+    while data_received < data_expected:
         data = sock.recv(1024)
-        amount_received += len(data)
+        data_received += len(data)
         print("Received: {}".format(data.decode("utf-8")))
 
     sock.close()
@@ -264,6 +264,6 @@ In another terminal window, we can run our client:
 
 .. code-block:: sh
 
-    HOST=1.tcp.ngrok.io PORT=12345 python client.py
+    HOST="1.tcp.ngrok.io" PORT=12345 python client.py
 
 And that's it! Data was sent and received from a socket via our :code:`ngrok` tunnel.
