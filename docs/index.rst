@@ -110,8 +110,8 @@ access to :code:`ngrok` from the command line, `as shown below <#command-line-us
 Expose Other Service
 --------------------
 
-Using :code:`ngrok` we can expose any number of non-HTTP services, for instances database. This can also be
-accomplished by using :code:`pyngrok` to open a :code:`tcp` tunnel to the desired service.
+Using :code:`ngrok` we can expose any number of non-HTTP services, for instances databases, game servers, etc. This
+can be accomplished by using :code:`pyngrok` to open a :code:`tcp` tunnel to the desired service.
 
 .. code-block:: python
 
