@@ -4,7 +4,7 @@
 Integration Examples
 ====================
 
-:code:`pyngrok` is useful in any number of integrations to let you test things locally without having to deploy,
+:code:`pyngrok` is useful in any number of integrations to let us test things locally without having to deploy,
 for instance to test locally without having to deploy or configure anything. Below are some common usage examples.
 
 Flask
@@ -120,7 +120,41 @@ starting in :code:`devserver.py`.
 
 Python HTTP Server
 ------------------
-TBD
+Python's `http.server module <https://docs.python.org/3/library/http.server.html>`_ also makes for a useful development
+server. We can use :code:`pyngrok` to expose it to the web via a tunnel, as show in :code:`server.py` here:
+
+.. code-block:: python
+
+    import os
+
+    from http.server import HTTPServer, BaseHTTPRequestHandler
+    from pyngrok import ngrok
+
+    def run(port, server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):
+        server_address = ('', port)
+        httpd = server_class(server_address, handler_class)
+
+        public_url = ngrok.connect(port)
+        print('ngrok tunnel "{}" -> "http://127.0.0.1:{}/"'.format(public_url, port))
+
+        try:
+            # Block until CTRL-C or some other terminating event
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+           print(' Shutting down server.')
+
+           httpd.socket.close()
+
+    if __name__ == '__main__':
+        port = os.environ.get("PORT", 80)
+
+        run(port)
+
+We can then run this script to start the server.
+
+.. code-block:: sh
+
+    python server.py
 
 Python TCP Socket
 -----------------

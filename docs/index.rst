@@ -88,8 +88,14 @@ process so tunnels stay open until the user intervenes. We can do that by access
    from pyngrok import ngrok
 
    ngrok_process = ngrok.get_ngrok_process()
-   # Block until CTRL-C or some other terminating event
-   ngrok_process.process.wait()
+
+   try:
+       # Block until CTRL-C or some other terminating event
+       ngrok_process.process.wait()
+   except KeyboardInterrupt:
+       print(' Shutting down server.')
+
+       ngrok.kill()
 
 The :code:`NgrokProcess` also contains an :code:`api_url` variable, usually initialized to
 :code:`http://127.0.0.1:4040`, from which we can access the `ngrok client API <https://ngrok.com/docs#client-api>`_.
