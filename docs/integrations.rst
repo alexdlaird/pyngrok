@@ -23,9 +23,9 @@ the :code:`ngrok` tunnel in this same place.
 
     # Initialize the Flask app for a simple web server
     app = Flask(__name__)
-    app.config['USE_NGROK'] = os.environ.get('USE_NGROK', 'False') == 'True'
+    app.config["USE_NGROK"] = os.environ.get("USE_NGROK", "False") == "True"
 
-    if app.config['USE_NGROK']
+    if app.config["USE_NGROK"]
         # Get the dev server port (defaults to 5000 for Flask, can be overridden with `--port`
         # when starting the server
         port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else 5000
@@ -50,7 +50,7 @@ we want to tunnel to :code:`localhost` with :code:`ngrok`.
 
     import os
 
-    USE_NGROK = os.environ.get('USE_NGROK', 'False') == 'True'
+    USE_NGROK = os.environ.get("USE_NGROK", "False") == "True"
 
 If this flag is set, we want to initialize :code:`pyngrok` when Django is booting. An easy place to do this is in
 one of an :code:`apps.py` file `extending AppConfig <https://docs.djangoproject.com/en/3.0/ref/applications/#django.apps.AppConfig.ready>`_.
@@ -64,8 +64,8 @@ one of an :code:`apps.py` file `extending AppConfig <https://docs.djangoproject.
     from django.conf import settings
 
     class CommonConfig(AppConfig):
-        name = 'myproject.common'
-        verbose_name = 'Common'
+        name = "myproject.common"
+        verbose_name = "Common"
 
         def ready(self):
             if settings.DEV_SERVER and settings.USE_NGROK:
@@ -74,12 +74,12 @@ one of an :code:`apps.py` file `extending AppConfig <https://docs.djangoproject.
 
                 # Get the dev server port (defaults to 8000 for Django, can be overridden with the
                 # last arg when calling `runserver`)
-                addrport = urlparse('http://{}'.format(sys.argv[-1]))
+                addrport = urlparse("http://{}".format(sys.argv[-1]))
                 port = addrport.port if addrport.netloc and addrport.port else 8000
 
                 # Open a ngrok tunnel to the dev server
                 public_url = ngrok.connect(port).rstrip("/")
-                print('ngrok tunnel "{}" -> "http://127.0.0.1:{}/"'.format(public_url, port))
+                print("ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
 
                 # Update any base URLs or webhooks to use the public ngrok URL
                 settings.PROJECT_HOST = public_url
@@ -130,28 +130,122 @@ server. We can use :code:`pyngrok` to expose it to the web via a tunnel, as show
     from http.server import HTTPServer, BaseHTTPRequestHandler
     from pyngrok import ngrok
 
-    def run(port, server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):
-        server_address = ('', port)
-        httpd = server_class(server_address, handler_class)
+    port = os.environ.get("PORT", 80)
 
-        public_url = ngrok.connect(port)
-        print('ngrok tunnel "{}" -> "http://127.0.0.1:{}/"'.format(public_url, port))
+    server_address = ("", port)
+    httpd = HTTPServer(server_address, BaseHTTPRequestHandler)
 
-        try:
-            # Block until CTRL-C or some other terminating event
-            httpd.serve_forever()
-        except KeyboardInterrupt:
-           print(' Shutting down server.')
+    public_url = ngrok.connect(port)
+    print("ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
 
-           httpd.socket.close()
+    try:
+        # Block until CTRL-C or some other terminating event
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+       print(" Shutting down server.")
 
-    if __name__ == '__main__':
-        port = os.environ.get("PORT", 80)
-
-        run(port)
+       httpd.socket.close()
 
 We can then run this script to start the server.
 
 .. code-block:: sh
 
     python server.py
+
+Python TCP Server and Client
+----------------------------
+TBD
+
+.. code-block:: python
+
+    import os
+    import socket
+    import sys
+
+    from urllib.parse import urlparse
+    from pyngrok import ngrok
+
+    port = os.environ.get("PORT", 10000)
+
+    # Create a local TCP socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Bind the socket to the desired port
+    server_address = ("localhost", port)
+    sock.bind(server_address)
+    sock.listen(1)
+
+    # Open a ngrok tunnel to the socket
+    public_url = ngrok.connect(port, "tcp")
+    print("ngrok tunnel \"{}\" -> \"tcp://127.0.0.1:{}/\"".format(public_url, port))
+
+    # Spit out env vars for the client
+    addrport = urlparse(public_url)
+    print("export URL={}".format(addrport.hostname))
+    print("export PORT={}".format(addrport.port))
+
+    while True:
+        connection = None
+        try:
+            # Block until a connection or a terminating event is received
+            print("\nWaiting for a connection ...")
+            connection, client_address = sock.accept()
+
+            print("... connection established from {}".format(client_address))
+
+            # Receive the message, send a response
+            while True:
+                data = connection.recv(1024)
+                if data:
+                    print("Received: {}".format(data.decode("utf-8")))
+
+                    message = "pong"
+                    print("Sending: {}".format(message))
+                    connection.sendall(message.encode("utf-8"))
+                else:
+                    break
+        except KeyboardInterrupt:
+            print(" Shutting down server.")
+
+            if connection:
+                connection.close()
+            break
+
+    sock.close()
+
+TBD
+
+.. code-block:: python
+
+    import os
+    import socket
+    import sys
+
+    url = os.environ.get("URL")
+    port = int(os.environ.get("PORT"))
+
+    # Create a TCP socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Connect to the server via the socket
+    server_address = (url, port)
+    sock.connect(server_address)
+    print("Connected to {}:{}".format(url, port))
+
+    # Send the message
+    message = "ping"
+    print("Sending: {}".format(message))
+    sock.sendall(message.encode("utf-8"))
+
+    # Await a response
+    amount_received = 0
+    amount_expected = len(message)
+
+    while amount_received < amount_expected:
+        data = sock.recv(1024)
+        amount_received += len(data)
+        print("Received: {}".format(data.decode("utf-8")))
+
+    sock.close()
+
+TBD
