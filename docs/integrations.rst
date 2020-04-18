@@ -10,9 +10,9 @@ for instance to test locally without having to deploy or configure anything. Bel
 Flask
 -----
 
-In :code:`server.py`, where our Flask app is initialized, we should add a variable that let's us configure from an
-environment variable whether or not we want to tunnel to :code:`localhost` with :code:`ngrok`. We can initialize
-the :code:`ngrok` tunnel in this same place.
+In :code:`server.py`, `where our Flask app is initialized <https://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application)>`_,
+we should add a variable that let's us configure from an environment variable whether or not we want to tunnel to
+:code:`localhost` with :code:`ngrok`. We can initialize the :code:`ngrok` tunnel in this same place.
 
 .. code-block:: python
 
@@ -44,8 +44,9 @@ Now Flask can be started by the usual means and setting :code:`USE_NGROK`.
 Django
 ------
 
-In :code:`settings.py`, we should add a variable that let's us configure from an environment variable whether or not
-we want to tunnel to :code:`localhost` with :code:`ngrok`.
+In `settings.py <https://docs.djangoproject.com/en/3.0/topics/settings/>`_ of `our Django project's <https://docs.djangoproject.com/en/3.0/intro/tutorial01/#creating-a-project>`_,
+we should add a variable that let's us configure from an environment variable whether or not we want to tunnel to
+:code:`localhost` with :code:`ngrok`.
 
 .. code-block:: python
 
@@ -101,7 +102,7 @@ Now Django can be started by the usual means and setting :code:`USE_NGROK`.
 FastAPI
 -------
 
-In :code:`server.py`, where our FastAPI app is initialized, we should add a variable that let's us configure from an
+In :code:`server.py`, `where our FastAPI app is initialized <https://fastapi.tiangolo.com/tutorial/first-steps/>`_, we should add a variable that let's us configure from an
 environment variable whether or not we want to tunnel to :code:`localhost` with :code:`ngrok`. We can initialize
 the :code:`ngrok` tunnel in this same place.
 
