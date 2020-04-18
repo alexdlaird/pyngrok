@@ -11,7 +11,7 @@ Flask
 -----
 
 In :code:`server.py`, where our Flask app is initialized, we should add a variable that let's us configure from an
-environment variable whether or not we want to tunnel to :code:`localhost` with :code:`ngrok`. We can initializes
+environment variable whether or not we want to tunnel to :code:`localhost` with :code:`ngrok`. We can initialize
 the :code:`ngrok` tunnel in this same place.
 
 .. code-block:: python
@@ -26,7 +26,7 @@ the :code:`ngrok` tunnel in this same place.
     app = Flask(__name__)
     app.config["USE_NGROK"] = os.environ.get("USE_NGROK", "False") == "True"
 
-    if app.config["USE_NGROK"]
+    if app.config["USE_NGROK"]:
         # Get the dev server port (defaults to 5000 for Flask, can be overridden with `--port`
         # when starting the server
         port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else 5000
@@ -64,12 +64,13 @@ one of an :code:`apps.py` file `extending AppConfig <https://docs.djangoproject.
     from django.apps import AppConfig
     from django.conf import settings
 
+
     class CommonConfig(AppConfig):
         name = "myproject.common"
         verbose_name = "Common"
 
         def ready(self):
-            if settings.DEV_SERVER and settings.USE_NGROK:
+            if settings.USE_NGROK:
                 # pyngrok will only be installed, and should only ever be initialized, in a dev environment
                 from pyngrok import ngrok
 
@@ -97,6 +98,48 @@ Now Django can be started by the usual means and setting :code:`USE_NGROK`.
 
     USE_NGROK=True python manage.py runserver
 
+FastAPI
+-------
+
+In :code:`server.py`, where our FastAPI app is initialized, we should add a variable that let's us configure from an
+environment variable whether or not we want to tunnel to :code:`localhost` with :code:`ngrok`. We can initialize
+the :code:`ngrok` tunnel in this same place.
+
+.. code-block:: python
+
+    import os
+    import sys
+
+    from fastapi import FastAPI
+    from pydantic import BaseSettings
+    from pyngrok import ngrok
+
+
+    # Initialize basic settings
+    class Settings(BaseSettings):
+        USE_NGROK = os.environ.get("USE_NGROK", "False") == "True"
+
+
+    settings = Settings()
+
+    # Initialize the FastAPI app for a simple web server
+    app = FastAPI()
+
+    if settings.USE_NGROK:
+        # Get the dev server port (defaults to 8000 for Uvicorn, can be overridden with `--port`
+        # when starting the server
+        port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else 8000
+
+        # Open a ngrok tunnel to the dev server
+        public_url = ngrok.connect(port)
+        print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
+
+Now FastAPI can be started by the usual means, with Uvicorn, and setting :code:`USE_NGROK`.
+
+.. code-block:: sh
+
+    USE_NGROK=True uvicorn server:app --reload
+
 AWS Lambda (Local)
 ------------------
 
@@ -108,13 +151,18 @@ To start, we make Flask routes in to a shim that funnels requests to the Lambda 
 
 .. code-block:: python
 
+    import json
+    from flask import Flask, request
+
+    ...
+
     @app.route("/foo")
     def route_foo():
         event = {
             "someQueryParam": request.args.get("someQueryParam")
         }
 
-        return json.dumps(aqi_route.lambda_handler(event, {}))
+        return json.dumps(route_foo.lambda_handler(event, {}))
 
 For a complete example of how we can leverage all these utilities together for to rapidly and reliable develop, test,
 and deploy AWS Lambda's, see `the Air Quality Bot repository <https://github.com/alexdlaird/air-quality-bot>`_,
@@ -240,9 +288,9 @@ Create :code:`client.py` with the following code:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Connect to the server with the socket via our ngrok tunnel
-    server_address = (url, port)
+    server_address = (host, port)
     sock.connect(server_address)
-    print("Connected to {}:{}".format(url, port))
+    print("Connected to {}:{}".format(host, port))
 
     # Send the message
     message = "ping"
