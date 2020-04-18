@@ -135,7 +135,7 @@ we should add a variable that let's us configure from an environment variable wh
         public_url = ngrok.connect(port)
         print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
 
-Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicorn.org/>`_, and
+Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicorn.org/#usage>`_, and
 setting :code:`USE_NGROK`.
 
 .. code-block:: sh
