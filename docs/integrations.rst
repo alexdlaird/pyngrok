@@ -102,9 +102,9 @@ Now Django can be started by the usual means and setting :code:`USE_NGROK`.
 FastAPI
 -------
 
-In :code:`server.py`, `where our FastAPI app is initialized <https://fastapi.tiangolo.com/tutorial/first-steps/>`_, we should add a variable that let's us configure from an
-environment variable whether or not we want to tunnel to :code:`localhost` with :code:`ngrok`. We can initialize
-the :code:`ngrok` tunnel in this same place.
+In :code:`server.py`, `where our FastAPI app is initialized <https://fastapi.tiangolo.com/tutorial/first-steps/>`_,
+we should add a variable that let's us configure from an environment variable whether or not we want to tunnel to
+:code:`localhost` with :code:`ngrok`. We can initialize the :code:`ngrok` tunnel in this same place.
 
 .. code-block:: python
 
@@ -135,7 +135,8 @@ the :code:`ngrok` tunnel in this same place.
         public_url = ngrok.connect(port)
         print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
 
-Now FastAPI can be started by the usual means, with Uvicorn, and setting :code:`USE_NGROK`.
+Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicorn.org/>`_, and
+setting :code:`USE_NGROK`.
 
 .. code-block:: sh
 
