@@ -24,6 +24,7 @@ we should add a variable that let's us configure from an environment variable wh
 
     # Initialize the Flask app for a simple web server
     app = Flask(__name__)
+    # Initialize our ngrok settings into Flask
     app.config["USE_NGROK"] = os.environ.get("USE_NGROK", "False") == "True"
 
     if app.config["USE_NGROK"]:
@@ -51,6 +52,8 @@ we should add a variable that let's us configure from an environment variable wh
 .. code-block:: python
 
     import os
+
+    # ... The rest of our Django settings
 
     USE_NGROK = os.environ.get("USE_NGROK", "False") == "True"
 
@@ -116,7 +119,7 @@ we should add a variable that let's us configure from an environment variable wh
     from pyngrok import ngrok
 
 
-    # Initialize basic settings
+    # Initialize our ngrok settings into FastAPI
     class Settings(BaseSettings):
         USE_NGROK = os.environ.get("USE_NGROK", "False") == "True"
 
@@ -145,30 +148,37 @@ setting :code:`USE_NGROK`.
 AWS Lambda (Local)
 ------------------
 
-Lambdas deployed to AWS can easily be developed locally using :code:`pyngrok` and extending the
-`Flask example shown above <#flask>`_. In addition to effortless local development, this gives us flexibility
-to write tests, leverage a CI, manage revisions, etc.
+Lambdas deployed to AWS can be easily developed locally using :code:`pyngrok` and extending the
+`Flask example shown above <#flask>`_ (or `the FastAPI example <#fastapi>`_, they're both very similar). In addition to
+effortless local development, this gives us more flexibility when writing tests, leveraging a CI, managing
+revisions, etc.
 
-To start, we make Flask routes in to a shim that funnels requests to the Lambda handlers instead.
+Let's assume we have a file :code:`foo_GET.py` in our :code:`lambdas` module and, when deployed, it handles requests to
+:code:`GET /foo`. We can make a Flask route in to a shim that funnels local requests to this same Lambda handler
+using the example below. Combining this with the rest of the `Flask example above <#flask>`_ and we'll have ourselves
+a tunnel.
 
 .. code-block:: python
 
     import json
     from flask import Flask, request
 
-    ...
+    from lambdas.foo_GET import lambda_function as foo_route
+
+    # ... The rest of the Flask example from above
 
     @app.route("/foo")
     def route_foo():
+        # This will end up being the event body
         event = {
             "someQueryParam": request.args.get("someQueryParam")
         }
 
-        return json.dumps(route_foo.lambda_handler(event, {}))
+        return json.dumps(foo_route.lambda_handler(event, {}))
 
-For a complete example of how we can leverage all these utilities together for to rapidly and reliable develop, test,
+For a complete example of how we can leverage all these utilities together to rapidly and reliably develop, test,
 and deploy AWS Lambda's, see `the Air Quality Bot repository <https://github.com/alexdlaird/air-quality-bot>`_,
-starting in :code:`devserver.py`.
+and have a look at the :code:`Makefile` and :code:`devserver.py`.
 
 Python HTTP Server
 ------------------
