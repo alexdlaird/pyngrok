@@ -149,14 +149,14 @@ AWS Lambda (Local)
 ------------------
 
 Lambdas deployed to AWS can be easily developed locally using :code:`pyngrok` and extending the
-`Flask example shown above <#flask>`_ (or `the FastAPI example <#fastapi>`_, they're both very similar). In addition to
-effortless local development, this gives us more flexibility when writing tests, leveraging a CI, managing
-revisions, etc.
+`Flask example shown above <#flask>`_ (`FastAPI <#fastapi>`_ as well, as they're both very simple, but we'll build on
+the Flask example here). In addition to effortless local development, this gives us more flexibility when writing
+tests, leveraging a CI, managing revisions, etc.
 
 Let's assume we have a file :code:`foo_GET.py` in our :code:`lambdas` module and, when deployed, it handles requests to
-:code:`GET /foo`. We can make a Flask route in to a shim that funnels local requests to this same Lambda handler
-using the example below. Combining this with the rest of the `Flask example above <#flask>`_ and we'll have ourselves
-a tunnel.
+:code:`GET /foo`. Locally, we can use a Flask route as a shim to funnel requests to this same Lambda handler, as shown
+below. Combine this with the rest of the `Flask example above <#flask>`_ using :code:pyngrok and we'll have ourselves a
+tunnel.
 
 .. code-block:: python
 
@@ -176,8 +176,8 @@ a tunnel.
 
         return json.dumps(foo_route.lambda_handler(event, {}))
 
-For a complete example of how we can leverage all these utilities together to rapidly and reliably develop, test,
-and deploy AWS Lambda's, see `the Air Quality Bot repository <https://github.com/alexdlaird/air-quality-bot>`_,
+For a complete example of how we can leverage all these things together to rapidly and reliably develop, test,
+and deploy AWS Lambda's, check out `the Air Quality Bot repository <https://github.com/alexdlaird/air-quality-bot>`_
 and have a look at the :code:`Makefile` and :code:`devserver.py`.
 
 Python HTTP Server
