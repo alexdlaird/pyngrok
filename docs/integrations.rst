@@ -169,7 +169,7 @@ a tunnel.
 
     @app.route("/foo")
     def route_foo():
-        # This will end up being the event body
+        # This becomes the event in the Lambda handler
         event = {
             "someQueryParam": request.args.get("someQueryParam")
         }
