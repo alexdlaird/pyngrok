@@ -10,9 +10,10 @@ for instance to test locally without having to deploy or configure anything. Bel
 Flask
 -----
 
-In :code:`server.py`, `where our Flask app is initialized <https://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application)>`_,
-we should add a variable that let's us configure from an environment variable whether or not we want to tunnel to
-:code:`localhost` with :code:`ngrok`. We can initialize the :code:`ngrok` tunnel in this same place.
+In :code:`server.py`, `where our Flask app is initialized <https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/#the-application-factory>`_,
+we should add a variable that let's us configure from an environment variable whether or not we want to open a tunnel
+to :code:`localhost` with :code:`ngrok` when the dev server starts. We can initialize the :code:`ngrok` tunnel in this
+same place.
 
 .. code-block:: python
 
@@ -20,34 +21,48 @@ we should add a variable that let's us configure from an environment variable wh
     import sys
 
     from flask import Flask
-    from pyngrok import ngrok
 
-    # Initialize the Flask app for a simple web server
-    app = Flask(__name__)
-    # Initialize our ngrok settings into Flask
-    app.config["USE_NGROK"] = os.environ.get("USE_NGROK", "False") == "True"
+    def create_app(test_config=None):
+        app = Flask(__name__)
 
-    if app.config["USE_NGROK"]:
-        # Get the dev server port (defaults to 5000 for Flask, can be overridden with `--port`
-        # when starting the server
-        port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else 5000
+        if test_config is None:
+            # Load the instance config, if it exists, when not testing
+            app.config.from_pyfile("config.py", silent=True)
+        else:
+            # Load the test config, if passed in
+            app.config.update(test_config)
 
-        # Open a ngrok tunnel to the dev server
-        public_url = ngrok.connect(port)
-        print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
+        if "USE_NGROK" not in app.config:
+            app.config["USE_NGROK"] = os.environ.get("USE_NGROK", "False") == "True"
 
-Now Flask can be started by the usual means and setting :code:`USE_NGROK`.
+        if app.config["FLASK_ENV"] == "development" and app.config["USE_NGROK"]:
+            # pyngrok will only be installed, and should only ever be initialized, in a dev environment
+            from pyngrok import ngrok
+
+            # Get the dev server port (defaults to 5000 for Flask, can be overridden with `--port`
+            # when starting the server
+            port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else 5000
+
+            # Open a ngrok tunnel to the dev server
+            public_url = ngrok.connect(port)
+            print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
+
+        # ... Initialize Blueprints and the rest of our app
+
+        return app
+
+Now Flask can be started in development by the usual means, setting :code:`USE_NGROK` to open a tunnel.
 
 .. code-block:: sh
 
-    USE_NGROK=True FLASK_APP=server.py flask run
+    USE_NGROK=True FLASK_ENV=development FLASK_APP=server.py flask run
 
 Django
 ------
 
-In `settings.py <https://docs.djangoproject.com/en/3.0/topics/settings/>`_ of `our Django project's <https://docs.djangoproject.com/en/3.0/intro/tutorial01/#creating-a-project>`_,
-we should add a variable that let's us configure from an environment variable whether or not we want to tunnel to
-:code:`localhost` with :code:`ngrok`.
+In `settings.py <https://docs.djangoproject.com/en/3.0/topics/settings/>`_ of `our Django project <https://docs.djangoproject.com/en/3.0/intro/tutorial01/#creating-a-project>`_,
+we should add a variable that let's us configure from an environment variable whether or not we want to open a tunnel
+to :code:`localhost` with :code:`ngrok` when the dev server starts.
 
 .. code-block:: python
 
@@ -55,10 +70,12 @@ we should add a variable that let's us configure from an environment variable wh
 
     # ... The rest of our Django settings
 
+    DEV_SERVER = len(sys.argv) > 1 and sys.argv[1] == 'runserver'
+
     USE_NGROK = os.environ.get("USE_NGROK", "False") == "True"
 
-If this flag is set, we want to initialize :code:`pyngrok` when Django is booting. An easy place to do this is in
-one of an :code:`apps.py` file `extending AppConfig <https://docs.djangoproject.com/en/3.0/ref/applications/#django.apps.AppConfig.ready>`_.
+If this flag is set, we want to initialize :code:`pyngrok` when Django is booting from its dev server. An easy place
+to do this is one of our :code:`apps.py` by `extending AppConfig <https://docs.djangoproject.com/en/3.0/ref/applications/#django.apps.AppConfig.ready>`_.
 
 .. code-block:: python
 
@@ -74,7 +91,7 @@ one of an :code:`apps.py` file `extending AppConfig <https://docs.djangoproject.
         verbose_name = "Common"
 
         def ready(self):
-            if settings.USE_NGROK:
+            if settings.DEV_SERVER and settings.USE_NGROK:
                 # pyngrok will only be installed, and should only ever be initialized, in a dev environment
                 from pyngrok import ngrok
 
@@ -96,7 +113,7 @@ one of an :code:`apps.py` file `extending AppConfig <https://docs.djangoproject.
             # Update inbound traffic via APIs to use the public-facing ngrok URL
             pass
 
-Now Django can be started by the usual means and setting :code:`USE_NGROK`.
+Now the Django dev server can be started by the usual means, setting :code:`USE_NGROK` to open a tunnel.
 
 .. code-block:: sh
 
@@ -116,11 +133,11 @@ we should add a variable that let's us configure from an environment variable wh
 
     from fastapi import FastAPI
     from pydantic import BaseSettings
-    from pyngrok import ngrok
 
 
-    # Initialize our ngrok settings into FastAPI
     class Settings(BaseSettings):
+        # ... The rest of our FastAPI settings
+
         USE_NGROK = os.environ.get("USE_NGROK", "False") == "True"
 
 
@@ -130,6 +147,9 @@ we should add a variable that let's us configure from an environment variable wh
     app = FastAPI()
 
     if settings.USE_NGROK:
+        # pyngrok will only be installed, and should only ever be initialized, in a dev environment
+        from pyngrok import ngrok
+
         # Get the dev server port (defaults to 8000 for Uvicorn, can be overridden with `--port`
         # when starting the server
         port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else 8000
@@ -138,8 +158,10 @@ we should add a variable that let's us configure from an environment variable wh
         public_url = ngrok.connect(port)
         print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
 
-Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicorn.org/#usage>`_, and
-setting :code:`USE_NGROK`.
+    # ... Initialize routers and the rest of our app
+
+Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicorn.org/#usage>`_, setting
+:code:`USE_NGROK` to open a tunnel
 
 .. code-block:: sh
 
@@ -149,32 +171,32 @@ AWS Lambda (Local)
 ------------------
 
 Lambdas deployed to AWS can be easily developed locally using :code:`pyngrok` and extending the
-`Flask example shown above <#flask>`_ (`FastAPI <#fastapi>`_ as well, as they're both very simple, but we'll build on
-the Flask example here). In addition to effortless local development, this gives us more flexibility when writing
-tests, leveraging a CI, managing revisions, etc.
+`Flask example shown above <#flask>`_. In addition to effortless local development, this gives us more flexibility when
+writing tests, leveraging a CI, managing revisions, etc.
 
 Let's assume we have a file :code:`foo_GET.py` in our :code:`lambdas` module and, when deployed, it handles requests to
-:code:`GET /foo`. Locally, we can use a Flask route as a shim to funnel requests to this same Lambda handler, as shown
-below. Combine this with the rest of the `Flask example above <#flask>`_ using :code:pyngrok and we'll have ourselves a
-tunnel.
+:code:`GET /foo`. Locally, we can use a Flask route as a shim to funnel requests to this same Lambda handler.
+
+To start, add :code:`app.register_blueprint(lambda_routes.bp)` to :code:`server.py` from the example above. The create
+:code:`lambda_routes.py` as shown below to handle the routing:
 
 .. code-block:: python
 
     import json
-    from flask import Flask, request
+    from flask import Blueprint, request
 
-    from lambdas.foo_GET import lambda_function as foo_route
+    from lambdas.foo_GET import lambda_function as foo_GET
 
-    # ... The rest of the Flask example from above
+    bp = Blueprint("lambda_routes", __name__)
 
-    @app.route("/foo")
+    @bp.route("/foo")
     def route_foo():
         # This becomes the event in the Lambda handler
         event = {
             "someQueryParam": request.args.get("someQueryParam")
         }
 
-        return json.dumps(foo_route.lambda_handler(event, {}))
+        return json.dumps(foo_GET.lambda_handler(event, {}))
 
 For a complete example of how we can leverage all these things together to rapidly and reliably develop, test,
 and deploy AWS Lambda's, check out `the Air Quality Bot repository <https://github.com/alexdlaird/air-quality-bot>`_
