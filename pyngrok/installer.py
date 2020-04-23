@@ -57,7 +57,7 @@ def get_ngrok_bin():
     :rtype: string
     """
     system = platform.system()
-    if system in ["Darwin", "Linux"]:
+    if system in ["Darwin", "Linux", "FreeBSD"]:
         return "ngrok"
     elif system == "Windows" or "cygwin" in system.lower():  # pragma: no cover
         return "ngrok.exe"
