@@ -89,7 +89,7 @@ def install_ngrok(ngrok_path, timeout=None):
     system = platform.system().lower()
     if "cygwin" in system:
         system = "cygwin"
-    
+
     plat = system + "_" + arch
     try:
         url = PLATFORMS[plat]

@@ -12,7 +12,7 @@ Flask
 
 In :code:`server.py`, `where our Flask app is initialized <https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/#the-application-factory>`_,
 we should add a variable that let's us configure from an environment variable whether or not we want to open a tunnel
-to :code:`localhost` with :code:`ngrok` when the dev server starts. We can initialize the :code:`ngrok` tunnel in this
+to :code:`localhost` with :code:`ngrok` when the dev server starts. We can initialize the :code:`pyngrok` tunnel in this
 same place.
 
 .. code-block:: python
@@ -124,7 +124,7 @@ FastAPI
 
 In :code:`server.py`, `where our FastAPI app is initialized <https://fastapi.tiangolo.com/tutorial/first-steps/>`_,
 we should add a variable that let's us configure from an environment variable whether or not we want to tunnel to
-:code:`localhost` with :code:`ngrok`. We can initialize the :code:`ngrok` tunnel in this same place.
+:code:`localhost` with :code:`ngrok`. We can initialize the :code:`pyngrok` tunnel in this same place.
 
 .. code-block:: python
 
