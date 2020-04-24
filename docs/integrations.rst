@@ -193,10 +193,10 @@ validate a workflow. For example, an internal end-to-end tester, a step in a pre
 service that automatically updates a status page.
 
 Whatever the case may be, extending `unittest.TestCase <https://docs.python.org/3/library/unittest.html#unittest.TestCase>`_
-and adding our own fixture that starts the dev server and opens a :code:`pyngrok` tunnel is relatively simple. This
+and adding our own fixtures that start the dev server and open a :code:`pyngrok` tunnel is relatively simple. This
 snippet builds on the `Flask example above <#flask>`_, but it could be easily modified to work with Django or another
-framework if another dev servers was started/stopped in the :code:`start_dev_server()` and :code:`stop_dev_server()`
-methods instead.
+framework if its dev server was started/stopped in the :code:`start_dev_server()` and :code:`stop_dev_server()` and
+:code:`PORT` was changed.
 
 .. code-block:: python
 
@@ -205,7 +205,7 @@ methods instead.
 
     from flask import request
     from pyngrok import ngrok
-    from urllib import request, parse
+    from urllib import request
 
     from server import create_app
 
@@ -218,12 +218,12 @@ methods instead.
         def start_dev_server(cls):
             app = create_app()
 
-            def shutdown_server():
+            def shutdown():
                 request.environ.get("werkzeug.server.shutdown")()
 
             @app.route("/shutdown", methods=("POST",))
-            def shutdown():
-                shutdown_server()
+            def route_shutdown():
+                shutdown()
                 return "", 204
 
             threading.Thread(target=app.run).start()
@@ -258,8 +258,9 @@ methods instead.
             cls.stop_dev_server()
 
 Now, any test that needs a :code:`pyngrok` tunnel can simply extend :code:`PyngrokTestCase` to inherit these fixtures.
-If we want the :code:`pyngrok` tunnel to remain open across numerous different types of tests, it can similarly be
-`initialized at the suite or module level instead <https://docs.python.org/3/library/unittest.html#class-and-module-fixtures>`_.
+If we want the :code:`pyngrok` tunnel to remain open across numerous tests, it may be more efficient to
+`setup these fixtures at the suite or module level instead <https://docs.python.org/3/library/unittest.html#class-and-module-fixtures>`_,
+which would also be a simple change.
 
 AWS Lambda (Local)
 ------------------
