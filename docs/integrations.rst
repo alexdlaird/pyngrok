@@ -195,7 +195,8 @@ service that automatically updates a status page.
 Whatever the case may be, extending `unittest.TestCase <https://docs.python.org/3/library/unittest.html#unittest.TestCase>`_
 and adding our own fixture that starts the dev server and opens a :code:`pyngrok` tunnel is relatively simple. This
 snippet builds on the `Flask example above <#flask>`_, but it could be easily modified to work with Django or another
-framework if another dev servers was started/stopped in :code:`start_dev_server()` and :code:`stop_dev_server` instead.
+framework if another dev servers was started/stopped in the :code:`start_dev_server()` and :code:`stop_dev_server()`
+methods instead.
 
 .. code-block:: python
 
