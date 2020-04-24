@@ -185,6 +185,70 @@ Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicor
 
     USE_NGROK=True uvicorn server:app --reload
 
+End-to-End Testing
+------------------
+
+Some testing use-cases might mean we want to temporarily expose a route via a :code:`pyngrok` tunnel to fully
+validate a workflow. For example, an internal end-to-end tester, a step in a pre-deployment validation pipeline, or a
+service that automatically updates a status page.
+
+Whatever the case may be, here is `test case <https://docs.python.org/3/library/unittest.html#unittest.TestCase>`_
+fixture that can be used to open a :code:`pyngrok` in a test.
+
+.. code-block:: python
+
+    import threading
+    import unittest
+
+    from pyngrok import ngrok
+
+    class PyngrokTestCase(unittest.TestCase):
+        @classmethod
+        def start_dev_server(cls)
+            pass
+
+        @classmethod
+        def init_webhooks(cls, base_url):
+            webhook_url = "{}/foo".format(public_url)
+
+            # ... Update inbound traffic via APIs to use the public-facing ngrok URL
+
+        @classmethod
+        def init_pyngrok(cls):
+            # Open a ngrok tunnel to the dev server
+            public_url = ngrok.connect(port)
+
+            # Update any base URLs or webhooks to use the public ngrok URL
+            cls.init_webhooks(public_url)
+
+        @classmethod
+        def setUpClass(cls):
+            cls.start_dev_server()
+
+            cls.init_pyngrok()
+
+How we start the dev server in our tests depends on the framework we're using.
+
+Here's a Django example, importing :code:`from django.core import management`:
+
+.. code-block:: python
+
+    @classmethod
+    def start_dev_server(cls)
+        threading.Thread(target=management.call_command, args=("runserver",))
+
+Here's a Flask example, importing our app with :code:`from server import app`:
+
+.. code-block:: python
+
+    @classmethod
+    def start_dev_server(cls)
+        threading.Thread(target=app.run)
+
+Now, any test that needs a :code:`pyngrok` tunnel can simply extend :code:`PyngrokTestCase` instead of
+:code:`unitetest.TestCase`. If we want the :code:`pyngrok` tunnel to remain open across numerous different types of
+tests, it can similarly be `initiated at the suite or module level instead <https://docs.python.org/3/library/unittest.html#class-and-module-fixtures>`_.
+
 AWS Lambda (Local)
 ------------------
 
