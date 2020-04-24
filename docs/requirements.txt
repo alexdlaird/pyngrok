@@ -1,4 +1,4 @@
-Sphinx
+Sphinx<3.0.0
 PyYAML
 sphinx_rtd_theme
 m2r
