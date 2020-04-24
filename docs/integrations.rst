@@ -197,19 +197,23 @@ fixture that can be used to open a :code:`pyngrok` in a test.
 
 .. code-block:: python
 
-    import threading
     import unittest
 
     from pyngrok import ngrok
 
+
     class PyngrokTestCase(unittest.TestCase):
         @classmethod
-        def start_dev_server(cls)
+        def start_dev_server(cls):
+            pass
+
+        @classmethod
+        def stop_dev_server(cls):
             pass
 
         @classmethod
         def init_webhooks(cls, base_url):
-            webhook_url = "{}/foo".format(public_url)
+            webhook_url = "{}/foo".format(base_url)
 
             # ... Update inbound traffic via APIs to use the public-facing ngrok URL
 
@@ -227,23 +231,43 @@ fixture that can be used to open a :code:`pyngrok` in a test.
 
             cls.init_pyngrok()
 
-How we start the dev server in our tests depends on the framework we're using.
+        @classmethod
+        def tearDownClass(cls):
+            cls.stop_dev_server()
 
-Here's a Django example, importing :code:`from django.core import management`:
-
-.. code-block:: python
-
-    @classmethod
-    def start_dev_server(cls)
-        threading.Thread(target=management.call_command, args=("runserver",))
-
-Here's a Flask example, importing our app with :code:`from server import app`:
+How we start and stop the dev server in our tests depends on the framework we're using. Here's an example of how we
+might implement that if we were using Flask.
 
 .. code-block:: python
 
-    @classmethod
-    def start_dev_server(cls)
-        threading.Thread(target=app.run)
+    import threading
+
+    from flask import request
+
+    from server import create_app
+
+    # ... The rest of the imports in the example above
+
+    class PyngrokTestCase(unittest.TestCase):
+        @classmethod
+        def start_dev_server(cls):
+            app = create_app()
+
+            def shutdown_server():
+                request.environ.get("werkzeug.server.shutdown")()
+
+            @app.route("/shutdown", methods=("POST",))
+            def shutdown():
+                shutdown_server()
+                return "", 204
+
+            threading.Thread(target=app.run).start()
+
+        @classmethod
+        def stop_dev_server(cls):
+            from urllib import request, parse
+            req = request.Request("http://localhost:5000/shutdown", method="POST")
+            request.urlopen(req)
 
 Now, any test that needs a :code:`pyngrok` tunnel can simply extend :code:`PyngrokTestCase` instead of
 :code:`unitetest.TestCase`. If we want the :code:`pyngrok` tunnel to remain open across numerous different types of
