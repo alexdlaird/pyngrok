@@ -8,7 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [2.1.4](https://github.com/alexdlaird/pyngrok/compare/2.1.3...2.1.4) - 2020-04-23
 ### Fixed
 - FreeBSD is now listed as a supported platform and the correct binary is chosen.
-- Added an [integration example for FastAPI](https://pyngrok.readthedocs.io/en/2.1.4/integrations.html#fastapi) for common uses cases.
+- Added an [integration example for FastAPI](https://pyngrok.readthedocs.io/en/2.1.4/integrations.html#fastapi).
 
 ## [2.1.3](https://github.com/alexdlaird/pyngrok/compare/2.1.0...2.1.3) - 2020-03-28
 ### Added
