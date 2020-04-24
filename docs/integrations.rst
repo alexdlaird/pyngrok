@@ -192,63 +192,27 @@ Some testing use-cases might mean we want to temporarily expose a route via a :c
 validate a workflow. For example, an internal end-to-end tester, a step in a pre-deployment validation pipeline, or a
 service that automatically updates a status page.
 
-Whatever the case may be, here is `test case <https://docs.python.org/3/library/unittest.html#unittest.TestCase>`_
-fixture that can be used to open a :code:`pyngrok` in a test.
+Whatever the case may be, extending `unittest.TestCase <https://docs.python.org/3/library/unittest.html#unittest.TestCase>`_
+and adding our own fixture that starts the dev server and opens a :code:`pyngrok` tunnel is relatively simple. This
+snippet builds on the `Flask example above <#flask>`_, but it could be easily modified to work with Django or another
+framework if another dev servers was started/stopped in :code:`start_dev_server()` and :code:`stop_dev_server` instead.
 
 .. code-block:: python
 
     import unittest
-
-    from pyngrok import ngrok
-
-
-    class PyngrokTestCase(unittest.TestCase):
-        @classmethod
-        def start_dev_server(cls):
-            pass
-
-        @classmethod
-        def stop_dev_server(cls):
-            pass
-
-        @classmethod
-        def init_webhooks(cls, base_url):
-            webhook_url = "{}/foo".format(base_url)
-
-            # ... Update inbound traffic via APIs to use the public-facing ngrok URL
-
-        @classmethod
-        def init_pyngrok(cls):
-            # Open a ngrok tunnel to the dev server
-            public_url = ngrok.connect(port)
-
-            # Update any base URLs or webhooks to use the public ngrok URL
-            cls.init_webhooks(public_url)
-
-        @classmethod
-        def setUpClass(cls):
-            cls.start_dev_server()
-
-            cls.init_pyngrok()
-
-        @classmethod
-        def tearDownClass(cls):
-            cls.stop_dev_server()
-
-How we start and stop the dev server in our tests depends on the framework we're using. Here's an example of how we
-might implement that if we were using Flask.
-
-.. code-block:: python
-
     import threading
 
     from flask import request
+    from pyngrok import ngrok
+    from urllib import request, parse
 
     from server import create_app
 
-    # ... The rest of the imports in the example above
 
     class PyngrokTestCase(unittest.TestCase):
+        # Default Flask port
+        PORT = 5000
+
         @classmethod
         def start_dev_server(cls):
             app = create_app()
@@ -265,13 +229,36 @@ might implement that if we were using Flask.
 
         @classmethod
         def stop_dev_server(cls):
-            from urllib import request, parse
             req = request.Request("http://localhost:5000/shutdown", method="POST")
             request.urlopen(req)
 
-Now, any test that needs a :code:`pyngrok` tunnel can simply extend :code:`PyngrokTestCase` instead of
-:code:`unitetest.TestCase`. If we want the :code:`pyngrok` tunnel to remain open across numerous different types of
-tests, it can similarly be `initiated at the suite or module level instead <https://docs.python.org/3/library/unittest.html#class-and-module-fixtures>`_.
+        @classmethod
+        def init_webhooks(cls, base_url):
+            webhook_url = "{}/foo".format(base_url)
+
+            # ... Update inbound traffic via APIs to use the public-facing ngrok URL
+
+        @classmethod
+        def init_pyngrok(cls):
+            # Open a ngrok tunnel to the dev server
+            public_url = ngrok.connect(PORT)
+
+            # Update any base URLs or webhooks to use the public ngrok URL
+            cls.init_webhooks(public_url)
+
+        @classmethod
+        def setUpClass(cls):
+            cls.start_dev_server()
+
+            cls.init_pyngrok()
+
+        @classmethod
+        def tearDownClass(cls):
+            cls.stop_dev_server()
+
+Now, any test that needs a :code:`pyngrok` tunnel can simply extend :code:`PyngrokTestCase` to inherit these fixtures.
+If we want the :code:`pyngrok` tunnel to remain open across numerous different types of tests, it can similarly be
+`initiated at the suite or module level instead <https://docs.python.org/3/library/unittest.html#class-and-module-fixtures>`_.
 
 AWS Lambda (Local)
 ------------------
