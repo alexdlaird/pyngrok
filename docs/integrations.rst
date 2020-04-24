@@ -22,11 +22,16 @@ same place.
 
     from flask import Flask
 
+    def init_webhooks(base_url):
+        # Update inbound traffic via APIs to use the public-facing ngrok URL
+        pass
+
     def create_app():
         app = Flask(__name__)
 
         # Initialize our ngrok settings into Flask
         app.config.from_mapping(
+            BASE_URL="http://localhost:5000",
             USE_NGROK=os.environ.get("USE_NGROK", "False") == "True"
         )
 
@@ -41,6 +46,10 @@ same place.
             # Open a ngrok tunnel to the dev server
             public_url = ngrok.connect(port)
             print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
+
+            # Update any base URLs or webhooks to use the public ngrok URL
+            app.config["BASE_URL"] = public_url
+            init_webhooks(public_url)
 
         # ... Initialize Blueprints and the rest of our app
 
@@ -64,6 +73,8 @@ to :code:`localhost` with :code:`ngrok` when the dev server starts.
     import os
 
     # ... The rest of our Django settings
+
+    BASE_URL = "http://localhost:8000"
 
     DEV_SERVER = len(sys.argv) > 1 and sys.argv[1] == "runserver"
 
@@ -100,11 +111,11 @@ to do this is one of our :code:`apps.py` by `extending AppConfig <https://docs.d
                 print("ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
 
                 # Update any base URLs or webhooks to use the public ngrok URL
-                settings.PROJECT_HOST = public_url
+                settings.BASE_URL = public_url
                 CommonConfig.init_webhooks(public_url)
 
         @staticmethod
-        def init_webhooks(callback_url):
+        def init_webhooks(base_url):
             # Update inbound traffic via APIs to use the public-facing ngrok URL
             pass
 
@@ -127,16 +138,24 @@ we should add a variable that let's us configure from an environment variable wh
     import sys
 
     from fastapi import FastAPI
+    from fastapi.logger import logger
     from pydantic import BaseSettings
 
 
     class Settings(BaseSettings):
         # ... The rest of our FastAPI settings
 
+        BASE_URL = "http://localhost:8000"
         USE_NGROK = os.environ.get("USE_NGROK", "False") == "True"
 
 
     settings = Settings()
+
+
+    def init_webhooks(base_url):
+        # Update inbound traffic via APIs to use the public-facing ngrok URL
+        pass
+
 
     # Initialize the FastAPI app for a simple web server
     app = FastAPI()
@@ -151,7 +170,11 @@ we should add a variable that let's us configure from an environment variable wh
 
         # Open a ngrok tunnel to the dev server
         public_url = ngrok.connect(port)
-        print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
+        logger.info("ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
+
+        # Update any base URLs or webhooks to use the public ngrok URL
+        settings.BASE_URL = public_url
+        init_webhooks(public_url)
 
     # ... Initialize routers and the rest of our app
 
