@@ -161,7 +161,7 @@ we should add a variable that let's us configure from an environment variable wh
     app = FastAPI()
 
     if settings.USE_NGROK:
-        # pyngrok will only be installed, and should only ever be initialized, in a dev environment
+        # pyngrok should only ever be installed or initialized in a dev environment when this flag is set
         from pyngrok import ngrok
 
         # Get the dev server port (defaults to 8000 for Uvicorn, can be overridden with `--port`
@@ -179,7 +179,7 @@ we should add a variable that let's us configure from an environment variable wh
     # ... Initialize routers and the rest of our app
 
 Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicorn.org/#usage>`_, setting
-:code:`USE_NGROK` to open a tunnel
+:code:`USE_NGROK` to open a tunnel.
 
 .. code-block:: sh
 
