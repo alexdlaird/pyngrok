@@ -258,7 +258,7 @@ framework if another dev servers was started/stopped in :code:`start_dev_server(
 
 Now, any test that needs a :code:`pyngrok` tunnel can simply extend :code:`PyngrokTestCase` to inherit these fixtures.
 If we want the :code:`pyngrok` tunnel to remain open across numerous different types of tests, it can similarly be
-`initiated at the suite or module level instead <https://docs.python.org/3/library/unittest.html#class-and-module-fixtures>`_.
+`initialized at the suite or module level instead <https://docs.python.org/3/library/unittest.html#class-and-module-fixtures>`_.
 
 AWS Lambda (Local)
 ------------------
