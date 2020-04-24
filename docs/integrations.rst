@@ -22,18 +22,13 @@ same place.
 
     from flask import Flask
 
-    def create_app(test_config=None):
+    def create_app():
         app = Flask(__name__)
 
-        if test_config is None:
-            # Load the instance config, if it exists, when not testing
-            app.config.from_pyfile("config.py", silent=True)
-        else:
-            # Load the test config, if passed in
-            app.config.update(test_config)
-
-        if "USE_NGROK" not in app.config:
-            app.config["USE_NGROK"] = os.environ.get("USE_NGROK", "False") == "True"
+        # Initialize our ngrok settings into Flask
+        app.config.from_mapping(
+            USE_NGROK=os.environ.get("USE_NGROK", "False") == "True"
+        )
 
         if app.config["FLASK_ENV"] == "development" and app.config["USE_NGROK"]:
             # pyngrok will only be installed, and should only ever be initialized, in a dev environment
@@ -70,7 +65,7 @@ to :code:`localhost` with :code:`ngrok` when the dev server starts.
 
     # ... The rest of our Django settings
 
-    DEV_SERVER = len(sys.argv) > 1 and sys.argv[1] == 'runserver'
+    DEV_SERVER = len(sys.argv) > 1 and sys.argv[1] == "runserver"
 
     USE_NGROK = os.environ.get("USE_NGROK", "False") == "True"
 
