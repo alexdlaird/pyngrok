@@ -52,7 +52,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: MacOS",
         "Operating System :: Microsoft :: Windows",
-        "Operating System :: POSIX",
-        "Operating System :: Unix"
+        "Operating System :: Linux",
+        "Operating System :: POSIX :: BSD :: FreeBSD"
     ]
 )
