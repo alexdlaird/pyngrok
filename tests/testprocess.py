@@ -58,14 +58,20 @@ class TestProcess(NgrokTestCase):
         config_path2 = os.path.join(self.config_dir, "config2.yml")
         installer.install_default_config(config_path2, {"web_addr": ngrok_process.api_url.lstrip("http://")})
 
-        time.sleep(1)
+        error = None
+        retries = 0
+        while error is None and retries < 10:
+            time.sleep(1)
 
-        # WHEN
-        with self.assertRaises(PyngrokNgrokError) as cm:
-            process._start_process(ngrok_path2, config_path=config_path2)
+            # WHEN
+            with self.assertRaises(PyngrokNgrokError) as cm:
+                process._start_process(ngrok_path2, config_path=config_path2)
+
+            error = cm.exception.ngrok_error
+            retries += 1
 
         # THEN
-        self.assertIsNotNone(cm.exception.ngrok_error)
+        self.assertIsNotNone(error)
         if platform.system() == "Windows":
             self.assertIn("{}: bind: Only one usage of each socket address".format(port), cm.exception.ngrok_error)
         else:
