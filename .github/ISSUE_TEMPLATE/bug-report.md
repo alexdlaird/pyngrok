@@ -10,7 +10,9 @@ assignees: ''
 **Describe the Bug**
 A clear and concise description of what the bug is, including exceptions thrown.
 
-Enable DEBUG level logging and run your code from the Python console (see: https://stackoverflow.com/questions/14058453/making-python-loggers-output-all-messages-to-stdout-in-addition-to-log-file) before submitting a bug report. Include the logs here if after debugging it still looks like a bug specific to `pyngrok`.
+Before submitting a bug report, ensure you have checked out the "Troubleshooting" section of the documentation
+(see: https://pyngrok.readthedocs.io/en/latest/troubleshooting.html). Include the logs here if, after debugging your
+application, it still looks like a bug specific to `pyngrok`.
 
 **Steps to Reproduce**
 A snippet of the minimal code used to reproduce the behavior.
