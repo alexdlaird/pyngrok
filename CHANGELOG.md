@@ -7,22 +7,22 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [2.1.5](https://github.com/alexdlaird/pyngrok/compare/2.1.4...2.1.5) - 2020-05-01
 ### Added
-- Added [troubleshooting tips to the documentation](https://pyngrok.readthedocs.io/en/2.1.5/troubleshooting.html).
-- Added an [integration example for end-to-end testing](https://pyngrok.readthedocs.io/en/2.1.5/integrations.html#end-to-end-testing).
+- [Troubleshooting tips to the documentation](https://pyngrok.readthedocs.io/en/2.1.5/troubleshooting.html).
+- An [integration example for end-to-end testing](https://pyngrok.readthedocs.io/en/2.1.5/integrations.html#end-to-end-testing).
 
-### Fixed
-- Fixed PyPI package classifiers.
+### Changed
+- PyPI package classifiers.
 
 ## [2.1.4](https://github.com/alexdlaird/pyngrok/compare/2.1.3...2.1.4) - 2020-04-23
 ### Added
-- Added an [integration example for FastAPI](https://pyngrok.readthedocs.io/en/2.1.4/integrations.html#fastapi).
+- An [integration example for FastAPI](https://pyngrok.readthedocs.io/en/2.1.4/integrations.html#fastapi).
 
 ### Fixed
 - FreeBSD is now listed as a supported platform and the correct binary is chosen.
 
 ## [2.1.3](https://github.com/alexdlaird/pyngrok/compare/2.1.0...2.1.3) - 2020-03-28
 ### Added
-- Added [integration examples to the documentation](https://pyngrok.readthedocs.io/en/2.1.3/integrations.html) for common uses cases.
+- [Integration examples to the documentation](https://pyngrok.readthedocs.io/en/2.1.3/integrations.html) for common uses cases.
 
 ### Fixed
 - Build improvements.
@@ -31,15 +31,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Added
 - `region` parameter for `ngrok.connect()`, and `process.get_process()`. See [ngrok module](https://pyngrok.readthedocs.io/en/2.1.0/api.html#module-pyngrok.ngrok).
 - `authtoken` parameter for `ngrok.connect()`, and `process.get_process()`. See [ngrok module](https://pyngrok.readthedocs.io/en/2.1.0/api.html#module-pyngrok.ngrok).
-- Added support for `Cygwin` as a platform by having it use the 64-bit Windows binary.
+- Support for `Cygwin` as a platform by having it use the 64-bit Windows binary.
 
 ## [2.0.3](https://github.com/alexdlaird/pyngrok/compare/2.0.2...2.0.3) - 2020-02-14
 ### Security
-- Only allow instances of `urlopen` to be execute with an `http` request.
+- Only allow instances of `urlopen` to be executed with a `http` request.
 
 ## [2.0.2](https://github.com/alexdlaird/pyngrok/compare/2.0.1...2.0.2) - 2020-02-08
 ### Changed
-- Added `DEFAULT_RETRY_COUNT` for use in `installer._download_file`
+- `DEFAULT_RETRY_COUNT` for use in `installer._download_file()`
 
 ## [2.0.1](https://github.com/alexdlaird/pyngrok/compare/2.0.0...2.0.1) - 2020-02-01
 ### Fixed
@@ -60,7 +60,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Properly identify more ARM processors, including `aarch64`.
 
 ### Removed
-- Removed `NgrokProcess`'s `process` variable (previously deprecated in `1.4.0`, use `proc` now instead).
+- `NgrokProcess`'s `process` variable (previously deprecated in `1.4.0`, use `proc` now instead).
 
 ## [1.4.1](https://github.com/alexdlaird/pyngrok/compare/1.4.0...1.4.1) - 2019-09-09
 ### Fixed
