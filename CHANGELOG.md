@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/2.1.5...HEAD)
 
-## [2.1.5](https://github.com/alexdlaird/pyngrok/compare/2.1.4...2.1.5)
+## [2.1.5](https://github.com/alexdlaird/pyngrok/compare/2.1.4...2.1.5) - 2020-05-01
 ### Added
 - Added [troubleshooting tips to the documentation](https://pyngrok.readthedocs.io/en/2.1.5/troubleshooting.html).
 - Added an [integration example for end-to-end testing](https://pyngrok.readthedocs.io/en/2.1.5/integrations.html#end-to-end-testing).
