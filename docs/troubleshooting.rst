@@ -6,7 +6,7 @@ Troubleshooting
 
 :code:`pyngrok` is a Python wrapper for `ngrok <https://ngrok.com/>`_, so often errors that occur (especially during
 startup) are a result of a :code:`ngrok` configuration error and not a bug in :code:`pyngrok`. Hopefully this page can
-give you some useful tips to first debug these issues.
+give you some useful tips to debug these issues.
 
 Test on the Command Line
 ------------------------
@@ -89,3 +89,15 @@ enabling logging (as illustrated in the section above) so you can see where thin
     2020-05-01 17:49:23,228 - pyngrok.ngrok - DEBUG - Response: {"name":"0f8737be-4966-4858-a79d-b04ecb5dbaba","uri":"/api/tunnels/0f8737be-4966-4858-a79d-b04ecb5dbaba","public_url":"https://<public_sub>.ngrok.io","proto":"https","config":{"addr":"http://localhost:80","inspect":true},"metrics":{"conns":{"count":0,"gauge":0,"rate1":0,"rate5":0,"rate15":0,"p50":0,"p90":0,"p95":0,"p99":0},"http":{"count":0,"rate1":0,"rate5":0,"rate15":0,"p50":0,"p90":0,"p95":0,"p99":0}}}
 
     'http://<public_sub>.ngrok.io'
+
+Check http://localhost:4040
+---------------------------
+
+Check to see if you are able to access the `traffic inspection interface <https://ngrok.com/docs#getting-started-inspect>`_
+via a web browser. If so, this at least means :code:`ngrok` is able to start before throwing the error.
+
+:code:`ngrok` Documentation
+---------------------------
+
+Familiarize yourself with the `ngrok documentation <https://ngrok.com/docs>`_, especially the sections pertaining to
+`the config file <https://ngrok.com/docs#config>`_ and `the client API <https://ngrok.com/docs#client-api>`_.
