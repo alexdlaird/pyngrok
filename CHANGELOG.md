@@ -3,16 +3,28 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/2.1.4...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/2.1.5...HEAD)
+
+## [2.1.5](https://github.com/alexdlaird/pyngrok/compare/2.1.4...2.1.5)
+### Added
+- Added [troubleshooting tips to the documentation](https://pyngrok.readthedocs.io/en/2.1.5/troubleshooting.html).
+- Added an [integration example for end-to-end testing](https://pyngrok.readthedocs.io/en/2.1.5/integrations.html#end-to-end-testing).
+
+### Fixed
+- Fixed PyPI package classifiers.
 
 ## [2.1.4](https://github.com/alexdlaird/pyngrok/compare/2.1.3...2.1.4) - 2020-04-23
+### Added
+- Added an [integration example for FastAPI](https://pyngrok.readthedocs.io/en/2.1.4/integrations.html#fastapi).
+
 ### Fixed
 - FreeBSD is now listed as a supported platform and the correct binary is chosen.
-- Added an [integration example for FastAPI](https://pyngrok.readthedocs.io/en/2.1.4/integrations.html#fastapi).
 
 ## [2.1.3](https://github.com/alexdlaird/pyngrok/compare/2.1.0...2.1.3) - 2020-03-28
 ### Added
 - Added [integration examples to the documentation](https://pyngrok.readthedocs.io/en/2.1.3/integrations.html) for common uses cases.
+
+### Fixed
 - Build improvements.
 
 ## [2.1.0](https://github.com/alexdlaird/pyngrok/compare/2.0.3...2.1.0) - 2020-03-21
