@@ -56,7 +56,7 @@ For details on how to fully leverage `ngrok` from the command line, see [ngrok's
 
 ## Documentation
 
-For more advanced usage, the full documentation is available at [http://pyngrok.readthedocs.io](http://pyngrok.readthedocs.io).
+For more advanced usage, `pyngrok`'s official documentation is available at [http://pyngrok.readthedocs.io](http://pyngrok.readthedocs.io).
 
 ## Contributing
 
