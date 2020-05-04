@@ -11,8 +11,28 @@ give you some useful tips to debug these issues.
 Test on the Command Line
 ------------------------
 
-When you install :code:`pyngrok` with :code:`pip install pyngrok`, :code:`ngrok` be available from the command
-line. Try to starting it headless:
+When you install :code:`pyngrok` with :code:`pip install pyngrok`, :code:`ngrok` should available from the command
+line. First ensure this is true by checking to see if :code:`pyngrok`'s version of :code:`ngrok` is properly setup in
+your path. Running :code:`ngrok` with no args from the command line should show :code:`pyngrok` version at the very
+end.
+
+.. code-block:: shell
+
+    bash-3.2$ ngrok
+    NAME:
+       ngrok - tunnel local ports to public URLs and inspect traffic
+
+    ...
+
+    PYNGROK VERSION:
+       2.1.5
+
+Note: if :code:`PYNGROK VERSION` is not seen in the output here, something else is managing :code:`ngrok` (perhaps
+another :code:`ngrok` wrapper installed through `Homebrew <https://brew.sh/>`_ or `npm <https://www.npmjs.com/>`_). If
+you'd prefer :code:`pyngrok` manage :code:`ngrok` for you, you'll first need to reorder things in your :code:`$PATH`
+to fix this, then you can continue troublshooting on the command line.
+
+If :code:`PYNGROK VERSION` is seen in the output here, next try starting :code:`ngrok` headless:
 
 .. code-block:: shell
 
