@@ -27,12 +27,15 @@ end.
     PYNGROK VERSION:
        2.1.5
 
-Note: if :code:`PYNGROK VERSION` is not seen in the output here, something else is managing :code:`ngrok` (perhaps
-another :code:`ngrok` wrapper installed through `Homebrew <https://brew.sh/>`_ or `npm <https://www.npmjs.com/>`_). If
-you'd prefer :code:`pyngrok` manage :code:`ngrok` for you, you'll first need to reorder things in your :code:`$PATH`
-to fix this, then you can continue troublshooting on the command line.
+.. note::
 
-If :code:`PYNGROK VERSION` is seen in the output here, next try starting :code:`ngrok` headless:
+    If :code:`PYNGROK VERSION` is not seen in the output here, something else is managing :code:`ngrok` (perhaps
+    another :code:`ngrok` wrapper installed through `Homebrew <https://brew.sh/>`_ or `npm <https://www.npmjs.com/>`_). If
+    you'd prefer :code:`pyngrok` manage :code:`ngrok` for you, you'll first need to `reorder things in your $PATH <https://stackoverflow.com/a/32170849/1128413>`_
+    to fix this, then you can continue troubleshooting on the command line.
+
+With :code:`PYNGROK VERSION` shown in your output here, you know things are setup properly. Next try starting
+:code:`ngrok` headless:
 
 .. code-block:: shell
 

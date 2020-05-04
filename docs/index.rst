@@ -102,10 +102,13 @@ process so tunnels stay open until the user intervenes. We can do that by access
 The :code:`NgrokProcess` also contains an :code:`api_url` variable, usually initialized to
 :code:`http://127.0.0.1:4040`, from which we can access the `ngrok client API <https://ngrok.com/docs#client-api>`_.
 
-If some feature we need is not available in this package, the client API is accessible to us via the
-:code:`api_request()` method. Additionally, the :code:`NgrokTunnel` objects expose a :code:`uri` variable, which
-contains the relative path used to manipulate that resource against the client API. This package also gives us
-access to :code:`ngrok` from the command line, `as shown below <#command-line-usage>`__.
+.. note::
+
+    If some feature we need is not available in this package, the client API is accessible to us via the
+    `api_request() <https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.api_request>`_ method. Additionally,
+    the `NgrokTunnel <https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.NgrokTunnel>`_ objects expose a
+    :code:`uri` variable, which contains the relative path used to manipulate that resource against the client API.
+    This package also gives us access to :code:`ngrok` from the command line, `as shown below <#command-line-usage>`__.
 
 Expose Other Service
 --------------------

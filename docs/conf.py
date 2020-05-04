@@ -94,6 +94,7 @@ html_theme_options = {
     "github_repo": "pyngrok",
     "github_banner": True,
     "show_related": False,
+    "note_bg": "#FFF59C",
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
