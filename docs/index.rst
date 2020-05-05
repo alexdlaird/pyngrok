@@ -18,7 +18,7 @@ making :code:`ngrok` readily available from anywhere on the command line and via
 
 `ngrok <https://ngrok.com>`_ is a reverse proxy tool that opens secure tunnels from public URLs to localhost, perfect
 for exposing local web servers, building webhook integrations, enabling SSH access, testing chatbots, demoing from
-your own machine, and more, made even more powerful with native Python integration through `pyngrok`.
+your own machine, and more, made even more powerful with native Python integration through :code:`pyngrok`.
 
 Installation
 ------------
