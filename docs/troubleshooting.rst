@@ -1,5 +1,3 @@
-:orphan:
-
 ===============
 Troubleshooting
 ===============
@@ -30,9 +28,10 @@ end.
 .. note::
 
     If :code:`PYNGROK VERSION` is not seen in the output here, something else is managing :code:`ngrok` (perhaps
-    another :code:`ngrok` wrapper installed through `Homebrew <https://brew.sh/>`_ or `npm <https://www.npmjs.com/>`_). If
-    you'd prefer :code:`pyngrok` manage :code:`ngrok` for you, you'll first need to `reorder things in your $PATH <https://stackoverflow.com/a/32170849/1128413>`_
-    to fix this, then you can continue troubleshooting on the command line.
+    another :code:`ngrok` wrapper installed through `Homebrew <https://brew.sh/>`_ or `npm <https://www.npmjs.com/>`_).
+    If you'd prefer :code:`pyngrok` manage :code:`ngrok` for you, you'll first need to
+    `reorder things in your $PATH <https://stackoverflow.com/a/32170849/1128413>`_ to fix this, then you can continue
+    troubleshooting on the command line.
 
 With :code:`PYNGROK VERSION` shown in your output here, you know things are setup properly. Next try starting
 :code:`ngrok` headless:
@@ -113,8 +112,8 @@ enabling logging (as illustrated in the section above) so you can see where thin
 
     'http://<public_sub>.ngrok.io'
 
-Check http://localhost:4040
----------------------------
+Check the Inspector at http://localhost:4040
+--------------------------------------------
 
 Check to see if you are able to access the `traffic inspection interface <https://ngrok.com/docs#getting-started-inspect>`_
 via a web browser. If so, this at least means :code:`ngrok` is able to start before throwing the error.

@@ -1,14 +1,11 @@
-:orphan:
-
 =================
 API Documentation
 =================
 
-This part of the documentation covers the interfaces used to develop with :code:`pyngrok`. The :code:`ngrok` module
-is the primary interface, but others are documented here as well for lower-level control.
+This part of the documentation covers the interfaces used to develop with :code:`pyngrok`.
 
-Main Interface
---------------
+Main :code:`ngrok` Interface
+----------------------------
 
 .. automodule:: pyngrok.ngrok
    :members:
@@ -16,7 +13,7 @@ Main Interface
    :show-inheritance:
 
 Process
-~~~~~~~
+-------
 
 .. automodule:: pyngrok.process
    :members:
@@ -24,7 +21,7 @@ Process
    :show-inheritance:
 
 Installer
-~~~~~~~~~
+---------
 
 .. automodule:: pyngrok.installer
    :members:
@@ -32,7 +29,7 @@ Installer
    :show-inheritance:
 
 Exceptions
-~~~~~~~~~~
+----------
 
 .. automodule:: pyngrok.exception
    :members:

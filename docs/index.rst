@@ -247,10 +247,17 @@ available on the command line.
 
 For details on how to fully leverage `ngrok` from the command line, see `ngrok's official documentation <https://ngrok.com/docs>`_.
 
-API Documentation
------------------
+Dive Deeper
+-----------
 
-For more advanced usage, have a look at the :doc:`API documentation for pyngrok <api>` to understand the
-public interfaces available to developers.
+For more advanced usage, integration examples, and tips to troubleshoot common issues, dive deeper in to the rest of
+the documentation.
+
+.. toctree::
+   :maxdepth: 2
+
+   api
+   integrations
+   troubleshooting
 
 .. mdinclude:: ../CONTRIBUTING.md
