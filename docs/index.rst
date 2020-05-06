@@ -15,7 +15,7 @@ pyngrok - a Python wrapper for ngrok
 .. image:: https://img.shields.io/pypi/l/pyngrok.svg
    :target: https://pypi.org/project/pyngrok/
 
-:code:`pyngrok` is a Python wrapper for :code:`ngrok` that manages its own binary and puts it on our path,
+:code:`pyngrok` is a Python wrapper for :code:`ngrok` that manages its own binary and puts it on your path,
 making :code:`ngrok` readily available from anywhere on the command line and via a convenient Python API.
 
 `ngrok <https://ngrok.com>`_ is a reverse proxy tool that opens secure tunnels from public URLs to localhost, perfect

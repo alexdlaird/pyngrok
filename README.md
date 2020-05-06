@@ -1,4 +1,4 @@
-# pyngrok - a Python wrapper for ngrok
+# pyngrok - a Python wrapper for ngrok [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Unleash+the+power+of+ngrok%2C+programmatically+tunneling+to+localhost%2C+in+your+Python+applications+with+pyngrok.&url=https://github.com/alexdlaird/pyngrok&via=alexdlaird&hashtags=ngrok,tunnel,webhook,localhost,pyngrok)
 
 [![PyPI version](https://badge.fury.io/py/pyngrok.svg)](https://badge.fury.io/py/pyngrok)
 [![Build Status](https://travis-ci.org/alexdlaird/pyngrok.svg?branch=master)](https://travis-ci.org/alexdlaird/pyngrok)
@@ -8,7 +8,7 @@
 [![PyPI license](https://img.shields.io/pypi/l/pyngrok.svg)](https://pypi.org/project/pyngrok/)
 
 `pyngrok` is a Python wrapper for `ngrok` that manages its own binary and puts
-it on our path, making `ngrok` readily available from anywhere on the command line and via a
+it on your path, making `ngrok` readily available from anywhere on the command line and via a
 convenient Python API.
 
 [ngrok](https://ngrok.com) is a reverse proxy tool that opens secure tunnels from public URLs to localhost, perfect
