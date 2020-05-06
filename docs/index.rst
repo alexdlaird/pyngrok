@@ -4,14 +4,16 @@ pyngrok - a Python wrapper for ngrok
 
 .. image:: https://badge.fury.io/py/pyngrok.svg
    :target: https://badge.fury.io/py/pyngrok
+.. image:: https://travis-ci.org/alexdlaird/pyngrok.svg?branch=master
+   :target: https://travis-ci.org/alexdlaird/pyngrok
+.. image:: https://codecov.io/gh/alexdlaird/pyngrok/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/alexdlaird/pyngrok
+.. image:: https://readthedocs.org/projects/pyngrok/badge/?version=latest
+   :target: https://pyngrok.readthedocs.io/en/latest/?badge=latest
 .. image:: https://img.shields.io/pypi/pyversions/pyngrok.svg
-   :target: https://pypi.org/project/pyngrok/
-.. image:: https://img.shields.io/pypi/implementation/pyngrok.svg
    :target: https://pypi.org/project/pyngrok/
 .. image:: https://img.shields.io/pypi/l/pyngrok.svg
    :target: https://pypi.org/project/pyngrok/
-.. image:: https://img.shields.io/badge/Donate-PayPal-green.svg
-   :target: https://www.paypal.me/alexdlaird
 
 :code:`pyngrok` is a Python wrapper for :code:`ngrok` that manages its own binary and puts it on our path,
 making :code:`ngrok` readily available from anywhere on the command line and via a convenient Python API.
