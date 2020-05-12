@@ -33,7 +33,7 @@ same place.
             USE_NGROK=os.environ.get("USE_NGROK", "False") == "True"
         )
 
-        if app.config["FLASK_ENV"] == "development" and app.config["USE_NGROK"]:
+        if app.config.get("FLASK_ENV") == "development" and app.config["USE_NGROK"]:
             # pyngrok will only be installed, and should only ever be initialized, in a dev environment
             from pyngrok import ngrok
 
