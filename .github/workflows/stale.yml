@@ -13,7 +13,11 @@ jobs:
     - uses: actions/stale@v1
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        stale-issue-message: 'Stale issue message'
-        stale-pr-message: 'Stale pull request message'
-        stale-issue-label: 'no-issue-activity'
-        stale-pr-label: 'no-pr-activity'
+        stale-issue-message: 'This issue is stale because it has remained open with no further activity on it. Comment with additional context or the issue will be closed automatically. Thank you for your contribution!'
+        stale-pr-message: 'This PR is stale because it has remained open with no further activity on it. If you are still actively working on it, label it as "wip", otherwise it will be closed automatically. Thank you for your contribution!'
+        stale-issue-label: 'stale'
+        exempt-issue-labels: 'wip,security'
+        stale-pr-label: 'stale'
+        exempt-pr-labels: 'wip,security'
+        days-before-stale: 7
+        days-before-close: 7
