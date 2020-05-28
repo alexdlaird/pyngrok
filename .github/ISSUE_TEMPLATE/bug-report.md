@@ -15,9 +15,9 @@ Before submitting a bug report, ensure you have checked out the "Troubleshooting
 application, it still looks like a bug specific to `pyngrok`.
 
 **Steps to Reproduce**
-A snippet of the minimal code used to reproduce the behavior.
+A snippet of the code used to reproduce the behavior.
 
-If applicable, given the correlated `ngrok` command that works. Also include your config file if it has been changed from the default (be sure to redact your auth token, if present).
+If applicable, give the correlated `ngrok` command that _does_ works so we can compare it with what's not working. Also include your config file if it has been changed from the default (be sure to redact your auth token, if present).
 
 **Expected Behavior**
 A brief description of what you expected to happen.
