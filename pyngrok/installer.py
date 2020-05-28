@@ -27,23 +27,23 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "2.1.4"
+__version__ = "2.2.0"
 
 logger = logging.getLogger(__name__)
 
 CDN_URL_PREFIX = "https://bin.equinox.io/c/4VmDzA7iaHb/"
 PLATFORMS = {
-    'darwin_x86_64': CDN_URL_PREFIX + "ngrok-stable-darwin-amd64.zip",
-    'darwin_i386': CDN_URL_PREFIX + "ngrok-stable-darwin-386.zip",
-    'windows_x86_64': CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
-    'windows_i386': CDN_URL_PREFIX + "ngrok-stable-windows-386.zip",
-    'linux_x86_64_arm': CDN_URL_PREFIX + "ngrok-stable-linux-arm64.zip",
-    'linux_i386_arm': CDN_URL_PREFIX + "ngrok-stable-linux-arm.zip",
-    'linux_i386': CDN_URL_PREFIX + "ngrok-stable-linux-386.zip",
-    'linux_x86_64': CDN_URL_PREFIX + "ngrok-stable-linux-amd64.zip",
-    'freebsd_x86_64': CDN_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip",
-    'freebsd_i386': CDN_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
-    'cygwin_x86_64': CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
+    "darwin_x86_64": CDN_URL_PREFIX + "ngrok-stable-darwin-amd64.zip",
+    "darwin_i386": CDN_URL_PREFIX + "ngrok-stable-darwin-386.zip",
+    "windows_x86_64": CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
+    "windows_i386": CDN_URL_PREFIX + "ngrok-stable-windows-386.zip",
+    "linux_x86_64_arm": CDN_URL_PREFIX + "ngrok-stable-linux-arm64.zip",
+    "linux_i386_arm": CDN_URL_PREFIX + "ngrok-stable-linux-arm.zip",
+    "linux_i386": CDN_URL_PREFIX + "ngrok-stable-linux-386.zip",
+    "linux_x86_64": CDN_URL_PREFIX + "ngrok-stable-linux-amd64.zip",
+    "freebsd_x86_64": CDN_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip",
+    "freebsd_i386": CDN_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
+    "cygwin_x86_64": CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
 }
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
@@ -138,7 +138,7 @@ def install_default_config(config_path, data=""):
 
 def _download_file(url, timeout, retries=0):
     try:
-        if not url.lower().startswith('http'):
+        if not url.lower().startswith("http"):
             raise PyngrokSecurityError("URL must start with 'http': {}".format(url))
 
         logger.debug("Download ngrok from {} ...".format(url))

@@ -3,10 +3,16 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/2.1.8...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/2.2.0...HEAD)
 
-## [2.1.8](https://github.com/alexdlaird/pyngrok/compare/2.1.5...2.1.8) - TBD
-TBD
+## [2.2.0](https://github.com/alexdlaird/pyngrok/compare/2.1.5...2.2.0) - TBD
+### Added
+- `NgrokLog` is a parsed representation of `ngrok`'s logs for more accessible debugging.
+
+### Changed
+- `startup_logs` in `NgrokProcess` is now a list of `NgrokLog`s instead of `str`s.
+- `startup_logs` in `PyngrokNgrokError` is now a list of `NgrokLog`s instead of `str`s.
+- When starting the `ngrok` process, levels logged now match `ngrok`s in its startup logs.
 
 ## [2.1.5](https://github.com/alexdlaird/pyngrok/compare/2.1.4...2.1.5) - 2020-05-01
 ### Added

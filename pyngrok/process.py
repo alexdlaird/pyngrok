@@ -1,7 +1,10 @@
 import atexit
 import logging
 import os
+import re
+import shlex
 import subprocess
+import sys
 import time
 
 from future.standard_library import install_aliases
@@ -22,7 +25,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "2.1.1"
+__version__ = "2.2.0"
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +40,7 @@ class NgrokProcess:
     :var string config_path: The path to the `ngrok` config used.
     :var object proc: The child `subprocess.Popen <https://docs.python.org/3/library/subprocess.html#subprocess.Popen>`_ that is running `ngrok`.
     :var string api_url: The API URL for the `ngrok` web interface.
-    :var string startup_logs: The `ngrok` startup logs.
+    :var list[NgrokLog] startup_logs: A list of NgrokLog startup logs from `ngrok`.
     :var string startup_error: If `ngrok` startup failed, this will be the log of the failure.
     """
 
@@ -59,23 +62,24 @@ class NgrokProcess:
         return "NgrokProcess: \"{}\"".format(self.api_url)
 
     @staticmethod
-    def _line_has_error(line):
-        return "lvl=error" in line or "lvl=eror" in line or \
-               "lvl=crit" in line
+    def _line_has_error(log):
+        return log.lvl in ["ERROR", "CRITICAL"]
 
     def log_boot_line(self, line):
-        logger.debug(line)
-        self.startup_logs.append(line)
+        log = NgrokLog(line)
 
-        if self._line_has_error(line):
-            self.startup_error = line
+        logger.log(logging._nameToLevel[log.lvl], line)
+        self.startup_logs.append(log)
+
+        if self._line_has_error(log):
+            self.startup_error = log.err
         else:
             # Log `ngrok` boot states as they come up
-            if "starting web service" in line:
-                self.api_url = "http://{}".format(line.split("addr=")[1])
-            elif "tunnel session started" in line:
+            if "starting web service" in log.msg and log.addr is not None:
+                self.api_url = "http://{}".format(log.addr)
+            elif "tunnel session started" in log.msg:
                 self._tunnel_started = True
-            elif "client session established" in line:
+            elif "client session established" in log.msg:
                 self._client_connected = True
 
     def healthy(self):
@@ -83,7 +87,7 @@ class NgrokProcess:
                 not self._tunnel_started or not self._client_connected:
             return False
 
-        if not self.api_url.lower().startswith('http'):
+        if not self.api_url.lower().startswith("http"):
             raise PyngrokSecurityError("URL must start with 'http': {}".format(self.api_url))
 
         # Ensure the process is available for requests before registering it as healthy
@@ -94,6 +98,64 @@ class NgrokProcess:
 
         return self.proc.poll() is None and \
                self.startup_error is None
+
+
+class NgrokLog:
+    """
+    A parsed log line seen from the `ngrok` process.
+
+    :var string t: The logs ISO 8601 timestamp.
+    :var string lvl: The logs level.
+    :var string msg: The logs message.
+    :var string err: The logs error, if applicable.
+    :var string obj: The `ngrok` object that produced the log.
+    :var string id: The ID of the `obj`, if applicable.
+    :var string addr: The URL, if `obj` is "web".
+    """
+
+    def __init__(self, line):
+        self.err = None
+        self.obj = None
+        self.id = None
+        self.addr = None
+
+        for i in shlex.split(line):
+            if i.startswith("t="):
+                self.t = i[2:]
+            elif i.startswith("lvl="):
+                level = i[4:].upper()
+                if level == "CRIT":
+                    level = "CRITICAL"
+                elif level in ["ERR", "EROR"]:
+                    level = "ERROR"
+                elif level == "WARN":
+                    level = "WARNING"
+
+                self.lvl = level
+            elif i.startswith("msg="):
+                self.msg = i[4:]
+            elif i.startswith("err="):
+                self.err = i[4:]
+            elif i.startswith("obj="):
+                self.obj = i[4:]
+            elif i.startswith("id="):
+                self.id = i[3:]
+            elif i.startswith("addr="):
+                self.addr = i[5:]
+
+    def __repr__(self):
+        return "<NgrokLog: t={} lvl={} msg=\"{}\">".format(self.t, self.lvl, self.msg)
+
+    def __str__(self):  # pragma: no cover
+        return "t={} lvl={} msg=\"{}\"{err}{obj}{id}{addr}".format(self.t, self.lvl, self.msg,
+                                                                   err=" err=\"{}\"".format(
+                                                                       self.err) if self.err is not None else "",
+                                                                   obj=" obj=\"{}\"".format(
+                                                                       self.obj) if self.obj is not None else "",
+                                                                   id=" id=\"{}\"".format(
+                                                                       self.id) if self.id is not None else "",
+                                                                   addr=" addr=\"{}\"".format(
+                                                                       self.addr) if self.addr is not None else "", )
 
 
 def set_auth_token(ngrok_path, token, config_path=None):
@@ -266,7 +328,8 @@ def _start_process(ngrok_path, config_path=None, auth_token=None, region=None):
         kill_process(ngrok_path)
 
         if ngrok_process.startup_error is not None:
-            raise PyngrokNgrokError("The ngrok process errored on start.", ngrok_process.startup_logs,
+            raise PyngrokNgrokError("The ngrok process errored on start: {}.".format(ngrok_process.startup_error),
+                                    ngrok_process.startup_logs,
                                     ngrok_process.startup_error)
         else:
             raise PyngrokNgrokError("The ngrok process was unable to start.", ngrok_process.startup_logs)

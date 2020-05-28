@@ -26,7 +26,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "2.1.8"
+__version__ = "2.2.0"
 
 logger = logging.getLogger(__name__)
 
@@ -284,7 +284,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
     if params is None:
         params = []
 
-    if not url.lower().startswith('http'):
+    if not url.lower().startswith("http"):
         raise PyngrokSecurityError("URL must start with 'http': {}".format(url))
 
     data = json.dumps(data).encode("utf-8") if data else None
@@ -355,5 +355,5 @@ def main():
         print("pyngrok version {}".format(__version__))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

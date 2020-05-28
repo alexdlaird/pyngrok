@@ -29,7 +29,7 @@ class PyngrokNgrokError(PyngrokError):
     Raised when an error occurs interacting directly with the `ngrok` binary.
 
     :var string error: A description of the error being thrown.
-    :var string ngrok_logs: The `ngrok` logs, which may be useful for debugging the error.
+    :var list[NgrokLog] ngrok_logs: The `ngrok` logs, which may be useful for debugging the error.
     :var string ngrok_error: The error that caused the `ngrok` process to fail.
     """
 
