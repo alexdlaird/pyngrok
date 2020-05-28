@@ -8,9 +8,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [2.2.0](https://github.com/alexdlaird/pyngrok/compare/2.1.5...2.2.0) - TBD
 ### Added
 - `NgrokLog` is a parsed representation of `ngrok`'s logs for more accessible debugging.
+- Instance variable `logs`, which is a list of `NgrokLog`s, in `NgrokProcess`.
 
 ### Changed
-- `startup_logs` in `NgrokProcess` is now a list of `NgrokLog`s instead of `str`s.
 - `startup_logs` in `PyngrokNgrokError` is now a list of `NgrokLog`s instead of `str`s.
 - When starting the `ngrok` process, levels logged now match `ngrok`s in its startup logs.
 
@@ -81,9 +81,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - A changelog, code of conduct, and contributing guide.
 - A pull request template. 
 - Documentation now builds and publishes to readthedocs.io.
-
-### Changed
-- Renamed `NgrokProcess`'s instance variable `process` to `proc` due to module shadowing (`process` is still set for backwards compatibility, but it should no longer be relied upon as it will be removed in a future release)
+- `NgrokProcess` instance variable `proc`, which will replace `process` in the future due to module shadowing (`process` is still set for backwards compatibility, but it should no longer be relied upon as it will be removed in a future release).
 
 ### Fixed
 - Documentation issues.

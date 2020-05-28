@@ -40,8 +40,8 @@ class NgrokProcess:
     :var string config_path: The path to the `ngrok` config used.
     :var object proc: The child `subprocess.Popen <https://docs.python.org/3/library/subprocess.html#subprocess.Popen>`_ that is running `ngrok`.
     :var string api_url: The API URL for the `ngrok` web interface.
-    :var list[NgrokLog] startup_logs: A list of NgrokLog startup logs from `ngrok`.
-    :var string startup_error: If `ngrok` startup failed, this will be the log of the failure.
+    :var list[NgrokLog] logs: A list of NgrokLog logs from `ngrok`.
+    :var string startup_error: If `ngrok` startup fails, this will be the log of the failure.
     """
 
     def __init__(self, ngrok_path, config_path, proc):
@@ -49,11 +49,14 @@ class NgrokProcess:
         self.config_path = config_path
         self.proc = proc
         self.api_url = None
-        self.startup_logs = []
+        self.logs = []
         self.startup_error = None
 
         self._tunnel_started = False
         self._client_connected = False
+
+        # Legacy, maintained for backwards compatibility, but will eventually be removed in favor of `self.logs`
+        self.startup_logs = []
 
     def __repr__(self):
         return "<NgrokProcess: \"{}\">".format(self.api_url)
@@ -69,10 +72,13 @@ class NgrokProcess:
         log = NgrokLog(line)
 
         logger.log(getattr(logging, log.lvl), line)
-        self.startup_logs.append(log)
+        self.logs.append(log)
+        # TODO: remove in 3.x
+        self.startup_logs.append(line)
 
         if self._line_has_error(log):
-            self.startup_error = log.err
+            # TODO: in 3.x, should update to use `log.err` instead
+            self.startup_error = line
         else:
             # Log `ngrok` boot states as they come up
             if "starting web service" in log.msg and log.addr is not None:
