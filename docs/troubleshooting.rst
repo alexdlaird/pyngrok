@@ -23,7 +23,7 @@ end.
     ...
 
     PYNGROK VERSION:
-       2.1.5
+       2.2.0
 
 .. note::
 
@@ -53,8 +53,8 @@ the :code:`ngrok` binary, meaning the problem is likely a configuration issue in
 Enable Logging
 --------------
 
-To debug common issues, ensure logs are going somewhere useful. If you don't already have a logger enabled for
-your application, they can easily be streamed to the console.
+To debug common issues, ensure logs are going somewhere useful and the level is set to :code:`DEBUG`. If you don't already
+have a logger enabled for your application, logs can easily be streamed to the console.
 
 .. code-block:: python
 
@@ -74,6 +74,15 @@ your application, they can easily be streamed to the console.
     # Then call the `pyngrok` method where you're seeing the error, for example
     ngrok.connect(5000)
 
+
+Catch the Exception and Inspect It
+----------------------------------
+
+The exception itself may have useful information in it, especially if what you're seeing is a
+:code:`PyngrokNgrokError`. Catch the exception and `have a look at the docs <api.html#module-pyngrok.exception>`_
+to understand what might be useful to you. For example, if you are seeing a `PyngrokNgrokError <api.html#pyngrok.exception.PyngrokNgrokError>`_,
+you'll probably find useful information about what went wrong in the object's :code:`ngrok_logs` and
+:code:`ngrok_error`.
 
 Test in the Python Console
 --------------------------

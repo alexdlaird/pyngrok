@@ -68,7 +68,7 @@ class NgrokProcess:
     def log_boot_line(self, line):
         log = NgrokLog(line)
 
-        logger.log(logging._nameToLevel[log.lvl], line)
+        logger.log(getattr(logging, log.lvl), line)
         self.startup_logs.append(log)
 
         if self._line_has_error(log):
