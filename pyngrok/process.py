@@ -61,8 +61,7 @@ class NgrokProcess:
     @staticmethod
     def _line_has_error(line):
         return "lvl=error" in line or "lvl=eror" in line or \
-               "lvl=crit" in line or \
-               ("err=" in line and "err=nil" not in line)
+               "lvl=crit" in line
 
     def log_boot_line(self, line):
         logger.debug(line)

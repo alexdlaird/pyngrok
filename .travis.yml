@@ -11,7 +11,7 @@ python:
   - "pypy3"
 install:
   - python -m pip install virtualenv
-  - python -m virtualenv .venv
+  - python -m virtualenv venv
   - make install
 script:
   - make test
@@ -37,8 +37,8 @@ jobs:
       python: "3.7"
       before_install:
         - python -m pip install virtualenv
-        - python -m virtualenv .venv
-        - source .venv/bin/activate
+        - python -m virtualenv venv
+        - source venv/bin/activate
         - python -m pip install twine==2.0.0
 # Travis' OS X nodes are not yet stable enough to run this consistently
 #    - name: "OS X, Python: 3.7"
