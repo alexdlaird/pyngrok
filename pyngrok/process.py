@@ -1,10 +1,8 @@
 import atexit
 import logging
 import os
-import re
 import shlex
 import subprocess
-import sys
 import time
 
 from future.standard_library import install_aliases
@@ -25,7 +23,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "2.2.0"
+__version__ = "3.0.0"
 
 logger = logging.getLogger(__name__)
 
@@ -55,9 +53,6 @@ class NgrokProcess:
         self._tunnel_started = False
         self._client_connected = False
 
-        # Legacy, maintained for backwards compatibility, but will eventually be removed in favor of `self.logs`
-        self.startup_logs = []
-
     def __repr__(self):
         return "<NgrokProcess: \"{}\">".format(self.api_url)
 
@@ -73,12 +68,9 @@ class NgrokProcess:
 
         logger.log(getattr(logging, log.lvl), line)
         self.logs.append(log)
-        # TODO: remove in 3.x
-        self.startup_logs.append(line)
 
         if self._line_has_error(log):
-            # TODO: in 3.x, should update to use `log.err` instead
-            self.startup_error = line
+            self.startup_error = log.err
         else:
             # Log `ngrok` boot states as they come up
             if "starting web service" in log.msg and log.addr is not None:
@@ -335,9 +327,9 @@ def _start_process(ngrok_path, config_path=None, auth_token=None, region=None):
 
         if ngrok_process.startup_error is not None:
             raise PyngrokNgrokError("The ngrok process errored on start: {}.".format(ngrok_process.startup_error),
-                                    ngrok_process.startup_logs,
+                                    ngrok_process.logs,
                                     ngrok_process.startup_error)
         else:
-            raise PyngrokNgrokError("The ngrok process was unable to start.", ngrok_process.startup_logs)
+            raise PyngrokNgrokError("The ngrok process was unable to start.", ngrok_process.logs)
 
     return ngrok_process

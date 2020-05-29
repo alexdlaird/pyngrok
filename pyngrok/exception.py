@@ -1,6 +1,6 @@
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "2.0.3"
+__version__ = "3.0.0"
 
 
 class PyngrokError(Exception):
@@ -29,7 +29,7 @@ class PyngrokNgrokError(PyngrokError):
     Raised when an error occurs interacting directly with the `ngrok` binary.
 
     :var string error: A description of the error being thrown.
-    :var list ngrok_logs: The `ngrok` logs, which may be useful for debugging the error.
+    :var list[NgrokLog] ngrok_logs: The `ngrok` logs, which may be useful for debugging the error.
     :var string ngrok_error: The error that caused the `ngrok` process to fail.
     """
 

@@ -5,14 +5,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/2.2.0...HEAD)
 
-## [2.2.0](https://github.com/alexdlaird/pyngrok/compare/2.1.5...2.2.0) - TBD
+## [3.0.0](https://github.com/alexdlaird/pyngrok/compare/2.1.5...3.0.0) - 2020-05-29
 ### Added
-- `NgrokLog` is a parsed representation of `ngrok`'s logs for more accessible debugging.
-- Instance variable `logs`, which is a list of `NgrokLog`s, in `NgrokProcess`.
+- `NgrokLog` class is a parsed representation of `ngrok`'s logs for more accessible debugging.
+- `logs` variable to `NgrokProcess` class, which is a `NgrokLog` object.
 
 ### Changed
-- `startup_logs` in `PyngrokNgrokError` is now a list of `NgrokLog`s instead of `str`s.
+- `ngrok_logs` in `PyngrokNgrokException` is now a list of `NgrokLog`s instead of `str`s.
 - When starting the `ngrok` process, levels logged now match `ngrok`s in its startup logs.
+
+### Removed
+- `startup_logs` from `PyngrokNgrokError`, use `logs` instead.
 
 ## [2.1.5](https://github.com/alexdlaird/pyngrok/compare/2.1.4...2.1.5) - 2020-05-01
 ### Added
@@ -69,7 +72,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Properly identify more ARM processors, including `aarch64`.
 
 ### Removed
-- `NgrokProcess`'s `process` variable (previously deprecated in `1.4.0`, use `proc` now instead).
+- `process` variable from `NgrokProcess` (previously deprecated in `1.4.0`, use `proc` now instead).
 
 ## [1.4.1](https://github.com/alexdlaird/pyngrok/compare/1.4.0...1.4.1) - 2019-09-09
 ### Fixed
@@ -81,7 +84,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - A changelog, code of conduct, and contributing guide.
 - A pull request template. 
 - Documentation now builds and publishes to readthedocs.io.
-- `NgrokProcess` instance variable `proc`, which will replace `process` in the future due to module shadowing (`process` is still set for backwards compatibility, but it should no longer be relied upon as it will be removed in a future release).
+- `proc` variable to `NgrokProcess`, which will replace `process` in the future due to module shadowing (`process` is still set for backwards compatibility, but it should no longer be relied upon as it will be removed in a future release).
 
 ### Fixed
 - Documentation issues.
