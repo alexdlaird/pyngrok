@@ -262,4 +262,4 @@ the documentation.
    integrations
    troubleshooting
 
-.. mdinclude:: ../CONTRIBUTING.md
+.. include:: ../CONTRIBUTING.rst
