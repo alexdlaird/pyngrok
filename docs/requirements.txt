@@ -1,4 +1,4 @@
-Sphinx==3.0.4
+Sphinx
 PyYAML
 sphinx_rtd_theme
 recommonmark
