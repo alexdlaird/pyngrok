@@ -44,7 +44,6 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
-    "recommonmark",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -54,8 +53,7 @@ templates_path = ["_templates"]
 # You can specify multiple suffix as a list of string:
 #
 source_suffix = [
-    ".rst",
-    ".md"
+    ".rst"
 ]
 
 # The master toctree document.

@@ -1,4 +1,3 @@
 Sphinx
 PyYAML
 sphinx_rtd_theme
-recommonmark
