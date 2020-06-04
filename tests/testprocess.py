@@ -126,7 +126,7 @@ class TestProcess(NgrokTestCase):
             self.assertEqual(len(process._current_processes.keys()), 1)
             self.assertEqual(len(process._ngrok_threads.keys()), 1)
 
-            mock_atexit.assert_called_once()
+            mock_atexit.assert_called()
 
     def test_multiple_processes_different_binaries(self):
         # GIVEN
