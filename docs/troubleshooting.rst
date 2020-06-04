@@ -50,11 +50,11 @@ If neither of these work, the logs should be dumped to the console for you to tr
 directly. If both of these work, you know :code:`pyngrok` is properly installed on your system and able to access
 the :code:`ngrok` binary, meaning the problem is likely a configuration issue in your Python application.
 
-Enable Logging
---------------
+Enable Logging to the Console
+-----------------------------
 
-To debug common issues, ensure logs are going somewhere useful and the level is set to :code:`DEBUG`. If you don't already
-have a logger enabled for your application, logs can easily be streamed to the console.
+printing logs to the console can be a quick way to debug common issues by surfacing their root cause. To do this,
+ensure you have a handler streaming logs and your level is set to DEBUG. Here is a simple example:
 
 .. code-block:: python
 
@@ -63,26 +63,29 @@ have a logger enabled for your application, logs can easily be streamed to the c
 
     from pyngrok import ngrok
 
-    root = logging.getLogger()
-    root.setLevel(logging.DEBUG)
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setLevel(logging.DEBUG)
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-    root.addHandler(handler)
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
 
     # Then call the `pyngrok` method where you're seeing the error, for example
     ngrok.connect(5000)
 
 
-Catch the Exception and Inspect It
-----------------------------------
+Programmatically Inspect the Logs
+---------------------------------
 
-The exception itself may have useful information in it, especially if what you're seeing is a
-:code:`PyngrokNgrokError`. Catch the exception and `have a look at the docs <api.html#module-pyngrok.exception>`_
-to understand what might be useful to you. For example, if you are seeing a `PyngrokNgrokError <api.html#pyngrok.exception.PyngrokNgrokError>`_,
-you'll probably find useful information about what went wrong in the object's :code:`ngrok_logs` and
-:code:`ngrok_error`.
+:code:`ngrok` logs are also parsed and stored as :code:`NgrokLog` objects `on the NgrokProcess <api.html#pyngrok.process.NgrokProcess>`_.
+Iterating through the :code:`logs` variable will allow you to inspect the logs and perhaps identify an issue
+:code:`ngrok` having.
+
+If you're seeing the :code:`NgrokProcess` fail with a :code:`PyngrokNgrokError` exception, these logs are also available
+on the exception itself, as documented `here <https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.exception.PyngrokNgrokError>`_.
+Catch the exception and inspect :code:`ngrok_logs` and :code:`ngrok_error` for more insight in to where :code:`ngrok`
+is failing.
 
 Test in the Python Console
 --------------------------

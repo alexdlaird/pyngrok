@@ -10,9 +10,9 @@ assignees: ''
 **Describe the Bug**
 A clear and concise description of what the bug is, including exceptions thrown.
 
-Before submitting a bug report, ensure you have checked out the "Troubleshooting" section of the documentation
-(see: https://pyngrok.readthedocs.io/en/latest/troubleshooting.html). Include the logs here if, after debugging your
-application, it still looks like a bug specific to `pyngrok`.
+Before submitting a bug report, ensure you have checked out the "Troubleshooting" page of the documentation
+(see: https://pyngrok.readthedocs.io/en/latest/troubleshooting.html), especially the sections about log inspection.
+Include the logs here if, after debugging your application, it still looks like a bug specific to `pyngrok`.
 
 **Steps to Reproduce**
 A snippet of the code used to reproduce the behavior.
