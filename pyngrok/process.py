@@ -3,6 +3,7 @@ import logging
 import os
 import shlex
 import subprocess
+import threading
 import time
 
 from future.standard_library import install_aliases
@@ -28,6 +29,7 @@ __version__ = "3.0.0"
 logger = logging.getLogger(__name__)
 
 _current_processes = {}
+_ngrok_threads = {}
 
 
 class NgrokProcess:
@@ -64,12 +66,11 @@ class NgrokProcess:
         return log.lvl in ["ERROR", "CRITICAL"]
 
     def log_boot_line(self, line):
-        log = NgrokLog(line)
+        log = self.log_line(line)
 
-        logger.log(getattr(logging, log.lvl), line)
-        self.logs.append(log)
-
-        if self._line_has_error(log):
+        if log is None:
+            return
+        elif self._line_has_error(log):
             self.startup_error = log.err
         else:
             # Log `ngrok` boot states as they come up
@@ -79,6 +80,17 @@ class NgrokProcess:
                 self._tunnel_started = True
             elif "client session established" in log.msg:
                 self._client_connected = True
+
+    def log_line(self, line):
+        log = NgrokLog(line)
+
+        if log.line == "":
+            return None
+
+        logger.log(getattr(logging, log.lvl), line)
+        self.logs.append(log)
+
+        return log
 
     def healthy(self):
         if self.api_url is None or \
@@ -112,48 +124,41 @@ class NgrokLog:
     """
 
     def __init__(self, line):
+        self.line = line.strip()
+        self.t = None
+        self.lvl = None
+        self.msg = None
         self.err = None
         self.obj = None
         self.id = None
         self.addr = None
 
-        for i in shlex.split(line):
-            if i.startswith("t="):
-                self.t = i[2:]
-            elif i.startswith("lvl="):
-                level = i[4:].upper()
-                if level == "CRIT":
-                    level = "CRITICAL"
-                elif level in ["ERR", "EROR"]:
-                    level = "ERROR"
-                elif level == "WARN":
-                    level = "WARNING"
+        for i in shlex.split(self.line):
+            if "=" not in i:
+                continue
 
-                self.lvl = level
-            elif i.startswith("msg="):
-                self.msg = i[4:]
-            elif i.startswith("err="):
-                self.err = i[4:]
-            elif i.startswith("obj="):
-                self.obj = i[4:]
-            elif i.startswith("id="):
-                self.id = i[3:]
-            elif i.startswith("addr="):
-                self.addr = i[5:]
+            key, value = i.split("=")
+
+            if key == "lvl":
+                value = value.upper()
+                if value == "CRIT":
+                    value = "CRITICAL"
+                elif value in ["ERR", "EROR"]:
+                    value = "ERROR"
+                elif value == "WARN":
+                    value = "WARNING"
+
+            setattr(self, key, value)
 
     def __repr__(self):
         return "<NgrokLog: t={} lvl={} msg=\"{}\">".format(self.t, self.lvl, self.msg)
 
     def __str__(self):  # pragma: no cover
-        return "t={} lvl={} msg=\"{}\"{err}{obj}{id}{addr}".format(self.t, self.lvl, self.msg,
-                                                                   err=" err=\"{}\"".format(
-                                                                       self.err) if self.err is not None else "",
-                                                                   obj=" obj=\"{}\"".format(
-                                                                       self.obj) if self.obj is not None else "",
-                                                                   id=" id=\"{}\"".format(
-                                                                       self.id) if self.id is not None else "",
-                                                                   addr=" addr=\"{}\"".format(
-                                                                       self.addr) if self.addr is not None else "", )
+        return " ".join("{}={}".format(key, value) for key, value in dir(self))
+
+    @staticmethod
+    def parse(line):
+        return NgrokLog(line)
 
 
 def set_auth_token(ngrok_path, token, config_path=None):
@@ -242,6 +247,7 @@ def kill_process(ngrok_path):
                 raise e
 
         _current_processes.pop(ngrok_path, None)
+        _ngrok_threads.pop(ngrok_path, None)
     else:
         logger.debug("\"ngrok_path\" {} is not running a process".format(ngrok_path))
 
@@ -270,6 +276,11 @@ def _terminate_process(process):
         process.terminate()
     except OSError:
         logger.debug("ngrok process already terminated: {}".format(process.pid))
+
+
+def _read_ngrok_logs(ngrok_process):
+    while ngrok_process.proc.poll() is None:
+        ngrok_process.log_line(ngrok_process.proc.stdout.readline())
 
 
 def _start_process(ngrok_path, config_path=None, auth_token=None, region=None):
@@ -312,10 +323,14 @@ def _start_process(ngrok_path, config_path=None, auth_token=None, region=None):
     timeout = time.time() + 15
     while time.time() < timeout:
         line = process.stdout.readline()
-        ngrok_process.log_boot_line(line.strip())
+        ngrok_process.log_boot_line(line)
 
         if ngrok_process.healthy():
             logger.info("ngrok process has started: {}".format(ngrok_process.api_url))
+
+            _ngrok_threads[ngrok_path] = threading.Thread(target=_read_ngrok_logs, args=(ngrok_process,))
+            _ngrok_threads[ngrok_path].start()
+
             break
         elif ngrok_process.startup_error is not None or \
                 ngrok_process.proc.poll() is not None:
