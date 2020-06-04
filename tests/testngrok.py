@@ -20,7 +20,7 @@ except ImportError:
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "2.1.3"
+__version__ = "3.1.0"
 
 
 class TestNgrok(NgrokTestCase):

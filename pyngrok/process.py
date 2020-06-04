@@ -24,7 +24,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "3.0.0"
+__version__ = "3.1.0"
 
 logger = logging.getLogger(__name__)
 
@@ -154,11 +154,10 @@ class NgrokLog:
         return "<NgrokLog: t={} lvl={} msg=\"{}\">".format(self.t, self.lvl, self.msg)
 
     def __str__(self):  # pragma: no cover
-        return " ".join("{}={}".format(key, value) for key, value in dir(self))
+        attrs = [attr for attr in dir(self) if not attr.startswith("_") and getattr(self, attr) is not None]
+        attrs.remove("line")
 
-    @staticmethod
-    def parse(line):
-        return NgrokLog(line)
+        return " ".join("{}=\"{}\"".format(attr, getattr(self, attr)) for attr in attrs)
 
 
 def set_auth_token(ngrok_path, token, config_path=None):

@@ -15,22 +15,24 @@ from urllib.parse import urlparse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "3.0.0"
+__version__ = "3.1.0"
 
 
 class TestProcess(NgrokTestCase):
     def test_terminate_process(self):
         # GIVEN
         self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
-        ngrok_process1 = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
-        self.assertIsNone(ngrok_process1.proc.poll())
+        ngrok_process = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        ngrok_thread = process._ngrok_threads[ngrok.DEFAULT_NGROK_PATH]
+        self.assertIsNone(ngrok_process.proc.poll())
 
         # WHEN
-        process._terminate_process(ngrok_process1.proc)
+        process._terminate_process(ngrok_process.proc)
         time.sleep(1)
 
         # THEN
-        self.assertIsNotNone(ngrok_process1.proc.poll())
+        self.assertIsNotNone(ngrok_process.proc.poll())
+        self.assertFalse(ngrok_thread.is_alive())
 
     def test_get_process_no_binary(self):
         # GIVEN
@@ -176,5 +178,14 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(len(process._ngrok_threads.keys()), 1)
 
     def test_logs(self):
-        # TODO: implement
-        pass
+        # GIVEN
+        self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
+
+        # WHEN
+        ngrok_process = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+
+        # THEN
+        for log in ngrok_process.logs:
+            self.assertIsNotNone(log.t)
+            self.assertIsNotNone(log.lvl)
+            self.assertIsNotNone(log.msg)
