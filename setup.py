@@ -33,7 +33,7 @@ setup(
         'Changelog': 'https://github.com/alexdlaird/pyngrok/blob/master/CHANGELOG.md',
         'Sponsor': 'https://www.paypal.me/alexdlaird'
     },
-    keywords=["ngrok", "tunnel", "tunneling", "webhook", "localhost"],
+    keywords=["ngrok", "tunnel", "tunneling", "webhook", "localhost", "reverse-proxy", "localtunnel"],
     license="MIT",
     classifiers=[
         "Programming Language :: Python :: 2.7",
