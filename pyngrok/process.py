@@ -24,7 +24,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "3.1.0"
+__version__ = "3.1.1"
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ class NgrokProcess:
     :var string config_path: The path to the `ngrok` config used.
     :var object proc: The child `subprocess.Popen <https://docs.python.org/3/library/subprocess.html#subprocess.Popen>`_ that is running `ngrok`.
     :var string api_url: The API URL for the `ngrok` web interface.
-    :var list[NgrokLog] logs: A list of NgrokLog logs from `ngrok`.
+    :var list[NgrokLog] logs: A list of the last 500 logs from `ngrok`.
     :var string startup_error: If `ngrok` startup fails, this will be the log of the failure.
     """
 
@@ -52,6 +52,7 @@ class NgrokProcess:
         self.logs = []
         self.startup_error = None
 
+        self._max_logs = 500
         self._tunnel_started = False
         self._client_connected = False
 
@@ -89,6 +90,8 @@ class NgrokProcess:
 
         logger.log(getattr(logging, log.lvl), line)
         self.logs.append(log)
+        if len(self.logs) > self._max_logs:
+            self.logs.pop(0)
 
         return log
 
@@ -112,14 +115,13 @@ class NgrokProcess:
 
 class NgrokLog:
     """
-    A parsed log line seen from the `ngrok` process.
+    A parsed log from the `ngrok` process.
 
+    :var string line: The raw, unparsed log line.
     :var string t: The logs ISO 8601 timestamp.
     :var string lvl: The logs level.
     :var string msg: The logs message.
     :var string err: The logs error, if applicable.
-    :var string obj: The `ngrok` object that produced the log.
-    :var string id: The ID of the `obj`, if applicable.
     :var string addr: The URL, if `obj` is "web".
     """
 
@@ -129,8 +131,6 @@ class NgrokLog:
         self.lvl = None
         self.msg = None
         self.err = None
-        self.obj = None
-        self.id = None
         self.addr = None
 
         for i in shlex.split(self.line):

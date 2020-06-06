@@ -115,8 +115,8 @@ The :code:`NgrokProcess` also contains an :code:`api_url` variable, usually init
     :code:`uri` variable, which contains the relative path used to manipulate that resource against the client API.
     This package also gives us access to :code:`ngrok` from the command line, `as shown below <#command-line-usage>`__.
 
-Expose Other Service
---------------------
+Expose Other Services
+---------------------
 
 Using :code:`ngrok` we can expose any number of non-HTTP services, for instances databases, game servers, etc. This
 can be accomplished by using :code:`pyngrok` to open a :code:`tcp` tunnel to the desired service.
