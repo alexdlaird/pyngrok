@@ -22,7 +22,7 @@ class TestProcess(NgrokTestCase):
     def test_terminate_process(self):
         # GIVEN
         self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
-        ngrok_process = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        ngrok_process = process.start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
         ngrok_thread = process._ngrok_threads[ngrok.DEFAULT_NGROK_PATH]
         self.assertIsNone(ngrok_process.proc.poll())
 
@@ -54,7 +54,7 @@ class TestProcess(NgrokTestCase):
         self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
         self.assertEqual(len(process._current_processes.keys()), 0)
         self.assertEqual(len(process._ngrok_threads.keys()), 0)
-        ngrok_process = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        ngrok_process = process.start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
         port = urlparse(ngrok_process.api_url).port
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assertEqual(len(process._ngrok_threads.keys()), 1)
@@ -71,7 +71,7 @@ class TestProcess(NgrokTestCase):
 
             # WHEN
             with self.assertRaises(PyngrokNgrokError) as cm:
-                process._start_process(ngrok_path2, config_path=config_path2)
+                process.start_process(ngrok_path2, config_path=config_path2)
 
             error = cm.exception.ngrok_error
             retries += 1
@@ -88,7 +88,7 @@ class TestProcess(NgrokTestCase):
     def test_process_external_kill(self):
         # GIVEN
         self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
-        ngrok_process = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        ngrok_process = process.start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assertEqual(len(process._ngrok_threads.keys()), 1)
 
@@ -107,7 +107,7 @@ class TestProcess(NgrokTestCase):
     def test_process_external_kill_get_process_restart(self):
         # GIVEN
         self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
-        ngrok_process1 = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        ngrok_process1 = process.start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assertEqual(len(process._ngrok_threads.keys()), 1)
 
@@ -141,9 +141,9 @@ class TestProcess(NgrokTestCase):
         installer.install_default_config(config_path2, {"web_addr": "localhost:4041"})
 
         # WHEN
-        ngrok_process1 = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        ngrok_process1 = process.start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
         ngrok_thread1 = process._ngrok_threads[ngrok.DEFAULT_NGROK_PATH]
-        ngrok_process2 = process._start_process(ngrok_path2, config_path=config_path2)
+        ngrok_process2 = process.start_process(ngrok_path2, config_path=config_path2)
         ngrok_thread2 = process._ngrok_threads[ngrok_path2]
 
         # THEN
@@ -165,9 +165,9 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(len(process._ngrok_threads.keys()), 0)
 
         # WHEN
-        ngrok_process1 = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        ngrok_process1 = process.start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
         with self.assertRaises(PyngrokNgrokError) as cm:
-            process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+            process.start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
 
         # THEN
         self.assertIn("ngrok is already running", str(cm.exception))
@@ -182,7 +182,7 @@ class TestProcess(NgrokTestCase):
         self.given_ngrok_installed(ngrok.DEFAULT_NGROK_PATH)
 
         # WHEN
-        ngrok_process = process._start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
+        ngrok_process = process.start_process(ngrok.DEFAULT_NGROK_PATH, config_path=self.config_path)
 
         # THEN
         for log in ngrok_process.logs:
