@@ -118,7 +118,7 @@ def get_ngrok_process(ngrok_path=None, **kwargs):
 
     :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
     :type ngrok_path: string, optional
-    :param kwargs: Keyword args that are passed down to `_start_process() <api.html#pyngrok.process.start_process>`_.
+    :param kwargs: Keyword args that are passed down to `start_process() <api.html#pyngrok.process.start_process>`_.
     :type kwargs: dict, optional
     :return: The `ngrok` process.
     :rtype: NgrokProcess
@@ -152,7 +152,7 @@ def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, **k
     :type options: dict, optional
     :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
     :type ngrok_path: string, optional
-    :param kwargs: Keyword args that are passed down to `_start_process() <api.html#pyngrok.process.start_process>`_
+    :param kwargs: Keyword args that are passed down to `start_process() <api.html#pyngrok.process.start_process>`_
         and `api_request() <api.html#pyngrok.ngrok.api_request>`_.
     :type kwargs: dict, optional
     :return: The connected public URL.
@@ -195,7 +195,7 @@ def disconnect(public_url, ngrok_path=None, **kwargs):
     :type public_url: string
     :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
     :type ngrok_path: string, optional
-    :param kwargs: Keyword args that are passed down to `_start_process() <api.html#pyngrok.process.start_process>`_
+    :param kwargs: Keyword args that are passed down to `start_process() <api.html#pyngrok.process.start_process>`_
         and `api_request() <api.html#pyngrok.ngrok.api_request>`_.
     :type kwargs: dict, optional
     """
@@ -224,7 +224,7 @@ def get_tunnels(ngrok_path=None, **kwargs):
 
     :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
     :type ngrok_path: string, optional
-    :param kwargs: Keyword args that are passed down to `_start_process() <api.html#pyngrok.process.start_process>`_
+    :param kwargs: Keyword args that are passed down to `start_process() <api.html#pyngrok.process.start_process>`_
         and `api_request() <api.html#pyngrok.ngrok.api_request>`_.
     :type kwargs: dict, optional
     :return: The currently active `ngrok` tunnels.

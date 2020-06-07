@@ -196,7 +196,7 @@ def get_process(ngrok_path, **kwargs):
 
     :param ngrok_path: The path to the `ngrok` binary.
     :type ngrok_path: string
-    :param kwargs: Keyword args that are passed down to `_start_process() <api.html#pyngrok.process.start_process>`_.
+    :param kwargs: Keyword args that are passed down to `start_process() <api.html#pyngrok.process.start_process>`_.
     :type kwargs: dict, optional
     :return: The `ngrok` process.
     :rtype: NgrokProcess
@@ -297,7 +297,7 @@ def start_process(ngrok_path, config_path=None, auth_token=None, region=None, ke
     :param region: A region override.
     :type region: string, optional
     :param keep_alive: Whether or not the `ngrok` process should continue to be monitored in a separate thread after
-        it has finished starting.
+        it has finished starting, defaults to True.
     :type keep_alive: bool, optional
     :param log_func: A callback that will be invoked each time `ngrok` emits a log.
     :type log_func: function, optional

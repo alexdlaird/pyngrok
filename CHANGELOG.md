@@ -7,10 +7,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [4.0.0](https://github.com/alexdlaird/pyngrok/compare/3.1.1...4.0.0) - TBD
 ### Added
-- TBD
+- `log_func` variable to `NgrokProcess` class, which allows a callback to be given where `ngrok` logs will be sent when emitted.
+- `keep_alive` parameter for `process.start_process()`, which determines whether or not `ngrok` will continue to be monitored in a separate thread after it has finished starting, defaults to True.                                                                      it has finished starting.. 
+- `log_func` parameter to `process.start_process()`.
 
 ### Changed
-- TBD
+- Renamed `_start_process()` in `process` module to `start_process(), documentation is now generated.
+- `process.get_process()` now relies on `**kwargs` for optional arguments.
+- `ngrok.get_ngrok_process()` now relies on `**kwargs` for optional arguments.
+- `ngrok.connect()` now relies on `**kwargs` for optional arguments.
+- `ngrok.disconnect()` now relies on `**kwargs` for optional arguments.
+- `ngrok.get_tunnels()` now relies on `**kwargs` for optional arguments.
 
 ## [3.1.1](https://github.com/alexdlaird/pyngrok/compare/3.1.0...3.1.1) - 2020-06-06
 ### Changed
@@ -57,7 +64,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [2.1.0](https://github.com/alexdlaird/pyngrok/compare/2.0.3...2.1.0) - 2020-03-21
 ### Added
 - `region` parameter for `ngrok.connect()`, and `process.get_process()`. See [ngrok module](https://pyngrok.readthedocs.io/en/2.1.0/api.html#module-pyngrok.ngrok).
-- `authtoken` parameter for `ngrok.connect()`, and `process.get_process()`. See [ngrok module](https://pyngrok.readthedocs.io/en/2.1.0/api.html#module-pyngrok.ngrok).
+- `auth_token` parameter for `ngrok.connect()`, and `process.get_process()`. See [ngrok module](https://pyngrok.readthedocs.io/en/2.1.0/api.html#module-pyngrok.ngrok).
 - Support for `Cygwin` as a platform by having it use the 64-bit Windows binary.
 
 ## [2.0.3](https://github.com/alexdlaird/pyngrok/compare/2.0.2...2.0.3) - 2020-02-14
