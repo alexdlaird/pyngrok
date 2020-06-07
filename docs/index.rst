@@ -149,13 +149,16 @@ the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it like this:
     ngrok.connect()
     ngrok.connect(8000)
 
-We can also override the auth token when necessary with:
+We can also override the auth token when necessary using `PyngrokConfig <api.html#pyngrok.config.PyngrokConfig>`_:
 
 .. code-block:: python
 
+    from pyngrok.config import PyngrokConfig
     from pyngrok import ngrok
 
-    ngrok.connect(auth_token="<NGROK_AUTH_TOKEN>")
+    pyngrok_config = PyngrokConfig(auth_token="<NGROK_AUTH_TOKEN>")
+
+    ngrok.connect(pyngrok_config=pyngrok_config)
 
 The above will only work when :code:`ngrok` is first starting, so if a tunnel has already
 been started in the session, we will need to :code:`kill()` it first.
@@ -168,9 +171,12 @@ the :code:`region` parameter:
 
 .. code-block:: python
 
+    from pyngrok.config import PyngrokConfig
     from pyngrok import ngrok
 
-    url = ngrok.connect(region="au")
+    pyngrok_config = PyngrokConfig(region="au")
+
+    url = ngrok.connect(pyngrok_config=pyngrok_config)
 
 Passing :code:`options`
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -179,61 +185,69 @@ It is also possible to configure the tunnel when it is created, for instance add
 a subdomain, or other tunnel parameters `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_.
 These can be passed to the tunnel with the :code:`options` parameter.
 
-Here is an example starting :code:`ngrok` in Australia, then opening a tunnel for with subdomain
+Here is an example starting :code:`ngrok` in Australia, then opening a tunnel with subdomain
 :code:`foo` that requires basic authentication for requests.
 
 .. code-block:: python
 
+    from pyngrok.config import PyngrokConfig
     from pyngrok import ngrok
 
-    url = ngrok.connect(region="au", options={"subdomain": "foo", "auth": "username:password"})
+    pyngrok_config = PyngrokConfig(region="au")
+
+    url = ngrok.connect(options={"subdomain": "foo", "auth": "username:password"}, pyngrok_config=pyngrok_config)
 
 Config File
 ~~~~~~~~~~~
 
 The default `ngrok config file <https://ngrok.com/docs#config>`_ lives in the home
-directory's :code:`.ngrok2` folder. We can change this in one of two ways. Either pass the
-:code:`config_path` parameter to methods:
+directory's :code:`.ngrok2` folder. We can change this in one of two ways.
+
+Either use `PyngrokConfig <api.html#pyngrok.config.PyngrokConfig>`_:
 
 .. code-block:: python
 
+    from pyngrok.config import PyngrokConfig
     from pyngrok import ngrok
 
-    CONFIG_PATH = "/opt/ngrok/config.yml"
+    pyngrok_config = PyngrokConfig(config_path="/opt/ngrok/config.yml")
 
-    ngrok.connect(config_path=CONFIG_PATH)
+    ngrok.get_tunnels(pyngrok_config=pyngrok_config)
 
 or override the :code:`DEFAULT_CONFIG_PATH` variable:
 
 .. code-block:: python
 
-    from pyngrok import ngrok
+    from pyngrok import ngrok, config
 
-    ngrok.DEFAULT_CONFIG_PATH = "/opt/ngrok/config.yml"
+    config.DEFAULT_CONFIG_PATH = "/opt/ngrok/config.yml"
 
-    ngrok.set_auth_token("<NGROK_AUTH_TOKEN>")
+    ngrok.get_tunnels()
 
 Binary Path
 ~~~~~~~~~~~
 
 The :code:`pyngrok` package manages its own :code:`ngrok` binary. However, we can use our :code:`ngrok` binary if we
-want in one of two ways.  Either pass the :code:`ngrok_path` parameter to methods:
+want in one of two ways.
+
+Either use `PyngrokConfig <api.html#pyngrok.config.PyngrokConfig>`_:
 
 .. code-block:: python
 
+    from pyngrok.config import PyngrokConfig
     from pyngrok import ngrok
 
-    NGROK_PATH = "/usr/local/bin/ngrok"
+    pyngrok_config = PyngrokConfig(ngrok_path="/usr/local/bin/ngrok")
 
-    ngrok.get_tunnels(ngrok_path=NGROK_PATH)
+    ngrok.connect(pyngrok_config=pyngrok_config)
 
 or override the :code:`DEFAULT_NGROK_PATH` variable:
 
 .. code-block:: python
 
-    from pyngrok import ngrok
+    from pyngrok import ngrok, config
 
-    ngrok.DEFAULT_NGROK_PATH = "/usr/local/bin/ngrok"
+    config.DEFAULT_NGROK_PATH = "/usr/local/bin/ngrok"
 
     ngrok.connect()
 
