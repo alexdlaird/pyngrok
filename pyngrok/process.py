@@ -70,6 +70,15 @@ class NgrokProcess:
         return log.lvl in ["ERROR", "CRITICAL"]
 
     def log_boot_line(self, line):
+        """
+        Parse the given log line and use it to, if applicable, manage the boot state
+        of the `ngrok` process.
+
+        :param line: The line to be parsed and logged.
+        :type line: str
+        :return: The parsed log.
+        :rtype: NgrokLog
+        """
         log = self.log_line(line)
 
         if log is None:
@@ -85,7 +94,17 @@ class NgrokProcess:
             elif "client session established" in log.msg:
                 self._client_connected = True
 
+        return log
+
     def log_line(self, line):
+        """
+        Parse the given log line.
+
+        :param line: The line to be parsed and logged.
+        :type line: str
+        :return: The parsed log.
+        :rtype: NgrokLog
+        """
         log = NgrokLog(line)
 
         if log.line == "":
@@ -102,6 +121,12 @@ class NgrokProcess:
         return log
 
     def healthy(self):
+        """
+        Check whether or not the `ngrok` process has finished booting and is in a healthy state.
+
+        :return: True if the `ngrok` process is booted and healthy, False otherwise.
+        :rtype: bool
+        """
         if self.api_url is None or \
                 not self._tunnel_started or not self._client_connected:
             return False
@@ -211,7 +236,7 @@ def get_process(pyngrok_config):
         else:
             _current_processes.pop(pyngrok_config.ngrok_path, None)
 
-    return start_process(pyngrok_config)
+    return _start_process(pyngrok_config)
 
 
 def run_process(ngrok_path, args):
@@ -286,7 +311,7 @@ def _read_ngrok_logs(ngrok_process):
         ngrok_process.log_line(ngrok_process.proc.stdout.readline())
 
 
-def start_process(pyngrok_config):
+def _start_process(pyngrok_config):
     """
     Start a `ngrok` process with no tunnels. This will start the `ngrok` web interface, against
     which HTTP requests can be made to create, interact with, and destroy tunnels.
@@ -294,7 +319,7 @@ def start_process(pyngrok_config):
     :param pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
     :type pyngrok_config: PyngrokConfig
     :return: The `ngrok` process.
-    :rtpe: NgrokProcess
+    :rtype: NgrokProcess
     """
     _ensure_path_ready(pyngrok_config.ngrok_path)
 

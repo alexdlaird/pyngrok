@@ -96,7 +96,7 @@ def set_auth_token(token, pyngrok_config=None):
     and install `ngrok`.
 
     :param token: The auth token to set.
-    :type token: string
+    :type token: str
     :param pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     """
@@ -143,15 +143,15 @@ def connect(port=80, proto="http", name=None, options=None, pyngrok_config=None)
     :param port: The local port to which to tunnel, defaults to 80.
     :type port: int, optional
     :param proto: The protocol to tunnel, defaults to "http".
-    :type proto: string, optional
+    :type proto: str, optional
     :param name: A friendly name for the tunnel.
-    :type name: string, optional
+    :type name: str, optional
     :param options: Parameters passed to `configuration for the ngrok tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
     :type options: dict[str, str], optional
     :param pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     :return: The connected public URL.
-    :rtype: string
+    :rtype: str
     """
     if options is None:
         options = {}
@@ -186,7 +186,7 @@ def disconnect(public_url, pyngrok_config=None):
     If `ngrok` is not running, calling this method will start a process for the given path.
 
     :param public_url: The public URL of the tunnel to disconnect.
-    :type public_url: string
+    :type public_url: str
     :param pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     """
@@ -252,7 +252,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
     Invoke an API request to the given URI, returning JSON data from the response as a dict.
 
     :param url: The request URL.
-    :type url: string
+    :type url: str
     :param method: The HTTP method.
     :type method: str, optional
     :param data: The request body.

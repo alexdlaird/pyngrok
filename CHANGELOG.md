@@ -14,7 +14,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `max_logs` is a new configuration parameter in `PyngrokConfig`.
 
 ### Changed
-- Renamed `process._start_process()` to `process.start_process()` so its docs are generated.
 - `timeout` parameter that was passed down to `ngrok.api_request()` is now configurable by `request_timeout` in `PyngrokConfig`.
 
 ### Removed
