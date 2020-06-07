@@ -7,9 +7,10 @@ import uuid
 
 from future.standard_library import install_aliases
 
-from pyngrok import process
+from pyngrok import process, config
+from pyngrok.config import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError
-from pyngrok.installer import get_ngrok_bin, install_ngrok, install_default_config
+from pyngrok.installer import install_ngrok, install_default_config
 
 install_aliases()
 
@@ -29,10 +30,6 @@ __copyright__ = "Copyright 2020, Alex Laird"
 __version__ = "4.0.0"
 
 logger = logging.getLogger(__name__)
-
-BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
-DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
-DEFAULT_CONFIG_PATH = None
 
 _DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ngrok.yml")
 
@@ -84,7 +81,7 @@ def ensure_ngrok_installed(ngrok_path):
         install_default_config(_DEFAULT_NGROK_CONFIG_PATH)
 
 
-def set_auth_token(token, ngrok_path=None, config_path=None):
+def set_auth_token(token, pyngrok_config=None):
     """
     Set the `ngrok` auth token in the config file, enabling authenticated features (for instance,
     more concurrent tunnels, custom subdomains, etc.).
@@ -94,20 +91,18 @@ def set_auth_token(token, ngrok_path=None, config_path=None):
 
     :param token: The auth token to set.
     :type token: string
-    :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
-    :type ngrok_path: string, optional
-    :param config_path: A config path override.
-    :type config_path: string, optional
+    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :type pyngrok_config: PyngrokConfig, optional
     """
-    ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
-    config_path = config_path if config_path else DEFAULT_CONFIG_PATH
+    if pyngrok_config is None:
+        pyngrok_config = PyngrokConfig()
 
-    ensure_ngrok_installed(ngrok_path)
+    ensure_ngrok_installed(pyngrok_config.ngrok_path)
 
-    process.set_auth_token(ngrok_path, token, config_path)
+    process.set_auth_token(pyngrok_config, token)
 
 
-def get_ngrok_process(ngrok_path=None, **kwargs):
+def get_ngrok_process(pyngrok_config=None):
     """
     Retrieve the current `ngrok` process for the given path.
 
@@ -116,23 +111,20 @@ def get_ngrok_process(ngrok_path=None, **kwargs):
 
     If `ngrok` is not running, calling this method will start a process for the given path.
 
-    :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
-    :type ngrok_path: string, optional
-    :param kwargs: Keyword args that are passed down to `start_process() <api.html#pyngrok.process.start_process>`_.
-    :type kwargs: dict, optional
+    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :type pyngrok_config: PyngrokConfig, optional
     :return: The `ngrok` process.
     :rtype: NgrokProcess
     """
-    ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
-    if "config_path" not in kwargs:
-        kwargs["config_path"] = DEFAULT_CONFIG_PATH
+    if pyngrok_config is None:
+        pyngrok_config = PyngrokConfig()
 
-    ensure_ngrok_installed(ngrok_path)
+    ensure_ngrok_installed(pyngrok_config.ngrok_path)
 
-    return process.get_process(ngrok_path, **kwargs)
+    return process.get_process(pyngrok_config)
 
 
-def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, **kwargs):
+def connect(port=80, proto="http", name=None, options=None, pyngrok_config=None):
     """
     Establish a new `ngrok` tunnel to the given port and protocol, returning the connected
     public URL that tunnels to the local port.
@@ -150,18 +142,13 @@ def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, **k
     :type name: string, optional
     :param options: Parameters passed to `configuration for the ngrok tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
     :type options: dict, optional
-    :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
-    :type ngrok_path: string, optional
-    :param kwargs: Keyword args that are passed down to `start_process() <api.html#pyngrok.process.start_process>`_
-        and `api_request() <api.html#pyngrok.ngrok.api_request>`_.
-    :type kwargs: dict, optional
+    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :type pyngrok_config: PyngrokConfig, optional
     :return: The connected public URL.
     :rtype: string
     """
     if options is None:
         options = {}
-
-    ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
 
     config = {
         "name": name if name else str(uuid.uuid4()),
@@ -170,11 +157,12 @@ def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, **k
     }
     options.update(config)
 
-    api_url = get_ngrok_process(ngrok_path, **kwargs).api_url
+    api_url = get_ngrok_process(pyngrok_config).api_url
 
     logger.debug("Connecting tunnel with options: {}".format(options))
 
-    tunnel = NgrokTunnel(api_request("{}/api/{}".format(api_url, "tunnels"), method="POST", data=options, **kwargs))
+    tunnel = NgrokTunnel(api_request("{}/api/{}".format(api_url, "tunnels"), method="POST", data=options,
+                                     timeout=pyngrok_config.request_timeout))
 
     if proto == "http" and ("bind_tls" not in options or options["bind_tls"] != False):
         tunnel.public_url = tunnel.public_url.replace("https", "http")
@@ -182,7 +170,7 @@ def connect(port=80, proto="http", name=None, options=None, ngrok_path=None, **k
     return tunnel.public_url
 
 
-def disconnect(public_url, ngrok_path=None, **kwargs):
+def disconnect(public_url, pyngrok_config=None):
     """
     Disconnect the `ngrok` tunnel for the given URL.
 
@@ -193,27 +181,26 @@ def disconnect(public_url, ngrok_path=None, **kwargs):
 
     :param public_url: The public URL of the tunnel to disconnect.
     :type public_url: string
-    :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
-    :type ngrok_path: string, optional
-    :param kwargs: Keyword args that are passed down to `start_process() <api.html#pyngrok.process.start_process>`_
-        and `api_request() <api.html#pyngrok.ngrok.api_request>`_.
-    :type kwargs: dict, optional
+    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :type pyngrok_config: PyngrokConfig, optional
     """
-    ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
+    if pyngrok_config is None:
+        pyngrok_config = PyngrokConfig()
 
-    api_url = get_ngrok_process(ngrok_path, **kwargs).api_url
+    api_url = get_ngrok_process(pyngrok_config).api_url
 
-    tunnels = get_tunnels(ngrok_path)
+    tunnels = get_tunnels(pyngrok_config)
     for tunnel in tunnels:
         if tunnel.public_url == public_url:
             logger.debug("Disconnecting tunnel: {}".format(tunnel.public_url))
 
-            api_request("{}{}".format(api_url, tunnel.uri.replace("+", "%20")), method="DELETE", **kwargs)
+            api_request("{}{}".format(api_url, tunnel.uri.replace("+", "%20")), method="DELETE",
+                        timeout=pyngrok_config.request_timeout)
 
             break
 
 
-def get_tunnels(ngrok_path=None, **kwargs):
+def get_tunnels(pyngrok_config=None):
     """
     Retrieve a list of all active `ngrok` tunnels.
 
@@ -222,36 +209,36 @@ def get_tunnels(ngrok_path=None, **kwargs):
 
     If `ngrok` is not running, calling this method will start a process for the given path.
 
-    :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
-    :type ngrok_path: string, optional
-    :param kwargs: Keyword args that are passed down to `start_process() <api.html#pyngrok.process.start_process>`_
-        and `api_request() <api.html#pyngrok.ngrok.api_request>`_.
-    :type kwargs: dict, optional
+    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :type pyngrok_config: PyngrokConfig, optional
     :return: The currently active `ngrok` tunnels.
     :rtype: list[NgrokTunnel]
     """
-    ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
+    if pyngrok_config is None:
+        pyngrok_config = PyngrokConfig()
 
-    api_url = get_ngrok_process(ngrok_path, **kwargs).api_url
+    api_url = get_ngrok_process(pyngrok_config).api_url
 
     tunnels = []
-    for tunnel in api_request("{}/api/{}".format(api_url, "tunnels"), method="GET", data=None, **kwargs)["tunnels"]:
+    for tunnel in api_request("{}/api/{}".format(api_url, "tunnels"), method="GET", data=None,
+                              timeout=pyngrok_config.request_timeout)["tunnels"]:
         tunnels.append(NgrokTunnel(tunnel))
 
     return tunnels
 
 
-def kill(ngrok_path=None):
+def kill(pyngrok_config=None):
     """
     Terminate the `ngrok` processes, if running, for the given path. This method will not block, it will just issue
     a kill request.
 
-    :param ngrok_path: A `ngrok` binary override (instead of using `pyngrok`'s).
-    :type ngrok_path: string, optional
+    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :type pyngrok_config: PyngrokConfig, optional
     """
-    ngrok_path = ngrok_path if ngrok_path else DEFAULT_NGROK_PATH
+    if pyngrok_config is None:
+        pyngrok_config = PyngrokConfig()
 
-    process.kill_process(ngrok_path)
+    process.kill_process(pyngrok_config.ngrok_path)
 
 
 def api_request(url, method="GET", data=None, params=None, timeout=4):
@@ -328,9 +315,9 @@ def run(args=None):
     if args is None:
         args = []
 
-    ensure_ngrok_installed(DEFAULT_NGROK_PATH)
+    ensure_ngrok_installed(config.DEFAULT_NGROK_PATH)
 
-    process.run_process(DEFAULT_NGROK_PATH, args)
+    process.run_process(config.DEFAULT_NGROK_PATH, args)
 
 
 def main():

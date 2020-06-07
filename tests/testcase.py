@@ -7,15 +7,20 @@ from pyngrok import process
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "2.0.3"
+__version__ = "4.0.0"
+
+from pyngrok.config import PyngrokConfig
 
 
 class NgrokTestCase(unittest.TestCase):
     def setUp(self):
         self.config_dir = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".ngrok2"))
-        self.config_path = os.path.join(self.config_dir, "config.yml")
+        config_path = os.path.join(self.config_dir, "config.yml")
 
-        ngrok._DEFAULT_NGROK_CONFIG_PATH = self.config_path
+        ngrok._DEFAULT_NGROK_CONFIG_PATH = config_path
+
+        self.pyngrok_config = PyngrokConfig(config_path=config_path)
+
         installer.DEFAULT_RETRY_COUNT = 1
 
     def tearDown(self):

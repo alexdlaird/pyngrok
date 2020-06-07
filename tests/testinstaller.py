@@ -3,39 +3,39 @@ import socket
 
 from mock import mock
 
-from pyngrok import ngrok, installer
+from pyngrok import ngrok, installer, config
 from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError
 from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "2.0.3"
+__version__ = "4.0.0"
 
 
 class TestInstaller(NgrokTestCase):
     def test_installer(self):
         # GIVEN
-        if os.path.exists(ngrok.DEFAULT_NGROK_PATH):
-            os.remove(ngrok.DEFAULT_NGROK_PATH)
-        self.assertFalse(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
+        if os.path.exists(config.DEFAULT_NGROK_PATH):
+            os.remove(config.DEFAULT_NGROK_PATH)
+        self.assertFalse(os.path.exists(config.DEFAULT_NGROK_PATH))
 
         # WHEN
-        ngrok.connect(config_path=self.config_path)
+        ngrok.connect(pyngrok_config=self.pyngrok_config)
 
         # THEN
-        self.assertTrue(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
+        self.assertTrue(os.path.exists(config.DEFAULT_NGROK_PATH))
 
     def test_config_provisioned(self):
         # GIVEN
-        if os.path.exists(self.config_path):
-            os.remove(self.config_path)
-        self.assertFalse(os.path.exists(self.config_path))
+        if os.path.exists(self.pyngrok_config.config_path):
+            os.remove(self.pyngrok_config.config_path)
+        self.assertFalse(os.path.exists(self.pyngrok_config.config_path))
 
         # WHEN
-        ngrok.connect(config_path=self.config_path)
+        ngrok.connect(pyngrok_config=self.pyngrok_config)
 
         # THEN
-        self.assertTrue(os.path.exists(self.config_path))
+        self.assertTrue(os.path.exists(self.pyngrok_config.config_path))
 
     @mock.patch("pyngrok.installer.urlopen")
     def test_installer_download_fails(self, mock_urlopen):
@@ -44,33 +44,33 @@ class TestInstaller(NgrokTestCase):
         magic_mock.getcode.return_value = 500
         mock_urlopen.return_value = magic_mock
 
-        if os.path.exists(ngrok.DEFAULT_NGROK_PATH):
-            os.remove(ngrok.DEFAULT_NGROK_PATH)
-        self.assertFalse(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
+        if os.path.exists(config.DEFAULT_NGROK_PATH):
+            os.remove(config.DEFAULT_NGROK_PATH)
+        self.assertFalse(os.path.exists(config.DEFAULT_NGROK_PATH))
 
         # WHEN
         with self.assertRaises(PyngrokNgrokInstallError):
-            ngrok.connect(config_path=self.config_path)
+            ngrok.connect(pyngrok_config=self.pyngrok_config)
 
         # THEN
-        self.assertFalse(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
+        self.assertFalse(os.path.exists(config.DEFAULT_NGROK_PATH))
 
     @mock.patch("pyngrok.installer.urlopen")
     def test_installer_retry(self, mock_urlopen):
         # GIVEN
         mock_urlopen.side_effect = socket.timeout("The read operation timed out")
 
-        if os.path.exists(ngrok.DEFAULT_NGROK_PATH):
-            os.remove(ngrok.DEFAULT_NGROK_PATH)
-        self.assertFalse(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
+        if os.path.exists(config.DEFAULT_NGROK_PATH):
+            os.remove(config.DEFAULT_NGROK_PATH)
+        self.assertFalse(os.path.exists(config.DEFAULT_NGROK_PATH))
 
         # WHEN
         with self.assertRaises(PyngrokNgrokInstallError):
-            ngrok.connect(config_path=self.config_path)
+            ngrok.connect(pyngrok_config=self.pyngrok_config)
 
         # THEN
         self.assertEqual(mock_urlopen.call_count, 2)
-        self.assertFalse(os.path.exists(ngrok.DEFAULT_NGROK_PATH))
+        self.assertFalse(os.path.exists(config.DEFAULT_NGROK_PATH))
 
     def test_download_file_security_error(self):
         # WHEN

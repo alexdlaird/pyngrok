@@ -8,7 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [4.0.0](https://github.com/alexdlaird/pyngrok/compare/3.1.1...4.0.0) - TBD
 ### Added
 - `log_func` variable to `NgrokProcess` class, which allows a callback to be given where `ngrok` logs will be sent when emitted.
-- `keep_alive` parameter for `process.start_process()`, which determines whether or not `ngrok` will continue to be monitored in a separate thread after it has finished starting, defaults to True.                                                                      it has finished starting.. 
+- `keep_thread_alive` parameter for `process.start_process()`, which determines whether or not `ngrok` will continue to be monitored in a separate thread after it has finished starting, defaults to True.                                                                      it has finished starting.. 
 - `log_func` parameter to `process.start_process()`.
 
 ### Changed
