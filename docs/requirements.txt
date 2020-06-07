@@ -1,3 +1,4 @@
 Sphinx
 PyYAML
 sphinx_rtd_theme
+sphinx-notfound-page

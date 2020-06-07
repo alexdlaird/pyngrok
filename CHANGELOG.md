@@ -7,17 +7,22 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [4.0.0](https://github.com/alexdlaird/pyngrok/compare/3.1.1...4.0.0) - TBD
 ### Added
-- `log_func` variable to `NgrokProcess` class, which allows a callback to be given where `ngrok` logs will be sent when emitted.
-- `keep_thread_alive` parameter for `process.start_process()`, which determines whether or not `ngrok` will continue to be monitored in a separate thread after it has finished starting, defaults to True.                                                                      it has finished starting.. 
-- `log_func` parameter to `process.start_process()`.
+- `PyngrokConfig`, which contains all of Pyngrok's configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of kwargs. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.config.PyngrokConfig).
+- `log_func` is a new configuration parameter in `PyngrokConfig`, and it allows callback to be registered where emitted `ngrok` logs will be sent.
+- `keep_thread_alive` is a new configuration parameter in `PyngrokConfig` which determines whether or not `ngrok` will continue to be monitored in a separate thread after it has finished starting. The default is True.
+- `boot_timeout` is a new configuration parameter in `PyngrokConfig`. 
+- `max_logs` is a new configuration parameter in `PyngrokConfig`.
 
 ### Changed
-- Renamed `_start_process()` in `process` module to `start_process(), documentation is now generated.
-- `process.get_process()` now relies on `**kwargs` for optional arguments.
-- `ngrok.get_ngrok_process()` now relies on `**kwargs` for optional arguments.
-- `ngrok.connect()` now relies on `**kwargs` for optional arguments.
-- `ngrok.disconnect()` now relies on `**kwargs` for optional arguments.
-- `ngrok.get_tunnels()` now relies on `**kwargs` for optional arguments.
+- Renamed `process._start_process()` to `process.start_process()` so its docs are generated.
+- `timeout` parameter that was passed down to `ngrok.api_request()` is now configurable by `request_timeout` in `PyngrokConfig`.
+
+### Removed
+- `ngrok_path`, `config_path`, `auth_token`, and `region` were all removed from `process.get_process()`. Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.config.PyngrokConfig) instead.
+- `ngrok_path`, `config_path`, `auth_token`, and `region` were all removed from `ngrok.get_ngrok_process()`. Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.config.PyngrokConfig) instead.
+- `ngrok_path`, `config_path`, `auth_token`, `region`, and `timeout` were all removed from `ngrok.connect()`.  Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.config.PyngrokConfig) instead.
+- `ngrok_path`, `config_path`, and `timeout` were all removed from `ngrok.disconnect()`.  Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.config.PyngrokConfig) instead.
+- `ngrok_path`, and `timeout` were all removed from `ngrok.get_tunnels()`.  Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.config.PyngrokConfig) instead.
 
 ## [3.1.1](https://github.com/alexdlaird/pyngrok/compare/3.1.0...3.1.1) - 2020-06-06
 ### Changed
@@ -29,15 +34,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [3.0.0](https://github.com/alexdlaird/pyngrok/compare/2.1.5...3.0.0) - 2020-05-29
 ### Added
-- `NgrokLog` class is a parsed representation of `ngrok`'s logs for more accessible debugging.
+- [NgrokLog](https://pyngrok.readthedocs.io/en/3.0.0/api.html#pyngrok.process.NgrokLog>) class is a parsed representation of `ngrok`'s logs for more accessible debugging.
 - `logs` variable to `NgrokProcess` class, which is a `NgrokLog` object.
 
 ### Changed
 - `ngrok_logs` in `PyngrokNgrokException` is now a list of `NgrokLog`s instead of `str`s.
-- When starting the `ngrok` process, levels logged now match `ngrok`s in its startup logs.
+- When starting the `ngrok` process, log levels now match `ngrok`s in its startup logs.
 
 ### Removed
-- `startup_logs` from `PyngrokNgrokError`, use `logs` instead.
+- `startup_logs` from `NgrokProcess`, [use `logs` instead](https://pyngrok.readthedocs.io/en/3.0.0/api.html#pyngrok.process.NgrokProcess).
 
 ## [2.1.5](https://github.com/alexdlaird/pyngrok/compare/2.1.4...2.1.5) - 2020-05-01
 ### Added

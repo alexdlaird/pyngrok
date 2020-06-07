@@ -36,25 +36,26 @@ class NgrokProcess:
     """
     An object containing information about the `ngrok` process.
 
-    :var string ngrok_path: The path to the `ngrok` binary used to start this process.
-    :var string config_path: The path to the `ngrok` config used.
-    :var object proc: The child `subprocess.Popen <https://docs.python.org/3/library/subprocess.html#subprocess.Popen>`_ that is running `ngrok`.
-    :var function log_func: An optional callback that will be invoked each time `ngrok` emits a log.
-    :var string api_url: The API URL for the `ngrok` web interface.
-    :var list[NgrokLog] logs: A list of the last 500 logs from `ngrok`.
-    :var string startup_error: If `ngrok` startup fails, this will be the log of the failure.
+    :var proc: The child process that is running `ngrok`.
+    :vartype proc: subprocess.Popen
+    :var pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
+    :vartype pyngrok_config: PyngrokConfig
+    :var api_url: The API URL for the `ngrok` web interface.
+    :vartype api_url: str
+    :var logs: A list of the last 500 logs from `ngrok`.
+    :vartype logs: list[NgrokLog]
+    :var startup_error: If `ngrok` startup fails, this will be the log of the failure.
+    :vartype startup_error: str
     """
 
-    def __init__(self, ngrok_path, config_path, proc, log_func=None):
-        self.ngrok_path = ngrok_path
-        self.config_path = config_path
+    def __init__(self, proc, pyngrok_config):
         self.proc = proc
-        self.log_func = log_func
+        self.pyngrok_config = pyngrok_config
+
         self.api_url = None
         self.logs = []
         self.startup_error = None
 
-        self._max_logs = 500
         self._tunnel_started = False
         self._client_connected = False
 
@@ -92,11 +93,11 @@ class NgrokProcess:
 
         logger.log(getattr(logging, log.lvl), line)
         self.logs.append(log)
-        if len(self.logs) > self._max_logs:
+        if len(self.logs) > self.pyngrok_config.max_logs:
             self.logs.pop(0)
 
-        if self.log_func is not None:
-            self.log_func(log)
+        if self.pyngrok_config.log_func is not None:
+            self.pyngrok_config.log_func(log)
 
         return log
 
@@ -120,14 +121,20 @@ class NgrokProcess:
 
 class NgrokLog:
     """
-    A parsed log from the `ngrok` process.
+    An object containing a parsed log from the `ngrok` process.
 
-    :var string line: The raw, unparsed log line.
-    :var string t: The logs ISO 8601 timestamp.
-    :var string lvl: The logs level.
-    :var string msg: The logs message.
-    :var string err: The logs error, if applicable.
-    :var string addr: The URL, if `obj` is "web".
+    :var line: The raw, unparsed log line.
+    :vartype line: str
+    :var t: The logs ISO 8601 timestamp.
+    :vartype t: str
+    :var lvl: The logs level.
+    :vartype lvl: str
+    :var msg: The logs message.
+    :vartype msg: str
+    :var err: The logs error, if applicable.
+    :vartype err: str
+    :var addr: The URL, if `obj` is "web".
+    :vartype addr: str
     """
 
     def __init__(self, line):
@@ -170,10 +177,10 @@ def set_auth_token(pyngrok_config, token):
     Set the `ngrok` auth token in the config file, enabling authenticated features (for instance,
     more concurrent tunnels, custom subdomains, etc.).
 
-    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :param pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
     :type pyngrok_config: PyngrokConfig
     :param token: The auth token to set.
-    :type token: string
+    :type token: str
     """
     start = [pyngrok_config.ngrok_path, "authtoken", token, "--log=stdout"]
     if pyngrok_config.config_path:
@@ -192,7 +199,7 @@ def get_process(pyngrok_config):
 
     If `ngrok` is not running, calling this method will start a process for the given path.
 
-    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :param pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
     :type pyngrok_config: PyngrokConfig
     :return: The `ngrok` process.
     :rtype: NgrokProcess
@@ -212,9 +219,9 @@ def run_process(ngrok_path, args):
     Start a blocking `ngrok` process with the given args.
 
     :param ngrok_path: The path to the `ngrok` binary.
-    :type ngrok_path: string
+    :type ngrok_path: str
     :param args: The args to pass to `ngrok`.
-    :type args: list
+    :type args: list[str]
     """
     _ensure_path_ready(ngrok_path)
 
@@ -228,7 +235,7 @@ def kill_process(ngrok_path):
     a kill request.
 
     :param ngrok_path: The path to the `ngrok` binary.
-    :type ngrok_path: string
+    :type ngrok_path: str
     """
     if ngrok_path in _current_processes:
         ngrok_process = _current_processes[ngrok_path]
@@ -284,7 +291,7 @@ def start_process(pyngrok_config):
     Start a `ngrok` process with no tunnels. This will start the `ngrok` web interface, against
     which HTTP requests can be made to create, interact with, and destroy tunnels.
 
-    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :param pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
     :type pyngrok_config: PyngrokConfig
     :return: The `ngrok` process.
     :rtpe: NgrokProcess
@@ -302,18 +309,17 @@ def start_process(pyngrok_config):
         logger.info("Starting ngrok in region: {}".format(pyngrok_config.region))
         start.append("--region={}".format(pyngrok_config.region))
 
-    process = subprocess.Popen(start, stdout=subprocess.PIPE, universal_newlines=True)
-    atexit.register(_terminate_process, process)
+    proc = subprocess.Popen(start, stdout=subprocess.PIPE, universal_newlines=True)
+    atexit.register(_terminate_process, proc)
 
-    logger.info("ngrok process starting: {}".format(process.pid))
+    logger.info("ngrok process starting: {}".format(proc.pid))
 
-    ngrok_process = NgrokProcess(pyngrok_config.ngrok_path, pyngrok_config.config_path, process,
-                                 pyngrok_config.log_func)
+    ngrok_process = NgrokProcess(proc, pyngrok_config)
     _current_processes[pyngrok_config.ngrok_path] = ngrok_process
 
     timeout = time.time() + pyngrok_config.boot_timeout
     while time.time() < timeout:
-        line = process.stdout.readline()
+        line = proc.stdout.readline()
         ngrok_process.log_boot_line(line)
 
         if ngrok_process.healthy():

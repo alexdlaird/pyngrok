@@ -44,6 +44,7 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
+    "notfound.extension",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -201,3 +202,5 @@ epub_title = project
 epub_exclude_files = ["search.html"]
 
 # -- Extension configuration -------------------------------------------------
+
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}

@@ -1,6 +1,6 @@
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "3.0.0"
+__version__ = "4.0.0"
 
 
 class PyngrokError(Exception):
@@ -28,9 +28,12 @@ class PyngrokNgrokError(PyngrokError):
     """
     Raised when an error occurs interacting directly with the `ngrok` binary.
 
-    :var string error: A description of the error being thrown.
-    :var list[NgrokLog] ngrok_logs: The `ngrok` logs, which may be useful for debugging the error.
-    :var string ngrok_error: The error that caused the `ngrok` process to fail.
+    :var error: A description of the error being thrown.
+    :vartype error: str
+    :var ngrok_logs: The `ngrok` logs, which may be useful for debugging the error.
+    :vartype ngrok_logs: list[NgrokLog]
+    :var ngrok_error: The error that caused the `ngrok` process to fail.
+    :vartype ngrok_error: str
     """
 
     def __init__(self, error, ngrok_logs=None, ngrok_error=None):
@@ -48,12 +51,18 @@ class PyngrokNgrokHTTPError(PyngrokNgrokError):
     Raised when an error occurs making a request to the `ngrok` web interface. The `body`
     contains the error response received from `ngrok`.
 
-    :var string error: A description of the error being thrown.
-    :var string url: The request URL that failed.
-    :var int status_code: The response status code from `ngrok`.
-    :var string message: The response message from `ngrok`.
-    :var dict headers: The request headers sent to `ngrok`.
-    :var string body: The response body from `ngrok`.
+    :var error: A description of the error being thrown.
+    :vartype error: str
+    :var url: The request URL that failed.
+    :vartype url: str
+    :var status_code: The response status code from `ngrok`.
+    :vartype status_code: int
+    :var message: The response message from `ngrok`.
+    :vartype message: str
+    :var headers: The request headers sent to `ngrok`.
+    :vartype headers: dict[str, str]
+    :var body: The response body from `ngrok`.
+    :vartype body: str
     """
 
     def __init__(self, error, url, status_code, message, headers, body):
@@ -70,8 +79,10 @@ class PyngrokNgrokURLError(PyngrokNgrokError):
     """
     Raised when an error occurs when trying to initiate an API request.
 
-    :var string error: A description of the error being thrown.
-    :var string reason: The reason for the URL error.
+    :var error: A description of the error being thrown.
+    :vartype error: str
+    :var reason: The reason for the URL error.
+    :vartype reason: str
     """
 
     def __init__(self, error, reason):

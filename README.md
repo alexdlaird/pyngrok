@@ -43,7 +43,7 @@ ssh_url = ngrok.connect(22, "tcp")
 The `connect()` method takes an optional `options` parameter, which allows us to pass additional
 options that are [supported by ngrok](https://ngrok.com/docs#tunnel-definitions).
 
-This package also puts the default `ngrok` binary on our path, so all features of `ngrok` are
+This package puts the default `ngrok` binary on our path, so all features of `ngrok` are
 available on the command line.
 
 ```sh

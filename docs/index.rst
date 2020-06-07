@@ -126,7 +126,7 @@ can be accomplished by using :code:`pyngrok` to open a :code:`tcp` tunnel to the
     from pyngrok import ngrok
 
     # Open a tunnel to MySQL with a Reserved TCP Address
-    ngrok.connect(3306, "tcp", options={"remote_addr": "1.tcp.ngrok.io:12345")
+    ngrok.connect(3306, "tcp", options={"remote_addr": "1.tcp.ngrok.io:12345"})
 
 
 Configuration
@@ -240,7 +240,7 @@ or override the :code:`DEFAULT_NGROK_PATH` variable:
 Command Line Usage
 ------------------
 
-This package also puts the default :code:`ngrok` binary on our path, so all features of :code:`ngrok` are also
+This package puts the default :code:`ngrok` binary on our path, so all features of :code:`ngrok` are also
 available on the command line.
 
 .. code-block:: sh

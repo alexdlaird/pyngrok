@@ -38,12 +38,18 @@ class NgrokTunnel:
     """
     An object containing information about an `ngrok` tunnel.
 
-    :var string name: The name of the tunnel.
-    :var string proto: A valid `tunnel protocol <https://ngrok.com/docs#tunnel-definitions>`_.
-    :var string uri: The tunnel URI, a relative path that can be used to make requests to the `ngrok` web interface.
-    :var string public_url: The public `ngrok` URL.
-    :var dict config: The config for the tunnel.
-    :var dict metrics: Metrics for `the tunnel <https://ngrok.com/docs#list-tunnels>`_.
+    :var name: The name of the tunnel.
+    :vartype name: str
+    :var proto: A valid `tunnel protocol <https://ngrok.com/docs#tunnel-definitions>`_.
+    :vartype proto: str
+    :var uri: The tunnel URI, a relative path that can be used to make requests to the `ngrok` web interface.
+    :vartype uri: str
+    :var public_url: The public `ngrok` URL.
+    :vartype public_url: str
+    :var config: The config for the tunnel.
+    :vartype config: dict
+    :var metrics: Metrics for `the tunnel <https://ngrok.com/docs#list-tunnels>`_.
+    :vartype metrics: dict
     """
 
     def __init__(self, data=None):
@@ -72,7 +78,7 @@ def ensure_ngrok_installed(ngrok_path):
     the current system if not.
 
     :param ngrok_path: The path to the `ngrok` binary.
-    :type ngrok_path: string
+    :type ngrok_path: str
     """
     if not os.path.exists(ngrok_path):
         install_ngrok(ngrok_path)
@@ -91,7 +97,7 @@ def set_auth_token(token, pyngrok_config=None):
 
     :param token: The auth token to set.
     :type token: string
-    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :param pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
@@ -111,7 +117,7 @@ def get_ngrok_process(pyngrok_config=None):
 
     If `ngrok` is not running, calling this method will start a process for the given path.
 
-    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :param pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     :return: The `ngrok` process.
     :rtype: NgrokProcess
@@ -141,8 +147,8 @@ def connect(port=80, proto="http", name=None, options=None, pyngrok_config=None)
     :param name: A friendly name for the tunnel.
     :type name: string, optional
     :param options: Parameters passed to `configuration for the ngrok tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
-    :type options: dict, optional
-    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :type options: dict[str, str], optional
+    :param pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     :return: The connected public URL.
     :rtype: string
@@ -181,7 +187,7 @@ def disconnect(public_url, pyngrok_config=None):
 
     :param public_url: The public URL of the tunnel to disconnect.
     :type public_url: string
-    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :param pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
@@ -209,7 +215,7 @@ def get_tunnels(pyngrok_config=None):
 
     If `ngrok` is not running, calling this method will start a process for the given path.
 
-    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :param pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     :return: The currently active `ngrok` tunnels.
     :rtype: list[NgrokTunnel]
@@ -232,7 +238,7 @@ def kill(pyngrok_config=None):
     Terminate the `ngrok` processes, if running, for the given path. This method will not block, it will just issue
     a kill request.
 
-    :param pyngrok_config: Pyngrok's configuration for interacting with `ngrok`.
+    :param pyngrok_config: The Pyngrok configuration to use when with `ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
@@ -245,14 +251,14 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
     """
     Invoke an API request to the given URI, returning JSON data from the response as a dict.
 
-    :param url: The request URI.
+    :param url: The request URL.
     :type url: string
-    :param method: The HTTP method, defaults to "GET".
-    :type method: string, optional
+    :param method: The HTTP method.
+    :type method: str, optional
     :param data: The request body.
     :type data: dict, optional
     :param params: The URL parameters.
-    :type params: list, optional
+    :type params: list[str], optional
     :param timeout: The request timeout, in seconds.
     :type timeout: float, optional
     :return: The response from the request.
@@ -310,7 +316,7 @@ def run(args=None):
     Start a blocking `ngrok` process with the default binary and the system's command line args.
 
     :param args: Arguments to be passed to the `ngrok` process.
-    :type args: list, optional
+    :type args: list[str], optional
     """
     if args is None:
         args = []

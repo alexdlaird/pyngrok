@@ -20,6 +20,14 @@ Process
    :undoc-members:
    :show-inheritance:
 
+Config
+------
+
+.. automodule:: pyngrok.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Installer
 ---------
 

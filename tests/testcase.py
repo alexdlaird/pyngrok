@@ -26,7 +26,7 @@ class NgrokTestCase(unittest.TestCase):
     def tearDown(self):
         for p in list(process._current_processes.values()):
             try:
-                process.kill_process(p.ngrok_path)
+                process.kill_process(p.pyngrok_config.ngrok_path)
                 p.proc.wait()
             except OSError:
                 pass

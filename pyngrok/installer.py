@@ -27,7 +27,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "3.0.0"
+__version__ = "4.0.0"
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ def get_ngrok_bin():
     Retrieve the `ngrok` command for the current system.
 
     :return: The `ngrok` command.
-    :rtype: string
+    :rtype: str
     """
     system = platform.system()
     if system in ["Darwin", "Linux", "FreeBSD"]:
@@ -70,7 +70,7 @@ def install_ngrok(ngrok_path, timeout=None):
     Download and install `ngrok` for the current system in the given location.
 
     :param ngrok_path: The path to where the `ngrok` binary will be downloaded.
-    :type ngrok_path: string
+    :type ngrok_path: str
     :param timeout: The request timeout, in seconds.
     :type timeout: float, optional
     """
@@ -115,9 +115,9 @@ def install_default_config(config_path, data=""):
     Install the default `ngrok` config if one is not already present.
 
     :param config_path: The path to where the `ngrok` config should be installed.
-    :type config_path: string
+    :type config_path: str
     :param data: A JSON string of things to add to the default config.
-    :type data: string, optional
+    :type data: str, optional
     """
     config_dir = os.path.dirname(config_path)
     if not os.path.exists(config_dir):
