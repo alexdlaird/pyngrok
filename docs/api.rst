@@ -23,7 +23,7 @@ Process
 Config
 ------
 
-.. automodule:: pyngrok.config
+.. automodule:: pyngrok.conf
    :members:
    :undoc-members:
    :show-inheritance:

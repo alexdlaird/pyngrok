@@ -134,7 +134,7 @@ Configuration
 
 :code:`PyngrokConfig`
 ~~~~~~~~~~~~~~~~~~~~~
-`pyngrok`'s interactions with the `ngrok` binary (and other things) can be configured using `PyngrokConfig <api.html#pyngrok.config.PyngrokConfig>`_.
+`pyngrok`'s interactions with the `ngrok` binary (and other things) can be configured using `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_.
 Most methods accept `pyngrok_config` as an keyword argument, and `NgrokProcess` will maintain a reference to
 its own `PyngrokConfig` once a process has been started. If `pyngrok_config` is not given, the documentated defaults
 will be used.
@@ -156,11 +156,11 @@ the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it like this:
     ngrok.connect()
     ngrok.connect(8000)
 
-We can also override the auth token when necessary using `PyngrokConfig <api.html#pyngrok.config.PyngrokConfig>`_:
+We can also override the auth token when necessary using `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_:
 
 .. code-block:: python
 
-    from pyngrok.config import PyngrokConfig
+    from pyngrok.conf import PyngrokConfig
     from pyngrok import ngrok
 
     pyngrok_config = PyngrokConfig(auth_token="<NGROK_AUTH_TOKEN>")
@@ -178,7 +178,7 @@ the :code:`region` parameter:
 
 .. code-block:: python
 
-    from pyngrok.config import PyngrokConfig
+    from pyngrok.conf import PyngrokConfig
     from pyngrok import ngrok
 
     pyngrok_config = PyngrokConfig(region="au")
@@ -197,7 +197,7 @@ Here is an example starting :code:`ngrok` in Australia, then opening a tunnel wi
 
 .. code-block:: python
 
-    from pyngrok.config import PyngrokConfig
+    from pyngrok.conf import PyngrokConfig
     from pyngrok import ngrok
 
     pyngrok_config = PyngrokConfig(region="au")
@@ -210,11 +210,11 @@ Config File
 The default `ngrok config file <https://ngrok.com/docs#config>`_ lives in the home
 directory's :code:`.ngrok2` folder. We can change this in one of two ways.
 
-Either use `PyngrokConfig <api.html#pyngrok.config.PyngrokConfig>`_:
+Either use `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_:
 
 .. code-block:: python
 
-    from pyngrok.config import PyngrokConfig
+    from pyngrok.conf import PyngrokConfig
     from pyngrok import ngrok
 
     pyngrok_config = PyngrokConfig(config_path="/opt/ngrok/config.yml")
@@ -225,7 +225,7 @@ or override the :code:`DEFAULT_CONFIG_PATH` variable:
 
 .. code-block:: python
 
-    from pyngrok import ngrok, config
+    from pyngrok import ngrok, conf
 
     config.DEFAULT_CONFIG_PATH = "/opt/ngrok/config.yml"
 
@@ -237,11 +237,11 @@ Binary Path
 The :code:`pyngrok` package manages its own :code:`ngrok` binary. However, we can use our :code:`ngrok` binary if we
 want in one of two ways.
 
-Either use `PyngrokConfig <api.html#pyngrok.config.PyngrokConfig>`_:
+Either use `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_:
 
 .. code-block:: python
 
-    from pyngrok.config import PyngrokConfig
+    from pyngrok.conf import PyngrokConfig
     from pyngrok import ngrok
 
     pyngrok_config = PyngrokConfig(ngrok_path="/usr/local/bin/ngrok")
@@ -252,7 +252,7 @@ or override the :code:`DEFAULT_NGROK_PATH` variable:
 
 .. code-block:: python
 
-    from pyngrok import ngrok, config
+    from pyngrok import ngrok, conf
 
     config.DEFAULT_NGROK_PATH = "/usr/local/bin/ngrok"
 

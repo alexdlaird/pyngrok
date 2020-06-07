@@ -5,8 +5,8 @@ import time
 from future.standard_library import install_aliases
 from mock import mock
 
-from pyngrok import process, installer, config
-from pyngrok.config import PyngrokConfig
+from pyngrok import process, installer, conf
+from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokError
 from .testcase import NgrokTestCase
 
@@ -24,7 +24,7 @@ class TestProcess(NgrokTestCase):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
         ngrok_process = process._start_process(self.pyngrok_config)
-        ngrok_thread = process._ngrok_threads[config.DEFAULT_NGROK_PATH]
+        ngrok_thread = process._ngrok_threads[conf.DEFAULT_NGROK_PATH]
         self.assertIsNone(ngrok_process.proc.poll())
 
         # WHEN
@@ -37,7 +37,7 @@ class TestProcess(NgrokTestCase):
 
     def test_get_process_no_binary(self):
         # GIVEN
-        self.given_ngrok_not_installed(config.DEFAULT_NGROK_PATH)
+        self.given_ngrok_not_installed(conf.DEFAULT_NGROK_PATH)
         self.assertEqual(len(process._current_processes.keys()), 0)
         self.assertEqual(len(process._ngrok_threads.keys()), 0)
 
@@ -60,7 +60,7 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assertEqual(len(process._ngrok_threads.keys()), 1)
 
-        ngrok_path2 = os.path.join(config.BIN_DIR, "2", installer.get_ngrok_bin())
+        ngrok_path2 = os.path.join(conf.BIN_DIR, "2", installer.get_ngrok_bin())
         self.given_ngrok_installed(ngrok_path2)
         config_path2 = os.path.join(self.config_dir, "config2.yml")
         installer.install_default_config(config_path2, {"web_addr": ngrok_process.api_url.lstrip("http://")})
@@ -102,7 +102,7 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(len(process._ngrok_threads.keys()), 1)
 
         # Try to kill the process via pyngrok, no error, just update state
-        process.kill_process(config.DEFAULT_NGROK_PATH)
+        process.kill_process(conf.DEFAULT_NGROK_PATH)
         self.assertEqual(len(process._current_processes.keys()), 0)
         self.assertEqual(len(process._ngrok_threads.keys()), 0)
 
@@ -137,7 +137,7 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(len(process._ngrok_threads.keys()), 0)
         installer.install_default_config(self.pyngrok_config.config_path, {"web_addr": "localhost:4040"})
 
-        ngrok_path2 = os.path.join(config.BIN_DIR, "2", installer.get_ngrok_bin())
+        ngrok_path2 = os.path.join(conf.BIN_DIR, "2", installer.get_ngrok_bin())
         self.given_ngrok_installed(ngrok_path2)
         config_path2 = os.path.join(self.config_dir, "config2.yml")
         installer.install_default_config(config_path2, {"web_addr": "localhost:4041"})

@@ -7,8 +7,8 @@ import uuid
 
 from future.standard_library import install_aliases
 
-from pyngrok import process, config
-from pyngrok.config import PyngrokConfig
+from pyngrok import process, conf
+from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError
 from pyngrok.installer import install_ngrok, install_default_config
 
@@ -321,9 +321,9 @@ def run(args=None):
     if args is None:
         args = []
 
-    ensure_ngrok_installed(config.DEFAULT_NGROK_PATH)
+    ensure_ngrok_installed(conf.DEFAULT_NGROK_PATH)
 
-    process.run_process(config.DEFAULT_NGROK_PATH, args)
+    process.run_process(conf.DEFAULT_NGROK_PATH, args)
 
 
 def main():

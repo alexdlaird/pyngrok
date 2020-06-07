@@ -7,7 +7,7 @@ import uuid
 import mock
 
 from pyngrok import ngrok, process
-from pyngrok.config import PyngrokConfig
+from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError
 from .testcase import NgrokTestCase
 

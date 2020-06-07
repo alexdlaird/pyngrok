@@ -53,7 +53,7 @@ the :code:`ngrok` binary, meaning the problem is likely a configuration issue in
 Enable Logging to the Console
 -----------------------------
 
-printing logs to the console can be a quick way to debug common issues by surfacing their root cause. To do this,
+Printing logs to the console can be a quick way to debug common issues by surfacing their root cause. To do this,
 ensure you have a handler streaming logs and your level is set to DEBUG. Here is a simple example:
 
 .. code-block:: python
@@ -78,10 +78,10 @@ ensure you have a handler streaming logs and your level is set to DEBUG. Here is
 Programmatically Inspect the Logs
 ---------------------------------
 
-:code:`ngrok` logs can be emitted to a callback for to be handled asynchronously, which may also be useful for
-debugging. To enable this, use `PyngrokConfig <api.html#pyngrok.config.PyngrokConfig>`_ to pass a callback for
-:code:`log_func` when you invoke a method that starts :code:`ngrok`. `NgrokLog <>`_s will be emitted to this
-function as they are seen.
+Logs emitted by the :code:`ngrok` process can be emitted to a callback and handled asynchronously,
+which may also be useful for debugging. To enable this, use `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_
+to pass a callback for :code:`log_func` when you invoke a method that starts :code:`ngrok`. The parameter passed
+to your callback function will be a `NgrokLog <api.html#pyngrok.process.NgrokLog>`_.
 
 .. code-block:: python
 

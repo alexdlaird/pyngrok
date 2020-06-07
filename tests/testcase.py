@@ -9,7 +9,7 @@ __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
 __version__ = "4.0.0"
 
-from pyngrok.config import PyngrokConfig
+from pyngrok.conf import PyngrokConfig
 
 
 class NgrokTestCase(unittest.TestCase):

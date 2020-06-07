@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [4.0.0](https://github.com/alexdlaird/pyngrok/compare/3.1.1...4.0.0) - TBD
 ### Added
-- `PyngrokConfig`, which contains all of Pyngrok's configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of kwargs. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.config.PyngrokConfig).
+- `PyngrokConfig`, which contains all of Pyngrok's configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of kwargs. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig).
 - `log_func` is a new configuration parameter in `PyngrokConfig`, and it allows callback to be registered where emitted `ngrok` logs will be sent.
 - `keep_thread_alive` is a new configuration parameter in `PyngrokConfig` which determines whether or not `ngrok` will continue to be monitored in a separate thread after it has finished starting. The default is True.
 - `boot_timeout` is a new configuration parameter in `PyngrokConfig`. 
@@ -17,11 +17,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `timeout` parameter that was passed down to `ngrok.api_request()` is now configurable by `request_timeout` in `PyngrokConfig`.
 
 ### Removed
-- `ngrok_path`, `config_path`, `auth_token`, and `region` were all removed from `process.get_process()`. Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.config.PyngrokConfig) instead.
-- `ngrok_path`, `config_path`, `auth_token`, and `region` were all removed from `ngrok.get_ngrok_process()`. Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.config.PyngrokConfig) instead.
-- `ngrok_path`, `config_path`, `auth_token`, `region`, and `timeout` were all removed from `ngrok.connect()`.  Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.config.PyngrokConfig) instead.
-- `ngrok_path`, `config_path`, and `timeout` were all removed from `ngrok.disconnect()`.  Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.config.PyngrokConfig) instead.
-- `ngrok_path`, and `timeout` were all removed from `ngrok.get_tunnels()`.  Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.config.PyngrokConfig) instead.
+- `ngrok_path`, `config_path`, `auth_token`, and `region` were all removed from `process.get_process()`. Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig) instead.
+- `ngrok_path`, `config_path`, `auth_token`, and `region` were all removed from `ngrok.get_ngrok_process()`. Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig) instead.
+- `ngrok_path`, `config_path`, `auth_token`, `region`, and `timeout` were all removed from `ngrok.connect()`.  Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig) instead.
+- `ngrok_path`, `config_path`, and `timeout` were all removed from `ngrok.disconnect()`.  Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig) instead.
+- `ngrok_path`, and `timeout` were all removed from `ngrok.get_tunnels()`.  Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig) instead.
 
 ## [3.1.1](https://github.com/alexdlaird/pyngrok/compare/3.1.0...3.1.1) - 2020-06-06
 ### Changed
