@@ -78,9 +78,25 @@ ensure you have a handler streaming logs and your level is set to DEBUG. Here is
 Programmatically Inspect the Logs
 ---------------------------------
 
-:code:`ngrok` logs are also parsed and stored as :code:`NgrokLog` objects `on the NgrokProcess <api.html#pyngrok.process.NgrokProcess>`_.
-Iterating through the :code:`logs` variable will allow you to inspect the logs and perhaps identify an issue
-:code:`ngrok` having.
+:code:`ngrok` logs can be emitted to a callback for to be handled asynchronously, which may also be useful for
+debugging. To enable this, use `PyngrokConfig <api.html#pyngrok.config.PyngrokConfig>`_ to pass a callback for
+:code:`log_func` when you invoke a method that starts :code:`ngrok`. `NgrokLog <>`_s will be emitted to this
+function as they are seen.
+
+.. code-block:: python
+
+    from pyngrok.ngrok import PyngrokConfig
+    from pyngrok import ngrok
+
+    def my_log_callback(log):
+        print(str(log))
+
+    pyngrok_config = PyngrokConfig(log_func=my_log_callback)
+
+    ngrok.connect(pyngrok_config=pyngrok_config)
+
+:code:`ngrok` logs are also parsed and stored `on the NgrokProcess <api.html#pyngrok.process.NgrokProcess>`_.
+Iterating through the :code:`logs` variable will give you access to the latest logs.
 
 If you're seeing the :code:`NgrokProcess` fail with a :code:`PyngrokNgrokError` exception, these logs are also available
 on the exception itself, as documented `here <https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.exception.PyngrokNgrokError>`_.
@@ -100,13 +116,13 @@ enabling logging (as illustrated in the section above) so you can see where thin
     [Clang 11.0.0 (clang-1100.0.33.16)] on darwin
     Type "help", "copyright", "credits" or "license" for more information.
     >>> import logger, sys
-    >>> root = logging.getLogger()
-    >>> root.setLevel(logging.DEBUG)
-    >>> handler = logging.StreamHandler(sys.stdout)
-    >>> handler.setLevel(logging.DEBUG)
+    >>> logger = logging.getLogger()
+    >>> logger.setLevel(logging.DEBUG)
+    >>> ch = logging.StreamHandler(sys.stdout)
+    >>> ch.setLevel(logging.DEBUG)
     >>> formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    >>> handler.setFormatter(formatter)
-    >>> root.addHandler(handler)
+    >>> ch.setFormatter(formatter)
+    >>> logger.addHandler(ch)
     >>> from pyngrok import ngrok
     >>> ngrok.connect()
     2020-05-01 17:49:22,271 - pyngrok.process - INFO - ngrok process starting: 7971

@@ -132,6 +132,13 @@ can be accomplished by using :code:`pyngrok` to open a :code:`tcp` tunnel to the
 Configuration
 -------------
 
+:code:`PyngrokConfig`
+~~~~~~~~~~~~~~~~~~~~~
+`pyngrok`'s interactions with the `ngrok` binary (and other things) can be configured using `PyngrokConfig <api.html#pyngrok.config.PyngrokConfig>`_.
+Most methods accept `pyngrok_config` as an keyword argument, and `NgrokProcess` will maintain a reference to
+its own `PyngrokConfig` once a process has been started. If `pyngrok_config` is not given, the documentated defaults
+will be used.
+
 Setting the :code:`authtoken`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
