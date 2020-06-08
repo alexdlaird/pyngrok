@@ -8,38 +8,38 @@ Main :code:`ngrok` Interface
 ----------------------------
 
 .. automodule:: pyngrok.ngrok
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :private-members:
+    :show-inheritance:
 
 Process
 -------
 
 .. automodule:: pyngrok.process
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :private-members:
+    :show-inheritance:
 
 Config
 ------
 
 .. automodule:: pyngrok.conf
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :private-members:
+    :show-inheritance:
 
 Installer
 ---------
 
 .. automodule:: pyngrok.installer
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :private-members:
+    :show-inheritance:
 
 Exceptions
 ----------
 
 .. automodule:: pyngrok.exception
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :private-members:
+    :show-inheritance:

@@ -9,13 +9,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Added
 - `PyngrokConfig`, which contains all of Pyngrok's configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of kwargs. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig).
 - `log_event_callback` is a new configuration parameter in `PyngrokConfig`, a callback that will be invoked each time a `ngrok` log is emitted.
-- `keep_thread_alive` is a new configuration parameter in `PyngrokConfig` which determines whether or not `ngrok` will continue to be monitored in a separate thread after it has finished starting. The default is True.
-- `boot_timeout` is a new configuration parameter in `PyngrokConfig`. 
+- `monitor_thread` is a new configuration parameter in `PyngrokConfig` which determines whether `ngrok` should continue to be monitored (for logs, etc.) after it has finished starting. Defaults to `True.`
+- `startup_timeout` is a new configuration parameter in `PyngrokConfig`. 
 - `max_logs` is a new configuration parameter in `PyngrokConfig`.
+- `start_monitor_thread()` and `stop_monitor_thread()` to [NgrokProcess](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.process.NgrokProcess).
 
 ### Changed
 - `timeout` parameter that was passed down to `ngrok.api_request()` is now configurable by `request_timeout` in `PyngrokConfig`.
 - Max number of logs stored by the `NgrokProcess` from 500 to 100.
+- `NgrokProcess.log_boot_line()` renamed to `NgrokProcess._log_startup_line()`.
+- `NgrokProcess.log_line()` renamed to `NgrokProcess._log_line()`.
+- Auto-generated tunnel names (if `name` is not given when calling `ngrok.connect()`) are no prefixed with `proto` and `port`.
 
 ### Removed
 - `ngrok_path`, `config_path`, `auth_token`, and `region` were all removed from `process.get_process()`. Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig) instead.

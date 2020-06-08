@@ -5,7 +5,7 @@ import time
 from future.standard_library import install_aliases
 from mock import mock
 
-from pyngrok import process, installer, conf
+from pyngrok import process, installer, conf, ngrok
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokError
 from .testcase import NgrokTestCase
@@ -24,7 +24,7 @@ class TestProcess(NgrokTestCase):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
         ngrok_process = process._start_process(self.pyngrok_config)
-        ngrok_thread = process._ngrok_threads[conf.DEFAULT_NGROK_PATH]
+        monitor_thread = ngrok_process._monitor_thread
         self.assertIsNone(ngrok_process.proc.poll())
 
         # WHEN
@@ -33,13 +33,12 @@ class TestProcess(NgrokTestCase):
 
         # THEN
         self.assertIsNotNone(ngrok_process.proc.poll())
-        self.assertFalse(ngrok_thread.is_alive())
+        self.assertFalse(monitor_thread.is_alive())
 
     def test_get_process_no_binary(self):
         # GIVEN
         self.given_ngrok_not_installed(conf.DEFAULT_NGROK_PATH)
         self.assertEqual(len(process._current_processes.keys()), 0)
-        self.assertEqual(len(process._ngrok_threads.keys()), 0)
 
         # WHEN
         with self.assertRaises(PyngrokNgrokError) as cm:
@@ -48,17 +47,15 @@ class TestProcess(NgrokTestCase):
         # THEN
         self.assertIn("ngrok binary was not found", str(cm.exception))
         self.assertEqual(len(process._current_processes.keys()), 0)
-        self.assertEqual(len(process._ngrok_threads.keys()), 0)
 
     def test_start_process_port_in_use(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
         self.assertEqual(len(process._current_processes.keys()), 0)
-        self.assertEqual(len(process._ngrok_threads.keys()), 0)
         ngrok_process = process._start_process(self.pyngrok_config)
         port = urlparse(ngrok_process.api_url).port
         self.assertEqual(len(process._current_processes.keys()), 1)
-        self.assertEqual(len(process._ngrok_threads.keys()), 1)
+        self.assertTrue(ngrok_process._monitor_thread.is_alive())
 
         ngrok_path2 = os.path.join(conf.BIN_DIR, "2", installer.get_ngrok_bin())
         self.given_ngrok_installed(ngrok_path2)
@@ -85,40 +82,44 @@ class TestProcess(NgrokTestCase):
         else:
             self.assertIn("{}: bind: address already in use".format(port), str(cm.exception.ngrok_error))
         self.assertEqual(len(process._current_processes.keys()), 1)
-        self.assertEqual(len(process._ngrok_threads.keys()), 1)
 
     def test_process_external_kill(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
         ngrok_process = process._start_process(self.pyngrok_config)
+        monitor_thread = ngrok_process._monitor_thread
         self.assertEqual(len(process._current_processes.keys()), 1)
-        self.assertEqual(len(process._ngrok_threads.keys()), 1)
+        self.assertTrue(ngrok_process._monitor_thread.is_alive())
 
         # WHEN
         # Kill the process by external means, pyngrok still thinks process is active
         ngrok_process.proc.kill()
         ngrok_process.proc.wait()
         self.assertEqual(len(process._current_processes.keys()), 1)
-        self.assertEqual(len(process._ngrok_threads.keys()), 1)
+        self.assertTrue(ngrok_process._monitor_thread.is_alive())
 
+        # THEN
         # Try to kill the process via pyngrok, no error, just update state
         process.kill_process(conf.DEFAULT_NGROK_PATH)
         self.assertEqual(len(process._current_processes.keys()), 0)
-        self.assertEqual(len(process._ngrok_threads.keys()), 0)
+        time.sleep(1)
+        self.assertFalse(monitor_thread.is_alive())
 
     def test_process_external_kill_get_process_restart(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
         ngrok_process1 = process._start_process(self.pyngrok_config)
+        monitor_thread1 = ngrok_process1._monitor_thread
         self.assertEqual(len(process._current_processes.keys()), 1)
-        self.assertEqual(len(process._ngrok_threads.keys()), 1)
+        self.assertTrue(ngrok_process1._monitor_thread.is_alive())
 
         # WHEN
         # Kill the process by external means, pyngrok still thinks process is active
         ngrok_process1.proc.kill()
         ngrok_process1.proc.wait()
+        time.sleep(1)
         self.assertEqual(len(process._current_processes.keys()), 1)
-        self.assertEqual(len(process._ngrok_threads.keys()), 1)
+        self.assertFalse(monitor_thread1.is_alive())
 
         # THEN
         # Try to get process via pyngrok, it has been killed, restart and correct state
@@ -126,7 +127,8 @@ class TestProcess(NgrokTestCase):
             ngrok_process2 = process.get_process(self.pyngrok_config)
             self.assertNotEqual(ngrok_process1.proc.pid, ngrok_process2.proc.pid)
             self.assertEqual(len(process._current_processes.keys()), 1)
-            self.assertEqual(len(process._ngrok_threads.keys()), 1)
+            self.assertFalse(monitor_thread1.is_alive())
+            self.assertTrue(ngrok_process2._monitor_thread.is_alive())
 
             mock_atexit.assert_called()
 
@@ -134,7 +136,6 @@ class TestProcess(NgrokTestCase):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
         self.assertEqual(len(process._current_processes.keys()), 0)
-        self.assertEqual(len(process._ngrok_threads.keys()), 0)
         installer.install_default_config(self.pyngrok_config.config_path, {"web_addr": "localhost:4040"})
 
         ngrok_path2 = os.path.join(conf.BIN_DIR, "2", installer.get_ngrok_bin())
@@ -145,27 +146,23 @@ class TestProcess(NgrokTestCase):
 
         # WHEN
         ngrok_process1 = process._start_process(self.pyngrok_config)
-        ngrok_thread1 = process._ngrok_threads[self.pyngrok_config.ngrok_path]
         ngrok_process2 = process._start_process(pyngrok_config2)
-        ngrok_thread2 = process._ngrok_threads[pyngrok_config2.ngrok_path]
 
         # THEN
         self.assertEqual(len(process._current_processes.keys()), 2)
-        self.assertEqual(len(process._ngrok_threads.keys()), 2)
         self.assertIsNotNone(ngrok_process1)
         self.assertIsNone(ngrok_process1.proc.poll())
-        self.assertTrue(ngrok_thread1.is_alive())
+        self.assertTrue(ngrok_process1._monitor_thread.is_alive())
         self.assertTrue(urlparse(ngrok_process1.api_url).port, "4040")
         self.assertIsNotNone(ngrok_process2)
         self.assertIsNone(ngrok_process2.proc.poll())
-        self.assertTrue(ngrok_thread2.is_alive())
+        self.assertTrue(ngrok_process2._monitor_thread.is_alive())
         self.assertTrue(urlparse(ngrok_process2.api_url).port, "4041")
 
     def test_multiple_processes_same_binary_fails(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
         self.assertEqual(len(process._current_processes.keys()), 0)
-        self.assertEqual(len(process._ngrok_threads.keys()), 0)
 
         # WHEN
         ngrok_process1 = process._start_process(self.pyngrok_config)
@@ -178,7 +175,6 @@ class TestProcess(NgrokTestCase):
         self.assertIsNone(ngrok_process1.proc.poll())
         self.assertEqual(ngrok_process1, process.get_process(self.pyngrok_config))
         self.assertEqual(len(process._current_processes.keys()), 1)
-        self.assertEqual(len(process._ngrok_threads.keys()), 1)
 
     def test_logs(self):
         # GIVEN
@@ -192,3 +188,51 @@ class TestProcess(NgrokTestCase):
             self.assertIsNotNone(log.t)
             self.assertIsNotNone(log.lvl)
             self.assertIsNotNone(log.msg)
+
+    def test_log_event_callback_and_max_logs(self):
+        # GIVEN
+        self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
+        log_event_callback_mock = mock.MagicMock()
+
+        # WHEN
+        ngrok.connect(pyngrok_config=PyngrokConfig(log_event_callback=log_event_callback_mock, max_logs=5))
+        ngrok_process = ngrok.get_ngrok_process()
+        time.sleep(1)
+
+        # THEN
+        self.assertGreater(log_event_callback_mock.call_count, len(ngrok_process.logs))
+        self.assertEqual(len(ngrok_process.logs), 5)
+
+    def test_no_monitor_thread(self):
+        # GIVEN
+        self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
+
+        # WHEN
+        ngrok.connect(pyngrok_config=PyngrokConfig(monitor_thread=False))
+        ngrok_process = ngrok.get_ngrok_process()
+
+        # THEN
+        self.assertIsNone(ngrok_process._monitor_thread)
+
+    def test_stop_monitor_thread(self):
+        # GIVEN
+        self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
+        public_url = ngrok.connect()
+        ngrok_process = ngrok.get_ngrok_process()
+        monitor_thread = ngrok_process._monitor_thread
+
+        # WHEN
+        time.sleep(1)
+        self.assertTrue(monitor_thread.is_alive())
+        ngrok_process.stop_monitor_thread()
+        # Make a request to the tunnel to force a log through, which will allow the thread to trigger its own teardown
+        try:
+            ngrok.api_request(public_url)
+        except:
+            pass
+        time.sleep(1)
+
+        # THEN
+        self.assertFalse(monitor_thread.is_alive())
+        self.assertIsNone(ngrok_process._monitor_thread)
+        self.assertFalse(ngrok_process.pyngrok_config.monitor_thread)

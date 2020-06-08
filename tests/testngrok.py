@@ -44,7 +44,6 @@ class TestNgrok(NgrokTestCase):
     def test_connect(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        self.assertEqual(len(process._ngrok_threads.keys()), 0)
 
         # WHEN
         url = ngrok.connect(5000, pyngrok_config=self.pyngrok_config)
@@ -53,11 +52,11 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertIsNotNone(current_process)
         self.assertIsNone(current_process.proc.poll())
+        self.assertTrue(current_process._monitor_thread.is_alive())
         self.assertIsNotNone(url)
         self.assertIsNotNone(process.get_process(self.pyngrok_config))
         self.assertIn('http://', url)
         self.assertEqual(len(process._current_processes.keys()), 1)
-        self.assertEqual(len(process._ngrok_threads.keys()), 1)
 
     def test_multiple_connections_fails(self):
         # WHEN
@@ -112,6 +111,7 @@ class TestNgrok(NgrokTestCase):
         ngrok.connect(5000, pyngrok_config=self.pyngrok_config)
         time.sleep(1)
         ngrok_process = process.get_process(self.pyngrok_config)
+        monitor_thread = ngrok_process._monitor_thread
 
         # WHEN
         ngrok.kill()
@@ -119,8 +119,8 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertIsNotNone(ngrok_process.proc.poll())
+        self.assertFalse(monitor_thread.is_alive())
         self.assertEqual(len(process._current_processes.keys()), 0)
-        self.assertEqual(len(process._ngrok_threads.keys()), 0)
 
     def test_set_auth_token(self):
         # WHEN

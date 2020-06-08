@@ -155,9 +155,11 @@ def connect(port=80, proto="http", name=None, options=None, pyngrok_config=None)
     """
     if options is None:
         options = {}
+    if pyngrok_config is None:
+        pyngrok_config = PyngrokConfig()
 
     config = {
-        "name": name if name else str(uuid.uuid4()),
+        "name": name if name else "{}-{}-{}".format(proto, port, uuid.uuid4()),
         "addr": str(port),
         "proto": proto
     }

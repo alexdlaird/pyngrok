@@ -115,11 +115,11 @@ The :code:`NgrokProcess` also contains an :code:`api_url` variable, usually init
     :code:`uri` variable, which contains the relative path used to manipulate that resource against the client API.
     This package also gives us access to :code:`ngrok` from the command line, `as shown below <#command-line-usage>`__.
 
-Log Events
+Event Logs
 ----------
 
 When :code:`ngrok` emits logs, :code:`pyngrok` can surface them to a callback function. To register this
-callback, use `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_ and pass the desired function as
+callback, use `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_ and pass the function as
 :code:`log_event_callback`. Each time a log is processed, this function will be called, passing
 a `NgrokLog <api.html#pyngrok.process.NgrokLog>`_ as its only parameter.
 
@@ -134,6 +134,29 @@ a `NgrokLog <api.html#pyngrok.process.NgrokLog>`_ as its only parameter.
     pyngrok_config = PyngrokConfig(log_event_callback=log_event_callback)
 
     ngrok.connect(pyngrok_config=pyngrok_config)
+
+If these events aren't necessary for our use case, some resources can be freed up by turning them off.
+
+Either use `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_:
+
+.. code-block:: python
+
+    from pyngrok.ngrok import PyngrokConfig
+    from pyngrok import ngrok
+
+    pyngrok_config = PyngrokConfig(monitor_thread=False)
+
+    ngrok.connect(pyngrok_config=pyngrok_config)
+
+or call `stop_monitor_thread() <api.html#pyngrok.process.NgrokProcess.stop_monitor_thread>`_ when we're done using it:
+
+.. code-block:: python
+
+    from pyngrok import ngrok
+
+    ngrok.connect()
+    time.sleep(1)
+    ngrok.get_ngrok_process().stop_monitor_thread()
 
 Expose Other Services
 ---------------------

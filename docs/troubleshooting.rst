@@ -78,14 +78,12 @@ ensure you have a handler streaming logs and your level is set to DEBUG. Here is
 Programmatically Inspect the Logs
 ---------------------------------
 
-:code:`ngrok` logs are parsed and stored `on the NgrokProcess <api.html#pyngrok.process.NgrokProcess>`_.
-Iterating through the :code:`logs` variable will give you access to the latest logs.
+:code:`ngrok` logs are parsed by the `NgrokProcess <api.html#pyngrok.process.NgrokProcess>`_, and you can
+inspect them by iterating over its :code:`logs` variable or giving it a
+`log_event_callback <index.html#event-logs>`_.
 
-You can also inspect these logs asynchronously as they are emitted by registering the
-`log_event_callback, as documented here <index.html#log-events>`_.
-
-If you're seeing the :code:`NgrokProcess` fail with a :code:`PyngrokNgrokError` exception, these logs are also available
-on the exception itself, as documented `here <https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.exception.PyngrokNgrokError>`_.
+If you're seeing the :code:`NgrokProcess` fail with a :code:`PyngrokNgrokError` exception, these logs are also
+available on the exception itself, as documented `here <https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.exception.PyngrokNgrokError>`_.
 Catch the exception and inspect :code:`ngrok_logs` and :code:`ngrok_error` for more insight in to where :code:`ngrok`
 is failing.
 

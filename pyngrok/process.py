@@ -29,7 +29,6 @@ __version__ = "4.0.0"
 logger = logging.getLogger(__name__)
 
 _current_processes = {}
-_ngrok_threads = {}
 
 
 class NgrokProcess:
@@ -58,6 +57,7 @@ class NgrokProcess:
 
         self._tunnel_started = False
         self._client_connected = False
+        self._monitor_thread = None
 
     def __repr__(self):
         return "<NgrokProcess: \"{}\">".format(self.api_url)
@@ -69,9 +69,9 @@ class NgrokProcess:
     def _line_has_error(log):
         return log.lvl in ["ERROR", "CRITICAL"]
 
-    def log_boot_line(self, line):
+    def _log_startup_line(self, line):
         """
-        Parse the given log line and use it to, if applicable, manage the boot state
+        Parse the given startup log line and use it to manage the startup state
         of the `ngrok` process.
 
         :param line: The line to be parsed and logged.
@@ -79,14 +79,14 @@ class NgrokProcess:
         :return: The parsed log.
         :rtype: NgrokLog
         """
-        log = self.log_line(line)
+        log = self._log_line(line)
 
         if log is None:
             return
         elif self._line_has_error(log):
             self.startup_error = log.err
         else:
-            # Log `ngrok` boot states as they come up
+            # Log `ngrok` startup states as they come in
             if "starting web service" in log.msg and log.addr is not None:
                 self.api_url = "http://{}".format(log.addr)
             elif "tunnel session started" in log.msg:
@@ -96,11 +96,11 @@ class NgrokProcess:
 
         return log
 
-    def log_line(self, line):
+    def _log_line(self, line):
         """
-        Parse the given log line.
+        Parse, log, and emit (if `log_event_callback` is registered) the given log line.
 
-        :param line: The line to be parsed and logged.
+        :param line: The line to be processed.
         :type line: str
         :return: The parsed log.
         :rtype: NgrokLog
@@ -122,9 +122,9 @@ class NgrokProcess:
 
     def healthy(self):
         """
-        Check whether or not the `ngrok` process has finished booting and is in a healthy state.
+        Check whether or not the `ngrok` process has finished starting up and is in a healthy state.
 
-        :return: True if the `ngrok` process is booted and healthy, False otherwise.
+        :return: True if the `ngrok` process is started and healthy, False otherwise.
         :rtype: bool
         """
         if self.api_url is None or \
@@ -142,6 +142,33 @@ class NgrokProcess:
 
         return self.proc.poll() is None and \
                self.startup_error is None
+
+    def _monitor_process(self):
+        while self.pyngrok_config.monitor_thread and self.proc.poll() is None:
+            self._log_line(self.proc.stdout.readline())
+
+        self._monitor_thread = None
+
+    def start_monitor_thread(self):
+        """
+        Start a thread that will monitor the `ngrok` process and its logs until it completes.
+
+        If a monitor thread is already running, nothing will be done.
+        """
+        if self._monitor_thread is None:
+            self._monitor_thread = threading.Thread(target=self._monitor_process)
+            self._monitor_thread.start()
+
+    def stop_monitor_thread(self):
+        """
+        Set the monitor thread to stop monitoring the `ngrok` process after the next log event. This will not
+        necessarily terminate the thread immediately, as the thread may currently be idle, rather it sets a flag
+        on the thread telling it to terminate the next time it wakes up.
+
+        This has no impact on the `ngrok` process itself, only `pyngrok`'s monitor of the process and its logs.
+        """
+        if self._monitor_thread is not None:
+            self.pyngrok_config.monitor_thread = False
 
 
 class NgrokLog:
@@ -275,7 +302,6 @@ def kill_process(ngrok_path):
                 raise e
 
         _current_processes.pop(ngrok_path, None)
-        _ngrok_threads.pop(ngrok_path, None)
     else:
         logger.debug("\"ngrok_path\" {} is not running a process".format(ngrok_path))
 
@@ -304,11 +330,6 @@ def _terminate_process(process):
         process.terminate()
     except OSError:
         logger.debug("ngrok process already terminated: {}".format(process.pid))
-
-
-def _read_ngrok_logs(ngrok_process):
-    while ngrok_process.proc.poll() is None:
-        ngrok_process.log_line(ngrok_process.proc.stdout.readline())
 
 
 def _start_process(pyngrok_config):
@@ -342,18 +363,16 @@ def _start_process(pyngrok_config):
     ngrok_process = NgrokProcess(proc, pyngrok_config)
     _current_processes[pyngrok_config.ngrok_path] = ngrok_process
 
-    timeout = time.time() + pyngrok_config.boot_timeout
+    timeout = time.time() + pyngrok_config.startup_timeout
     while time.time() < timeout:
         line = proc.stdout.readline()
-        ngrok_process.log_boot_line(line)
+        ngrok_process._log_startup_line(line)
 
         if ngrok_process.healthy():
             logger.info("ngrok process has started: {}".format(ngrok_process.api_url))
 
-            if pyngrok_config.keep_thread_alive:
-                _ngrok_threads[pyngrok_config.ngrok_path] = threading.Thread(target=_read_ngrok_logs,
-                                                                             args=(ngrok_process,))
-                _ngrok_threads[pyngrok_config.ngrok_path].start()
+            if pyngrok_config.monitor_thread:
+                ngrok_process.start_monitor_thread()
 
             break
         elif ngrok_process.startup_error is not None or \

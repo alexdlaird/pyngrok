@@ -24,14 +24,14 @@ class PyngrokConfig:
     :vartype auth_token: str
     :var region: A region override.
     :vartype region: str
-    :var keep_thread_alive: Whether or not the `ngrok` process should continue to be monitored in a separate thread
-        after it has finished starting.
-    :vartype keep_thread_alive: bool
-    :var log_event_callback: A callback that will be invoked each time `ngrok` emits a log. `keep_thread_alive` must be
-        True for the function to continue to be called after `ngrok` finishes starting.
+    :var monitor_thread: Whether `ngrok` should continue to be monitored (for logs, etc.) after it has
+        finished starting.
+    :vartype monitor_thread: bool
+    :var log_event_callback: A callback that will be invoked each time `ngrok` emits a log. `monitor_thread` must be
+        set to True or the function will be stop being called after `ngrok` finishes starting.
     :vartype log_event_callback: function
-    :var boot_timeout: The max number of seconds to wait for `ngrok` to start before timing out.
-    :vartype boot_timeout: int
+    :var startup_timeout: The max number of seconds to wait for `ngrok` to start before timing out.
+    :vartype startup_timeout: int
     :var max_logs: The max number of logs to store in NgrokProcess's logs variable.
     :vartype max_logs: int
     :var request_timeout: The max timeout when making requests to `ngrok`'s API.
@@ -43,17 +43,17 @@ class PyngrokConfig:
                  config_path=None,
                  auth_token=None,
                  region=None,
-                 keep_thread_alive=True,
+                 monitor_thread=True,
                  log_event_callback=None,
-                 boot_timeout=15,
+                 startup_timeout=15,
                  max_logs=100,
                  request_timeout=4):
         self.ngrok_path = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
         self.config_path = DEFAULT_CONFIG_PATH if config_path is None else config_path
         self.auth_token = auth_token
         self.region = region
-        self.keep_thread_alive = keep_thread_alive
+        self.monitor_thread = monitor_thread
         self.log_event_callback = log_event_callback
-        self.boot_timeout = boot_timeout
+        self.startup_timeout = startup_timeout
         self.max_logs = max_logs
         self.request_timeout = request_timeout
