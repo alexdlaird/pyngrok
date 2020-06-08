@@ -96,13 +96,13 @@ class TestProcess(NgrokTestCase):
         ngrok_process.proc.kill()
         ngrok_process.proc.wait()
         self.assertEqual(len(process._current_processes.keys()), 1)
-        self.assertTrue(ngrok_process._monitor_thread.is_alive())
+        time.sleep(1)
+        self.assertFalse(ngrok_process._monitor_thread.is_alive())
 
         # THEN
         # Try to kill the process via pyngrok, no error, just update state
         process.kill_process(conf.DEFAULT_NGROK_PATH)
         self.assertEqual(len(process._current_processes.keys()), 0)
-        time.sleep(1)
         self.assertFalse(monitor_thread.is_alive())
 
     def test_process_external_kill_get_process_restart(self):
