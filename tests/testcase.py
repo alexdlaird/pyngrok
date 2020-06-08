@@ -19,7 +19,7 @@ class NgrokTestCase(unittest.TestCase):
 
         ngrok._DEFAULT_NGROK_CONFIG_PATH = config_path
 
-        self.pyngrok_config = PyngrokConfig(config_path=config_path)
+        self.pyngrok_config = PyngrokConfig(config_path=ngrok._DEFAULT_NGROK_CONFIG_PATH)
 
         installer.DEFAULT_RETRY_COUNT = 1
 

@@ -97,7 +97,7 @@ class TestProcess(NgrokTestCase):
         ngrok_process.proc.wait()
         self.assertEqual(len(process._current_processes.keys()), 1)
         time.sleep(1)
-        self.assertFalse(ngrok_process._monitor_thread.is_alive())
+        self.assertFalse(monitor_thread.is_alive())
 
         # THEN
         # Try to kill the process via pyngrok, no error, just update state
@@ -193,9 +193,11 @@ class TestProcess(NgrokTestCase):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
         log_event_callback_mock = mock.MagicMock()
+        pyngrok_config = PyngrokConfig(config_path=ngrok._DEFAULT_NGROK_CONFIG_PATH,
+                                       log_event_callback=log_event_callback_mock, max_logs=5)
 
         # WHEN
-        ngrok.connect(pyngrok_config=PyngrokConfig(log_event_callback=log_event_callback_mock, max_logs=5))
+        ngrok.connect(pyngrok_config=pyngrok_config)
         ngrok_process = ngrok.get_ngrok_process()
         time.sleep(1)
 
@@ -206,9 +208,10 @@ class TestProcess(NgrokTestCase):
     def test_no_monitor_thread(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
+        pyngrok_config = PyngrokConfig(config_path=ngrok._DEFAULT_NGROK_CONFIG_PATH, monitor_thread=False)
 
         # WHEN
-        ngrok.connect(pyngrok_config=PyngrokConfig(monitor_thread=False))
+        ngrok.connect(pyngrok_config=pyngrok_config)
         ngrok_process = ngrok.get_ngrok_process()
 
         # THEN
@@ -217,7 +220,7 @@ class TestProcess(NgrokTestCase):
     def test_stop_monitor_thread(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
-        public_url = ngrok.connect()
+        public_url = ngrok.connect(pyngrok_config=self.pyngrok_config)
         ngrok_process = ngrok.get_ngrok_process()
         monitor_thread = ngrok_process._monitor_thread
 

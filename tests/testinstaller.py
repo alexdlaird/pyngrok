@@ -4,7 +4,7 @@ import socket
 from mock import mock
 
 from pyngrok import ngrok, installer, conf
-from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError
+from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
 from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
@@ -76,3 +76,8 @@ class TestInstaller(NgrokTestCase):
         # WHEN
         with self.assertRaises(PyngrokSecurityError):
             installer._download_file("file:{}".format(__file__), 10)
+
+    def test_web_addr_false_not_allowed(self):
+        # WHEN
+        with self.assertRaises(PyngrokError):
+            installer.install_default_config(self.pyngrok_config.config_path, {"web_addr": False})

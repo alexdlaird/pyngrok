@@ -20,6 +20,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `NgrokProcess.log_boot_line()` renamed to `NgrokProcess._log_startup_line()`.
 - `NgrokProcess.log_line()` renamed to `NgrokProcess._log_line()`.
 - Auto-generated tunnel names (if `name` is not given when calling `ngrok.connect()`) are no prefixed with `proto` and `port`.
+- `web_addr` cannot be set to `false` in, as the `pyngrok` modules depends on this API.
+
+### Fixed
+
+- `installer.install_default_config()` documentation now properly reflects that `data` is a `dict` and not a `str`.
 
 ### Removed
 - `ngrok_path`, `config_path`, `auth_token`, and `region` were all removed from `process.get_process()`. Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig) instead.

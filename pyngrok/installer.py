@@ -11,7 +11,7 @@ import zipfile
 import yaml
 from future.standard_library import install_aliases
 
-from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError
+from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
 
 install_aliases()
 
@@ -110,15 +110,18 @@ def install_ngrok(ngrok_path, timeout=None):
         raise PyngrokNgrokInstallError("An error occurred while downloading ngrok from {}: {}".format(url, e))
 
 
-def install_default_config(config_path, data=""):
+def install_default_config(config_path, data=None):
     """
     Install the default `ngrok` config if one is not already present.
 
     :param config_path: The path to where the `ngrok` config should be installed.
     :type config_path: str
-    :param data: A JSON string of things to add to the default config.
-    :type data: str, optional
+    :param data: A dictionary of things to added to the default config.
+    :type data: dict, optional
     """
+    if data is None:
+        data = {}
+
     config_dir = os.path.dirname(config_path)
     if not os.path.exists(config_dir):
         os.makedirs(config_dir)
@@ -132,8 +135,21 @@ def install_default_config(config_path, data=""):
 
         config.update(data)
 
+    validate_config(config)
+
     with open(config_path, "w") as config_file:
         yaml.dump(config, config_file)
+
+
+def validate_config(data):
+    """
+    Validate that the given dict of config items are valid for `ngrok` and `pyngrok`.
+
+    :param data: A dictionary of things to be validated as config items.
+    :type data: dict
+    """
+    if data.get("web_addr", None) is False:
+        raise PyngrokError("\"web_addr\" cannot be False, as the ngrok API is a dependency for pyngrok")
 
 
 def _download_file(url, timeout, retries=0):

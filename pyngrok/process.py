@@ -6,9 +6,11 @@ import subprocess
 import threading
 import time
 
+import yaml
 from future.standard_library import install_aliases
 
 from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError
+from pyngrok.installer import validate_config
 
 install_aliases()
 
@@ -322,6 +324,14 @@ def _ensure_path_ready(ngrok_path):
         raise PyngrokNgrokError("ngrok is already running for the \"ngrok_path\": {}".format(ngrok_path))
 
 
+def _validate_config(config_path):
+    with open(config_path, "r") as config_file:
+        config = yaml.safe_load(config_file)
+
+    if config is not None:
+        validate_config(config)
+
+
 def _terminate_process(process):
     if process is None:
         return
@@ -343,6 +353,7 @@ def _start_process(pyngrok_config):
     :rtype: NgrokProcess
     """
     _ensure_path_ready(pyngrok_config.ngrok_path)
+    _validate_config(pyngrok_config.config_path)
 
     start = [pyngrok_config.ngrok_path, "start", "--none", "--log=stdout"]
     if pyngrok_config.config_path:
