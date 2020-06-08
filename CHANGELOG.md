@@ -8,13 +8,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [4.0.0](https://github.com/alexdlaird/pyngrok/compare/3.1.1...4.0.0) - TBD
 ### Added
 - `PyngrokConfig`, which contains all of Pyngrok's configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of kwargs. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig).
-- `log_func` is a new configuration parameter in `PyngrokConfig`, and it allows callback to be registered where emitted `ngrok` logs will be sent.
+- `log_event_callback` is a new configuration parameter in `PyngrokConfig`, a callback that will be invoked each time a `ngrok` log is emitted.
 - `keep_thread_alive` is a new configuration parameter in `PyngrokConfig` which determines whether or not `ngrok` will continue to be monitored in a separate thread after it has finished starting. The default is True.
 - `boot_timeout` is a new configuration parameter in `PyngrokConfig`. 
 - `max_logs` is a new configuration parameter in `PyngrokConfig`.
 
 ### Changed
 - `timeout` parameter that was passed down to `ngrok.api_request()` is now configurable by `request_timeout` in `PyngrokConfig`.
+- Max number of logs stored by the `NgrokProcess` from 500 to 100.
 
 ### Removed
 - `ngrok_path`, `config_path`, `auth_token`, and `region` were all removed from `process.get_process()`. Use [PyngrokConfig](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig) instead.

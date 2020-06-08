@@ -115,8 +115,8 @@ class NgrokProcess:
         if len(self.logs) > self.pyngrok_config.max_logs:
             self.logs.pop(0)
 
-        if self.pyngrok_config.log_func is not None:
-            self.pyngrok_config.log_func(log)
+        if self.pyngrok_config.log_event_callback is not None:
+            self.pyngrok_config.log_event_callback(log)
 
         return log
 

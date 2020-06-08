@@ -115,6 +115,26 @@ The :code:`NgrokProcess` also contains an :code:`api_url` variable, usually init
     :code:`uri` variable, which contains the relative path used to manipulate that resource against the client API.
     This package also gives us access to :code:`ngrok` from the command line, `as shown below <#command-line-usage>`__.
 
+Log Events
+----------
+
+When :code:`ngrok` emits logs, :code:`pyngrok` can surface them to a callback function. To register this
+callback, use `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_ and pass the desired function as
+:code:`log_event_callback`. Each time a log is processed, this function will be called, passing
+a `NgrokLog <api.html#pyngrok.process.NgrokLog>`_ as its only parameter.
+
+.. code-block:: python
+
+    from pyngrok.ngrok import PyngrokConfig
+    from pyngrok import ngrok
+
+    def log_event_callback(log):
+        print(str(log))
+
+    pyngrok_config = PyngrokConfig(log_event_callback=log_event_callback)
+
+    ngrok.connect(pyngrok_config=pyngrok_config)
+
 Expose Other Services
 ---------------------
 

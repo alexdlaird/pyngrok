@@ -78,11 +78,6 @@ ensure you have a handler streaming logs and your level is set to DEBUG. Here is
 Programmatically Inspect the Logs
 ---------------------------------
 
-Logs emitted by the :code:`ngrok` process can be emitted to a callback and handled asynchronously,
-which may also be useful for debugging. To enable this, use `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_
-to pass a callback for :code:`log_func` when you invoke a method that starts :code:`ngrok`. The parameter passed
-to your callback function will be a `NgrokLog <api.html#pyngrok.process.NgrokLog>`_.
-
 .. code-block:: python
 
     from pyngrok.ngrok import PyngrokConfig
@@ -95,8 +90,11 @@ to your callback function will be a `NgrokLog <api.html#pyngrok.process.NgrokLog
 
     ngrok.connect(pyngrok_config=pyngrok_config)
 
-:code:`ngrok` logs are also parsed and stored `on the NgrokProcess <api.html#pyngrok.process.NgrokProcess>`_.
+:code:`ngrok` logs are parsed and stored `on the NgrokProcess <api.html#pyngrok.process.NgrokProcess>`_.
 Iterating through the :code:`logs` variable will give you access to the latest logs.
+
+You can also inspect these logs asynchronously as they are emitted by registering the
+`log_event_callback, as documented here <index.html#log-events>`_.
 
 If you're seeing the :code:`NgrokProcess` fail with a :code:`PyngrokNgrokError` exception, these logs are also available
 on the exception itself, as documented `here <https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.exception.PyngrokNgrokError>`_.
