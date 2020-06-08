@@ -104,8 +104,8 @@ process so tunnels stay open until the user intervenes. We can do that by access
 
         ngrok.kill()
 
-The :code:`NgrokProcess` also contains an :code:`api_url` variable, usually initialized to
-:code:`http://127.0.0.1:4040`, from which we can access the `ngrok client API <https://ngrok.com/docs#client-api>`_.
+The :code:`NgrokProcess` contains an :code:`api_url` variable, usually initialized to
+http://127.0.0.1:4040, from which we can access the `ngrok client API <https://ngrok.com/docs#client-api>`_.
 
 .. note::
 
@@ -199,7 +199,7 @@ the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it like this:
     ngrok.connect()
     ngrok.connect(8000)
 
-We can also override the auth token when necessary using `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_:
+We can also override the auth token using `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_:
 
 .. code-block:: python
 
@@ -231,7 +231,7 @@ the :code:`region` parameter:
 Passing :code:`options`
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-It is also possible to configure the tunnel when it is created, for instance adding authentication,
+It is possible to configure the tunnel when it is created, for instance adding authentication,
 a subdomain, or other tunnel parameters `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_.
 These can be passed to the tunnel with the :code:`options` parameter.
 
