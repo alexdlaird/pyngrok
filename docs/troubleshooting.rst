@@ -78,18 +78,6 @@ ensure you have a handler streaming logs and your level is set to DEBUG. Here is
 Programmatically Inspect the Logs
 ---------------------------------
 
-.. code-block:: python
-
-    from pyngrok.ngrok import PyngrokConfig
-    from pyngrok import ngrok
-
-    def my_log_callback(log):
-        print(str(log))
-
-    pyngrok_config = PyngrokConfig(log_func=my_log_callback)
-
-    ngrok.connect(pyngrok_config=pyngrok_config)
-
 :code:`ngrok` logs are parsed and stored `on the NgrokProcess <api.html#pyngrok.process.NgrokProcess>`_.
 Iterating through the :code:`logs` variable will give you access to the latest logs.
 
