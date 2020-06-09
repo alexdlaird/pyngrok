@@ -9,6 +9,7 @@ import time
 import yaml
 from future.standard_library import install_aliases
 
+from pyngrok import ngrok
 from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError
 from pyngrok.installer import validate_config
 
@@ -353,7 +354,10 @@ def _start_process(pyngrok_config):
     :rtype: NgrokProcess
     """
     _ensure_path_ready(pyngrok_config.ngrok_path)
-    _validate_config(pyngrok_config.config_path)
+    if pyngrok_config.config_path is not None:
+        _validate_config(pyngrok_config.config_path)
+    else:
+        _validate_config(ngrok._DEFAULT_NGROK_CONFIG_PATH)
 
     start = [pyngrok_config.ngrok_path, "start", "--none", "--log=stdout"]
     if pyngrok_config.config_path:
