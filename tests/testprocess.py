@@ -16,7 +16,7 @@ from urllib.parse import urlparse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.0.0"
+__version__ = "4.0.1"
 
 
 class TestProcess(NgrokTestCase):
@@ -193,7 +193,7 @@ class TestProcess(NgrokTestCase):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
         log_event_callback_mock = mock.MagicMock()
-        pyngrok_config = PyngrokConfig(config_path=ngrok._DEFAULT_NGROK_CONFIG_PATH,
+        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
                                        log_event_callback=log_event_callback_mock, max_logs=5)
 
         # WHEN
@@ -208,7 +208,7 @@ class TestProcess(NgrokTestCase):
     def test_no_monitor_thread(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
-        pyngrok_config = PyngrokConfig(config_path=ngrok._DEFAULT_NGROK_CONFIG_PATH, monitor_thread=False)
+        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH, monitor_thread=False)
 
         # WHEN
         ngrok.connect(pyngrok_config=pyngrok_config)

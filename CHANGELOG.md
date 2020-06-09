@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.0.1...HEAD)
 
 ## [4.0.1](https://github.com/alexdlaird/pyngrok/compare/4.0.0...4.0.1) - 2020-06-07
+### Changed
+- Moved `_DEFAULT_NGROK_CONFIG_PATH` from `ngrok` module to `conf` module, renamed to `DEFAULT_NGROK_CONFIG_PATH`.
+
 ### Fixed
 - Exception thrown when trying to validate the config when no file is given (i.e. the variable is None and thus the default should be used).
 

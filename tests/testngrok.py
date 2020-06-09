@@ -7,7 +7,7 @@ import uuid
 import mock
 import yaml
 
-from pyngrok import ngrok, process, installer
+from pyngrok import ngrok, process, conf
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
 from .testcase import NgrokTestCase
@@ -22,7 +22,7 @@ except ImportError:
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.0.0"
+__version__ = "4.0.1"
 
 
 class TestNgrok(NgrokTestCase):
@@ -208,7 +208,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 0)
         subdomain = "pyngrok-{}-{}-{}{}-tcp".format(platform.system(), platform.python_implementation(),
                                                     sys.version_info[0], sys.version_info[1]).lower()
-        pyngrok_config = PyngrokConfig(config_path=ngrok._DEFAULT_NGROK_CONFIG_PATH,
+        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
                                        auth_token=os.environ["NGROK_AUTHTOKEN"], region="au")
 
         # WHEN
@@ -232,7 +232,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 0)
         subdomain = "pyngrok-{}-{}-{}{}-http".format(platform.system(), platform.python_implementation(),
                                                      sys.version_info[0], sys.version_info[1]).lower()
-        pyngrok_config = PyngrokConfig(config_path=ngrok._DEFAULT_NGROK_CONFIG_PATH,
+        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
                                        auth_token=os.environ["NGROK_AUTHTOKEN"], region="au")
 
         # WHEN

@@ -31,8 +31,6 @@ __version__ = "4.0.1"
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ngrok.yml")
-
 
 class NgrokTunnel:
     """
@@ -83,8 +81,8 @@ def ensure_ngrok_installed(ngrok_path):
     if not os.path.exists(ngrok_path):
         install_ngrok(ngrok_path)
 
-    if not os.path.exists(_DEFAULT_NGROK_CONFIG_PATH):
-        install_default_config(_DEFAULT_NGROK_CONFIG_PATH)
+    if not os.path.exists(conf.DEFAULT_NGROK_CONFIG_PATH):
+        install_default_config(conf.DEFAULT_NGROK_CONFIG_PATH)
 
 
 def set_auth_token(token, pyngrok_config=None):

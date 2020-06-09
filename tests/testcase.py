@@ -2,12 +2,12 @@ import os
 import shutil
 import unittest
 
-from pyngrok import ngrok, installer
+from pyngrok import ngrok, installer, conf
 from pyngrok import process
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.0.0"
+__version__ = "4.0.1"
 
 from pyngrok.conf import PyngrokConfig
 
@@ -17,9 +17,9 @@ class NgrokTestCase(unittest.TestCase):
         self.config_dir = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".ngrok2"))
         config_path = os.path.join(self.config_dir, "config.yml")
 
-        ngrok._DEFAULT_NGROK_CONFIG_PATH = config_path
+        conf.DEFAULT_NGROK_CONFIG_PATH = config_path
 
-        self.pyngrok_config = PyngrokConfig(config_path=ngrok._DEFAULT_NGROK_CONFIG_PATH)
+        self.pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH)
 
         installer.DEFAULT_RETRY_COUNT = 1
 

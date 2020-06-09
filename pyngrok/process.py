@@ -9,7 +9,7 @@ import time
 import yaml
 from future.standard_library import install_aliases
 
-from pyngrok import ngrok
+from pyngrok import conf
 from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError
 from pyngrok.installer import validate_config
 
@@ -27,7 +27,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.0.0"
+__version__ = "4.0.1"
 
 logger = logging.getLogger(__name__)
 
@@ -357,7 +357,7 @@ def _start_process(pyngrok_config):
     if pyngrok_config.config_path is not None:
         _validate_config(pyngrok_config.config_path)
     else:
-        _validate_config(ngrok._DEFAULT_NGROK_CONFIG_PATH)
+        _validate_config(conf.DEFAULT_NGROK_CONFIG_PATH)
 
     start = [pyngrok_config.ngrok_path, "start", "--none", "--log=stdout"]
     if pyngrok_config.config_path:

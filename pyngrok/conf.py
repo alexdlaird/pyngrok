@@ -1,6 +1,6 @@
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.0.0"
+__version__ = "4.0.1"
 
 import os
 
@@ -9,6 +9,8 @@ from pyngrok.installer import get_ngrok_bin
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
 DEFAULT_CONFIG_PATH = None
+
+DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ngrok.yml")
 
 
 class PyngrokConfig:
