@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.0.0...HEAD)
 
-## [4.0.0](https://github.com/alexdlaird/pyngrok/compare/3.1.1...4.0.0) - TBD
+## [4.0.0](https://github.com/alexdlaird/pyngrok/compare/3.1.1...4.0.0) - 2020-06-06
 ### Added
 - `PyngrokConfig`, which contains all of Pyngrok's configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of kwargs. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig).
 - `log_event_callback` is a new configuration parameter in `PyngrokConfig`, a callback that will be invoked each time a `ngrok` log is emitted.
