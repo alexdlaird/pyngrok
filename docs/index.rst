@@ -137,7 +137,7 @@ a `NgrokLog <api.html#pyngrok.process.NgrokLog>`_ as its only parameter.
 
 If these events aren't necessary for our use case, some resources can be freed up by turning them off.
 
-Either use `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_:
+Either use `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_ to not start the thread in the first place:
 
 .. code-block:: python
 
@@ -178,8 +178,8 @@ Configuration
 :code:`PyngrokConfig`
 ~~~~~~~~~~~~~~~~~~~~~
 `pyngrok`'s interactions with the `ngrok` binary (and other things) can be configured using `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_.
-Most methods accept `pyngrok_config` as an keyword argument, and `NgrokProcess` will maintain a reference to
-its own `PyngrokConfig` once a process has been started. If `pyngrok_config` is not given, the documentated defaults
+Most methods accept `pyngrok_config` as a keyword argument, and `NgrokProcess` will maintain a reference to
+its own `PyngrokConfig` once a process has been started. If `pyngrok_config` is not given, the documented defaults
 will be used.
 
 Setting the :code:`authtoken`
@@ -187,7 +187,7 @@ Setting the :code:`authtoken`
 
 Running :code:`ngrok` with an auth token enables additional features available on our account (for
 instance, the ability to open multiple tunnels concurrently). We can obtain our auth token from
-the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it like this:
+the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it to our config file like this:
 
 .. code-block:: python
 
@@ -250,8 +250,8 @@ Here is an example starting :code:`ngrok` in Australia, then opening a tunnel wi
 Config File
 ~~~~~~~~~~~
 
-The default `ngrok config file <https://ngrok.com/docs#config>`_ lives in the home
-directory's :code:`.ngrok2` folder. We can change this in one of two ways.
+By default, `ngrok will for its config file <https://ngrok.com/docs#config>`_ in the home directory's :code:`.ngrok2`
+folder. We can override this behavior in one of two ways.
 
 Either use `PyngrokConfig <api.html#pyngrok.conf.PyngrokConfig>`_:
 
