@@ -44,7 +44,7 @@ jobs:
     - name: "OS X, Python: 3.7"
       os: "osx"
       language: shell
-      osx_image: "xcode11.6"
+      osx_image: "xcode11.2"
       before_install:
         - python3 -m pip install virtualenv
         - python3 -m virtualenv venv
