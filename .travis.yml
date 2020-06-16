@@ -41,14 +41,13 @@ jobs:
         - python -m virtualenv venv
         - source venv/bin/activate
         - python -m pip install twine==2.0.0
-# Travis' OS X nodes are not yet stable enough to run this consistently
-#    - name: "OS X, Python: 3.7"
-#      os: "osx"
-#      language: shell
-#      osx_image: "xcode11.2"
-#      before_install:
-#        - python3 -m pip install virtualenv
-#        - python3 -m virtualenv .ven
+    - name: "OS X, Python: 3.7"
+      os: "osx"
+      language: shell
+      osx_image: "xcode11.2"
+      before_install:
+        - python3 -m pip install virtualenv
+        - python3 -m virtualenv .ven
     - name: "Windows, Python: 3.7"
       os: "windows"
       language: shell
