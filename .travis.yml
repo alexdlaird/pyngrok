@@ -45,9 +45,10 @@ jobs:
       os: "osx"
       language: shell
       osx_image: "xcode11.2"
-      before_install:
+      install:
         - python3 -m pip install virtualenv
         - python3 -m virtualenv venv
+        - make install
     - name: "Windows, Python: 3.7"
       os: "windows"
       language: shell
