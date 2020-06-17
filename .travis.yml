@@ -19,6 +19,8 @@ script:
   - make local
 after_success:
   - codecov
+  on:
+    python: 3.7
 before_deploy:
   - make docs
   - sudo -H python -m pip install setuptools twine --upgrade
