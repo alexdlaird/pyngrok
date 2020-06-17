@@ -100,7 +100,8 @@ def install_ngrok(ngrok_path, timeout=None):
     try:
         download_path = _download_file(url, timeout)
 
-        print("Installing ngrok ...     \r", end="")
+        sys.stdout.write("Installing ngrok ...     \r")
+        sys.stdout.flush()
 
         with zipfile.ZipFile(download_path, "r") as zip_ref:
             logger.debug("Extracting ngrok binary to {} ...".format(download_path))
@@ -108,7 +109,8 @@ def install_ngrok(ngrok_path, timeout=None):
 
         os.chmod(ngrok_path, int("777", 8))
 
-        print((" " * 50) + "\r", end="")
+        sys.stdout.write((" " * 50) + "\r")
+        sys.stdout.flush()
     except Exception as e:
         raise PyngrokNgrokInstallError("An error occurred while downloading ngrok from {}: {}".format(url, e))
 
@@ -160,7 +162,8 @@ def _download_file(url, timeout, retries=0):
         if not url.lower().startswith("http"):
             raise PyngrokSecurityError("URL must start with 'http': {}".format(url))
 
-        print("Downloading ngrok ...\r", end="")
+        sys.stdout.write("Downloading ngrok ...\r")
+        sys.stdout.flush()
 
         logger.debug("Download ngrok from {} ...".format(url))
 
@@ -194,9 +197,11 @@ def _download_file(url, timeout, retries=0):
 
                 if length:
                     percent_done = int((size / length) * 100)
-                    print("Downloading ngrok: {}%\r".format(percent_done), end="")
+                    sys.stdout.write("Downloading ngrok: {}%\r".format(percent_done))
+                    sys.stdout.flush()
 
-        print((" " * 50) + "\r", end="")
+        sys.stdout.write((" " * 50) + "\r")
+        sys.stdout.flush()
 
         return download_path
     except socket.timeout as e:
