@@ -26,7 +26,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.0.0"
+__version__ = "4.1.0"
 
 logger = logging.getLogger(__name__)
 
@@ -64,17 +64,15 @@ def get_ngrok_bin():
         raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
 
 
-def install_ngrok(ngrok_path, timeout=None):
+def install_ngrok(ngrok_path, **kwargs):
     """
     Download and install `ngrok` for the current system in the given location.
 
     :param ngrok_path: The path to where the `ngrok` binary will be downloaded.
     :type ngrok_path: str
-    :param timeout: The request timeout, in seconds.
-    :type timeout: float, optional
+    :param kwargs: Remaining kwargs will be passed to :func:`_download_file`.
+    :type kwargs: dict, optional
     """
-    timeout = timeout if timeout else DEFAULT_DOWNLOAD_TIMEOUT
-
     logger.debug("Binary not found at {}, installing ngrok ...".format(ngrok_path))
 
     ngrok_dir = os.path.dirname(ngrok_path)
@@ -98,7 +96,7 @@ def install_ngrok(ngrok_path, timeout=None):
         raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(plat))
 
     try:
-        download_path = _download_file(url, timeout)
+        download_path = _download_file(url, **kwargs)
 
         _print_progress("Installing ngrok ... ")
 
@@ -155,17 +153,31 @@ def validate_config(data):
         raise PyngrokError("\"web_addr\" cannot be False, as the ngrok API is a dependency for pyngrok")
 
 
-def _download_file(url, timeout, retries=0):
-    try:
-        if not url.lower().startswith("http"):
-            raise PyngrokSecurityError("URL must start with 'http': {}".format(url))
+def _download_file(url, retries=0, **kwargs):
+    """
+    Download a file to a temporary path and emit progress (if possible) as the download progresses.
 
+    :param url: The URL to download.
+    :type url: str
+    :param retries: The number of retries to attempt, if download fails.
+    :type retries: int, optional
+    :param kwargs: Remaining kwargs will be passed to :py:func:`urllib.request.urlopen`.
+    :type kwargs: dict, optional
+    :return: The path to the downloaded temporary file.
+    :rtype: str
+    """
+    kwargs["timeout"] = kwargs.get("timeout", DEFAULT_DOWNLOAD_TIMEOUT)
+
+    if not url.lower().startswith("http"):
+        raise PyngrokSecurityError("URL must start with 'http': {}".format(url))
+
+    try:
         _print_progress("Downloading ngrok ...")
 
         logger.debug("Download ngrok from {} ...".format(url))
 
         local_filename = url.split("/")[-1]
-        response = urlopen(url, timeout=timeout)
+        response = urlopen(url, **kwargs)
 
         status_code = response.getcode()
         logger.debug("Response status code: {}".format(status_code))
@@ -176,15 +188,15 @@ def _download_file(url, timeout, retries=0):
         length = response.getheader("Content-Length")
         if length:
             length = int(length)
-            blocksize = max(4096, length // 100)
+            chunk_size = max(4096, length // 100)
         else:
-            blocksize = 64 * 1024
+            chunk_size = 64 * 1024
 
         download_path = os.path.join(tempfile.gettempdir(), local_filename)
         with open(download_path, "wb") as f:
             size = 0
             while True:
-                buffer = response.read(blocksize)
+                buffer = response.read(chunk_size)
 
                 if not buffer:
                     break
@@ -203,7 +215,7 @@ def _download_file(url, timeout, retries=0):
         if retries < DEFAULT_RETRY_COUNT:
             time.sleep(0.5)
 
-            return _download_file(url, timeout, retries + 1)
+            return _download_file(url, retries + 1, **kwargs)
         else:
             raise e
 

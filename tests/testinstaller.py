@@ -9,7 +9,7 @@ from .testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.0.0"
+__version__ = "4.1.0"
 
 
 class TestInstaller(NgrokTestCase):
@@ -75,7 +75,7 @@ class TestInstaller(NgrokTestCase):
     def test_download_file_security_error(self):
         # WHEN
         with self.assertRaises(PyngrokSecurityError):
-            installer._download_file("file:{}".format(__file__), 10)
+            installer._download_file("file:{}".format(__file__), retries=10)
 
     def test_web_addr_false_not_allowed(self):
         # WHEN

@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Added
 - Progress bar when `ngrok` is being downloaded and installed for the first time.
 - Version number displayed in CLI's `--help`
+- `installer.install_ngrok()` and `installer._download_file()` now accept `**kwargs`, which are passed down to [urllib.request.urlopen](https://docs.python.org/3/library/urllib.request.html#urllib.request.urlopen) and documented [here](https://pyngrok.readthedocs.io/en/4.1.0/api.html#pyngrok.installer). 
 
 ## [4.0.3](https://github.com/alexdlaird/pyngrok/compare/4.0.2...4.0.3) - 2020-06-17
 ### Fixed
