@@ -50,9 +50,9 @@ DEFAULT_RETRY_COUNT = 0
 
 def get_ngrok_bin():
     """
-    Retrieve the `ngrok` command for the current system.
+    Retrieve the `ngrok` executable for the current system.
 
-    :return: The `ngrok` command.
+    :return: The name of the `ngrok` executable.
     :rtype: str
     """
     system = platform.system()
@@ -155,7 +155,7 @@ def validate_config(data):
 
 def _download_file(url, retries=0, **kwargs):
     """
-    Download a file to a temporary path and emit progress (if possible) as the download progresses.
+    Download a file to a temporary path and emit a status to stdout (if possible) as the download progresses.
 
     :param url: The URL to download.
     :type url: str
