@@ -1,7 +1,6 @@
 import logging
 import os
 import platform
-import shutil
 import socket
 import sys
 import tempfile
@@ -101,11 +100,15 @@ def install_ngrok(ngrok_path, timeout=None):
     try:
         download_path = _download_file(url, timeout)
 
+        print("Installing ngrok ...     \r", end="")
+
         with zipfile.ZipFile(download_path, "r") as zip_ref:
             logger.debug("Extracting ngrok binary to {} ...".format(download_path))
             zip_ref.extractall(os.path.dirname(ngrok_path))
 
         os.chmod(ngrok_path, int("777", 8))
+
+        print((" " * 50) + "\r", end="")
     except Exception as e:
         raise PyngrokNgrokInstallError("An error occurred while downloading ngrok from {}: {}".format(url, e))
 
@@ -157,6 +160,8 @@ def _download_file(url, timeout, retries=0):
         if not url.lower().startswith("http"):
             raise PyngrokSecurityError("URL must start with 'http': {}".format(url))
 
+        print("Downloading ngrok ...\r", end="")
+
         logger.debug("Download ngrok from {} ...".format(url))
 
         local_filename = url.split("/")[-1]
@@ -168,10 +173,30 @@ def _download_file(url, timeout, retries=0):
         if status_code != StatusCodes.OK:
             return None
 
-        download_path = os.path.join(tempfile.gettempdir(), local_filename)
+        length = response.getheader("Content-Length")
+        if length:
+            length = int(length)
+            blocksize = max(4096, length // 100)
+        else:
+            blocksize = 64 * 1024
 
+        download_path = os.path.join(tempfile.gettempdir(), local_filename)
         with open(download_path, "wb") as f:
-            shutil.copyfileobj(response, f)
+            size = 0
+            while True:
+                buffer = response.read(blocksize)
+
+                if not buffer:
+                    break
+
+                f.write(buffer)
+                size += len(buffer)
+
+                if length:
+                    percent_done = int((size / length) * 100)
+                    print("Downloading ngrok: {}%\r".format(percent_done), end="")
+
+        print((" " * 50) + "\r", end="")
 
         return download_path
     except socket.timeout as e:

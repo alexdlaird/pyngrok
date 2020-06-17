@@ -332,7 +332,7 @@ def main():
     """
     run(sys.argv[1:])
 
-    if len(sys.argv) == 1:
+    if len(sys.argv) == 1 or len(sys.argv) == 2 and sys.argv[1].lstrip("-").lstrip("-") == "help":
         print("\nPYNGROK VERSION:\n   {}".format(__version__))
     elif len(sys.argv) == 2 and sys.argv[1].lstrip("-").lstrip("-") in ["v", "version"]:
         print("pyngrok version {}".format(__version__))
