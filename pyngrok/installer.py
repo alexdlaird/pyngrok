@@ -100,8 +100,7 @@ def install_ngrok(ngrok_path, timeout=None):
     try:
         download_path = _download_file(url, timeout)
 
-        sys.stdout.write("Installing ngrok ...     \r")
-        sys.stdout.flush()
+        _print_progress("Installing ngrok ... ")
 
         with zipfile.ZipFile(download_path, "r") as zip_ref:
             logger.debug("Extracting ngrok binary to {} ...".format(download_path))
@@ -109,8 +108,7 @@ def install_ngrok(ngrok_path, timeout=None):
 
         os.chmod(ngrok_path, int("777", 8))
 
-        sys.stdout.write((" " * 50) + "\r")
-        sys.stdout.flush()
+        _clear_progress()
     except Exception as e:
         raise PyngrokNgrokInstallError("An error occurred while downloading ngrok from {}: {}".format(url, e))
 
@@ -162,8 +160,7 @@ def _download_file(url, timeout, retries=0):
         if not url.lower().startswith("http"):
             raise PyngrokSecurityError("URL must start with 'http': {}".format(url))
 
-        sys.stdout.write("Downloading ngrok ...\r")
-        sys.stdout.flush()
+        _print_progress("Downloading ngrok ...")
 
         logger.debug("Download ngrok from {} ...".format(url))
 
@@ -197,11 +194,9 @@ def _download_file(url, timeout, retries=0):
 
                 if length:
                     percent_done = int((size / length) * 100)
-                    sys.stdout.write("Downloading ngrok: {}%\r".format(percent_done))
-                    sys.stdout.flush()
+                    _print_progress("Downloading ngrok: {}%".format(percent_done))
 
-        sys.stdout.write((" " * 50) + "\r")
-        sys.stdout.flush()
+        _clear_progress()
 
         return download_path
     except socket.timeout as e:
@@ -211,3 +206,13 @@ def _download_file(url, timeout, retries=0):
             return _download_file(url, timeout, retries + 1)
         else:
             raise e
+
+
+def _print_progress(line):
+    sys.stdout.write("{}\r".format(line))
+    sys.stdout.flush()
+
+
+def _clear_progress(spaces=100):
+    sys.stdout.write((" " * spaces) + "\r")
+    sys.stdout.flush()
