@@ -3,7 +3,18 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.0.1...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.0.3...HEAD)
+
+## [4.0.3](https://github.com/alexdlaird/pyngrok/compare/4.0.2...4.0.3) - 2020-06-17
+### Fixed
+- Build improvements.
+
+## [4.0.2](https://github.com/alexdlaird/pyngrok/compare/4.0.1...4.0.2) - 2020-06-17
+### Added
+- PyPI package classifiers.
+
+### Fixed
+- Build improvements.
 
 ## [4.0.1](https://github.com/alexdlaird/pyngrok/compare/4.0.0...4.0.1) - 2020-06-07
 ### Changed
@@ -47,7 +58,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Added
 - After `ngrok` starts, the process is moved in to its own thread and `NgrokLog`s continue to be parsed for programmatic access.
 
-## [3.0.0](https://github.com/alexdlaird/pyngrok/compare/2.1.5...3.0.0) - 2020-05-29
+## [3.0.0](https://github.com/alexdlaird/pyngrok/compare/2.1.7...3.0.0) - 2020-05-29
 ### Added
 - [NgrokLog](https://pyngrok.readthedocs.io/en/3.0.0/api.html#pyngrok.process.NgrokLog>) class is a parsed representation of `ngrok`'s logs for more accessible debugging.
 - `logs` variable to `NgrokProcess` class, which is a `NgrokLog` object.
@@ -58,6 +69,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Removed
 - `startup_logs` from `NgrokProcess`, [use `logs` instead](https://pyngrok.readthedocs.io/en/3.0.0/api.html#pyngrok.process.NgrokProcess).
+
+## [2.1.7](https://github.com/alexdlaird/pyngrok/compare/2.1.6...2.1.7) - 2020-05-06
+### Fixed
+- Documentation and SEO improvements.
+
+## [2.1.6](https://github.com/alexdlaird/pyngrok/compare/2.1.5...2.1.6) - 2020-05-04
+### Fixed
+- Documentation and SEO improvements.
 
 ## [2.1.5](https://github.com/alexdlaird/pyngrok/compare/2.1.4...2.1.5) - 2020-05-01
 ### Added
@@ -74,12 +93,20 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Fixed
 - FreeBSD is now listed as a supported platform and the correct binary is chosen.
 
-## [2.1.3](https://github.com/alexdlaird/pyngrok/compare/2.1.0...2.1.3) - 2020-03-28
+## [2.1.3](https://github.com/alexdlaird/pyngrok/compare/2.1.2...2.1.3) - 2020-03-28
 ### Added
 - [Integration examples to the documentation](https://pyngrok.readthedocs.io/en/2.1.3/integrations.html) for common uses cases.
 
 ### Fixed
 - Build improvements.
+
+## [2.1.2](https://github.com/alexdlaird/pyngrok/compare/2.1.1...2.1.2) - 2020-03-23
+### Fixed
+- Build improvements.
+
+## [2.1.1](https://github.com/alexdlaird/pyngrok/compare/2.1.0...2.1.1) - 2020-03-21
+### Fixed
+- Version number displayed in CLI.
 
 ## [2.1.0](https://github.com/alexdlaird/pyngrok/compare/2.0.3...2.1.0) - 2020-03-21
 ### Added
@@ -99,7 +126,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Fixed
 - Removed code that could cause a `ModuleNotFoundError` when another module referenced this module in it's `requirements.txt`.
 
-## [2.0.0](https://github.com/alexdlaird/pyngrok/compare/1.4.1...2.0.0) - 2020-01-28
+## [2.0.0](https://github.com/alexdlaird/pyngrok/compare/1.4.4...2.0.0) - 2020-01-28
 ### Added
 - `api_url` variable to `NgrokProcess` class.
 - `startup_logs` variable to `NgrokProcess` class.
@@ -115,6 +142,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Removed
 - `process` variable from `NgrokProcess` (previously deprecated in `1.4.0`, use `proc` now instead).
+
+## [1.4.4](https://github.com/alexdlaird/pyngrok/compare/1.4.3...1.4.4) - 2020-01-28
+### Fixed
+- Build improvements.
+
+## [1.4.3](https://github.com/alexdlaird/pyngrok/compare/1.4.2...1.4.3) - 2020-01-13
+### Fixed
+- Build improvements.
+- Documentation improvements.
+
+## [1.4.2](https://github.com/alexdlaird/pyngrok/compare/1.4.1...1.4.2) - 2019-09-09
+### Changed
+- Bumped PyYAML dependency version.
 
 ## [1.4.1](https://github.com/alexdlaird/pyngrok/compare/1.4.0...1.4.1) - 2019-09-09
 ### Fixed
