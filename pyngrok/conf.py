@@ -15,10 +15,11 @@ DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ng
 
 class PyngrokConfig:
     """
-    An object containing Pyngrok's configuration for interacting with the :code:`ngrok` binary. All values are optional when
-    it is instantiated, and default values will be used for parameters not passed.
+    An object containing Pyngrok's configuration for interacting with the :code:`ngrok` binary. All values are optional
+    when it is instantiated, and default values will be used for parameters not passed.
 
-    :var ngrok_path: The path to the :code:`ngrok` binary, defaults to the value in `conf.DEFAULT_NGROK_PATH <index.html#config-file>`_
+    :var ngrok_path: The path to the :code:`ngrok` binary, defaults to the value in
+        `conf.DEFAULT_NGROK_PATH <index.html#config-file>`_
     :vartype ngrok_path: str
     :var config_path: The path to the :code:`ngrok` config, defaults to :code:`None` and :code:`ngrok` manages it.
     :vartype config_path: str
@@ -26,10 +27,11 @@ class PyngrokConfig:
     :vartype auth_token: str
     :var region: The region in which :code:`ngrok` should start.
     :vartype region: str
-    :var monitor_thread: Whether :code:`ngrok` should continue to be monitored (for logs, etc.) after it startup is complete.
+    :var monitor_thread: Whether :code:`ngrok` should continue to be monitored (for logs, etc.) after it startup
+        is complete.
     :vartype monitor_thread: bool
-    :var log_event_callback: A callback that will be invoked each time :code:`ngrok` emits a log. :code:`monitor_thread` must be
-        set to :code:`True` or the function will be stop being called after :code:`ngrok` finishes starting.
+    :var log_event_callback: A callback that will be invoked each time :code:`ngrok` emits a log. :code:`monitor_thread`
+        must be set to :code:`True` or the function will be stop being called after :code:`ngrok` finishes starting.
     :vartype log_event_callback: function
     :var startup_timeout: The max number of seconds to wait for :code:`ngrok` to start before timing out.
     :vartype startup_timeout: int

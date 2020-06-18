@@ -169,7 +169,8 @@ class NgrokProcess:
         necessarily terminate the thread immediately, as the thread may currently be idle, rather it sets a flag
         on the thread telling it to terminate the next time it wakes up.
 
-        This has no impact on the :code:`ngrok` process itself, only :code:`pyngrok`'s monitor of the process and its logs.
+        This has no impact on the :code:`ngrok` process itself, only :code:`pyngrok`'s monitor of the process and
+        its logs.
         """
         if self._monitor_thread is not None:
             self.pyngrok_config.monitor_thread = False
@@ -287,8 +288,8 @@ def run_process(ngrok_path, args):
 
 def kill_process(ngrok_path):
     """
-    Terminate the :code:`ngrok` processes, if running, for the given path. This method will not block, it will just issue
-    a kill request.
+    Terminate the :code:`ngrok` processes, if running, for the given path. This method will not block, it will just
+    issue a kill request.
 
     :param ngrok_path: The path to the :code:`ngrok` binary.
     :type ngrok_path: str

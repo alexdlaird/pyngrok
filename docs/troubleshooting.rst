@@ -81,9 +81,9 @@ Programmatically Inspect the Logs
 :code:`ngrok` logs are parsed by the :class:`~pyngrok.process.NgrokProcess`, and you can inspect them by iterating over
 its :code:`logs` variable or giving it a `log_event_callback <index.html#event-logs>`_.
 
-If you're seeing the :class:`~pyngrok.process.NgrokProcess` fail with a :class:`~pyngrok.exception.PyngrokNgrokError` exception, these
-logs are also available on the exception itself. Catch the exception and inspect :code:`ngrok_logs` and
-:code:`ngrok_error` for more insight in to where :code:`ngrok` is failing.
+If you're seeing the :class:`~pyngrok.process.NgrokProcess` fail with a :class:`~pyngrok.exception.PyngrokNgrokError`
+exception, these logs are also available on the exception itself. Catch the exception and inspect :code:`ngrok_logs`
+and :code:`ngrok_error` for more insight in to where :code:`ngrok` is failing.
 
 Test in the Python Console
 --------------------------

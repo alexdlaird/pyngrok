@@ -47,8 +47,8 @@ public_url = ngrok.connect()
 ssh_url = ngrok.connect(22, "tcp")
 ```
 
-The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes an optional `options` parameter, which allows us to pass additional
-options that are [supported by ngrok](https://ngrok.com/docs#tunnel-definitions).
+The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes an optional
+`options` parameter, which allows us to pass additional options that are [supported by ngrok](https://ngrok.com/docs#tunnel-definitions).
 
 This package puts the default `ngrok` binary on our path, so all features of `ngrok` are
 available on the command line.

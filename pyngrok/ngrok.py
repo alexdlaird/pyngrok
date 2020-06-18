@@ -90,8 +90,8 @@ def set_auth_token(token, pyngrok_config=None):
     Set the :code:`ngrok` auth token in the config file, enabling authenticated features (for instance,
     more concurrent tunnels, custom subdomains, etc.).
 
-    If :code:`ngrok` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s :code:`ngrok_path`, calling this method will first
-    download and install :code:`ngrok`.
+    If :code:`ngrok` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s :code:`ngrok_path`, calling this method
+    will first download and install :code:`ngrok`.
 
     :param token: The auth token to set.
     :type token: str
@@ -110,10 +110,11 @@ def get_ngrok_process(pyngrok_config=None):
     """
     Retrieve the current :code:`ngrok` process for the given path.
 
-    If :code:`ngrok` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s :code:`ngrok_path`, calling this method will first
-    download and install :code:`ngrok`.
+    If :code:`ngrok` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s :code:`ngrok_path`, calling this method
+    will first download and install :code:`ngrok`.
 
-    If :code:`ngrok` is not running, calling this method will first start a process with :class:`~pyngrok.conf.PyngrokConfig`.
+    If :code:`ngrok` is not running, calling this method will first start a process with
+    :class:`~pyngrok.conf.PyngrokConfig`.
 
     :param pyngrok_config: The Pyngrok configuration to use when with :code:`ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
@@ -133,10 +134,11 @@ def connect(port=80, proto="http", name=None, options=None, pyngrok_config=None)
     Establish a new :code:`ngrok` tunnel to the given port and protocol, returning the connected
     public URL that tunnels to the local port.
 
-    If :code:`ngrok` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s :code:`ngrok_path`, calling this method will first
-    download and install :code:`ngrok`.
+    If :code:`ngrok` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s :code:`ngrok_path`, calling this method
+    will first download and install :code:`ngrok`.
 
-    If :code:`ngrok` is not running, calling this method will first start a process with :class:`~pyngrok.conf.PyngrokConfig`.
+    If :code:`ngrok` is not running, calling this method will first start a process with
+    :class:`~pyngrok.conf.PyngrokConfig`.
 
     :param port: The local port to which to tunnel, defaults to 80.
     :type port: int, optional
@@ -180,10 +182,11 @@ def disconnect(public_url, pyngrok_config=None):
     """
     Disconnect the :code:`ngrok` tunnel for the given URL.
 
-    If :code:`ngrok` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s :code:`ngrok_path`, calling this method will first
-    download and install :code:`ngrok`.
+    If :code:`ngrok` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s :code:`ngrok_path`, calling this method
+    will first download and install :code:`ngrok`.
 
-    If :code:`ngrok` is not running, calling this method will first start a process with :class:`~pyngrok.conf.PyngrokConfig`.
+    If :code:`ngrok` is not running, calling this method will first start a process with
+    :class:`~pyngrok.conf.PyngrokConfig`.
 
     :param public_url: The public URL of the tunnel to disconnect.
     :type public_url: str
@@ -210,10 +213,11 @@ def get_tunnels(pyngrok_config=None):
     """
     Retrieve a list of all active :code:`ngrok` tunnels.
 
-    If :code:`ngrok` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s :code:`ngrok_path`, calling this method will first
-    download and install :code:`ngrok`.
+    If :code:`ngrok` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s :code:`ngrok_path`, calling this method
+    will first download and install :code:`ngrok`.
 
-    If :code:`ngrok` is not running, calling this method will first start a process with :class:`~pyngrok.conf.PyngrokConfig`.
+    If :code:`ngrok` is not running, calling this method will first start a process with
+    :class:`~pyngrok.conf.PyngrokConfig`.
 
     :param pyngrok_config: The Pyngrok configuration to use when with :code:`ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
@@ -235,8 +239,8 @@ def get_tunnels(pyngrok_config=None):
 
 def kill(pyngrok_config=None):
     """
-    Terminate the :code:`ngrok` processes, if running, for the given path. This method will not block, it will just issue
-    a kill request.
+    Terminate the :code:`ngrok` processes, if running, for the given path. This method will not block, it will just
+    issue a kill request.
 
     :param pyngrok_config: The Pyngrok configuration to use when with :code:`ngrok`.
     :type pyngrok_config: PyngrokConfig, optional

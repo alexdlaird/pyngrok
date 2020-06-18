@@ -62,9 +62,10 @@ Now Flask can be started in development by the usual means, setting :code:`USE_N
 Django
 ------
 
-In `settings.py <https://docs.djangoproject.com/en/3.0/topics/settings/>`_ of `our Django project <https://docs.djangoproject.com/en/3.0/intro/tutorial01/#creating-a-project>`_,
-we should add a variable that let's us configure from an environment variable whether or not we want to open a tunnel
-to :code:`localhost` with :code:`ngrok` when the dev server starts.
+In `settings.py <https://docs.djangoproject.com/en/3.0/topics/settings/>`_ of
+`our Django project <https://docs.djangoproject.com/en/3.0/intro/tutorial01/#creating-a-project>`_, we should add a
+variable that let's us configure from an environment variable whether or not we want to open a tunnel to
+:code:`localhost` with :code:`ngrok` when the dev server starts.
 
 .. code-block:: python
 
