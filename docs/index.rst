@@ -26,11 +26,17 @@ Installation
 ------------
 
 :code:`pyngrok` is available on `PyPI <https://pypi.org/project/pyngrok/>`_ and can be installed
-using :code:`pip`.
+using :code:`pip`:
 
 .. code-block:: sh
 
     pip install pyngrok
+
+or :code:`conda`:
+
+.. code-block:: sh
+
+    conda install -c conda-forge pyngrok
 
 That's it! :code:`pyngrok` is now available `as a package to our Python projects <#open-a-tunnel>`_,
 and :code:`ngrok` is now available `from the command line <#command-line-usage>`_.

@@ -95,7 +95,7 @@ def set_auth_token(token, pyngrok_config=None):
 
     :param token: The auth token to set.
     :type token: str
-    :param pyngrok_config: The Pyngrok configuration to use when with :code:`ngrok`.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use with :code:`ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
@@ -116,7 +116,7 @@ def get_ngrok_process(pyngrok_config=None):
     If :code:`ngrok` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
 
-    :param pyngrok_config: The Pyngrok configuration to use when with :code:`ngrok`.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use with :code:`ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     :return: The :code:`ngrok` process.
     :rtype: NgrokProcess
@@ -148,7 +148,7 @@ def connect(port=80, proto="http", name=None, options=None, pyngrok_config=None)
     :type name: str, optional
     :param options: Parameters passed to `configuration for the ngrok tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
     :type options: dict[str, str], optional
-    :param pyngrok_config: The Pyngrok configuration to use when with :code:`ngrok`.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use with :code:`ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     :return: The connected public URL.
     :rtype: str
@@ -190,7 +190,7 @@ def disconnect(public_url, pyngrok_config=None):
 
     :param public_url: The public URL of the tunnel to disconnect.
     :type public_url: str
-    :param pyngrok_config: The Pyngrok configuration to use when with :code:`ngrok`.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use with :code:`ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
@@ -219,7 +219,7 @@ def get_tunnels(pyngrok_config=None):
     If :code:`ngrok` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
 
-    :param pyngrok_config: The Pyngrok configuration to use when with :code:`ngrok`.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use with :code:`ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     :return: The currently active :code:`ngrok` tunnels.
     :rtype: list[NgrokTunnel]
@@ -242,7 +242,7 @@ def kill(pyngrok_config=None):
     Terminate the :code:`ngrok` processes, if running, for the given path. This method will not block, it will just
     issue a kill request.
 
-    :param pyngrok_config: The Pyngrok configuration to use when with :code:`ngrok`.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use with :code:`ngrok`.
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:

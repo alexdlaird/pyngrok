@@ -15,7 +15,7 @@ DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ng
 
 class PyngrokConfig:
     """
-    An object containing Pyngrok's configuration for interacting with the :code:`ngrok` binary. All values are optional
+    An object containing :code:`pyngrok`'s configuration for interacting with the :code:`ngrok` binary. All values are optional
     when it is instantiated, and default values will be used for parameters not passed.
 
     :var ngrok_path: The path to the :code:`ngrok` binary, defaults to the value in
