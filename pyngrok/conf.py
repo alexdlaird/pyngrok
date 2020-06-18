@@ -15,27 +15,27 @@ DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ng
 
 class PyngrokConfig:
     """
-    An object containing Pyngrok's configuration for interacting with the `ngrok` binary. All values are optional when
+    An object containing Pyngrok's configuration for interacting with the :code:`ngrok` binary. All values are optional when
     it is instantiated, and default values will be used for parameters not passed.
 
-    :var ngrok_path: The path to the `ngrok` binary, defaults to the value in `conf.DEFAULT_NGROK_PATH <index.html#config-file>`_
+    :var ngrok_path: The path to the :code:`ngrok` binary, defaults to the value in `conf.DEFAULT_NGROK_PATH <index.html#config-file>`_
     :vartype ngrok_path: str
-    :var config_path: The path to the `ngrok` config, defaults to :code:`None` and `ngrok` manages it.
+    :var config_path: The path to the :code:`ngrok` config, defaults to :code:`None` and :code:`ngrok` manages it.
     :vartype config_path: str
     :var auth_token: An authtoken to pass to commands (overrides what is in the config).
     :vartype auth_token: str
-    :var region: The region in which `ngrok` should start.
+    :var region: The region in which :code:`ngrok` should start.
     :vartype region: str
-    :var monitor_thread: Whether `ngrok` should continue to be monitored (for logs, etc.) after it startup is complete.
+    :var monitor_thread: Whether :code:`ngrok` should continue to be monitored (for logs, etc.) after it startup is complete.
     :vartype monitor_thread: bool
-    :var log_event_callback: A callback that will be invoked each time `ngrok` emits a log. `monitor_thread` must be
-        set to True or the function will be stop being called after `ngrok` finishes starting.
+    :var log_event_callback: A callback that will be invoked each time :code:`ngrok` emits a log. :code:`monitor_thread` must be
+        set to True or the function will be stop being called after :code:`ngrok` finishes starting.
     :vartype log_event_callback: function
-    :var startup_timeout: The max number of seconds to wait for `ngrok` to start before timing out.
+    :var startup_timeout: The max number of seconds to wait for :code:`ngrok` to start before timing out.
     :vartype startup_timeout: int
     :var max_logs: The max number of logs to store in NgrokProcess's logs variable.
     :vartype max_logs: int
-    :var request_timeout: The max timeout when making requests to `ngrok`'s API.
+    :var request_timeout: The max timeout when making requests to :code:`ngrok`'s API.
     :vartype request_timeout: float
     """
 
