@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.0.3...HEAD)
+
+## [4.1.0](https://github.com/alexdlaird/pyngrok/compare/4.0.3...4.1.0) - 2020-06-18
 ### Added
 - Progress bar when `ngrok` is being downloaded and installed for the first time.
 - Version number displayed in CLI's `--help`
