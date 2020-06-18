@@ -98,17 +98,27 @@ def install_ngrok(ngrok_path, **kwargs):
     try:
         download_path = _download_file(url, **kwargs)
 
-        _print_progress("Installing ngrok ... ")
-
-        with zipfile.ZipFile(download_path, "r") as zip_ref:
-            logger.debug("Extracting ngrok binary to {} ...".format(download_path))
-            zip_ref.extractall(os.path.dirname(ngrok_path))
-
-        os.chmod(ngrok_path, int("777", 8))
-
-        _clear_progress()
+        _install_ngrok_zip(ngrok_path, download_path)
     except Exception as e:
         raise PyngrokNgrokInstallError("An error occurred while downloading ngrok from {}: {}".format(url, e))
+
+
+def _install_ngrok_zip(ngrok_path, zip_path):
+    """
+    Extract the `ngrok` zip file to the given path.
+
+    :param ngrok_path: The path where `ngrok` will be installed.
+    :param zip_path: The path to the `ngrok` zip file to be extracted.
+    """
+    _print_progress("Installing ngrok ... ")
+
+    with zipfile.ZipFile(zip_path, "r") as zip_ref:
+        logger.debug("Extracting ngrok binary to {} ...".format(zip_path))
+        zip_ref.extractall(os.path.dirname(ngrok_path))
+
+    os.chmod(ngrok_path, int("777", 8))
+
+    _clear_progress()
 
 
 def install_default_config(config_path, data=None):
