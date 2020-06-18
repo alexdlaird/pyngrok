@@ -65,7 +65,7 @@ For more advanced usage, `pyngrok`'s official documentation is available at [htt
 
 ## Contributing
 
-If you would like to get involved, be sure to review the [Contribution Guide](https://github.com/alexdlaird/pyngrok/blob/master/CONTRIBUTING.md).
+If you would like to get involved, be sure to review the [Contribution Guide](https://github.com/alexdlaird/pyngrok/blob/master/CONTRIBUTING.rst).
 
 Want to contribute financially? If you've found `pyngrok` useful, [a donation](https://www.paypal.me/alexdlaird>) would
 also be greatly appreciated!
