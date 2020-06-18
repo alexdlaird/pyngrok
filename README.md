@@ -18,10 +18,16 @@ your own machine, and more, made even more powerful with native Python integrati
 ## Installation
 
 `pyngrok` is available on [PyPI](https://pypi.org/project/pyngrok/) and can be installed
-using `pip`.
+using `pip`:
 
 ```sh
 pip install pyngrok
+```
+
+or `conda`:
+
+```sh
+conda install -c conda-forge pyngrok
 ```
 
 That's it! `pyngrok` is now available as a package to our Python projects, and `ngrok` is now available from
