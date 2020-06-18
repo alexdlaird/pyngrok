@@ -215,7 +215,7 @@ def _download_file(url, retries=0, **kwargs):
                 size += len(buffer)
 
                 if length:
-                    percent_done = int((size / length) * 100)
+                    percent_done = int((float(size) / float(length)) * 100)
                     _print_progress("Downloading ngrok: {}%".format(percent_done))
 
         _clear_progress()

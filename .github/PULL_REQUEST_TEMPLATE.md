@@ -11,10 +11,10 @@ A list of GitHub issues related to this PR.
 - [ ] This change requires a documentation update
 
 **Testing Done**
-A clear and concise description of the manual testing done and new tests added to validate the change.
+A clear and concise description of the new tests added to validate the change as well as any manual testing done.
 
 **Checklist**
-- [ ] My code follows the style guidelines of this project
+- [ ] My code follows the PEP 8 style guidelines for Python
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have made corresponding changes to the documentation
