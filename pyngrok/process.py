@@ -234,7 +234,7 @@ def set_auth_token(pyngrok_config, token):
     Set the :code:`ngrok` auth token in the config file, enabling authenticated features (for instance,
     more concurrent tunnels, custom subdomains, etc.).
 
-    :param pyngrok_config: The :code:`pyngrok` configuration to use with :code:`ngrok`.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary.
     :type pyngrok_config: PyngrokConfig
     :param token: The auth token to set.
     :type token: str
@@ -256,7 +256,7 @@ def get_process(pyngrok_config):
 
     If :code:`ngrok` is not running, calling this method will start a process for the given path.
 
-    :param pyngrok_config: The :code:`pyngrok` configuration to use with :code:`ngrok`.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary.
     :type pyngrok_config: PyngrokConfig
     :return: The :code:`ngrok` process.
     :rtype: NgrokProcess
@@ -350,7 +350,7 @@ def _start_process(pyngrok_config):
     Start a :code:`ngrok` process with no tunnels. This will start the :code:`ngrok` web interface, against
     which HTTP requests can be made to create, interact with, and destroy tunnels.
 
-    :param pyngrok_config: The :code:`pyngrok` configuration to use with :code:`ngrok`.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary.
     :type pyngrok_config: PyngrokConfig
     :return: The :code:`ngrok` process.
     :rtype: NgrokProcess
