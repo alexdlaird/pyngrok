@@ -1,6 +1,6 @@
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.0.1"
+__version__ = "4.1.0"
 
 import os
 
@@ -18,9 +18,9 @@ class PyngrokConfig:
     An object containing Pyngrok's configuration for interacting with the `ngrok` binary. All values are optional when
     it is instantiated, and default values will be used for parameters not passed.
 
-    :var ngrok_path: The path to the `ngrok` binary. Defaults to the value in `conf.DEFAULT_NGROK_PATH <index.html#config-file>`_
+    :var ngrok_path: The path to the `ngrok` binary, defaults to the value in `conf.DEFAULT_NGROK_PATH <index.html#config-file>`_
     :vartype ngrok_path: str
-    :var config_path: The path to the `ngrok` config. Defaults None and `ngrok` manages it.
+    :var config_path: The path to the `ngrok` config, defaults to :code:`None` and `ngrok` manages it.
     :vartype config_path: str
     :var auth_token: An authtoken to pass to commands (overrides what is in the config).
     :vartype auth_token: str
