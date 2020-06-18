@@ -9,6 +9,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Version number displayed in CLI's `--help`
 - `installer.install_ngrok()` and `installer._download_file()` now accept `**kwargs`, which are passed down to [urllib.request.urlopen](https://docs.python.org/3/library/urllib.request.html#urllib.request.urlopen), and updated [the documentation](https://pyngrok.readthedocs.io/en/4.1.0/api.html#pyngrok.installer).
 
+### Fixed
+- Documentation improvements.
+
 ## [4.0.3](https://github.com/alexdlaird/pyngrok/compare/4.0.2...4.0.3) - 2020-06-17
 ### Fixed
 - Build improvements.

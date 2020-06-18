@@ -16,18 +16,17 @@ DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ng
 class PyngrokConfig:
     """
     An object containing Pyngrok's configuration for interacting with the `ngrok` binary. All values are optional when
-    instantiating an object, and default values will be used instead for that parameter.
+    it is instantiated, and default values will be used for parameters not passed.
 
-    :var ngrok_path: A `ngrok` binary override.
+    :var ngrok_path: The path to the `ngrok` binary. Defaults to the value in `conf.DEFAULT_NGROK_PATH <index.html#config-file>`_
     :vartype ngrok_path: str
-    :var config_path: A config path override.
+    :var config_path: The path to the `ngrok` config. Defaults None and `ngrok` manages it.
     :vartype config_path: str
-    :var auth_token: An authtoken override.
+    :var auth_token: An authtoken to pass to commands (overrides what is in the config).
     :vartype auth_token: str
-    :var region: A region override.
+    :var region: The region in which `ngrok` should start.
     :vartype region: str
-    :var monitor_thread: Whether `ngrok` should continue to be monitored (for logs, etc.) after it has
-        finished starting.
+    :var monitor_thread: Whether `ngrok` should continue to be monitored (for logs, etc.) after it startup is complete.
     :vartype monitor_thread: bool
     :var log_event_callback: A callback that will be invoked each time `ngrok` emits a log. `monitor_thread` must be
         set to True or the function will be stop being called after `ngrok` finishes starting.
