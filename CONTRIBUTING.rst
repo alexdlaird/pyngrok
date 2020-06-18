@@ -5,7 +5,7 @@ If you find issues, `report them on GitHub <https://github.com/alexdlaird/pyngro
 
 If you would like to contribute to the code, the process is pretty simple:
 
-1. Familiarise yourself with this package, `pyngrok's <https://pyngrok.readthedocs.io/en/latest/api.html>`_ documentation, and `ngrok's documentation <https://ngrok.com/docs>`_.
+1. Familiarise yourself with this package, `pyngrok's APIs <https://pyngrok.readthedocs.io/en/latest/api.html>`_ and other documentation, and `ngrok's documentation <https://ngrok.com/docs>`_.
 2. Fork `the repository on GitHub <https://github.com/alexdlaird/pyngrok>`_ and start implementing changes.
 3. Write a test that plainly validates the changes made.
 4. Build and test locally with :code:`make local test`
