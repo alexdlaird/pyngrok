@@ -67,7 +67,7 @@ ensure you have a handler streaming logs and your level is set to DEBUG. Here is
     logger.setLevel(logging.DEBUG)
     ch = logging.StreamHandler(sys.stdout)
     ch.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     ch.setFormatter(formatter)
     logger.addHandler(ch)
 
@@ -102,7 +102,51 @@ enabling logging (as illustrated in the section above) so you can see where thin
     >>> logger.setLevel(logging.DEBUG)
     >>> ch = logging.StreamHandler(sys.stdout)
     >>> ch.setLevel(logging.DEBUG)
-    >>> formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    >>> formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    >>> ch.setFormatter(formatter)
+    >>> logger.addHandler(ch)
+    >>> from pyngrok import ngrok
+    >>> ngrok.connect()
+    2020-05-01 17:49:22,271 - pyngrok.process - INFO - ngrok process starting: 7971
+    2020-05-01 17:49:22,608 - pyngrok.process - DEBUG - t=2020-05-01T17:49:22-0700 lvl=info msg="no configuration paths supplied"
+    2020-05-01 17:49:22,609 - pyngrok.process - DEBUG - t=2020-05-01T17:49:22-0700 lvl=info msg="using configuration at default config path" path=/Users/<username>/.ngrok2/ngrok.yml
+    2020-05-01 17:49:22,609 - pyngrok.process - DEBUG - t=2020-05-01T17:49:22-0700 lvl=info msg="open config file" path=/Users/<username>/.ngrok2/ngrok.yml err=nil
+    2020-05-01 17:49:22,614 - pyngrok.process - DEBUG - t=2020-05-01T17:49:22-0700 lvl=info msg="starting web service" obj=web addr=127.0.0.1:4040
+    2020-05-01 17:49:23,014 - pyngrok.process - DEBUG - t=2020-05-01T17:49:23-0700 lvl=info msg="tunnel session started" obj=tunnels.session
+    2020-05-01 17:49:23,014 - pyngrok.process - DEBUG - t=2020-05-01T17:49:23-0700 lvl=info msg="client session established" obj=csess id=6d91cd2b00ce
+    2020-05-01 17:49:23,043 - pyngrok.process - INFO - ngrok process has started:
+    bash-3.2$ python
+    Python 3.7.6 (default, Dec 30 2019, 19:38:28)
+    [Clang 11.0.0 (clang-1100.0.33.16)] on darwin
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>> import logging, sys
+    >>> logger = logging.getLogger()
+    >>> logger.setLevel(logging.DEBUG)
+    >>> ch = logging.StreamHandler(sys.stdout)
+    >>> ch.setLevel(logging.DEBUG)
+    >>> formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    >>> ch.setFormatter(formatter)
+    >>> logger.addHandler(ch)
+    >>> from pyngrok import ngrok
+    >>> ngrok.connect()
+    2020-05-01 17:49:22,271 - pyngrok.process - INFO - ngrok process starting: 7971
+    2020-05-01 17:49:22,608 - pyngrok.process - DEBUG - t=2020-05-01T17:49:22-0700 lvl=info msg="no configuration paths supplied"
+    2020-05-01 17:49:22,609 - pyngrok.process - DEBUG - t=2020-05-01T17:49:22-0700 lvl=info msg="using configuration at default config path" path=/Users/<username>/.ngrok2/ngrok.yml
+    2020-05-01 17:49:22,609 - pyngrok.process - DEBUG - t=2020-05-01T17:49:22-0700 lvl=info msg="open config file" path=/Users/<username>/.ngrok2/ngrok.yml err=nil
+    2020-05-01 17:49:22,614 - pyngrok.process - DEBUG - t=2020-05-01T17:49:22-0700 lvl=info msg="starting web service" obj=web addr=127.0.0.1:4040
+    2020-05-01 17:49:23,014 - pyngrok.process - DEBUG - t=2020-05-01T17:49:23-0700 lvl=info msg="tunnel session started" obj=tunnels.session
+    2020-05-01 17:49:23,014 - pyngrok.process - DEBUG - t=2020-05-01T17:49:23-0700 lvl=info msg="client session established" obj=csess id=6d91cd2b00ce
+    2020-05-01 17:49:23,043 - pyngrok.process - INFO - ngrok process has started:
+    bash-3.2$ python
+    Python 3.7.6 (default, Dec 30 2019, 19:38:28)
+    [Clang 11.0.0 (clang-1100.0.33.16)] on darwin
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>> import logging, sys
+    >>> logger = logging.getLogger()
+    >>> logger.setLevel(logging.DEBUG)
+    >>> ch = logging.StreamHandler(sys.stdout)
+    >>> ch.setLevel(logging.DEBUG)
+    >>> formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     >>> ch.setFormatter(formatter)
     >>> logger.addHandler(ch)
     >>> from pyngrok import ngrok

@@ -1,6 +1,6 @@
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.0"
+__version__ = "4.1.1"
 
 import os
 
@@ -15,8 +15,8 @@ DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ng
 
 class PyngrokConfig:
     """
-    An object containing :code:`pyngrok`'s configuration for interacting with the :code:`ngrok` binary. All values are optional
-    when it is instantiated, and default values will be used for parameters not passed.
+    An object containing :code:`pyngrok`'s configuration for interacting with the :code:`ngrok` binary. All values are
+    optional when it is instantiated, and default values will be used for parameters not passed.
 
     :var ngrok_path: The path to the :code:`ngrok` binary, defaults to the value in
         `conf.DEFAULT_NGROK_PATH <index.html#config-file>`_
@@ -31,11 +31,11 @@ class PyngrokConfig:
         is complete.
     :vartype monitor_thread: bool
     :var log_event_callback: A callback that will be invoked each time :code:`ngrok` emits a log. :code:`monitor_thread`
-        must be set to :code:`True` or the function will be stop being called after :code:`ngrok` finishes starting.
+        must be set to :code:`True` or the function will stop being called after :code:`ngrok` finishes starting.
     :vartype log_event_callback: function
     :var startup_timeout: The max number of seconds to wait for :code:`ngrok` to start before timing out.
     :vartype startup_timeout: int
-    :var max_logs: The max number of logs to store in NgrokProcess's logs variable.
+    :var max_logs: The max number of logs to store in :class:`~pyngrok.process.NgrokProcess`'s :code:`logs` variable.
     :vartype max_logs: int
     :var request_timeout: The max timeout when making requests to :code:`ngrok`'s API.
     :vartype request_timeout: float

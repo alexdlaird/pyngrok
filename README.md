@@ -13,7 +13,7 @@ convenient Python API.
 
 [ngrok](https://ngrok.com) is a reverse proxy tool that opens secure tunnels from public URLs to localhost, perfect
 for exposing local web servers, building webhook integrations, enabling SSH access, testing chatbots, demoing from
-your own machine, and more, made even more powerful with native Python integration through `pyngrok`.
+your own machine, and more, and its made even more powerful with native Python integration through `pyngrok`.
 
 ## Installation
 
@@ -48,7 +48,7 @@ ssh_url = ngrok.connect(22, "tcp")
 ```
 
 The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes an optional
-`options` parameter, which allows us to pass additional options that are [supported by ngrok](https://ngrok.com/docs#tunnel-definitions).
+`options` parameter, which allows us to pass additional properties that are [supported by ngrok](https://ngrok.com/docs#tunnel-definitions).
 
 This package puts the default `ngrok` binary on our path, so all features of `ngrok` are
 available on the command line.

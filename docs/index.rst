@@ -20,7 +20,7 @@ making :code:`ngrok` readily available from anywhere on the command line and via
 
 `ngrok <https://ngrok.com>`_ is a reverse proxy tool that opens secure tunnels from public URLs to localhost, perfect
 for exposing local web servers, building webhook integrations, enabling SSH access, testing chatbots, demoing from
-your own machine, and more, made even more powerful with native Python integration through :code:`pyngrok`.
+your own machine, and more, and its made even more powerful with native Python integration through :code:`pyngrok`.
 
 Installation
 ------------
@@ -57,7 +57,7 @@ To open a tunnel, use the :func:`~pyngrok.ngrok.connect` method, which returns t
     ssh_url = ngrok.connect(22, "tcp")
 
 The :func:`~pyngrok.ngrok.connect` method takes an optional :code:`options` parameter, which allows us to pass
-additional options that are `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_,
+additional properties that are `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_,
 `as shown below <#passing-options>`__.
 
 Get Active Tunnels
@@ -107,7 +107,7 @@ process so tunnels stay open until the user intervenes. We can do that by access
 
     try:
         # Block until CTRL-C or some other terminating event
-        ngrok_process.process.wait()
+        ngrok_process.proc.wait()
     except KeyboardInterrupt:
         print(" Shutting down server.")
 
@@ -160,6 +160,8 @@ or call the :func:`~pyngrok.process.NgrokProcess.stop_monitor_thread` method whe
 
 .. code-block:: python
 
+    import time
+
     from pyngrok import ngrok
 
     ngrok.connect()
@@ -185,17 +187,32 @@ Configuration
 
 :code:`PyngrokConfig`
 ~~~~~~~~~~~~~~~~~~~~~
-`pyngrok`'s interactions with the `ngrok` binary (and other things) can be configured using
-:class:`~pyngrok.conf.PyngrokConfig`. Most methods accept `pyngrok_config` as a keyword argument, and
+:code:`pyngrok`'s interactions with the :code:`ngrok` binary (and other things) can be configured using
+:class:`~pyngrok.conf.PyngrokConfig`. Most methods accept :code:`pyngrok_config` as a keyword argument, and
 :class:`~pyngrok.process.NgrokProcess` will maintain a reference to its own :class:`~pyngrok.conf.PyngrokConfig` once a
-process has been started. If `pyngrok_config` is not given, its documented defaults will be used.
+process has been started. If :code:`pyngrok_config` is not given, its documented defaults will be used.
+
+The :code:`pyngrok_config` argument is only used when the :code:`ngrok` process is first started, which will only be
+the first time most methods in the :mod:`~pyngrok.ngrok` module are called. You can check if a process is already or
+still running by calling its :func:`~pyngrok.process.NgrokProcess.healthy` method.
+
+.. note::
+
+    If :code:`ngrok` is not already installed at the :code:`ngrok_path` in :class:`~pyngrok.conf.PyngrokConfig`, it
+    will be installed the first time most methods in the :mod:`~pyngrok.ngrok` module are called.
+
+    If we need to customize the installation of :code:`ngrok`, perhaps specifying a timeout, proxy, use a custom mirror
+    for the download, etc. we can do so by leveraging the :mod:`~pyngrok.installer` module. Keyword arguments in this
+    module are ultimately passed down to :py:func:`urllib.request.urlopen`, so as long as we use the
+    :mod:`~pyngrok.installer` module ourselves prior to invoking any :mod:`~pyngrok.ngrok` methods, we can can control
+    how :code:`ngrok` is installed and from where.
 
 Setting the :code:`authtoken`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Running :code:`ngrok` with an auth token enables additional features available on our account (for
 instance, the ability to open multiple tunnels concurrently). We can obtain our auth token from
-the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it to our config file like this:
+the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it to :code:`ngrok`'s config file like this:
 
 .. code-block:: python
 
@@ -207,7 +224,7 @@ the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it to our confi
     ngrok.connect()
     ngrok.connect(8000)
 
-We can also override the auth token using :class:`~pyngrok.conf.PyngrokConfig`:
+We can also override :code:`ngrok`'s installed auth token using :class:`~pyngrok.conf.PyngrokConfig`:
 
 .. code-block:: python
 
@@ -218,14 +235,11 @@ We can also override the auth token using :class:`~pyngrok.conf.PyngrokConfig`:
 
     ngrok.connect(pyngrok_config=pyngrok_config)
 
-The above will only work when :code:`ngrok` is first starting, so if a tunnel has already
-been started in the session, we will need to :func:`~pyngrok.ngrok.kill` it first.
-
 Setting the :code:`region`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By default, :code:`ngrok` will open a tunnel in the :code:`us` region. To override this, use
-the :code:`region` parameter:
+the :code:`region` parameter in :class:`~pyngrok.conf.PyngrokConfig`:
 
 .. code-block:: python
 
@@ -240,7 +254,7 @@ Passing :code:`options`
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 It is possible to configure the tunnel when it is created, for instance adding authentication,
-a subdomain, or other tunnel parameters `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_.
+a subdomain, or other tunnel properties `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_.
 These can be passed to the tunnel with the :code:`options` parameter.
 
 Here is an example starting :code:`ngrok` in Australia, then opening a tunnel with subdomain
@@ -258,7 +272,7 @@ Here is an example starting :code:`ngrok` in Australia, then opening a tunnel wi
 Config File
 ~~~~~~~~~~~
 
-By default, `ngrok will for its config file <https://ngrok.com/docs#config>`_ in the home directory's :code:`.ngrok2`
+By default, `ngrok will look for its config file <https://ngrok.com/docs#config>`_ in the home directory's :code:`.ngrok2`
 folder. We can override this behavior in one of two ways.
 
 Either use :class:`~pyngrok.conf.PyngrokConfig`:
@@ -309,17 +323,6 @@ or override the :code:`DEFAULT_NGROK_PATH` variable:
 
     ngrok.connect()
 
-.. note::
-
-    If :code:`ngrok` is not already installed at the :code:`ngrok_path` in :class:`~pyngrok.conf.PyngrokConfig`, it
-    will be installed the first time most methods in the :mod:`~pyngrok.ngrok` module are called.
-
-    If we need to customize the :code:`ngrok` installation, perhaps specifying a timeout, proxy, use a custom download
-    mirror, etc. we can do so by leveraging the :mod:`~pyngrok.installer` module. Keyword arguments in this module are
-    ultimately passed down to :py:func:`urllib.request.urlopen`, so as long as we use the :mod:`~pyngrok.installer`
-    module ourselves prior to invoking any :mod:`~pyngrok.ngrok` methods, we can can control how :code:`ngrok` is
-    installed and from where.
-
 Command Line Usage
 ------------------
 
@@ -330,7 +333,7 @@ available on the command line.
 
     ngrok http 80
 
-For details on how to fully leverage `ngrok` from the command line, see `ngrok's official documentation <https://ngrok.com/docs>`_.
+For details on how to fully leverage :code:`ngrok` from the command line, see `ngrok's official documentation <https://ngrok.com/docs>`_.
 
 Dive Deeper
 -----------

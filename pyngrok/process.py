@@ -27,7 +27,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.0"
+__version__ = "4.1.1"
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class NgrokProcess:
     :vartype pyngrok_config: PyngrokConfig
     :var api_url: The API URL for the :code:`ngrok` web interface.
     :vartype api_url: str
-    :var logs: A list of the last 500 logs from :code:`ngrok`.
+    :var logs: A list of the most recent logs from :code:`ngrok`, limited in size to :code:`max_logs`.
     :vartype logs: list[NgrokLog]
     :var startup_error: If :code:`ngrok` startup fails, this will be the log of the failure.
     :vartype startup_error: str
@@ -126,9 +126,9 @@ class NgrokProcess:
 
     def healthy(self):
         """
-        Check whether or not the :code:`ngrok` process has finished starting up and is in a healthy state.
+        Check whether the :code:`ngrok` process has finished starting up and is in a running, healthy state.
 
-        :return: :code:`True` if the :code:`ngrok` process is started and healthy, :code:`False` otherwise.
+        :return: :code:`True` if the :code:`ngrok` process is started, running, and healthy, :code:`False` otherwise.
         :rtype: bool
         """
         if self.api_url is None or \
@@ -182,13 +182,13 @@ class NgrokLog:
 
     :var line: The raw, unparsed log line.
     :vartype line: str
-    :var t: The logs ISO 8601 timestamp.
+    :var t: The log's ISO 8601 timestamp.
     :vartype t: str
-    :var lvl: The logs level.
+    :var lvl: The log's level.
     :vartype lvl: str
-    :var msg: The logs message.
+    :var msg: The log's message.
     :vartype msg: str
-    :var err: The logs error, if applicable.
+    :var err: The log's error, if applicable.
     :vartype err: str
     :var addr: The URL, if :code:`obj` is "web".
     :vartype addr: str
@@ -251,10 +251,10 @@ def set_auth_token(pyngrok_config, token):
 
 def get_process(pyngrok_config):
     """
-    Retrieve the current :code:`ngrok` process for the given path. If :code:`ngrok` is not currently running for the
-    given path, a new process will be started and returned.
+    Retrieve the current :code:`ngrok` process for the given config's :code:`ngrok_path`.
 
-    If :code:`ngrok` is not running, calling this method will start a process for the given path.
+    If :code:`ngrok` is not running, calling this method will first start a process with
+    :class:`~pyngrok.conf.PyngrokConfig`.
 
     :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary.
     :type pyngrok_config: PyngrokConfig

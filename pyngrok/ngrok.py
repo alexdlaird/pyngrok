@@ -27,14 +27,14 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.0"
+__version__ = "4.1.1"
 
 logger = logging.getLogger(__name__)
 
 
 class NgrokTunnel:
     """
-    An object containing information about an :code:`ngrok` tunnel.
+    An object containing information about a :code:`ngrok` tunnel.
 
     :var name: The name of the tunnel.
     :vartype name: str
@@ -108,7 +108,7 @@ def set_auth_token(token, pyngrok_config=None):
 
 def get_ngrok_process(pyngrok_config=None):
     """
-    Retrieve the current :code:`ngrok` process for the given path.
+    Retrieve the current :code:`ngrok` process for the given config's :code:`ngrok_path`.
 
     If :code:`ngrok` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s :code:`ngrok_path`, calling this method
     will first download and install :code:`ngrok`.
@@ -146,7 +146,8 @@ def connect(port=80, proto="http", name=None, options=None, pyngrok_config=None)
     :type proto: str, optional
     :param name: A friendly name for the tunnel.
     :type name: str, optional
-    :param options: Parameters passed to `configuration for the ngrok tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
+    :param options: Parameters passed to `configuration for the ngrok
+        tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
     :type options: dict[str, str], optional
     :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary.
     :type pyngrok_config: PyngrokConfig, optional
@@ -172,7 +173,7 @@ def connect(port=80, proto="http", name=None, options=None, pyngrok_config=None)
     tunnel = NgrokTunnel(api_request("{}/api/{}".format(api_url, "tunnels"), method="POST", data=options,
                                      timeout=pyngrok_config.request_timeout))
 
-    if proto == "http" and ("bind_tls" not in options or options["bind_tls"] != False):
+    if proto == "http" and ("bind_tls" not in options or options["bind_tls"] is not False):
         tunnel.public_url = tunnel.public_url.replace("https", "http")
 
     return tunnel.public_url
@@ -211,7 +212,7 @@ def disconnect(public_url, pyngrok_config=None):
 
 def get_tunnels(pyngrok_config=None):
     """
-    Retrieve a list of all active :code:`ngrok` tunnels.
+    Retrieve a list of active :code:`ngrok` tunnels for the given config's :code:`ngrok_path`.
 
     If :code:`ngrok` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s :code:`ngrok_path`, calling this method
     will first download and install :code:`ngrok`.
@@ -221,7 +222,7 @@ def get_tunnels(pyngrok_config=None):
 
     :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary.
     :type pyngrok_config: PyngrokConfig, optional
-    :return: The currently active :code:`ngrok` tunnels.
+    :return: The active :code:`ngrok` tunnels.
     :rtype: list[NgrokTunnel]
     """
     if pyngrok_config is None:
@@ -239,8 +240,8 @@ def get_tunnels(pyngrok_config=None):
 
 def kill(pyngrok_config=None):
     """
-    Terminate the :code:`ngrok` processes, if running, for the given path. This method will not block, it will just
-    issue a kill request.
+    Terminate the :code:`ngrok` processes, if running, for the given config's :code:`ngrok_path`. This method will not
+    block, it will just issue a kill request.
 
     :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary.
     :type pyngrok_config: PyngrokConfig, optional
@@ -317,7 +318,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
 
 def run(args=None):
     """
-    Start a blocking :code:`ngrok` process with the default binary and the system's command line args.
+    Start a blocking :code:`ngrok` process with the default binary and the passed args.
 
     :param args: Arguments to be passed to the :code:`ngrok` process.
     :type args: list[str], optional
@@ -332,7 +333,7 @@ def run(args=None):
 
 def main():
     """
-    Entry point for console_scripts.
+    Entry point for the package's :code:`console_scripts`.
     """
     run(sys.argv[1:])
 

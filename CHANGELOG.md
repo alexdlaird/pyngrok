@@ -3,7 +3,12 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.0...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.1...HEAD)
+
+## [4.1.1](https://github.com/alexdlaird/pyngrok/compare/4.1.0...4.1.1) - 2020-06-18
+### Fixed
+- Stability improvements.
+- Documentation improvements.
 
 ## [4.1.0](https://github.com/alexdlaird/pyngrok/compare/4.0.3...4.1.0) - 2020-06-18
 ### Added
@@ -34,7 +39,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [4.0.0](https://github.com/alexdlaird/pyngrok/compare/3.1.1...4.0.0) - 2020-06-06
 ### Added
-- `PyngrokConfig`, which contains all of Pyngrok's configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of kwargs. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig).
+- `PyngrokConfig`, which contains all of `pyngrok`'s configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of kwargs. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig).
 - `log_event_callback` is a new configuration parameter in `PyngrokConfig`, a callback that will be invoked each time a `ngrok` log is emitted.
 - `monitor_thread` is a new configuration parameter in `PyngrokConfig` which determines whether `ngrok` should continue to be monitored (for logs, etc.) after it has finished starting. Defaults to `True.`
 - `startup_timeout` is a new configuration parameter in `PyngrokConfig`. 
@@ -65,7 +70,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [3.1.0](https://github.com/alexdlaird/pyngrok/compare/3.0.0...3.1.0) - 2020-06-04
 ### Added
-- After `ngrok` starts, the process is moved in to its own thread and `NgrokLog`s continue to be parsed for programmatic access.
+- After `ngrok` starts, the process moves in to its own thread and `NgrokLog`s continue to be parsed for programmatic access.
 
 ## [3.0.0](https://github.com/alexdlaird/pyngrok/compare/2.1.7...3.0.0) - 2020-05-29
 ### Added
