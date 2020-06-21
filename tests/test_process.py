@@ -17,7 +17,7 @@ from urllib.parse import urlparse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.0.1"
+__version__ = "4.1.3"
 
 
 class TestProcess(NgrokTestCase):
@@ -177,15 +177,36 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(ngrok_process1, process.get_process(self.pyngrok_config))
         self.assertEqual(len(process._current_processes.keys()), 1)
 
-    def test_logs(self):
+    def test_log_parsing(self):
+        # WHEN
+        ngrok_log = NgrokLog("lvl=INFO msg=Test")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "INFO")
+        self.assertEqual(ngrok_log.msg, "Test")
+
+        # WHEN
+        ngrok_log = NgrokLog("lvl=WARN msg=Test=Test")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "WARNING")
+        self.assertEqual(ngrok_log.msg, "Test=Test")
+
+        # WHEN
+        ngrok_log = NgrokLog("lvl=ERR no_msg")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "ERROR")
+        self.assertIsNone(ngrok_log.msg)
+
+        # WHEN
+        ngrok_log = NgrokLog("lvl=CRIT")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "CRITICAL")
+        self.assertIsNone(ngrok_log.msg)
+
+    def test_process_logs(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
 
         # WHEN
-        assert(NgrokLog("lvl=INFO\nmsg=Test").lvl == "INFO")
-        assert(NgrokLog("lvl=WARN\nmsg=Test=Test").lvl == "WARNING")
-        assert(NgrokLog("lvl=ERR\nno_msg").lvl == "ERROR")
-        assert(NgrokLog("lvl=CRIT").lvl == "CRITICAL")
         ngrok_process = process._start_process(self.pyngrok_config)
 
         # THEN

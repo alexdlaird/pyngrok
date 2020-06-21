@@ -27,7 +27,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.1"
+__version__ = "4.1.3"
 
 logger = logging.getLogger(__name__)
 
@@ -206,7 +206,7 @@ class NgrokLog:
             if "=" not in i:
                 continue
 
-            key, value = i.split("=", 1)  # the value may contain additional "=" characters
+            key, value = i.split("=", 1)
 
             if key == "lvl":
                 value = value.upper()
