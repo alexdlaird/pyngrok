@@ -8,6 +8,7 @@ from mock import mock
 from pyngrok import process, installer, conf, ngrok
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokError
+from pyngrok.process import NgrokLog
 from .testcase import NgrokTestCase
 
 install_aliases()
@@ -181,6 +182,10 @@ class TestProcess(NgrokTestCase):
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
 
         # WHEN
+        assert(NgrokLog("lvl=INFO\nmsg=Test").lvl == "INFO")
+        assert(NgrokLog("lvl=WARN\nmsg=Test=Test").lvl == "WARNING")
+        assert(NgrokLog("lvl=ERR\nno_msg").lvl == "ERROR")
+        assert(NgrokLog("lvl=CRIT").lvl == "CRITICAL")
         ngrok_process = process._start_process(self.pyngrok_config)
 
         # THEN
