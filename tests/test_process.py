@@ -191,6 +191,12 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(ngrok_log.msg, "Test=Test")
 
         # WHEN
+        ngrok_log = NgrokLog("lvl=WARN msg=\"Test=Test with spaces\"")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "WARNING")
+        self.assertEqual(ngrok_log.msg, "Test=Test with spaces")
+
+        # WHEN
         ngrok_log = NgrokLog("lvl=ERR no_msg")
         # THEN
         self.assertEqual(ngrok_log.lvl, "ERROR")
