@@ -206,7 +206,7 @@ class NgrokLog:
             if "=" not in i:
                 continue
 
-            key, value = i.split("=")
+            key, value = i.split("=", 1)  # the value may contain additional "=" characters
 
             if key == "lvl":
                 value = value.upper()
