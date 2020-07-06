@@ -260,7 +260,7 @@ class TestNgrok(NgrokTestCase):
         with self.assertRaises(PyngrokError):
             ngrok.connect(pyngrok_config=self.pyngrok_config)
 
-    def test_connect_file(self):
+    def test_connect_fileserver(self):
         if "NGROK_AUTHTOKEN" not in os.environ:
             self.skipTest("NGROK_AUTHTOKEN environment variable not set")
 
@@ -294,7 +294,29 @@ class TestNgrok(NgrokTestCase):
         # There is still one tunnel left, as we only disconnected the http tunnel
         self.assertEqual(len(tunnels), 1)
 
-    def test_get_file_tunnel(self):
+    def test_disconnect_fileserver(self):
+        if "NGROK_AUTHTOKEN" not in os.environ:
+            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+
+        # GIVEN
+        self.assertEqual(len(process._current_processes.keys()), 0)
+        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
+                                       auth_token=os.environ["NGROK_AUTHTOKEN"])
+        url = ngrok.connect("file:///", pyngrok_config=pyngrok_config)
+        time.sleep(1)
+        tunnel = ngrok.get_tunnels()[0]
+        api_url = ngrok.get_ngrok_process(pyngrok_config).api_url
+
+        # WHEN
+        ngrok.disconnect(url)
+        time.sleep(1)
+        tunnels = ngrok.get_tunnels()
+
+        # THEN
+        # There is still one tunnel left, as we only disconnected the http tunnel
+        self.assertEqual(len(tunnels), 1)
+
+    def test_get_tunnel_fileserver(self):
         if "NGROK_AUTHTOKEN" not in os.environ:
             self.skipTest("NGROK_AUTHTOKEN environment variable not set")
 
@@ -308,7 +330,7 @@ class TestNgrok(NgrokTestCase):
         api_url = ngrok.get_ngrok_process(pyngrok_config).api_url
 
         # WHEN
-        response = ngrok.api_request("{}{}".format(api_url, tunnel.uri))
+        response = ngrok.api_request("{}{}".format(api_url, tunnel.uri), "GET")
 
         # THEN
         self.assertEqual(tunnel.name, response["name"])
