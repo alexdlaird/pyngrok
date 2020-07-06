@@ -22,7 +22,7 @@ except ImportError:
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.4"
+__version__ = "4.1.5"
 
 
 class TestNgrok(NgrokTestCase):
@@ -140,7 +140,7 @@ class TestNgrok(NgrokTestCase):
         tunnel = ngrok.get_tunnels()[0]
 
         # WHEN
-        response = ngrok.api_request("{}{}".format(current_process.api_url, tunnel.uri.replace("+", "%20")), "GET")
+        response = ngrok.api_request("{}{}".format(current_process.api_url, tunnel.uri), "GET")
 
         # THEN
         self.assertEqual(tunnel.name, response["name"])
@@ -154,7 +154,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(tunnels), 2)
 
         # WHEN
-        response = ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri.replace("+", "%20")),
+        response = ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri),
                                      "DELETE")
 
         # THEN
@@ -189,7 +189,7 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         with self.assertRaises(PyngrokNgrokURLError) as cm:
-            ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri.replace("+", "%20")), "DELETE",
+            ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri), "DELETE",
                               timeout=0.0001)
 
         # THEN
@@ -293,3 +293,23 @@ class TestNgrok(NgrokTestCase):
         # THEN
         # There is still one tunnel left, as we only disconnected the http tunnel
         self.assertEqual(len(tunnels), 1)
+
+    def test_get_file_tunnel(self):
+        if "NGROK_AUTHTOKEN" not in os.environ:
+            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+
+        # GIVEN
+        self.assertEqual(len(process._current_processes.keys()), 0)
+        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
+                                       auth_token=os.environ["NGROK_AUTHTOKEN"])
+        ngrok.connect("file:///", pyngrok_config=pyngrok_config)
+        time.sleep(1)
+        tunnel = ngrok.get_tunnels()[0]
+        api_url = ngrok.get_ngrok_process(pyngrok_config).api_url
+
+        # WHEN
+        response = ngrok.api_request("{}{}".format(api_url, tunnel.uri))
+
+        # THEN
+        self.assertEqual(tunnel.name, response["name"])
+        self.assertIn("file", tunnel.name)

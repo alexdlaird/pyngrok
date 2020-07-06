@@ -18,11 +18,6 @@ from urllib.parse import urlencode
 from urllib.request import urlopen, Request, HTTPError, URLError
 
 try:
-    from urllib.parse import quote_plus
-except ImportError:  # pragma: no cover
-    from urllib import quote_plus
-
-try:
     from http import HTTPStatus as StatusCodes
 except ImportError:  # pragma: no cover
     try:
@@ -32,7 +27,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.4"
+__version__ = "4.1.5"
 
 logger = logging.getLogger(__name__)
 
@@ -166,9 +161,14 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
         pyngrok_config = PyngrokConfig()
 
     port = str(port)
+    if not name:
+        if not port.startswith("file://"):
+            name = "{}-{}-{}".format(proto, port, uuid.uuid4())
+        else:
+            name = "{}-file-{}".format(proto, uuid.uuid4())
 
     config = {
-        "name": name if name else "{}-{}-{}".format(proto, quote_plus(port), uuid.uuid4()),
+        "name": name,
         "addr": port,
         "proto": proto
     }
@@ -212,7 +212,7 @@ def disconnect(public_url, pyngrok_config=None):
         if tunnel.public_url == public_url:
             logger.debug("Disconnecting tunnel: {}".format(tunnel.public_url))
 
-            api_request("{}{}".format(api_url, tunnel.uri.replace("+", "%20")), method="DELETE",
+            api_request("{}{}".format(api_url, tunnel.uri), method="DELETE",
                         timeout=pyngrok_config.request_timeout)
 
             break
