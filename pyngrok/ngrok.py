@@ -145,7 +145,7 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
     If :code:`ngrok` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
 
-    :param port: The local port to which to tunnel, defaults to 80. Can also be
+    :param port: The local port to which to tunnel, defaults to "80". Can also be
         a `local directory <https://ngrok.com/docs#http-file-urls>`_.
     :type port: str, optional
     :param proto: The protocol to tunnel, defaults to "http".
