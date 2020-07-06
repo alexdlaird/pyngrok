@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [4.1.4](https://github.com/alexdlaird/pyngrok/compare/4.1.3...4.1.4) - 2020-07-05
 ### Fixed
-- Inconsistency support for a local directory (ex. `file:///`) being passed as `ngrok.connect()`'s `port`. This is valid, and `ngrok` will use its built-in fileserver for the tunnel.
+- Inconsistent support for a local directory (ex. `file:///`) being passed as `ngrok.connect()`'s `port`. This is valid, and `ngrok` will use its built-in fileserver for the tunnel.
 
 ## [4.1.3](https://github.com/alexdlaird/pyngrok/compare/4.1.2...4.1.3) - 2020-06-21
 ### Fixed
