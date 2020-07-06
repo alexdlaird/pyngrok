@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [4.1.5](https://github.com/alexdlaird/pyngrok/compare/4.1.4...4.1.5) - 2020-07-06
 ### Fixed
-- Appears `ngrok` itself has a bug around not properly escaping characters in tunnel names, so avoiding this bug for fileserver tunnels by sustituting their name.
+- Appears `ngrok` itself has a bug around not properly escaping characters in tunnel names, so avoiding this bug for fileserver tunnels by substituting their name.
 
 ## [4.1.4](https://github.com/alexdlaird/pyngrok/compare/4.1.3...4.1.4) - 2020-07-05
 ### Fixed
