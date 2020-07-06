@@ -18,6 +18,11 @@ from urllib.parse import urlencode
 from urllib.request import urlopen, Request, HTTPError, URLError
 
 try:
+    from urllib.parse import quote_plus
+except ImportError:  # pragma: no cover
+    from urllib import quote_plus
+
+try:
     from http import HTTPStatus as StatusCodes
 except ImportError:  # pragma: no cover
     try:
@@ -27,7 +32,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.3"
+__version__ = "4.1.4"
 
 logger = logging.getLogger(__name__)
 
@@ -129,7 +134,7 @@ def get_ngrok_process(pyngrok_config=None):
     return process.get_process(pyngrok_config)
 
 
-def connect(port=80, proto="http", name=None, options=None, pyngrok_config=None):
+def connect(port="80", proto="http", name=None, options=None, pyngrok_config=None):
     """
     Establish a new :code:`ngrok` tunnel to the given port and protocol, returning the connected
     public URL that tunnels to the local port.
@@ -140,8 +145,9 @@ def connect(port=80, proto="http", name=None, options=None, pyngrok_config=None)
     If :code:`ngrok` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
 
-    :param port: The local port to which to tunnel, defaults to 80.
-    :type port: int, optional
+    :param port: The local port to which to tunnel, defaults to 80. Can also be
+        a `local directory <https://ngrok.com/docs#http-file-urls>`_.
+    :type port: str, optional
     :param proto: The protocol to tunnel, defaults to "http".
     :type proto: str, optional
     :param name: A friendly name for the tunnel.
@@ -159,9 +165,11 @@ def connect(port=80, proto="http", name=None, options=None, pyngrok_config=None)
     if pyngrok_config is None:
         pyngrok_config = PyngrokConfig()
 
+    port = str(port)
+
     config = {
-        "name": name if name else "{}-{}-{}".format(proto, port, uuid.uuid4()),
-        "addr": str(port),
+        "name": name if name else "{}-{}-{}".format(proto, quote_plus(port), uuid.uuid4()),
+        "addr": port,
         "proto": proto
     }
     options.update(config)

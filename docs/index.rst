@@ -182,6 +182,16 @@ can be accomplished by using :code:`pyngrok` to open a :code:`tcp` tunnel to the
     ngrok.connect(3306, "tcp", options={"remote_addr": "1.tcp.ngrok.io:12345"})
 
 
+We can also serve up local directories via `ngrok's built-in fileserver <https://ngrok.com/docs#http-file-urls>`_.
+
+.. code-block:: python
+
+    from pyngrok import ngrok
+
+    # Open a tunnel to a local file server
+    ngrok.connect("file:///")
+
+
 Configuration
 -------------
 

@@ -22,7 +22,7 @@ except ImportError:
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.0.1"
+__version__ = "4.1.4"
 
 
 class TestNgrok(NgrokTestCase):
@@ -259,3 +259,37 @@ class TestNgrok(NgrokTestCase):
         # WHEN
         with self.assertRaises(PyngrokError):
             ngrok.connect(pyngrok_config=self.pyngrok_config)
+
+    def test_connect_file(self):
+        if "NGROK_AUTHTOKEN" not in os.environ:
+            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+
+        # GIVEN
+        self.assertEqual(len(process._current_processes.keys()), 0)
+        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
+                                       auth_token=os.environ["NGROK_AUTHTOKEN"])
+
+        # WHEN
+        url = ngrok.connect("file:///", pyngrok_config=pyngrok_config)
+        current_process = ngrok.get_ngrok_process()
+        time.sleep(1)
+        tunnels = ngrok.get_tunnels()
+
+        # THEN
+        self.assertEqual(len(tunnels), 2)
+        self.assertIsNotNone(current_process)
+        self.assertIsNone(current_process.proc.poll())
+        self.assertTrue(current_process._monitor_thread.is_alive())
+        self.assertIsNotNone(url)
+        self.assertIsNotNone(process.get_process(self.pyngrok_config))
+        self.assertIn('http://', url)
+        self.assertEqual(len(process._current_processes.keys()), 1)
+
+        # WHEN
+        ngrok.disconnect(url)
+        time.sleep(1)
+        tunnels = ngrok.get_tunnels()
+
+        # THEN
+        # There is still one tunnel left, as we only disconnected the http tunnel
+        self.assertEqual(len(tunnels), 1)
