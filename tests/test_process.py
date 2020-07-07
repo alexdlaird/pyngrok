@@ -221,6 +221,21 @@ class TestProcess(NgrokTestCase):
             self.assertIsNotNone(log.lvl)
             self.assertIsNotNone(log.msg)
 
+    def test_start_new_session(self):
+        # GIVEN
+        self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
+
+        # WHEN
+        config = self.pyngrok_config
+        config.start_new_session = True
+        ngrok_process = process._start_process(self.pyngrok_config)
+
+        # THEN
+        for log in ngrok_process.logs:
+            self.assertIsNotNone(log.t)
+            self.assertIsNotNone(log.lvl)
+            self.assertIsNotNone(log.msg)
+
     def test_log_event_callback_and_max_logs(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)

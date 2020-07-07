@@ -3,6 +3,7 @@ import logging
 import os
 import shlex
 import subprocess
+import sys
 import threading
 import time
 
@@ -372,7 +373,12 @@ def _start_process(pyngrok_config):
         logger.info("Starting ngrok in region: {}".format(pyngrok_config.region))
         start.append("--region={}".format(pyngrok_config.region))
 
-    proc = subprocess.Popen(start, stdout=subprocess.PIPE, universal_newlines=True)
+    popen_kwargs = {'stdout': subprocess.PIPE,  'universal_newlines' : True}
+    if sys.version_info.major >= 3:
+        popen_kwargs.update(start_new_session=pyngrok_config.start_new_session)
+    elif pyngrok_config.start_new_session:
+        logger.warning("Ignoring start_new_session=True, which requires Python 3")
+    proc = subprocess.Popen(start, **popen_kwargs)
     atexit.register(_terminate_process, proc)
 
     logger.info("ngrok process starting: {}".format(proc.pid))
