@@ -30,6 +30,8 @@ class PyngrokConfig:
     :var monitor_thread: Whether :code:`ngrok` should continue to be monitored (for logs, etc.) after it startup
         is complete.
     :vartype monitor_thread: bool
+    :var start_new_session: Passed to subprocess.Popen when launching ngrok.
+    :vartype start_new_session: bool
     :var log_event_callback: A callback that will be invoked each time :code:`ngrok` emits a log. :code:`monitor_thread`
         must be set to :code:`True` or the function will stop being called after :code:`ngrok` finishes starting.
     :vartype log_event_callback: function
@@ -47,6 +49,7 @@ class PyngrokConfig:
                  auth_token=None,
                  region=None,
                  monitor_thread=True,
+                 start_new_session=False,
                  log_event_callback=None,
                  startup_timeout=15,
                  max_logs=100,
@@ -56,6 +59,7 @@ class PyngrokConfig:
         self.auth_token = auth_token
         self.region = region
         self.monitor_thread = monitor_thread
+        self.start_new_session = start_new_session
         self.log_event_callback = log_event_callback
         self.startup_timeout = startup_timeout
         self.max_logs = max_logs

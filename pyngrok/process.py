@@ -372,7 +372,7 @@ def _start_process(pyngrok_config):
         logger.info("Starting ngrok in region: {}".format(pyngrok_config.region))
         start.append("--region={}".format(pyngrok_config.region))
 
-    proc = subprocess.Popen(start, stdout=subprocess.PIPE, universal_newlines=True)
+    proc = subprocess.Popen(start, stdout=subprocess.PIPE, universal_newlines=True, start_new_session=pyngrok_config.start_new_session)
     atexit.register(_terminate_process, proc)
 
     logger.info("ngrok process starting: {}".format(proc.pid))
