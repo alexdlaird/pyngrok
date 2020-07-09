@@ -2,7 +2,6 @@ import os
 import platform
 import sys
 import time
-from typing import Any
 
 from future.standard_library import install_aliases
 from mock import mock
@@ -240,7 +239,7 @@ class TestProcess(NgrokTestCase):
 
         # THEN
         mock_popen.assert_called()
-        if sys.version_info.major >= 3:
+        if sys.version_info.major >= 3 and os.name == "posix"::
             self.assertIn("start_new_session", mock_popen.call_args[1])
         else:
             self.assertNotIn("start_new_session", mock_popen.call_args[1])
