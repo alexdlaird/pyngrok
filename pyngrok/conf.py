@@ -39,6 +39,8 @@ class PyngrokConfig:
     :vartype max_logs: int
     :var request_timeout: The max timeout when making requests to :code:`ngrok`'s API.
     :vartype request_timeout: float
+    :var start_new_session: Passed to :code:`subprocess.Popen` when launching :code:`ngrok`.  Requires Python 3.
+    :vartype start_new_session: bool
     """
 
     def __init__(self,
@@ -50,7 +52,8 @@ class PyngrokConfig:
                  log_event_callback=None,
                  startup_timeout=15,
                  max_logs=100,
-                 request_timeout=4):
+                 request_timeout=4,
+                 start_new_session=False):
         self.ngrok_path = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
         self.config_path = DEFAULT_CONFIG_PATH if config_path is None else config_path
         self.auth_token = auth_token
@@ -60,3 +63,4 @@ class PyngrokConfig:
         self.startup_timeout = startup_timeout
         self.max_logs = max_logs
         self.request_timeout = request_timeout
+        self.start_new_session = start_new_session
