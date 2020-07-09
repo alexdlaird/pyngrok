@@ -239,7 +239,7 @@ class TestProcess(NgrokTestCase):
 
         # THEN
         mock_popen.assert_called()
-        if sys.version_info.major >= 3 and os.name == "posix"::
+        if sys.version_info.major >= 3 and os.name == "posix":
             self.assertIn("start_new_session", mock_popen.call_args[1])
         else:
             self.assertNotIn("start_new_session", mock_popen.call_args[1])
