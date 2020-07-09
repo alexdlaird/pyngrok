@@ -28,7 +28,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.3"
+__version__ = "4.1.6"
 
 logger = logging.getLogger(__name__)
 
@@ -373,11 +373,11 @@ def _start_process(pyngrok_config):
         logger.info("Starting ngrok in region: {}".format(pyngrok_config.region))
         start.append("--region={}".format(pyngrok_config.region))
 
-    popen_kwargs = {'stdout': subprocess.PIPE,  'universal_newlines' : True}
-    if sys.version_info.major >= 3:
+    popen_kwargs = {"stdout": subprocess.PIPE, "universal_newlines": True}
+    if sys.version_info.major >= 3 and os.name == "posix":
         popen_kwargs.update(start_new_session=pyngrok_config.start_new_session)
     elif pyngrok_config.start_new_session:
-        logger.warning("Ignoring start_new_session=True, which requires Python 3")
+        logger.warning("Ignoring start_new_session=True, which requires Python 3 and POSIX")
     proc = subprocess.Popen(start, **popen_kwargs)
     atexit.register(_terminate_process, proc)
 

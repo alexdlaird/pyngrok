@@ -1,6 +1,8 @@
 import os
 import platform
+import sys
 import time
+from typing import Any
 
 from future.standard_library import install_aliases
 from mock import mock
@@ -17,7 +19,7 @@ from urllib.parse import urlparse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.3"
+__version__ = "4.1.6"
 
 
 class TestProcess(NgrokTestCase):
@@ -221,20 +223,27 @@ class TestProcess(NgrokTestCase):
             self.assertIsNotNone(log.lvl)
             self.assertIsNotNone(log.msg)
 
-    def test_start_new_session(self):
+    @mock.patch("subprocess.Popen")
+    def test_start_new_session(self, mock_popen):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
 
         # WHEN
-        config = self.pyngrok_config
-        config.start_new_session = True
-        ngrok_process = process._start_process(self.pyngrok_config)
+        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
+                                       start_new_session=True)
+        try:
+            process._start_process(pyngrok_config=pyngrok_config)
+        except TypeError:
+            # Since we're mocking subprocess.Popen, this call will ultimately fail, but it gets far enough for us to
+            # validate our assertion
+            pass
 
         # THEN
-        for log in ngrok_process.logs:
-            self.assertIsNotNone(log.t)
-            self.assertIsNotNone(log.lvl)
-            self.assertIsNotNone(log.msg)
+        mock_popen.assert_called()
+        if sys.version_info.major >= 3:
+            self.assertIn("start_new_session", mock_popen.call_args[1])
+        else:
+            self.assertNotIn("start_new_session", mock_popen.call_args[1])
 
     def test_log_event_callback_and_max_logs(self):
         # GIVEN

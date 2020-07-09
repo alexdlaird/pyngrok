@@ -1,6 +1,6 @@
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.1"
+__version__ = "4.1.6"
 
 import os
 
@@ -39,7 +39,7 @@ class PyngrokConfig:
     :vartype max_logs: int
     :var request_timeout: The max timeout when making requests to :code:`ngrok`'s API.
     :vartype request_timeout: float
-    :var start_new_session: Passed to :code:`subprocess.Popen` when launching :code:`ngrok`.  Requires Python 3.
+    :var start_new_session: Passed to :py:class:`subprocess.Popen` when launching :code:`ngrok`. (Python 3 and POSIX only)
     :vartype start_new_session: bool
     """
 

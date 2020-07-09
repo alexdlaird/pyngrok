@@ -3,7 +3,12 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.5...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.6...HEAD)
+
+## [4.1.6](https://github.com/alexdlaird/pyngrok/compare/4.1.5...4.1.6) - 2020-07-09
+### Added
+- `start_new_process` is a new configuration parameter in `PyngrokConfig`, which will be passed to [subprocess.Popen](https://docs.python.org/3/library/subprocess.html#subprocess.Popen) when `ngrok` is started. Requires Python 3 and POSIX.
+
 ### Fixed
 - Documentation improvements in integration examples.
 
