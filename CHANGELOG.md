@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.6...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.7...HEAD)
+
+## [4.1.7](https://github.com/alexdlaird/pyngrok/compare/4.1.6...4.1.7) - 2020-07-23
+### Fixed
+- `TypeError` exception when a `NgrokLog` parses a string that contains a missing or malformed `lvl`. Default is now `NOTSET` in such cases.
 
 ## [4.1.6](https://github.com/alexdlaird/pyngrok/compare/4.1.5...4.1.6) - 2020-07-09
 ### Added

@@ -28,7 +28,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.6"
+__version__ = "4.1.7"
 
 logger = logging.getLogger(__name__)
 
@@ -198,7 +198,7 @@ class NgrokLog:
     def __init__(self, line):
         self.line = line.strip()
         self.t = None
-        self.lvl = "INFO"
+        self.lvl = "NOTSET"
         self.msg = None
         self.err = None
         self.addr = None
@@ -220,6 +220,9 @@ class NgrokLog:
                     value = "ERROR"
                 elif value == "WARN":
                     value = "WARNING"
+
+                if not hasattr(logging, value):
+                    value = self.lvl
 
             setattr(self, key, value)
 

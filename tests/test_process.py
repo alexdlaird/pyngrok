@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.6"
+__version__ = "4.1.7"
 
 
 class TestProcess(NgrokTestCase):
@@ -212,12 +212,17 @@ class TestProcess(NgrokTestCase):
         # WHEN
         ngrok_log = NgrokLog("lvl=")
         # THEN
-        self.assertEqual(ngrok_log.lvl, "INFO")
+        self.assertEqual(ngrok_log.lvl, "NOTSET")
 
         # WHEN
         ngrok_log = NgrokLog("key=val")
         # THEN
-        self.assertEqual(ngrok_log.lvl, "INFO")
+        self.assertEqual(ngrok_log.lvl, "NOTSET")
+
+        # WHEN
+        ngrok_log = NgrokLog("lvl=FAKE")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "NOTSET")
 
     def test_process_logs(self):
         # GIVEN
