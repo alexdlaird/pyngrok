@@ -198,7 +198,7 @@ class NgrokLog:
     def __init__(self, line):
         self.line = line.strip()
         self.t = None
-        self.lvl = None
+        self.lvl = "INFO"
         self.msg = None
         self.err = None
         self.addr = None
@@ -210,6 +210,9 @@ class NgrokLog:
             key, value = i.split("=", 1)
 
             if key == "lvl":
+                if not value:
+                    value = self.lvl
+
                 value = value.upper()
                 if value == "CRIT":
                     value = "CRITICAL"

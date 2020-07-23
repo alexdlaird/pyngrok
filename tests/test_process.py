@@ -209,6 +209,16 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(ngrok_log.lvl, "CRITICAL")
         self.assertIsNone(ngrok_log.msg)
 
+        # WHEN
+        ngrok_log = NgrokLog("lvl=")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "INFO")
+
+        # WHEN
+        ngrok_log = NgrokLog("key=val")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "INFO")
+
     def test_process_logs(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
