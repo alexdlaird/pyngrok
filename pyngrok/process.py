@@ -308,6 +308,7 @@ def kill_process(ngrok_path):
 
         try:
             ngrok_process.proc.kill()
+            ngrok_process.proc.wait()
         except OSError as e:
             # If the process was already killed, nothing to do but cleanup state
             if e.errno != 3:
