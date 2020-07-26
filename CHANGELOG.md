@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Added
 - `DEFAULT_PYNGROK_CONFIG` variable to `ngrok` module.
 
+### Fixed
+- Zombie processes remaining in certain cases when `ngrok` exited early or was terminated externally.
+
 ## [4.1.7](https://github.com/alexdlaird/pyngrok/compare/4.1.6...4.1.7) - 2020-07-23
 ### Fixed
 - `TypeError` exception when a `NgrokLog` parses a string that contains a missing or malformed `lvl`. Default is now `NOTSET` in such cases.

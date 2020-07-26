@@ -3,3 +3,4 @@ codecov
 nose
 mock
 twine
+psutil

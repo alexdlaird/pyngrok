@@ -84,6 +84,7 @@ class TestProcess(NgrokTestCase):
         else:
             self.assertIn("{}: bind: address already in use".format(port), str(cm.exception.ngrok_error))
         self.assertEqual(len(process._current_processes.keys()), 1)
+        self.assertNoZombies()
 
     def test_process_external_kill(self):
         # GIVEN
@@ -106,6 +107,7 @@ class TestProcess(NgrokTestCase):
         process.kill_process(conf.DEFAULT_NGROK_PATH)
         self.assertEqual(len(process._current_processes.keys()), 0)
         self.assertFalse(monitor_thread.is_alive())
+        self.assertNoZombies()
 
     def test_process_external_kill_get_process_restart(self):
         # GIVEN
@@ -133,6 +135,7 @@ class TestProcess(NgrokTestCase):
             self.assertTrue(ngrok_process2._monitor_thread.is_alive())
 
             mock_atexit.assert_called()
+            self.assertNoZombies()
 
     def test_multiple_processes_different_binaries(self):
         # GIVEN

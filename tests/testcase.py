@@ -1,4 +1,5 @@
 import os
+import psutil
 import shutil
 import unittest
 
@@ -42,3 +43,7 @@ class NgrokTestCase(unittest.TestCase):
     def given_ngrok_not_installed(ngrok_path):
         if os.path.exists(ngrok_path):
             os.remove(ngrok_path)
+
+    def assertNoZombies(self):
+        self.assertEqual(0, len(
+            list(filter(lambda p: p.name() == "ngrok" and p.status() == "zombie", psutil.process_iter()))))

@@ -122,6 +122,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNotNone(ngrok_process.proc.poll())
         self.assertFalse(monitor_thread.is_alive())
         self.assertEqual(len(process._current_processes.keys()), 0)
+        self.assertNoZombies()
 
     def test_set_auth_token(self):
         # WHEN
