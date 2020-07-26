@@ -8,7 +8,7 @@ from pyngrok import process
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.0.1"
+__version__ = "4.1.8"
 
 from pyngrok.conf import PyngrokConfig
 

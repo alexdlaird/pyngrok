@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.7"
+__version__ = "4.1.8"
 
 
 class TestProcess(NgrokTestCase):

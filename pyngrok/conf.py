@@ -1,6 +1,6 @@
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.6"
+__version__ = "4.1.8"
 
 import os
 
@@ -64,3 +64,6 @@ class PyngrokConfig:
         self.max_logs = max_logs
         self.request_timeout = request_timeout
         self.start_new_session = start_new_session
+
+
+DEFAULT_PYNGROK_CONFIG = PyngrokConfig()

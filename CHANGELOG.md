@@ -3,9 +3,11 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.7...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.8...HEAD)
+
+## [4.1.8](https://github.com/alexdlaird/pyngrok/compare/4.1.7...4.1.8) - 2020-07-26
 ### Added
-- `DEFAULT_PYNGROK_CONFIG` variable to `ngrok` module.
+- `DEFAULT_PYNGROK_CONFIG` variable to `conf` module, used when `pyngrok_config` is not passed to `ngrok` methods.
 
 ### Fixed
 - Zombie processes remaining in certain cases when `ngrok` exited early or was terminated externally.
