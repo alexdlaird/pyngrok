@@ -3,4 +3,4 @@ codecov
 nose
 mock
 twine
-psutil
+psutil<=5.6.7

@@ -50,6 +50,6 @@ class NgrokTestCase(unittest.TestCase):
         try:
             self.assertEqual(0, len(
                 list(filter(lambda p: p.name() == "ngrok" and p.status() == "zombie", psutil.process_iter()))))
-        except (AccessDenied, RuntimeError):
+        except AccessDenied:
             # Some OSes are not compatible with this assertion
             pass
