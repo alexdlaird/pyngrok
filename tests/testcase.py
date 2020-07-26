@@ -3,6 +3,8 @@ import psutil
 import shutil
 import unittest
 
+from psutil import AccessDenied
+
 from pyngrok import ngrok, installer, conf
 from pyngrok import process
 
@@ -45,5 +47,9 @@ class NgrokTestCase(unittest.TestCase):
             os.remove(ngrok_path)
 
     def assertNoZombies(self):
-        self.assertEqual(0, len(
-            list(filter(lambda p: p.name() == "ngrok" and p.status() == "zombie", psutil.process_iter()))))
+        try:
+            self.assertEqual(0, len(
+                list(filter(lambda p: p.name() == "ngrok" and p.status() == "zombie", psutil.process_iter()))))
+        except AccessDenied:
+            # Some OSes are not compatible with this assertion
+            pass
