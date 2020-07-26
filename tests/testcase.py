@@ -1,9 +1,8 @@
 import os
-
-import psutil
 import shutil
 import unittest
 
+import psutil
 from psutil import AccessDenied
 
 from pyngrok import ngrok, installer, conf
