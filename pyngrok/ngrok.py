@@ -31,6 +31,8 @@ __version__ = "4.1.7"
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_PYNGROK_CONFIG = PyngrokConfig()
+
 
 class NgrokTunnel:
     """
@@ -99,7 +101,7 @@ def set_auth_token(token, pyngrok_config=None):
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
-        pyngrok_config = PyngrokConfig()
+        pyngrok_config = DEFAULT_PYNGROK_CONFIG
 
     ensure_ngrok_installed(pyngrok_config.ngrok_path)
 
@@ -122,7 +124,7 @@ def get_ngrok_process(pyngrok_config=None):
     :rtype: NgrokProcess
     """
     if pyngrok_config is None:
-        pyngrok_config = PyngrokConfig()
+        pyngrok_config = DEFAULT_PYNGROK_CONFIG
 
     ensure_ngrok_installed(pyngrok_config.ngrok_path)
 
@@ -158,7 +160,7 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
     if options is None:
         options = {}
     if pyngrok_config is None:
-        pyngrok_config = PyngrokConfig()
+        pyngrok_config = DEFAULT_PYNGROK_CONFIG
 
     port = str(port)
     if not name:
@@ -203,7 +205,7 @@ def disconnect(public_url, pyngrok_config=None):
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
-        pyngrok_config = PyngrokConfig()
+        pyngrok_config = DEFAULT_PYNGROK_CONFIG
 
     api_url = get_ngrok_process(pyngrok_config).api_url
 
@@ -234,7 +236,7 @@ def get_tunnels(pyngrok_config=None):
     :rtype: list[NgrokTunnel]
     """
     if pyngrok_config is None:
-        pyngrok_config = PyngrokConfig()
+        pyngrok_config = DEFAULT_PYNGROK_CONFIG
 
     api_url = get_ngrok_process(pyngrok_config).api_url
 
@@ -255,7 +257,7 @@ def kill(pyngrok_config=None):
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
-        pyngrok_config = PyngrokConfig()
+        pyngrok_config = DEFAULT_PYNGROK_CONFIG
 
     process.kill_process(pyngrok_config.ngrok_path)
 

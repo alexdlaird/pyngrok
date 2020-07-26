@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.7...HEAD)
+### Added
+- `DEFAULT_PYNGROK_CONFIG` variable to `ngrok` module.
 
 ## [4.1.7](https://github.com/alexdlaird/pyngrok/compare/4.1.6...4.1.7) - 2020-07-23
 ### Fixed
