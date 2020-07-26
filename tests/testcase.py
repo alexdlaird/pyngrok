@@ -1,4 +1,5 @@
 import os
+
 import psutil
 import shutil
 import unittest
@@ -50,6 +51,6 @@ class NgrokTestCase(unittest.TestCase):
         try:
             self.assertEqual(0, len(
                 list(filter(lambda p: p.name() == "ngrok" and p.status() == "zombie", psutil.process_iter()))))
-        except AccessDenied:
+        except (AccessDenied, RuntimeError):
             # Some OSes are not compatible with this assertion
             pass
