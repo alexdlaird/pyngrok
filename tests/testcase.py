@@ -3,7 +3,7 @@ import shutil
 import unittest
 
 import psutil
-from psutil import AccessDenied
+from psutil import AccessDenied, NoSuchProcess
 
 from pyngrok import ngrok, installer, conf
 from pyngrok import process
@@ -50,6 +50,6 @@ class NgrokTestCase(unittest.TestCase):
         try:
             self.assertEqual(0, len(
                 list(filter(lambda p: p.name() == "ngrok" and p.status() == "zombie", psutil.process_iter()))))
-        except AccessDenied:
-            # Some OSes are not compatible with this assertion
+        except (AccessDenied, NoSuchProcess):
+            # Some OSes are flaky on this assertion, but that isn't an indication anything is wrong, so pass
             pass
