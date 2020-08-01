@@ -18,6 +18,7 @@ script:
   - make test
   - make local
 after_success:
+  - source venv/bin/activate
   - codecov
 before_deploy:
   - make docs
