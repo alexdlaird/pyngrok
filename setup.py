@@ -29,9 +29,9 @@ setup(
     url="https://github.com/alexdlaird/pyngrok",
     download_url="https://github.com/alexdlaird/pyngrok/archive/{}.tar.gz".format(__version__),
     project_urls={
-        'Documentation': 'https://pyngrok.readthedocs.io',
-        'Changelog': 'https://github.com/alexdlaird/pyngrok/blob/master/CHANGELOG.md',
-        'Sponsor': 'https://www.paypal.me/alexdlaird'
+        "Documentation": "https://pyngrok.readthedocs.io",
+        "Changelog": "https://github.com/alexdlaird/pyngrok/blob/master/CHANGELOG.md",
+        "Sponsor": "https://www.paypal.me/alexdlaird"
     },
     keywords=["ngrok", "tunnel", "tunneling", "webhook", "localhost", "reverse-proxy", "localtunnel"],
     license="MIT",

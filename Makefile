@@ -54,7 +54,7 @@ local:
 validate-release:
 	@if [[ "${VERSION}" == "" ]]; then echo "VERSION is not set" & exit 1 ; fi
 
-	@if [[ $$(grep "__version__ = \"${VERSION}\"" setup.py) == "" ]] ; then echo "Version not bumped in pyngrok/ngrok.py" & exit 1 ; fi
+	@if [[ $$(grep "__version__ = \"${VERSION}\"" setup.py) == "" ]] ; then echo "Version not bumped in setup.py" & exit 1 ; fi
 	@if [[ $$(grep "__version__ = \"${VERSION}\"" pyngrok/ngrok.py) == "" ]] ; then echo "Version not bumped in pyngrok/ngrok.py" & exit 1 ; fi
 
 upload:

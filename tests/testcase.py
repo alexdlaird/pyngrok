@@ -7,12 +7,11 @@ from psutil import AccessDenied, NoSuchProcess
 
 from pyngrok import ngrok, installer, conf
 from pyngrok import process
+from pyngrok.conf import PyngrokConfig
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
 __version__ = "4.1.8"
-
-from pyngrok.conf import PyngrokConfig
 
 
 class NgrokTestCase(unittest.TestCase):
