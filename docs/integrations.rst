@@ -220,7 +220,7 @@ and :code:`PORT` was changed.
             def shutdown():
                 request.environ.get("werkzeug.server.shutdown")()
 
-            @app.route("/shutdown", methods=("POST",))
+            @app.route("/shutdown", methods=["POST"])
             def route_shutdown():
                 shutdown()
                 return "", 204
