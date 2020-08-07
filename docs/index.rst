@@ -296,13 +296,13 @@ Either use :class:`~pyngrok.conf.PyngrokConfig`:
 
     ngrok.get_tunnels(pyngrok_config=pyngrok_config)
 
-or override the :code:`DEFAULT_CONFIG_PATH` variable:
+or override the default:
 
 .. code-block:: python
 
     from pyngrok import ngrok, conf
 
-    conf.DEFAULT_CONFIG_PATH = "/opt/ngrok/config.yml"
+    conf.DEFAULT_PYNGROK_CONFIG.config_path = "/opt/ngrok/config.yml"
 
     ngrok.get_tunnels()
 
@@ -323,13 +323,13 @@ Either use :class:`~pyngrok.conf.PyngrokConfig`:
 
     ngrok.connect(pyngrok_config=pyngrok_config)
 
-or override the :code:`DEFAULT_NGROK_PATH` variable:
+or override the default:
 
 .. code-block:: python
 
     from pyngrok import ngrok, conf
 
-    conf.DEFAULT_NGROK_PATH = "/usr/local/bin/ngrok"
+    conf.DEFAULT_PYNGROK_CONFIG.ngrok_path = "/usr/local/bin/ngrok"
 
     ngrok.connect()
 
