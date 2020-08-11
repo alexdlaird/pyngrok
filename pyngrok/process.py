@@ -164,7 +164,8 @@ class NgrokProcess:
         If a monitor thread is already running, nothing will be done.
         """
         if self._monitor_thread is None:
-            self._monitor_thread = threading.Thread(target=self._monitor_process, daemon=True)
+            self._monitor_thread = threading.Thread(target=self._monitor_process)
+            self._monitor_thread.daemon = True
             self._monitor_thread.start()
 
     def stop_monitor_thread(self):
