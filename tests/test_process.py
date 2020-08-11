@@ -311,4 +311,4 @@ class TestProcess(NgrokTestCase):
         # THEN
         self.assertFalse(monitor_thread.is_alive())
         self.assertIsNone(ngrok_process._monitor_thread)
-        self.assertFalse(ngrok_process.pyngrok_config.monitor_thread)
+        self.assertTrue(ngrok_process.pyngrok_config.monitor_thread)

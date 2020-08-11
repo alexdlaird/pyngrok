@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.8...HEAD)
+### Fixed
+- The thread that monitors `ngrok` logs now maintains its own `alive` state instead of modifying `PyngrokConfig.monitor_thread`.
+- Documentation improvements.
 
 ## [4.1.8](https://github.com/alexdlaird/pyngrok/compare/4.1.7...4.1.8) - 2020-07-26
 ### Added

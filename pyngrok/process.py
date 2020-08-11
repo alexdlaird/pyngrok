@@ -149,8 +149,11 @@ class NgrokProcess:
                self.startup_error is None
 
     def _monitor_process(self):
-        while self.pyngrok_config.monitor_thread and self.proc.poll() is None:
-            self._log_line(self.proc.stdout.readline())
+        thread = threading.current_thread()
+
+        thread.alive = True
+        while thread.alive and self.proc.poll() is None:
+                self._log_line(self.proc.stdout.readline())
 
         self._monitor_thread = None
 
@@ -174,7 +177,7 @@ class NgrokProcess:
         its logs.
         """
         if self._monitor_thread is not None:
-            self.pyngrok_config.monitor_thread = False
+            self._monitor_thread.alive = False
 
 
 class NgrokLog:
