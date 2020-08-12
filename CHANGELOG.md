@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.8...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.9...HEAD)
+
+## [4.1.9](https://github.com/alexdlaird/pyngrok/compare/4.1.8...4.1.9) - 2020-08-12
 ### Fixed
 - The thread that monitors `ngrok` logs now maintains its own `alive` state instead of modifying `PyngrokConfig.monitor_thread`.
 - The thread that monitors `ngrok` logs [is now daemonic](https://docs.python.org/3/library/threading.html#threading.Thread.daemon), so it no longer blocks the Python process from terminating.

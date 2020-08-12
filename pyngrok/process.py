@@ -28,7 +28,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.8"
+__version__ = "4.1.9"
 
 logger = logging.getLogger(__name__)
 
