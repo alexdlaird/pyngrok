@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.10...HEAD)
 
-## [4.1.10](https://github.com/alexdlaird/pyngrok/compare/4.1.9...4.1.10) - 2020-08-12
+## [4.1.10](https://github.com/alexdlaird/pyngrok/compare/4.1.9...4.1.10) - 2020-08-14
 ### Fixed
 - When `bind_tls` is True, the `public_url` return from `connect()` is now `https`.
 
