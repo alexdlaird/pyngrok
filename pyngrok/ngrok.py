@@ -180,7 +180,7 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
     tunnel = NgrokTunnel(api_request("{}/api/{}".format(api_url, "tunnels"), method="POST", data=options,
                                      timeout=pyngrok_config.request_timeout))
 
-    if proto == "http" and ("bind_tls" not in options or options["bind_tls"] is not False):
+    if proto == "http" and ("bind_tls" not in options or options["bind_tls"] is False):
         tunnel.public_url = tunnel.public_url.replace("https", "http")
 
     return tunnel.public_url
