@@ -22,7 +22,7 @@ except ImportError:
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.8"
+__version__ = "4.1.10"
 
 
 class TestNgrok(NgrokTestCase):
@@ -89,6 +89,13 @@ class TestNgrok(NgrokTestCase):
                 self.assertEqual(tunnel.proto, "https")
                 self.assertEqual(tunnel.public_url, url.replace("http", "https"))
                 self.assertEqual(tunnel.config["addr"], "http://localhost:80")
+
+    def test_bind_tls_https(self):
+        # WHEN
+        url = ngrok.connect(pyngrok_config=self.pyngrok_config, options={"bind_tls": True})
+
+        # THEN
+        self.assertTrue(url.startswith("https"))
 
     def test_disconnect(self):
         # GIVEN

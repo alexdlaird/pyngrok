@@ -26,7 +26,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.9"
+__version__ = "4.1.10"
 
 logger = logging.getLogger(__name__)
 
@@ -180,7 +180,7 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
     tunnel = NgrokTunnel(api_request("{}/api/{}".format(api_url, "tunnels"), method="POST", data=options,
                                      timeout=pyngrok_config.request_timeout))
 
-    if proto == "http" and ("bind_tls" not in options or options["bind_tls"] is False):
+    if proto == "http" and not options.get("bind_tls", False):
         tunnel.public_url = tunnel.public_url.replace("https", "http")
 
     return tunnel.public_url
