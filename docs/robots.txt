@@ -1,0 +1,11 @@
+User-agent: *
+
+Disallow: /
+
+Allow: /en/stable
+
+Allow: /en/latest
+
+Allow: /en/develop
+
+Sitemap: https://pyngrok.readthedocs.io/sitemap.xml
