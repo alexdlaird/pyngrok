@@ -8,4 +8,4 @@ Allow: /en/latest
 
 Allow: /en/develop
 
-Sitemap: https://pyngrok.readthedocs.io/sitemap.xml
+Sitemap: https://pyngrok.readthedocs.io/sitemap-index.xml
