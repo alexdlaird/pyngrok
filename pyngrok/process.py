@@ -282,21 +282,6 @@ def get_process(pyngrok_config):
     return _start_process(pyngrok_config)
 
 
-def run_process(ngrok_path, args):
-    """
-    Start a blocking :code:`ngrok` process with the given args.
-
-    :param ngrok_path: The path to the :code:`ngrok` binary.
-    :type ngrok_path: str
-    :param args: The args to pass to :code:`ngrok`.
-    :type args: list[str]
-    """
-    _ensure_path_ready(ngrok_path)
-
-    start = [ngrok_path] + args
-    subprocess.call(start)
-
-
 def kill_process(ngrok_path):
     """
     Terminate the :code:`ngrok` processes, if running, for the given path. This method will not block, it will just
@@ -321,6 +306,24 @@ def kill_process(ngrok_path):
         _current_processes.pop(ngrok_path, None)
     else:
         logger.debug("\"ngrok_path\" {} is not running a process".format(ngrok_path))
+
+
+def run_process(ngrok_path, args):
+    """
+    Start a blocking :code:`ngrok` process with the binary at the given path and the passed args.
+
+    This method is meant for invoking :code:`ngrok` directly (for instance, from the command line) and is not
+    necessarily compatible with non-blocking API methods. For that, use :func:`~pyngrok.process.get_process`.
+
+    :param ngrok_path: The path to the :code:`ngrok` binary.
+    :type ngrok_path: str
+    :param args: The args to pass to :code:`ngrok`.
+    :type args: list[str]
+    """
+    _ensure_path_ready(ngrok_path)
+
+    start = [ngrok_path] + args
+    subprocess.call(start)
 
 
 def _ensure_path_ready(ngrok_path):

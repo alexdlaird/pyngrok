@@ -18,6 +18,9 @@ class PyngrokConfig:
     An object containing :code:`pyngrok`'s configuration for interacting with the :code:`ngrok` binary. All values are
     optional when it is instantiated, and default values will be used for parameters not passed.
 
+    On import, :code:`conf.DEFAULT_PYNGROK_CONFIG` is instantiated to a :class:`~pyngrok.conf.PyngrokConfig` with default values. When :code:`pyngrok_config` is
+    not passed to methods in :mod:`~pyngrok.ngrok`, this default will be used.
+
     :var ngrok_path: The path to the :code:`ngrok` binary, defaults to the value in
         `conf.DEFAULT_NGROK_PATH <index.html#config-file>`_
     :vartype ngrok_path: str

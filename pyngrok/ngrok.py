@@ -94,7 +94,8 @@ def set_auth_token(token, pyngrok_config=None):
 
     :param token: The auth token to set.
     :type token: str
-    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary,
+        defaults to :code:`conf.DEFAULT_PYNGROK_CONFIG`.
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
@@ -115,7 +116,8 @@ def get_ngrok_process(pyngrok_config=None):
     If :code:`ngrok` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
 
-    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary,
+        defaults to :code:`conf.DEFAULT_PYNGROK_CONFIG`.
     :type pyngrok_config: PyngrokConfig, optional
     :return: The :code:`ngrok` process.
     :rtype: NgrokProcess
@@ -149,7 +151,8 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
     :param options: Parameters passed to `configuration for the ngrok
         tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
     :type options: dict[str, str], optional
-    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary,
+        defaults to :code:`conf.DEFAULT_PYNGROK_CONFIG`.
     :type pyngrok_config: PyngrokConfig, optional
     :return: The connected public URL.
     :rtype: str
@@ -198,7 +201,8 @@ def disconnect(public_url, pyngrok_config=None):
 
     :param public_url: The public URL of the tunnel to disconnect.
     :type public_url: str
-    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary,
+        defaults to :code:`conf.DEFAULT_PYNGROK_CONFIG`.
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
@@ -227,7 +231,8 @@ def get_tunnels(pyngrok_config=None):
     If :code:`ngrok` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
 
-    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary,
+        defaults to :code:`conf.DEFAULT_PYNGROK_CONFIG`.
     :type pyngrok_config: PyngrokConfig, optional
     :return: The active :code:`ngrok` tunnels.
     :rtype: list[NgrokTunnel]
@@ -250,7 +255,8 @@ def kill(pyngrok_config=None):
     Terminate the :code:`ngrok` processes, if running, for the given config's :code:`ngrok_path`. This method will not
     block, it will just issue a kill request.
 
-    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary.
+    :param pyngrok_config: The :code:`pyngrok` configuration to use when interacting with the :code:`ngrok` binary,
+        defaults to :code:`conf.DEFAULT_PYNGROK_CONFIG`.
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
@@ -325,7 +331,11 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
 
 def run(args=None):
     """
-    Start a blocking :code:`ngrok` process with the default binary and the passed args.
+    Ensure :code:`ngrok` is installed in the default location, then call :func:`~pyngrok.process.run_process`.
+
+    This method is meant for interacting with :code:`ngrok` from the command line and is not necessarily
+    compatible with non-blocking API methods. For that, use :mod:`~pyngrok.ngrok`'s interface methods (like
+    :func:`~pyngrok.ngrok.connect`), or use :func:`~pyngrok.process.get_process`.
 
     :param args: Arguments to be passed to the :code:`ngrok` process.
     :type args: list[str], optional
@@ -340,7 +350,12 @@ def run(args=None):
 
 def main():
     """
-    Entry point for the package's :code:`console_scripts`.
+    Entry point for the package's :code:`console_scripts`. This initializes a call from the command
+    line and invokes :func:`~pyngrok.ngrok.run`.
+
+    This method is meant for interacting with :code:`ngrok` from the command line and is not necessarily
+    compatible with non-blocking API methods. For that, use :mod:`~pyngrok.ngrok`'s interface methods (like
+    :func:`~pyngrok.ngrok.connect`), or use :func:`~pyngrok.process.get_process`.
     """
     run(sys.argv[1:])
 
