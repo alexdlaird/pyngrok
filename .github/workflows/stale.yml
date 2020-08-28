@@ -2,7 +2,7 @@ name: Mark stale issues and pull requests
 
 on:
   schedule:
-  - cron: "0 0 * * *"
+    - cron: "0 0 * * *"
 
 jobs:
   stale:
@@ -10,14 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/stale@v3
-      with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        stale-issue-message: 'This issue is stale because it has remained open with no further activity on it. Comment with additional context or the issue will be closed automatically. Thank you for your contribution!'
-        stale-pr-message: 'This PR is stale because it has remained open with no further activity on it. If is is still being actively worked by you, label it as "wip", otherwise it will be closed automatically. Thank you for your contribution!'
-        stale-issue-label: 'stale'
-        exempt-issue-labels: 'wip,security'
-        stale-pr-label: 'stale'
-        exempt-pr-labels: 'wip,security'
-        days-before-stale: 7
-        days-before-close: 7
+      - uses: actions/stale@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-issue-message: "This issue is stale because it has remained open with no further activity on it. Comment with additional context or the issue will be closed automatically. Thank you for your contribution!"
+          stale-pr-message: "This PR is stale because it has remained open with no further activity on it. If is is still being actively worked by you, label it as "wip", otherwise it will be closed automatically. Thank you for your contribution!"
+          stale-issue-label: "stale"
+          exempt-issue-labels: "wip,security"
+          stale-pr-label: "stale"
+          exempt-pr-labels: "wip,security"
+          days-before-stale: 7
+          days-before-close: 7
