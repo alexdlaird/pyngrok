@@ -1,4 +1,8 @@
-include LICENSE
-include README.md
-include CHANGELOG.md
+# Including text resources
+include LICENSE README.md CHANGELOG.md
+
+# Exclude junk
+global-exclude .DS_Store
+
+# Exclude build
 graft _build

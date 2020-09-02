@@ -25,6 +25,7 @@ setup(
         ngrok=pyngrok.ngrok:main
         pyngrok=pyngrok.ngrok:main
     """,
+    include_package_data=True,
     description="A Python wrapper for Ngrok.",
     long_description=long_description,
     long_description_content_type="text/markdown",
