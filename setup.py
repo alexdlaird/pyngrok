@@ -6,10 +6,10 @@ __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
 __version__ = "4.1.11"
 
+name = "pyngrok" if os.environ.get("BUILD_PACKAGE_AS_NGROK", "False") != "True" else "ngrok"
+
 with open("README.md", "r") as f:
     long_description = f.read()
-
-name = "pyngrok" if os.environ.get("BUILD_PACKAGE_AS_NGROK", "False") != "True" else "ngrok"
 
 setup(
     name=name,
