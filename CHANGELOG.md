@@ -226,7 +226,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Configurable `timeout` parameter for `ngrok.connect()`, `ngrok.disconnect()`, and `ngrok.get_tunnels()` in [ngrok module](https://pyngrok.readthedocs.io/en/1.4.0/api.html#module-pyngrok.ngrok).
 - A changelog, code of conduct, and contributing guide.
 - A pull request template. 
-- Documentation now builds and publishes to readthedocs.io.
+- Documentation now builds and publishes to [pyngrok.readthedocs.io](https://pyngrok.readthedocs.io).
 - `proc` variable to `NgrokProcess`, which will replace `process` in the future due to module shadowing (`process` is still set for backwards compatibility, but it should no longer be relied upon as it will be removed in a future release).
 
 ### Fixed
