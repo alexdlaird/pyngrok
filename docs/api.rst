@@ -2,10 +2,10 @@
 API Documentation
 =================
 
-This part of the documentation covers the interfaces used to develop with :code:`pyngrok`.
+This part of the documentation covers the interfaces used to develop with ``pyngrok``.
 
-Main :code:`ngrok` Interface
-----------------------------
+Main ``ngrok`` Interface
+------------------------
 
 .. automodule:: pyngrok.ngrok
     :members:

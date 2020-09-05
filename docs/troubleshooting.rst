@@ -2,16 +2,16 @@
 Troubleshooting
 ===============
 
-:code:`pyngrok` is a Python wrapper for `ngrok <https://ngrok.com/>`_, so often errors that occur (especially during
-startup) are a result of a :code:`ngrok` configuration error and not a bug in :code:`pyngrok`. Hopefully this page can
+``pyngrok`` is a Python wrapper for `ngrok <https://ngrok.com/>`_, so often errors that occur (especially during
+startup) are a result of a ``ngrok`` configuration error and not a bug in ``pyngrok``. Hopefully this page can
 give you some useful tips to debug these issues.
 
 Test on the Command Line
 ------------------------
 
-When you install :code:`pyngrok` with :code:`pip install pyngrok`, :code:`ngrok` should available from the command
-line. First ensure this is true by checking to see if :code:`pyngrok`'s version of :code:`ngrok` is properly setup in
-your path. Running :code:`ngrok` with no args from the command line should show :code:`pyngrok` version at the very
+When you install ``pyngrok`` with ``pip install pyngrok``, ``ngrok`` should available from the command
+line. First ensure this is true by checking to see if ``pyngrok``'s version of ``ngrok`` is properly setup in
+your path. Running ``ngrok`` with no args from the command line should show ``pyngrok`` version at the very
 end.
 
 .. code-block:: shell
@@ -27,14 +27,14 @@ end.
 
 .. note::
 
-    If :code:`PYNGROK VERSION` is not seen in the output here, something else is managing :code:`ngrok` (perhaps
-    another :code:`ngrok` wrapper installed through `Homebrew <https://brew.sh/>`_ or `npm <https://www.npmjs.com/>`_).
-    If you'd prefer :code:`pyngrok` manage :code:`ngrok` for you, you'll first need to
+    If ``PYNGROK VERSION`` is not seen in the output here, something else is managing ``ngrok`` (perhaps
+    another ``ngrok`` wrapper installed through `Homebrew <https://brew.sh/>`_ or `npm <https://www.npmjs.com/>`_).
+    If you'd prefer ``pyngrok`` manage ``ngrok`` for you, you'll first need to
     `reorder things in your $PATH <https://stackoverflow.com/a/32170849/1128413>`_ to fix this, then you can continue
     troubleshooting on the command line.
 
-With :code:`PYNGROK VERSION` shown in your output here, you know things are setup properly. Next try starting
-:code:`ngrok` headless:
+With ``PYNGROK VERSION`` shown in your output here, you know things are setup properly. Next try starting
+``ngrok`` headless:
 
 .. code-block:: shell
 
@@ -46,9 +46,9 @@ If that works, try starting a simple HTTP tunnel:
 
     bash-3.2$ ngrok http 5000 --log stdout
 
-If neither of these work, the logs should be dumped to the console for you to troubleshoot :code:`ngrok`
-directly. If both of these work, you know :code:`pyngrok` is properly installed on your system and able to access
-the :code:`ngrok` binary, meaning the problem is likely a configuration issue in your Python application.
+If neither of these work, the logs should be dumped to the console for you to troubleshoot ``ngrok``
+directly. If both of these work, you know ``pyngrok`` is properly installed on your system and able to access
+the ``ngrok`` binary, meaning the problem is likely a configuration issue in your Python application.
 
 Enable Logging to the Console
 -----------------------------
@@ -78,12 +78,12 @@ ensure you have a handler streaming logs and your level is set to DEBUG. Here is
 Programmatically Inspect the Logs
 ---------------------------------
 
-:code:`ngrok` logs are parsed by the :class:`~pyngrok.process.NgrokProcess`, and you can inspect them by iterating over
-its :code:`logs` variable or giving it a `log_event_callback <index.html#event-logs>`_.
+``ngrok`` logs are parsed by the :class:`~pyngrok.process.NgrokProcess`, and you can inspect them by iterating over
+its ``logs`` variable or giving it a `log_event_callback <index.html#event-logs>`_.
 
 If you're seeing the :class:`~pyngrok.process.NgrokProcess` fail with a :class:`~pyngrok.exception.PyngrokNgrokError`
-exception, these logs are also available on the exception itself. Catch the exception and inspect :code:`ngrok_logs`
-and :code:`ngrok_error` for more insight in to where :code:`ngrok` is failing.
+exception, these logs are also available on the exception itself. Catch the exception and inspect ``ngrok_logs``
+and ``ngrok_error`` for more insight in to where ``ngrok`` is failing.
 
 Test in the Python Console
 --------------------------
@@ -170,9 +170,9 @@ Check the Inspector at http://localhost:4040
 --------------------------------------------
 
 Check to see if you are able to access the `traffic inspection interface <https://ngrok.com/docs#getting-started-inspect>`_
-via a web browser. If so, this at least means :code:`ngrok` is able to start before throwing the error.
+via a web browser. If so, this at least means ``ngrok`` is able to start before throwing the error.
 
-:code:`ngrok` Documentation
+``ngrok`` Documentation
 ---------------------------
 
 Familiarize yourself with the `ngrok documentation <https://ngrok.com/docs>`_, especially the sections pertaining to

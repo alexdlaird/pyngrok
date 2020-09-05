@@ -50,9 +50,9 @@ DEFAULT_RETRY_COUNT = 0
 
 def get_ngrok_bin():
     """
-    Retrieve the :code:`ngrok` executable for the current system.
+    Retrieve the ``ngrok`` executable for the current system.
 
-    :return: The name of the :code:`ngrok` executable.
+    :return: The name of the ``ngrok`` executable.
     :rtype: str
     """
     system = platform.system()
@@ -66,9 +66,9 @@ def get_ngrok_bin():
 
 def install_ngrok(ngrok_path, **kwargs):
     """
-    Download and install :code:`ngrok` for the current system in the given location.
+    Download and install ``ngrok`` for the current system in the given location.
 
-    :param ngrok_path: The path to where the :code:`ngrok` binary will be downloaded.
+    :param ngrok_path: The path to where the ``ngrok`` binary will be downloaded.
     :type ngrok_path: str
     :param kwargs: Remaining kwargs will be passed to :func:`_download_file`.
     :type kwargs: dict, optional
@@ -105,10 +105,10 @@ def install_ngrok(ngrok_path, **kwargs):
 
 def _install_ngrok_zip(ngrok_path, zip_path):
     """
-    Extract the :code:`ngrok` zip file to the given path.
+    Extract the ``ngrok`` zip file to the given path.
 
-    :param ngrok_path: The path where :code:`ngrok` will be installed.
-    :param zip_path: The path to the :code:`ngrok` zip file to be extracted.
+    :param ngrok_path: The path where ``ngrok`` will be installed.
+    :param zip_path: The path to the ``ngrok`` zip file to be extracted.
     """
     _print_progress("Installing ngrok ... ")
 
@@ -123,9 +123,9 @@ def _install_ngrok_zip(ngrok_path, zip_path):
 
 def install_default_config(config_path, data=None):
     """
-    Install the default :code:`ngrok` config if one is not already present.
+    Install the default ``ngrok`` config if one is not already present.
 
-    :param config_path: The path to where the :code:`ngrok` config should be installed.
+    :param config_path: The path to where the ``ngrok`` config should be installed.
     :type config_path: str
     :param data: A dictionary of things to added to the default config.
     :type data: dict, optional
@@ -154,7 +154,7 @@ def install_default_config(config_path, data=None):
 
 def validate_config(data):
     """
-    Validate that the given dict of config items are valid for :code:`ngrok` and :code:`pyngrok`.
+    Validate that the given dict of config items are valid for ``ngrok`` and ``pyngrok``.
 
     :param data: A dictionary of things to be validated as config items.
     :type data: dict

@@ -5,34 +5,34 @@ __version__ = "4.1.0"
 
 class PyngrokError(Exception):
     """
-    Raised when a general :code:`pyngrok` error has occurred.
+    Raised when a general ``pyngrok`` error has occurred.
     """
     pass
 
 
 class PyngrokSecurityError(PyngrokError):
     """
-    Raised when a :code:`pyngrok` security error has occurred.
+    Raised when a ``pyngrok`` security error has occurred.
     """
     pass
 
 
 class PyngrokNgrokInstallError(PyngrokError):
     """
-    Raised when an error has occurred while downloading and installing the :code:`ngrok` binary.
+    Raised when an error has occurred while downloading and installing the ``ngrok`` binary.
     """
     pass
 
 
 class PyngrokNgrokError(PyngrokError):
     """
-    Raised when an error occurs interacting directly with the :code:`ngrok` binary.
+    Raised when an error occurs interacting directly with the ``ngrok`` binary.
 
     :var error: A description of the error being thrown.
     :vartype error: str
-    :var ngrok_logs: The :code:`ngrok` logs, which may be useful for debugging the error.
+    :var ngrok_logs: The ``ngrok`` logs, which may be useful for debugging the error.
     :vartype ngrok_logs: list[NgrokLog]
-    :var ngrok_error: The error that caused the :code:`ngrok` process to fail.
+    :var ngrok_error: The error that caused the ``ngrok`` process to fail.
     :vartype ngrok_error: str
     """
 
@@ -48,20 +48,20 @@ class PyngrokNgrokError(PyngrokError):
 
 class PyngrokNgrokHTTPError(PyngrokNgrokError):
     """
-    Raised when an error occurs making a request to the :code:`ngrok` web interface. The :code:`body`
-    contains the error response received from :code:`ngrok`.
+    Raised when an error occurs making a request to the ``ngrok`` web interface. The ``body``
+    contains the error response received from ``ngrok``.
 
     :var error: A description of the error being thrown.
     :vartype error: str
     :var url: The request URL that failed.
     :vartype url: str
-    :var status_code: The response status code from :code:`ngrok`.
+    :var status_code: The response status code from ``ngrok``.
     :vartype status_code: int
-    :var message: The response message from :code:`ngrok`.
+    :var message: The response message from ``ngrok``.
     :vartype message: str
-    :var headers: The request headers sent to :code:`ngrok`.
+    :var headers: The request headers sent to ``ngrok``.
     :vartype headers: dict[str, str]
-    :var body: The response body from :code:`ngrok`.
+    :var body: The response body from ``ngrok``.
     :vartype body: str
     """
 
