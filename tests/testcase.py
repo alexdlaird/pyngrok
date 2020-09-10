@@ -11,12 +11,14 @@ from pyngrok.conf import PyngrokConfig
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.9"
+__version__ = "4.1.12"
 
 
 class NgrokTestCase(unittest.TestCase):
     def setUp(self):
         self.config_dir = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".ngrok2"))
+        if not os.path.exists(self.config_dir):
+            os.makedirs(self.config_dir)
         config_path = os.path.join(self.config_dir, "config.yml")
 
         conf.DEFAULT_NGROK_CONFIG_PATH = config_path

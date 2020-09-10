@@ -22,7 +22,7 @@ except ImportError:
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.10"
+__version__ = "4.1.12"
 
 
 class TestNgrok(NgrokTestCase):
@@ -259,10 +259,26 @@ class TestNgrok(NgrokTestCase):
 
     def test_web_addr_false_not_allowed(self):
         # GIVEN
-        if not os.path.exists(self.config_dir):
-            os.makedirs(self.config_dir)
         with open(self.pyngrok_config.config_path, "w") as config_file:
             yaml.dump({"web_addr": False}, config_file)
+
+        # WHEN
+        with self.assertRaises(PyngrokError) as e:
+            ngrok.connect(pyngrok_config=self.pyngrok_config)
+
+    def test_log_format_json_not_allowed(self):
+        # GIVEN
+        with open(self.pyngrok_config.config_path, "w") as config_file:
+            yaml.dump({"log_format": "json"}, config_file)
+
+        # WHEN
+        with self.assertRaises(PyngrokError):
+            ngrok.connect(pyngrok_config=self.pyngrok_config)
+
+    def test_log_level_warn_not_allowed(self):
+        # GIVEN
+        with open(self.pyngrok_config.config_path, "w") as config_file:
+            yaml.dump({"log_level": "warn"}, config_file)
 
         # WHEN
         with self.assertRaises(PyngrokError):

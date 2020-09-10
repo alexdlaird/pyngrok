@@ -123,7 +123,8 @@ def _install_ngrok_zip(ngrok_path, zip_path):
 
 def install_default_config(config_path, data=None):
     """
-    Install the default ``ngrok`` config if one is not already present.
+    Install the default ``ngrok`` config. If one is not already present, created one. Before saving
+    new values to the default config, validate that they are compatible with ``pyngrok``.
 
     :param config_path: The path to where the ``ngrok`` config should be installed.
     :type config_path: str
@@ -161,6 +162,10 @@ def validate_config(data):
     """
     if data.get("web_addr", None) is False:
         raise PyngrokError("\"web_addr\" cannot be False, as the ngrok API is a dependency for pyngrok")
+    elif data.get("log_format") == "json":
+        raise PyngrokError("\"log_format\" must be \"term\" to be compatible with pyngrok")
+    elif data.get("log_level", "info") not in ["info", "debug"]:
+        raise PyngrokError("\"log_level\" must be \"info\" to be compatible with pyngrok")
 
 
 def _download_file(url, retries=0, **kwargs):

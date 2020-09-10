@@ -3,7 +3,12 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.11...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.12...HEAD)
+
+## [4.1.12](https://github.com/alexdlaird/pyngrok/compare/4.1.11...4.1.12) - 2020-09-10
+### Added
+- Validation for `log_format` in `ngrok`'s `config.yaml`, as `pyngrok` depends on key/value logs.
+- Validation for `log_level` in `ngrok`'s `config.yaml`, as `pyngrok` depends on the level being either `info` or `debug`.
 
 ## [4.1.11](https://github.com/alexdlaird/pyngrok/compare/4.1.10...4.1.11) - 2020-09-08
 ### Fixed
