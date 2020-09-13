@@ -1,3 +1,8 @@
+.. rst-class:: hide-header
+
+pyngrok - a Python wrapper for ngrok
+====================================
+
 .. image:: _html/logo.png
    :alt: pyngrok - a Python wrapper for ngrok
    :align: center
