@@ -21,7 +21,7 @@ pyngrok - a Python wrapper for ngrok
 .. image:: https://img.shields.io/pypi/l/pyngrok.svg
    :target: https://pypi.org/project/pyngrok/
 .. image:: https://img.shields.io/twitter/url/http/shields.io.svg?style=social
-   :target: https://twitter.com/intent/tweet?text=Check+out+%23pyngrok%2C+a+Python+wrapper+for+%23ngrok+that+lets+you+open+secure+%23tunnels+to+local+web+servers%2C+build+%23webhook+integrations%2C+enable+SSH+access%2C+test+chatbots%2C+demo+from+your+own+machine%2C+and+more.%0D%0A%0D%0A&url=https://github.com/alexdlaird/pyngrok&via=alexdlaird
+   :target: https://twitter.com/intent/tweet?text=Check+out+%23pyngrok%2C+a+Python+wrapper+for+%23ngrok+that+lets+you+programmatically+open+secure+%23tunnels+to+local+web+servers%2C+build+%23webhook+integrations%2C+enable+SSH+access%2C+test+chatbots%2C+demo+from+your+own+machine%2C+and+more.%0D%0A%0D%0A&url=https://github.com/alexdlaird/pyngrok&via=alexdlaird
 
 ``pyngrok`` is a Python wrapper for ``ngrok`` that manages its own binary and puts it on your path,
 making ``ngrok`` readily available from anywhere on the command line and via a convenient Python API.
