@@ -1,5 +1,5 @@
 Contributing
-------------
+============
 
 If you find issues, `report them on GitHub <https://github.com/alexdlaird/pyngrok/issues>`_.
 
