@@ -1,31 +1,51 @@
 {% extends "!layout.html" %}
 
 {%- block extrahead %}
-{{ super() }}
-<meta name="yandex-verification" content="ac8f18b56add6591" />
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-43184722-4"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    {{ super() }}
 
-  gtag('config', 'UA-43184722-4');
-</script>
+    <meta name="description"
+          content="A Python wrapper for ngrok that makes ngrok readily available from anywhere on the command line and via a convenient Python API."/>
+
+    <!-- Twitter Card data -->
+    <meta name="twitter:card"
+          value="A Python wrapper for ngrok that makes ngrok readily available from anywhere on the command line and via a convenient Python API.">
+
+    <!-- Open Graph data -->
+    <meta property="og:title" content="pyngrok - A Python wrapper for ngrok"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://pyngrok.readthedocs.io/en/latest/{{ pagename }}.html"/>
+    <meta property="og:image" content="https://pyngrok.readthedocs.io/en/latest/_images/logo.png"/>
+    <meta property="og:description"
+          content="A Python wrapper for ngrok that makes ngrok readily available from anywhere on the command line and via a convenient Python API."/>
+
+    <meta name="yandex-verification" content="ac8f18b56add6591"/>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-43184722-4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-43184722-4');
+    </script>
 {% endblock %}
 
 {% block footer %}
-{{ super() }}
-<div class="footer">This page uses <a href="https://analytics.google.com/">
-Google Analytics</a> to collect statistics. You can disable it by blocking
-the JavaScript coming from www.google-analytics.com.
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
-</div>
+    {{ super() }}
+    <div class="footer">This page uses <a href="https://analytics.google.com/">
+        Google Analytics</a> to collect statistics. You can disable it by blocking
+        the JavaScript coming from www.google-analytics.com.
+        <script type="text/javascript">
+            (function () {
+                var ga = document.createElement('script');
+                ga.src = ('https:' == document.location.protocol ?
+                    'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                ga.setAttribute('async', 'true');
+                document.documentElement.firstChild.appendChild(ga);
+            })();
+        </script>
+    </div>
 {% endblock %}
