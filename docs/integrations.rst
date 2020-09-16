@@ -184,6 +184,40 @@ Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicor
 
     USE_NGROK=True uvicorn server:app
 
+Google Colaboratory
+-------------------
+
+Whether you're trying to open a tunnel for HTTP or TCP access, integrating ``pyngrok`` in to a
+`Google Colab Notebook <https://colab.research.google.com/notebooks/intro.ipynb#recent=true>`_ is incredibly easy.
+It only requires two code cells. The first installs ``pyngrok`` as a dependency:
+
+.. code-block:: sh
+
+    !pip install pyngrok
+
+The second opens the tunnel. Let's say our notebook has configured a SSH server in our environment, then we can open
+a tunnel to that server with this code cell:
+
+.. code-block:: python
+
+    import os
+    import getpass
+
+    from pyngrok import ngrok
+    from pyngrok.conf import PyngrokConfig
+
+    print("Enter your authtoken, which can be copied from https://dashboard.ngrok.com/auth")
+    auth_token = getpass.getpass()
+
+    ssh_url = ngrok.connect(22, "tcp", pyngrok_config=PyngrokConfig(auth_token=auth_token))
+    print(" * ngrok tunnel available at \"{}\"".format(ssh_url))
+
+    # Block until terminated
+    ngrok.get_ngrok_process().proc.wait()
+
+We've also created a HTTP example that uses `Flask <https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/#the-application-factory>`_
+to allow a project to receive web requests. It can be run from `this Colab Notebook <https://colab.research.google.com/gist/alexdlaird/45882c7a8cd48d592768514a94e0d5be/pyngrok-flask-example.ipynb>`_.
+
 End-to-End Testing
 ------------------
 
