@@ -129,7 +129,7 @@ class NgrokProcess:
         """
         Check whether the ``ngrok`` process has finished starting up and is in a running, healthy state.
 
-        :return: ``True`` if the ``ngrok`` process is started, running, and healthy, ``False`` otherwise.
+        :return: ``True`` if the ``ngrok`` process is started, running, and healthy.
         :rtype: bool
         """
         if self.api_url is None or \
