@@ -187,20 +187,25 @@ Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicor
 Google Colaboratory
 -------------------
 
-Whether you're trying to open a tunnel for HTTP or TCP access, integrating ``pyngrok`` in to a
-`Google Colab Notebook <https://colab.research.google.com/notebooks/intro.ipynb#recent=true>`_ is incredibly easy.
-It only requires two code cells. The first installs ``pyngrok`` as a dependency:
+Integrating ``pyngrok`` into a `Google Colab Notebook <https://colab.research.google.com/notebooks/intro.ipynb#recent=true>`_
+takes just two code cells. To install ``pyngrok`` as a dependency in our Notebook, create a code block like this:
 
 .. code-block:: sh
 
     !pip install pyngrok
 
-The second opens the tunnel. Let's say our notebook has configured a SSH server in our environment, then we can open
-a tunnel to that server with this code cell:
+Colab SSH Example
+"""""""""""""""""
+
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/drive/1_ZDG69zjD-6j1dbGbrzAQkyrtlUfdr88?usp=sharing
+   :alt: Open SSH Example in Colab
+
+With an SSH server setup and running (as shown fully in the linked example), all we need to do is create another code cell
+that uses ``pyngrok`` to open a tunnel to that server.
 
 .. code-block:: python
 
-    import os
     import getpass
 
     from pyngrok import ngrok
@@ -209,14 +214,52 @@ a tunnel to that server with this code cell:
     print("Enter your authtoken, which can be copied from https://dashboard.ngrok.com/auth")
     auth_token = getpass.getpass()
 
-    ssh_url = ngrok.connect(22, "tcp", pyngrok_config=PyngrokConfig(auth_token=auth_token))
-    print(" * ngrok tunnel available at \"{}\"".format(ssh_url))
+    # Open a TCP ngrok tunnel to the SSH server
+    connection_string = ngrok.connect(22, "tcp", pyngrok_config=PyngrokConfig(auth_token=auth_token))
 
-    # Block until terminated
-    ngrok.get_ngrok_process().proc.wait()
+    ssh_url, port = connection_string.strip("tcp://").split(":")
+    print(f" * ngrok tunnel available, access with `ssh root@{ssh_url} -p{port}`")
 
-We've also created a HTTP example that uses `Flask <https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/#the-application-factory>`_
-to allow a project to receive web requests. It can be run from `this Colab Notebook <https://colab.research.google.com/gist/alexdlaird/45882c7a8cd48d592768514a94e0d5be/pyngrok-flask-example.ipynb>`_.
+Colab HTTP Example
+""""""""""""""""""
+
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/drive/1F-b8Vv_jaThi55_z0VLYLw3DDVnPYZMp?usp=sharing
+   :alt: Open HTTP Example in Colab
+
+It can also be useful to expose a web server, process HTTP requests, etc. from within our Notebook. This code block
+assumes we have also added ``!pip install flask`` to our dependency code block and is shown in full  in the
+linked example.
+
+.. code-block:: python
+
+    import os
+    import threading
+
+    from flask import Flask
+    from pyngrok import ngrok
+
+    os.environ["FLASK_ENV"] = "development"
+
+    app = Flask(__name__)
+
+    # Open a ngrok tunnel to the HTTP server
+    public_url = ngrok.connect(5000)
+    print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, 5000))
+
+    # Update any base URLs to use the public ngrok URL
+    app.config["BASE_URL"] = public_url
+
+    # ... Update inbound traffic via APIs to use the public-facing ngrok URL
+
+
+    # Define Flask routes
+    @app.route("/")
+    def index():
+        return "Hello from Colab!"
+
+    # Start the Flask server in a new thread
+    threading.Thread(target=app.run, kwargs={"use_reloader": False}).start()
 
 End-to-End Testing
 ------------------
