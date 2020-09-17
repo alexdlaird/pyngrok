@@ -54,7 +54,7 @@ Enable Logging to the Console
 -----------------------------
 
 Printing logs to the console can be a quick way to debug common issues by surfacing their root cause. To do this,
-ensure you have a handler streaming logs and your level is set to DEBUG. Here is a simple example:
+ensure you have a handler streaming logs and your level is set to ``DEBUG``. Here is a simple example:
 
 .. code-block:: python
 
