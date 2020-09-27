@@ -187,8 +187,9 @@ Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicor
 Google Colaboratory
 -------------------
 
-Integrating ``pyngrok`` into a `Google Colab Notebook <https://colab.research.google.com/notebooks/intro.ipynb#recent=true>`_
-takes just two code cells. To install ``pyngrok`` as a dependency in our Notebook, create a code block like this:
+Using ``ngrok`` in a `Google Colab Notebook <https://colab.research.google.com/notebooks/intro.ipynb#recent=true>`_
+takes just two code cells with ``pyngrok``. Install ``pyngrok`` as a dependency in our Notebook by create a code
+block like this:
 
 .. code-block:: sh
 
@@ -227,9 +228,8 @@ Colab HTTP Example
    :target: https://colab.research.google.com/drive/1F-b8Vv_jaThi55_z0VLYLw3DDVnPYZMp?usp=sharing
    :alt: Open HTTP Example in Colab
 
-It can also be useful to expose a web server, process HTTP requests, etc. from within our Notebook. This code block
-assumes we have also added ``!pip install flask`` to our dependency code block and is shown in full  in the
-linked example.
+It can also be useful to expose a web server, process HTTP requests, etc. from within our Notebook  (as shown fully in
+the linked example). This code block assumes we have also added ``!pip install flask`` to our dependency code block.
 
 .. code-block:: python
 
