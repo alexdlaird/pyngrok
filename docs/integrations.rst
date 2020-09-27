@@ -228,8 +228,8 @@ Colab HTTP Example
    :target: https://colab.research.google.com/drive/1F-b8Vv_jaThi55_z0VLYLw3DDVnPYZMp?usp=sharing
    :alt: Open HTTP Example in Colab
 
-It can also be useful to expose a web server, process HTTP requests, etc. from within our Notebook  (as shown fully in
-the linked example). This code block assumes we have also added ``!pip install flask`` to our dependency code block.
+It can also be useful to expose a web server, process HTTP requests, etc. from within our Notebook. This code block
+assumes we have also added ``!pip install flask`` to our dependency code block.
 
 .. code-block:: python
 
