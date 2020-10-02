@@ -12,24 +12,24 @@ Main ``ngrok`` Interface
     :private-members:
     :show-inheritance:
 
-Process
--------
+Process Management
+------------------
 
 .. automodule:: pyngrok.process
     :members:
     :private-members:
     :show-inheritance:
 
-Config
-------
+Configuration
+-------------
 
 .. automodule:: pyngrok.conf
     :members:
     :private-members:
     :show-inheritance:
 
-Installer
----------
+``ngrok`` Installer
+-------------------
 
 .. automodule:: pyngrok.installer
     :members:

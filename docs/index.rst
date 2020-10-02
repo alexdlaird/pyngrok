@@ -121,7 +121,7 @@ process so tunnels stay open until the user intervenes. We can do that by access
 
         ngrok.kill()
 
-The :class:`~pyngrok.ngrok.NgrokProcess` contains an ``api_url`` variable, usually initialized to
+The :class:`~pyngrok.process.NgrokProcess` contains an ``api_url`` variable, usually initialized to
 http://127.0.0.1:4040, from which we can access the `ngrok client API <https://ngrok.com/docs#client-api>`_.
 
 .. note::
@@ -137,7 +137,7 @@ Event Logs
 
 When ``ngrok`` emits logs, ``pyngrok`` can surface them to a callback function. To register this
 callback, use :class:`~pyngrok.conf.PyngrokConfig` and pass the function as ``log_event_callback``. Each time a
-log is processed, this function will be called, passing a :class:`~pyngrok.ngrok.NgrokLog` as its only parameter.
+log is processed, this function will be called, passing a :class:`~pyngrok.process.NgrokLog` as its only parameter.
 
 .. code-block:: python
 
