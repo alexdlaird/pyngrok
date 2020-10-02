@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Added
 - An [integration example for Google Colab](https://pyngrok.readthedocs.io/en/latest/integrations.html#google-colaboratory).
 - Documentation improvements.
+- Test `api_request()` using `params` for filtering with special characters.
+
+### Fixed
+- [ngrok.api_request()](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.installer)'s `params` is now properly documented as a `dict` instead of a `list`.
 
 ## [4.1.12](https://github.com/alexdlaird/pyngrok/compare/4.1.11...4.1.12) - 2020-09-10
 ### Added

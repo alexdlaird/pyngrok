@@ -7,10 +7,16 @@ import uuid
 import mock
 import yaml
 
+from future.standard_library import install_aliases
+
 from pyngrok import ngrok, process, conf
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
 from .testcase import NgrokTestCase
+
+install_aliases()
+
+from urllib.request import urlopen
 
 try:
     from http import HTTPStatus as StatusCodes
@@ -153,6 +159,30 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertEqual(tunnel.name, response["name"])
 
+    def test_api_request_query_params(self):
+        # GIVEN
+        tunnel_name = "tunnel (1)"
+        current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
+        public_url = ngrok.connect(name=tunnel_name).replace("http", "https")
+        time.sleep(1)
+
+        try:
+            urlopen(public_url)
+        except:
+            pass
+
+        # WHEN
+        response1 = ngrok.api_request("{}/api/requests/http".format(current_process.api_url), "GET")
+        response2 = ngrok.api_request("{}/api/requests/http".format(current_process.api_url), "GET",
+                                      params={"tunnel_name": "{}".format(tunnel_name)})
+        response3 = ngrok.api_request("{}/api/requests/http".format(current_process.api_url), "GET",
+                                      params={"tunnel_name": "{} (http)".format(tunnel_name)})
+
+        # THEN
+        self.assertEqual(1, len(response1["requests"]))
+        self.assertEqual(1, len(response2["requests"]))
+        self.assertEqual(0, len(response3["requests"]))
+
     def test_api_request_delete_data_updated(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
@@ -181,7 +211,7 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         with self.assertRaises(PyngrokNgrokHTTPError) as cm:
-            ngrok.api_request("{}/api/{}".format(current_process.api_url, "tunnels"), "POST", data=bad_options)
+            ngrok.api_request("{}/api/tunnels".format(current_process.api_url), "POST", data=bad_options)
 
         # THEN
         self.assertEqual(StatusCodes.BAD_REQUEST, cm.exception.status_code)

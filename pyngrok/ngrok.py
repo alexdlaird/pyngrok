@@ -180,7 +180,7 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
 
     logger.debug("Connecting tunnel with options: {}".format(options))
 
-    tunnel = NgrokTunnel(api_request("{}/api/{}".format(api_url, "tunnels"), method="POST", data=options,
+    tunnel = NgrokTunnel(api_request("{}/api/tunnels".format(api_url), method="POST", data=options,
                                      timeout=pyngrok_config.request_timeout))
 
     if proto == "http" and not options.get("bind_tls", False):
@@ -243,7 +243,7 @@ def get_tunnels(pyngrok_config=None):
     api_url = get_ngrok_process(pyngrok_config).api_url
 
     tunnels = []
-    for tunnel in api_request("{}/api/{}".format(api_url, "tunnels"), method="GET", data=None,
+    for tunnel in api_request("{}/api/tunnels".format(api_url), method="GET", data=None,
                               timeout=pyngrok_config.request_timeout)["tunnels"]:
         tunnels.append(NgrokTunnel(tunnel))
 
@@ -269,6 +269,24 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
     """
     Invoke an API request to the given URI, returning JSON data from the response as a dict.
 
+    One use for this method is making requests to ``ngrok`` tunnels:
+
+    .. code-block:: python
+
+        from pyngrok import ngrok
+
+        public_url = ngrok.connect()
+        response = ngrok.api_request("{}/some-route".format(public_url), method="POST", data={"foo": "bar"})
+
+    Another is making requests to the ``ngrok`` API itself:
+
+    .. code-block:: python
+
+        from pyngrok import ngrok
+
+        api_url = ngrok.get_ngrok_process().api_url
+        response = ngrok.api_request("{}/api/requests/http".format(api_url), params={"tunnel_name": "foo"})
+
     :param url: The request URL.
     :type url: str
     :param method: The HTTP method.
@@ -276,7 +294,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
     :param data: The request body.
     :type data: dict, optional
     :param params: The URL parameters.
-    :type params: list[str], optional
+    :type params: dict, optional
     :param timeout: The request timeout, in seconds.
     :type timeout: float, optional
     :return: The response from the request.
