@@ -26,7 +26,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.12"
+__version__ = "4.1.13"
 
 logger = logging.getLogger(__name__)
 
@@ -276,7 +276,8 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
         from pyngrok import ngrok
 
         public_url = ngrok.connect()
-        response = ngrok.api_request("{}/some-route".format(public_url), method="POST", data={"foo": "bar"})
+        response = ngrok.api_request("{}/some-route".format(public_url),
+                                     method="POST", data={"foo": "bar"})
 
     Another is making requests to the ``ngrok`` API itself:
 
@@ -285,7 +286,8 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
         from pyngrok import ngrok
 
         api_url = ngrok.get_ngrok_process().api_url
-        response = ngrok.api_request("{}/api/requests/http".format(api_url), params={"tunnel_name": "foo"})
+        response = ngrok.api_request("{}/api/requests/http".format(api_url),
+                                     params={"tunnel_name": "foo"})
 
     :param url: The request URL.
     :type url: str

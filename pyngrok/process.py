@@ -28,7 +28,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.9"
+__version__ = "4.1.13"
 
 logger = logging.getLogger(__name__)
 
@@ -115,7 +115,7 @@ class NgrokProcess:
         if log.line == "":
             return None
 
-        logger.log(getattr(logging, log.lvl), line)
+        logger.log(getattr(logging, log.lvl), log.line)
         self.logs.append(log)
         if len(self.logs) > self.pyngrok_config.max_logs:
             self.logs.pop(0)

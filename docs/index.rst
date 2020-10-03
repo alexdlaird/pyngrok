@@ -80,7 +80,8 @@ accomplished with the :func:`~pyngrok.ngrok.get_tunnels` method, which returns a
     from pyngrok import ngrok
 
     tunnels = ngrok.get_tunnels()
-    # A public ngrok URL that tunnels to port 80 (ex. http://<public_sub>.ngrok.io)
+    # A public ngrok URL that tunnels to port 80
+    # (ex. http://<public_sub>.ngrok.io)
     public_url = tunnels[0].public_url
 
 Close a Tunnel
@@ -187,7 +188,8 @@ can be accomplished by using ``pyngrok`` to open a ``tcp`` tunnel to the desired
     from pyngrok import ngrok
 
     # Open a tunnel to MySQL with a Reserved TCP Address
-    ngrok.connect(3306, "tcp", options={"remote_addr": "1.tcp.ngrok.io:12345"})
+    ngrok.connect(3306, "tcp",
+                  options={"remote_addr": "1.tcp.ngrok.io:12345"})
 
 
 We can also serve up local directories via `ngrok's built-in fileserver <https://ngrok.com/docs#http-file-urls>`_.
@@ -239,7 +241,8 @@ the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it to ``ngrok``
 
     ngrok.set_auth_token("<NGROK_AUTH_TOKEN>")
 
-    # Once an auth token is set, we are able to open multiple tunnels at the same time
+    # Once an auth token is set, we are able to open
+    # multiple tunnels at the same time
     ngrok.connect()
     ngrok.connect(8000)
 
@@ -284,9 +287,11 @@ Here is an example starting ``ngrok`` in Australia, then opening a tunnel with s
     from pyngrok.conf import PyngrokConfig
     from pyngrok import ngrok
 
+    options = {"subdomain": "foo", "auth": "username:password"}
     pyngrok_config = PyngrokConfig(region="au")
 
-    url = ngrok.connect(options={"subdomain": "foo", "auth": "username:password"}, pyngrok_config=pyngrok_config)
+    url = ngrok.connect(options=options,
+                        pyngrok_config=pyngrok_config)
 
 Config File
 -----------
