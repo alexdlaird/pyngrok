@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.12...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.13...HEAD)
+
+## [4.1.13](https://github.com/alexdlaird/pyngrok/compare/4.1.12...4.1.13) - 2020-10-02
 ### Added
 - An [integration example for Google Colab](https://pyngrok.readthedocs.io/en/latest/integrations.html#google-colaboratory).
 - Documentation improvements.
