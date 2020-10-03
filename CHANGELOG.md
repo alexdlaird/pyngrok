@@ -7,12 +7,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [4.1.13](https://github.com/alexdlaird/pyngrok/compare/4.1.12...4.1.13) - 2020-10-02
 ### Added
-- An [integration example for Google Colab](https://pyngrok.readthedocs.io/en/latest/integrations.html#google-colaboratory).
+- An [integration example for Google Colab](https://pyngrok.readthedocs.io/en/4.1.13/integrations.html#google-colaboratory).
 - Documentation improvements.
 - Test `api_request()` using `params` for filtering with special characters.
 
 ### Fixed
-- [ngrok.api_request()](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.installer)'s `params` is now properly documented as a `dict` instead of a `list`.
+- [ngrok.api_request()](https://pyngrok.readthedocs.io/en/4.1.13/api.html#pyngrok.installer)'s `params` is now properly documented as a `dict` instead of a `list`.
 - Trimmed trailing line return from `ngrok` logs.
 
 ## [4.1.12](https://github.com/alexdlaird/pyngrok/compare/4.1.11...4.1.12) - 2020-09-10
