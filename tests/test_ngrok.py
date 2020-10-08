@@ -394,7 +394,7 @@ class TestNgrok(NgrokTestCase):
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
         public_url = ngrok.connect(urlparse(current_process.api_url).port)
         time.sleep(1)
-        ngrok_tunnel = next(filter(lambda t: t.public_url == public_url, ngrok.get_tunnels()))
+        ngrok_tunnel = list(filter(lambda t: t.public_url == public_url, ngrok.get_tunnels()))[0]
         self.assertEqual(0, ngrok_tunnel.metrics.get("http").get("count"))
 
         urlopen("{}/status".format(public_url)).read()
