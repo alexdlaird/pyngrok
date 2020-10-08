@@ -333,7 +333,7 @@ def _validate_path(ngrok_path):
     """
     if not os.path.exists(ngrok_path):
         raise PyngrokNgrokError(
-            "ngrok binary was not found. Be sure to call \"ngrok.ensure_ngrok_installed()\" first for "
+            "ngrok binary was not found. Be sure to call \"ngrok.install_ngrok()\" first for "
             "\"ngrok_path\": {}".format(ngrok_path))
 
     if ngrok_path in _current_processes:
