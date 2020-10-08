@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [5.0.0](https://github.com/alexdlaird/pyngrok/compare/4.1.14...5.0.0) - TBD
 ### Changed
-- **Breaking**: [NgrokTunnel.`__init`__()'s](https://pyngrok.readthedocs.io/en/develop/_modules/pyngrok/ngrok.html#NgrokTunnel)'s params (`data`, `pyngrok_config`, and `api_url`) are now required.
+- [NgrokTunnel.`__init`__()'s](https://pyngrok.readthedocs.io/en/develop/_modules/pyngrok/ngrok.html#NgrokTunnel)'s params (`data`, `pyngrok_config`, and `api_url`) are now required.
 
 ## [4.1.14](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.14) - TBD
 ### Added
