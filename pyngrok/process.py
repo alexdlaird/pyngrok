@@ -259,6 +259,23 @@ def set_auth_token(pyngrok_config, token):
         raise PyngrokNgrokError("An error occurred when saving the auth token: {}".format(result))
 
 
+def is_process_running(ngrok_path):
+    """
+    Check if the ``ngrok`` process is currently running.
+
+    :param ngrok_path: The path to the ``ngrok`` binary.
+    :return: ``True`` if ``ngrok`` is running from the given path.
+    """
+    if ngrok_path in _current_processes:
+        # Ensure the process is still running and hasn't been killed externally, otherwise cleanup
+        if _current_processes[ngrok_path].proc.poll() is None:
+            return True
+        else:
+            _current_processes.pop(ngrok_path, None)
+
+    return False
+
+
 def get_process(pyngrok_config):
     """
     Retrieve the current ``ngrok`` process for the given config's ``ngrok_path``.
@@ -271,12 +288,8 @@ def get_process(pyngrok_config):
     :return: The ``ngrok`` process.
     :rtype: NgrokProcess
     """
-    if pyngrok_config.ngrok_path in _current_processes:
-        # Ensure the process is still running and hasn't been killed externally
-        if _current_processes[pyngrok_config.ngrok_path].proc.poll() is None:
-            return _current_processes[pyngrok_config.ngrok_path]
-        else:
-            _current_processes.pop(pyngrok_config.ngrok_path, None)
+    if is_process_running(pyngrok_config.ngrok_path):
+        return _current_processes[pyngrok_config.ngrok_path]
 
     return _start_process(pyngrok_config)
 
@@ -289,7 +302,7 @@ def kill_process(ngrok_path):
     :param ngrok_path: The path to the ``ngrok`` binary.
     :type ngrok_path: str
     """
-    if ngrok_path in _current_processes:
+    if is_process_running(ngrok_path):
         ngrok_process = _current_processes[ngrok_path]
 
         logger.info("Killing ngrok process: {}".format(ngrok_process.proc.pid))
@@ -368,11 +381,13 @@ def _start_process(pyngrok_config):
     :return: The ``ngrok`` process.
     :rtype: NgrokProcess
     """
-    _validate_path(pyngrok_config.ngrok_path)
     if pyngrok_config.config_path is not None:
-        _validate_config(pyngrok_config.config_path)
+        config_path = pyngrok_config.config_path
     else:
-        _validate_config(conf.DEFAULT_NGROK_CONFIG_PATH)
+        config_path = conf.DEFAULT_NGROK_CONFIG_PATH
+
+    _validate_path(pyngrok_config.ngrok_path)
+    _validate_config(config_path)
 
     start = [pyngrok_config.ngrok_path, "start", "--none", "--log=stdout"]
     if pyngrok_config.config_path:

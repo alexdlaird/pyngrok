@@ -26,7 +26,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.2"
+__version__ = "5.0.0"
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +66,8 @@ def get_ngrok_bin():
 
 def install_ngrok(ngrok_path, **kwargs):
     """
-    Download and install ``ngrok`` for the current system in the given location.
+    Download and install the latest ``ngrok`` for the current system, overwriting any existing contents
+    at the given path.
 
     :param ngrok_path: The path to where the ``ngrok`` binary will be downloaded.
     :type ngrok_path: str

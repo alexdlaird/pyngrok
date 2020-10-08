@@ -91,8 +91,8 @@ class NgrokTunnel:
 
 def install_ngrok(ngrok_path):
     """
-    Install ``ngrok`` at the given path, downloading and installing the binary for the current system. If ``ngrok``
-    is already installed for the given path, calling this method will do nothing.
+    Download, install, and initialize ``ngrok`` for the current system at the given path. If ``ngrok`` and its default
+    config is already installed, calling this method will do nothing.
 
     :param ngrok_path: The path to the ``ngrok`` binary.
     :type ngrok_path: str
@@ -136,6 +136,9 @@ def get_ngrok_process(pyngrok_config=None):
 
     If ``ngrok`` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
+
+    Use :func:`~pyngrok.process.is_process_running` to check if a process is running without also implicitly
+    starting it.
 
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         defaults to ``conf.DEFAULT_PYNGROK_CONFIG`` (which can be overridden instead,
@@ -217,13 +220,7 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
 
 def disconnect(public_url, pyngrok_config=None):
     """
-    Disconnect the ``ngrok`` tunnel for the given URL.
-
-    If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
-    will first download and install ``ngrok``.
-
-    If ``ngrok`` is not running, calling this method will first start a process with
-    :class:`~pyngrok.conf.PyngrokConfig`.
+    Disconnect the ``ngrok`` tunnel for the given URL, if open.
 
     :param public_url: The public URL of the tunnel to disconnect.
     :type public_url: str
@@ -234,6 +231,9 @@ def disconnect(public_url, pyngrok_config=None):
     """
     if pyngrok_config is None:
         pyngrok_config = conf.DEFAULT_PYNGROK_CONFIG
+
+    if not process.is_process_running(pyngrok_config.ngrok_path):
+        return
 
     api_url = get_ngrok_process(pyngrok_config).api_url
 
@@ -378,9 +378,9 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
         raise PyngrokNgrokURLError("ngrok client exception, URLError: {}".format(e.reason), e.reason)
 
 
-def run(args=None):
+def run(args=None, pyngrok_config=None):
     """
-    Ensure ``ngrok`` is installed in the default location, then call :func:`~pyngrok.process.run_process`.
+    Ensure ``ngrok`` is installed at the default path, then call :func:`~pyngrok.process.run_process`.
 
     This method is meant for interacting with ``ngrok`` from the command line and is not necessarily
     compatible with non-blocking API methods. For that, use :mod:`~pyngrok.ngrok`'s interface methods (like
@@ -391,10 +391,12 @@ def run(args=None):
     """
     if args is None:
         args = []
+    if pyngrok_config is None:
+        pyngrok_config = conf.DEFAULT_PYNGROK_CONFIG
 
-    install_ngrok(conf.DEFAULT_NGROK_PATH)
+    install_ngrok(pyngrok_config.ngrok_path)
 
-    process.run_process(conf.DEFAULT_NGROK_PATH, args)
+    process.run_process(pyngrok_config.ngrok_path, args)
 
 
 def main():
