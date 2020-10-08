@@ -86,7 +86,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [4.1.0](https://github.com/alexdlaird/pyngrok/compare/4.0.3...4.1.0) - 2020-06-18
 ### Added
 - Progress bar when `ngrok` is being downloaded and installed for the first time.
-- Version number displayed in CLI's `--help`
+- Version number displayed in CLI's `--help`.
 - `installer.install_ngrok()` and `installer._download_file()` now accept `**kwargs`, which are passed down to [urllib.request.urlopen](https://docs.python.org/3/library/urllib.request.html#urllib.request.urlopen), and updated [the documentation](https://pyngrok.readthedocs.io/en/4.1.0/api.html#pyngrok.installer).
 
 ### Fixed
@@ -114,7 +114,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Added
 - `PyngrokConfig`, which contains all of `pyngrok`'s configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of kwargs. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig).
 - `log_event_callback` is a new configuration parameter in `PyngrokConfig`, a callback that will be invoked each time a `ngrok` log is emitted.
-- `monitor_thread` is a new configuration parameter in `PyngrokConfig` which determines whether `ngrok` should continue to be monitored (for logs, etc.) after it has finished starting. Defaults to `True.`
+- `monitor_thread` is a new configuration parameter in `PyngrokConfig` which determines whether `ngrok` should continue to be monitored (for logs, etc.) after it has finished starting. Defaults to `True`.
 - `startup_timeout` is a new configuration parameter in `PyngrokConfig`. 
 - `max_logs` is a new configuration parameter in `PyngrokConfig`.
 - `start_monitor_thread()` and `stop_monitor_thread()` to [NgrokProcess](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.process.NgrokProcess).
@@ -207,7 +207,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [2.0.2](https://github.com/alexdlaird/pyngrok/compare/2.0.1...2.0.2) - 2020-02-08
 ### Changed
-- `DEFAULT_RETRY_COUNT` for use in `installer._download_file()`
+- `DEFAULT_RETRY_COUNT` for use in `installer._download_file()`.
 
 ## [2.0.1](https://github.com/alexdlaird/pyngrok/compare/2.0.0...2.0.1) - 2020-02-01
 ### Fixed
@@ -280,7 +280,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 - Sometimes `ngrok` logs errors on startup but doesn't set the `lvl=error` flag, so `pyngrok` now also checks the `err` variable to see if it contains an error to surface.
-- If the `ngrok` process started by `pyngrok` is killed externally, `pyngrok` now handles its own state properly. 
+- If the `ngrok` process started by `pyngrok` is killed externally, `pyngrok` now handles its own state properly.
 - Documentation issues.
 
 ## [1.3.4](https://github.com/alexdlaird/pyngrok/compare/1.3.0...1.3.4) - 2019-05-26
