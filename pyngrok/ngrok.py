@@ -53,12 +53,7 @@ class NgrokTunnel:
     :vartype api_url: str
     """
 
-    def __init__(self, data=None, pyngrok_config=None, api_url=None):
-        if data is None:
-            data = {}
-        if pyngrok_config is None:
-            pyngrok_config = conf.DEFAULT_PYNGROK_CONFIG
-
+    def __init__(self, data, pyngrok_config, api_url):
         self.name = data.get("name")
         self.proto = data.get("proto")
         self.uri = data.get("uri")
@@ -80,9 +75,6 @@ class NgrokTunnel:
         """
         Refresh the metrics from the tunnel.
         """
-        if self.api_url is None:
-            raise PyngrokError("\"api_url\" was not initialized with this NgrokTunnel, so this method cannot be used.")
-
         data = api_request("{}{}".format(self.api_url, self.uri), method="GET", data=None,
                            timeout=self.pyngrok_config.request_timeout)
 
@@ -208,7 +200,7 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
 
     tunnel = NgrokTunnel(api_request("{}/api/tunnels".format(api_url), method="POST", data=options,
                                      timeout=pyngrok_config.request_timeout),
-                         pyngrok_config=pyngrok_config, api_url=api_url)
+                         pyngrok_config, api_url)
 
     if proto == "http" and not options.get("bind_tls", False):
         tunnel.public_url = tunnel.public_url.replace("https", "http")
@@ -274,7 +266,7 @@ def get_tunnels(pyngrok_config=None):
     tunnels = []
     for tunnel in api_request("{}/api/tunnels".format(api_url), method="GET", data=None,
                               timeout=pyngrok_config.request_timeout)["tunnels"]:
-        tunnels.append(NgrokTunnel(tunnel, pyngrok_config=pyngrok_config, api_url=api_url))
+        tunnels.append(NgrokTunnel(tunnel, pyngrok_config, api_url))
 
     return tunnels
 
