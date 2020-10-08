@@ -3,7 +3,6 @@ import logging
 import os
 import socket
 import sys
-import time
 import uuid
 
 from future.standard_library import install_aliases
