@@ -8,7 +8,7 @@ import uuid
 from future.standard_library import install_aliases
 
 from pyngrok import process, conf
-from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError
+from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
 from pyngrok.installer import install_ngrok, install_default_config
 
 install_aliases()
@@ -47,18 +47,26 @@ class NgrokTunnel:
     :vartype config: dict
     :var metrics: Metrics for `the tunnel <https://ngrok.com/docs#list-tunnels>`_.
     :vartype metrics: dict
+    :var pyngrok_config: The ``pyngrok`` configuration to use with ``ngrok``.
+    :vartype pyngrok_config: PyngrokConfig
+    :var api_url: The API URL for the ``ngrok`` web interface.
+    :vartype api_url: str
     """
 
-    def __init__(self, data=None):
+    def __init__(self, data=None, pyngrok_config=None, api_url=None):
         if data is None:
             data = {}
+        if pyngrok_config is None:
+            pyngrok_config = conf.DEFAULT_PYNGROK_CONFIG
 
-        self.name = data["name"] if data else None
-        self.proto = data["proto"] if data else None
-        self.uri = data["uri"] if data else None
-        self.public_url = data["public_url"] if data else None
-        self.config = data["config"] if data else {}
-        self.metrics = data["metrics"] if data else None
+        self.name = data.get("name")
+        self.proto = data.get("proto")
+        self.uri = data.get("uri")
+        self.public_url = data.get("public_url")
+        self.config = data.get("config", {})
+        self.metrics = data.get("metrics", {})
+        self.pyngrok_config = pyngrok_config
+        self.api_url = api_url
 
     def __repr__(self):
         return "<NgrokTunnel: \"{}\" -> \"{}\">".format(self.public_url, self.config["addr"]) if self.config.get(
@@ -67,6 +75,21 @@ class NgrokTunnel:
     def __str__(self):  # pragma: no cover
         return "NgrokTunnel: \"{}\" -> \"{}\"".format(self.public_url, self.config["addr"]) if self.config.get(
             "addr", None) else "<pending Tunnel>"
+
+    def refresh_metrics(self):
+        """
+        Refresh the metrics from the tunnel.
+        """
+        if self.api_url is None:
+            raise PyngrokError("\"api_url\" was not initialized with this NgrokTunnel, so this method cannot be used.")
+
+        data = api_request("{}{}".format(self.api_url, self.uri), method="GET", data=None,
+                           timeout=self.pyngrok_config.request_timeout)
+
+        if "metrics" not in data:
+            raise PyngrokError("The ngrok API did not return metrics in the response.")
+
+        self.metrics = data.get("metrics", {})
 
 
 def ensure_ngrok_installed(ngrok_path):
@@ -184,7 +207,8 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
     logger.debug("Connecting tunnel with options: {}".format(options))
 
     tunnel = NgrokTunnel(api_request("{}/api/tunnels".format(api_url), method="POST", data=options,
-                                     timeout=pyngrok_config.request_timeout))
+                                     timeout=pyngrok_config.request_timeout),
+                         pyngrok_config=pyngrok_config, api_url=api_url)
 
     if proto == "http" and not options.get("bind_tls", False):
         tunnel.public_url = tunnel.public_url.replace("https", "http")
@@ -250,7 +274,7 @@ def get_tunnels(pyngrok_config=None):
     tunnels = []
     for tunnel in api_request("{}/api/tunnels".format(api_url), method="GET", data=None,
                               timeout=pyngrok_config.request_timeout)["tunnels"]:
-        tunnels.append(NgrokTunnel(tunnel))
+        tunnels.append(NgrokTunnel(tunnel, pyngrok_config=pyngrok_config, api_url=api_url))
 
     return tunnels
 
