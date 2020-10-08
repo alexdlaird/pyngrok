@@ -267,7 +267,7 @@ def kill(pyngrok_config=None):
 
 def api_request(url, method="GET", data=None, params=None, timeout=4):
     """
-    Invoke an API request to the given URI, returning JSON data from the response as a dict.
+    Invoke an API request to the given URL, returning JSON data from the response as a dict.
 
     One use for this method is making requests to ``ngrok`` tunnels:
 
