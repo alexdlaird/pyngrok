@@ -95,7 +95,8 @@ def set_auth_token(token, pyngrok_config=None):
     :param token: The auth token to set.
     :type token: str
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
-        defaults to ``conf.DEFAULT_PYNGROK_CONFIG``.
+        defaults to ``conf.DEFAULT_PYNGROK_CONFIG`` (which can be overridden instead,
+        `as shown here <index.html#config-file>`_).
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
@@ -117,7 +118,8 @@ def get_ngrok_process(pyngrok_config=None):
     :class:`~pyngrok.conf.PyngrokConfig`.
 
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
-        defaults to ``conf.DEFAULT_PYNGROK_CONFIG``.
+        defaults to ``conf.DEFAULT_PYNGROK_CONFIG`` (which can be overridden instead,
+        `as shown here <index.html#config-file>`_).
     :type pyngrok_config: PyngrokConfig, optional
     :return: The ``ngrok`` process.
     :rtype: NgrokProcess
@@ -132,7 +134,7 @@ def get_ngrok_process(pyngrok_config=None):
 
 def connect(port="80", proto="http", name=None, options=None, pyngrok_config=None):
     """
-    Establish a new ``ngrok`` tunnel to the given port and protocol, returning the connected
+    Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning the connected
     public URL that tunnels to the local port.
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
@@ -152,7 +154,8 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
         tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
     :type options: dict[str, str], optional
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
-        defaults to ``conf.DEFAULT_PYNGROK_CONFIG``.
+        defaults to ``conf.DEFAULT_PYNGROK_CONFIG`` (which can be overridden instead,
+        `as shown here <index.html#config-file>`_).
     :type pyngrok_config: PyngrokConfig, optional
     :return: The connected public URL.
     :rtype: str
@@ -202,7 +205,8 @@ def disconnect(public_url, pyngrok_config=None):
     :param public_url: The public URL of the tunnel to disconnect.
     :type public_url: str
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
-        defaults to ``conf.DEFAULT_PYNGROK_CONFIG``.
+        defaults to ``conf.DEFAULT_PYNGROK_CONFIG`` (which can be overridden instead,
+        `as shown here <index.html#config-file>`_).
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
@@ -232,7 +236,8 @@ def get_tunnels(pyngrok_config=None):
     :class:`~pyngrok.conf.PyngrokConfig`.
 
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
-        defaults to ``conf.DEFAULT_PYNGROK_CONFIG``.
+        defaults to ``conf.DEFAULT_PYNGROK_CONFIG`` (which can be overridden instead,
+        `as shown here <index.html#config-file>`_).
     :type pyngrok_config: PyngrokConfig, optional
     :return: The active ``ngrok`` tunnels.
     :rtype: list[NgrokTunnel]
@@ -256,7 +261,8 @@ def kill(pyngrok_config=None):
     block, it will just issue a kill request.
 
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
-        defaults to ``conf.DEFAULT_PYNGROK_CONFIG``.
+        defaults to ``conf.DEFAULT_PYNGROK_CONFIG`` (which can be overridden instead,
+        `as shown here <index.html#config-file>`_).
     :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:

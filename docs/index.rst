@@ -310,7 +310,7 @@ Either use :class:`~pyngrok.conf.PyngrokConfig`:
 
     ngrok.get_tunnels(pyngrok_config=pyngrok_config)
 
-or override the default:
+or override the default to not have to pass ``pyngrok_config`` to each method:
 
 .. code-block:: python
 
