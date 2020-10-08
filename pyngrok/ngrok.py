@@ -7,9 +7,8 @@ import uuid
 
 from future.standard_library import install_aliases
 
-from pyngrok import process, conf
+from pyngrok import process, conf, installer
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
-from pyngrok.installer import install_ngrok, install_default_config
 
 install_aliases()
 
@@ -26,7 +25,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.13"
+__version__ = "5.0.0"
 
 logger = logging.getLogger(__name__)
 
@@ -90,19 +89,19 @@ class NgrokTunnel:
         self.metrics = self.data["metrics"]
 
 
-def ensure_ngrok_installed(ngrok_path):
+def install_ngrok(ngrok_path):
     """
-    Ensure ``ngrok`` is installed at the given path, downloading and installing the binary for
-    the current system if not.
+    Install ``ngrok`` at the given path, downloading and installing the binary for the current system. If ``ngrok``
+    is already installed for the given path, calling this method will do nothing.
 
     :param ngrok_path: The path to the ``ngrok`` binary.
     :type ngrok_path: str
     """
     if not os.path.exists(ngrok_path):
-        install_ngrok(ngrok_path)
+        installer.install_ngrok(ngrok_path)
 
     if not os.path.exists(conf.DEFAULT_NGROK_CONFIG_PATH):
-        install_default_config(conf.DEFAULT_NGROK_CONFIG_PATH)
+        installer.install_default_config(conf.DEFAULT_NGROK_CONFIG_PATH)
 
 
 def set_auth_token(token, pyngrok_config=None):
@@ -123,7 +122,7 @@ def set_auth_token(token, pyngrok_config=None):
     if pyngrok_config is None:
         pyngrok_config = conf.DEFAULT_PYNGROK_CONFIG
 
-    ensure_ngrok_installed(pyngrok_config.ngrok_path)
+    install_ngrok(pyngrok_config.ngrok_path)
 
     process.set_auth_token(pyngrok_config, token)
 
@@ -148,7 +147,7 @@ def get_ngrok_process(pyngrok_config=None):
     if pyngrok_config is None:
         pyngrok_config = conf.DEFAULT_PYNGROK_CONFIG
 
-    ensure_ngrok_installed(pyngrok_config.ngrok_path)
+    install_ngrok(pyngrok_config.ngrok_path)
 
     return process.get_process(pyngrok_config)
 
@@ -393,7 +392,7 @@ def run(args=None):
     if args is None:
         args = []
 
-    ensure_ngrok_installed(conf.DEFAULT_NGROK_PATH)
+    install_ngrok(conf.DEFAULT_NGROK_PATH)
 
     process.run_process(conf.DEFAULT_NGROK_PATH, args)
 

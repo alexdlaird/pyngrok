@@ -10,9 +10,8 @@ import time
 import yaml
 from future.standard_library import install_aliases
 
-from pyngrok import conf
+from pyngrok import conf, installer
 from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError
-from pyngrok.installer import validate_config
 
 install_aliases()
 
@@ -28,7 +27,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.13"
+__version__ = "5.0.0"
 
 logger = logging.getLogger(__name__)
 
@@ -320,16 +319,15 @@ def run_process(ngrok_path, args):
     :param args: The args to pass to ``ngrok``.
     :type args: list[str]
     """
-    _ensure_path_ready(ngrok_path)
+    _validate_path(ngrok_path)
 
     start = [ngrok_path] + args
     subprocess.call(start)
 
 
-def _ensure_path_ready(ngrok_path):
+def _validate_path(ngrok_path):
     """
-    Ensure the binary for ``ngrok`` at the given path is ready to be started, raise a relevant
-    exception if not.
+    Validate the given path exists, is a ``ngrok``, and is ready to be started, otherwise raise a relevant exception.
 
     :param ngrok_path: The path to the ``ngrok`` binary.
     """
@@ -347,7 +345,7 @@ def _validate_config(config_path):
         config = yaml.safe_load(config_file)
 
     if config is not None:
-        validate_config(config)
+        installer.validate_config(config)
 
 
 def _terminate_process(process):
@@ -370,7 +368,7 @@ def _start_process(pyngrok_config):
     :return: The ``ngrok`` process.
     :rtype: NgrokProcess
     """
-    _ensure_path_ready(pyngrok_config.ngrok_path)
+    _validate_path(pyngrok_config.ngrok_path)
     if pyngrok_config.config_path is not None:
         _validate_config(pyngrok_config.config_path)
     else:

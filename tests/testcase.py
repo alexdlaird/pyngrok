@@ -11,7 +11,7 @@ from pyngrok.conf import PyngrokConfig
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.12"
+__version__ = "5.0.0"
 
 
 class NgrokTestCase(unittest.TestCase):
@@ -40,7 +40,7 @@ class NgrokTestCase(unittest.TestCase):
 
     @staticmethod
     def given_ngrok_installed(ngrok_path):
-        ngrok.ensure_ngrok_installed(ngrok_path)
+        ngrok.install_ngrok(ngrok_path)
 
     @staticmethod
     def given_ngrok_not_installed(ngrok_path):
