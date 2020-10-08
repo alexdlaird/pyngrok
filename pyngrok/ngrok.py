@@ -35,6 +35,8 @@ class NgrokTunnel:
     """
     An object containing information about a ``ngrok`` tunnel.
 
+    :var data: The original tunnel data.
+    :vartype data: dict
     :var name: The name of the tunnel.
     :vartype name: str
     :var proto: A valid `tunnel protocol <https://ngrok.com/docs#tunnel-definitions>`_.
@@ -54,12 +56,15 @@ class NgrokTunnel:
     """
 
     def __init__(self, data, pyngrok_config, api_url):
+        self.data = data
+
         self.name = data.get("name")
         self.proto = data.get("proto")
         self.uri = data.get("uri")
         self.public_url = data.get("public_url")
         self.config = data.get("config", {})
         self.metrics = data.get("metrics", {})
+
         self.pyngrok_config = pyngrok_config
         self.api_url = api_url
 
@@ -81,7 +86,8 @@ class NgrokTunnel:
         if "metrics" not in data:
             raise PyngrokError("The ngrok API did not return \"metrics\" in the response")
 
-        self.metrics = data["metrics"]
+        self.data["metrics"] = data["metrics"]
+        self.metrics = self.data["metrics"]
 
 
 def ensure_ngrok_installed(ngrok_path):

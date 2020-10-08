@@ -396,6 +396,7 @@ class TestNgrok(NgrokTestCase):
         ngrok_tunnel = ngrok.connect(urlparse(current_process.api_url).port, options={"bind_tls": True})
         time.sleep(1)
         self.assertEqual(0, ngrok_tunnel.metrics.get("http").get("count"))
+        self.assertEqual(ngrok_tunnel.data["metrics"].get("http").get("count"), 0)
 
         urlopen("{}/status".format(ngrok_tunnel.public_url)).read()
         time.sleep(3)
@@ -405,3 +406,4 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertGreater(ngrok_tunnel.metrics.get("http").get("count"), 0)
+        self.assertGreater(ngrok_tunnel.data["metrics"].get("http").get("count"), 0)

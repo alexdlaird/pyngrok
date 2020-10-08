@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.0.0...HEAD)
 
 ## [5.0.0](https://github.com/alexdlaird/pyngrok/compare/4.1.14...5.0.0) - TBD
+### Added
+- `data` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel), which holds the original tunnel data.
+
 ### Changed
 - [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect) now returns a [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel) instead of a `str` of the public URL. The returned `NgrokTunnel` has a reference to the previously returned `public_url` in it.
 - [NgrokTunnel.`__init`__()'s](https://pyngrok.readthedocs.io/en/develop/_modules/pyngrok/ngrok.html#NgrokTunnel) params (`data`, `pyngrok_config`, and `api_url`) are now required.
