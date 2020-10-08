@@ -79,9 +79,9 @@ class NgrokTunnel:
                            timeout=self.pyngrok_config.request_timeout)
 
         if "metrics" not in data:
-            raise PyngrokError("The ngrok API did not return metrics in the response.")
+            raise PyngrokError("The ngrok API did not return \"metrics\" in the response")
 
-        self.metrics = data.get("metrics", {})
+        self.metrics = data["metrics"]
 
 
 def ensure_ngrok_installed(ngrok_path):
