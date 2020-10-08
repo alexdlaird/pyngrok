@@ -12,14 +12,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [4.1.14](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.14) - TBD
 ### Added
-- [NgrokTunnel.refresh_metrics()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics)
+- `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
  - Documentation improvements.
 
 ## [4.1.13](https://github.com/alexdlaird/pyngrok/compare/4.1.12...4.1.13) - 2020-10-02
 ### Added
 - An [integration example for Google Colab](https://pyngrok.readthedocs.io/en/4.1.13/integrations.html#google-colaboratory).
 - Documentation improvements.
-- Test `api_request()` using `params` for filtering with special characters.
+- Test `ngrok.api_request()` using `params` for filtering with special characters.
 
 ### Fixed
 - [ngrok.api_request()](https://pyngrok.readthedocs.io/en/4.1.13/api.html#pyngrok.installer)'s `params` is now properly documented as a `dict` instead of a `list`.
@@ -37,7 +37,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [4.1.10](https://github.com/alexdlaird/pyngrok/compare/4.1.9...4.1.10) - 2020-08-14
 ### Fixed
-- When `bind_tls` is True, the `public_url` return from `connect()` is now `https`.
+- When `bind_tls` is `True`, the `public_url` return from `ngrok.connect()` is now `https`.
 
 ## [4.1.9](https://github.com/alexdlaird/pyngrok/compare/4.1.8...4.1.9) - 2020-08-12
 ### Fixed
