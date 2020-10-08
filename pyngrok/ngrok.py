@@ -3,6 +3,7 @@ import logging
 import os
 import socket
 import sys
+import time
 import uuid
 
 from future.standard_library import install_aliases
@@ -149,8 +150,8 @@ def get_ngrok_process(pyngrok_config=None):
 
 def connect(port="80", proto="http", name=None, options=None, pyngrok_config=None):
     """
-    Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning the connected
-    public URL that tunnels to the local port.
+    Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning a object representing
+    the connected tunnel.
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
@@ -172,8 +173,8 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
         defaults to ``conf.DEFAULT_PYNGROK_CONFIG`` (which can be overridden instead,
         `as shown here <index.html#config-file>`_).
     :type pyngrok_config: PyngrokConfig, optional
-    :return: The connected public URL.
-    :rtype: str
+    :return: The created ``ngrok`` tunnel.
+    :rtype: NgrokTunnel
     """
     if options is None:
         options = {}
@@ -203,9 +204,11 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
                          pyngrok_config, api_url)
 
     if proto == "http" and not options.get("bind_tls", False):
-        tunnel.public_url = tunnel.public_url.replace("https", "http")
+        tunnel = NgrokTunnel(api_request("{}{}%20%28http%29".format(api_url, tunnel.uri), method="GET",
+                                         timeout=pyngrok_config.request_timeout),
+                             pyngrok_config, api_url)
 
-    return tunnel.public_url
+    return tunnel
 
 
 def disconnect(public_url, pyngrok_config=None):

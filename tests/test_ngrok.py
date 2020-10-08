@@ -54,7 +54,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 0)
 
         # WHEN
-        url = ngrok.connect(5000, pyngrok_config=self.pyngrok_config)
+        url = ngrok.connect(5000, pyngrok_config=self.pyngrok_config).public_url
         current_process = ngrok.get_ngrok_process()
 
         # THEN
@@ -80,7 +80,7 @@ class TestNgrok(NgrokTestCase):
 
     def test_get_tunnels(self):
         # GIVEN
-        url = ngrok.connect(pyngrok_config=self.pyngrok_config)
+        url = ngrok.connect(pyngrok_config=self.pyngrok_config).public_url
         time.sleep(1)
 
         # WHEN
@@ -99,14 +99,14 @@ class TestNgrok(NgrokTestCase):
 
     def test_bind_tls_https(self):
         # WHEN
-        url = ngrok.connect(pyngrok_config=self.pyngrok_config, options={"bind_tls": True})
+        url = ngrok.connect(pyngrok_config=self.pyngrok_config, options={"bind_tls": True}).public_url
 
         # THEN
         self.assertTrue(url.startswith("https"))
 
     def test_disconnect(self):
         # GIVEN
-        url = ngrok.connect(pyngrok_config=self.pyngrok_config)
+        url = ngrok.connect(pyngrok_config=self.pyngrok_config).public_url
         time.sleep(1)
         tunnels = ngrok.get_tunnels()
         # Two tunnels, as one each was created for "http" and "https"
@@ -164,10 +164,11 @@ class TestNgrok(NgrokTestCase):
         # GIVEN
         tunnel_name = "tunnel (1)"
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
-        public_url = ngrok.connect(urlparse(current_process.api_url).port, name=tunnel_name).replace("http", "https")
+        public_url = ngrok.connect(urlparse(current_process.api_url).port, name=tunnel_name,
+                                   options={"bind_tls": True}).public_url
         time.sleep(1)
 
-        urlopen(public_url).read()
+        urlopen("{}/status".format(public_url)).read()
         time.sleep(3)
 
         # WHEN
@@ -249,7 +250,7 @@ class TestNgrok(NgrokTestCase):
                                        auth_token=os.environ["NGROK_AUTHTOKEN"], region="au")
 
         # WHEN
-        url = ngrok.connect(5000, "tcp", options={"subdomain": subdomain}, pyngrok_config=pyngrok_config)
+        url = ngrok.connect(5000, "tcp", options={"subdomain": subdomain}, pyngrok_config=pyngrok_config).public_url
         current_process = ngrok.get_ngrok_process()
 
         # THEN
@@ -273,7 +274,7 @@ class TestNgrok(NgrokTestCase):
                                        auth_token=os.environ["NGROK_AUTHTOKEN"], region="au")
 
         # WHEN
-        url = ngrok.connect(5000, options={"subdomain": subdomain}, pyngrok_config=pyngrok_config)
+        url = ngrok.connect(5000, options={"subdomain": subdomain}, pyngrok_config=pyngrok_config).public_url
         current_process = ngrok.get_ngrok_process()
 
         # THEN
@@ -323,7 +324,7 @@ class TestNgrok(NgrokTestCase):
                                        auth_token=os.environ["NGROK_AUTHTOKEN"])
 
         # WHEN
-        url = ngrok.connect("file:///", pyngrok_config=pyngrok_config)
+        url = ngrok.connect("file:///", pyngrok_config=pyngrok_config).public_url
         current_process = ngrok.get_ngrok_process()
         time.sleep(1)
         tunnels = ngrok.get_tunnels()
@@ -355,7 +356,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 0)
         pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
                                        auth_token=os.environ["NGROK_AUTHTOKEN"])
-        url = ngrok.connect("file:///", pyngrok_config=pyngrok_config)
+        url = ngrok.connect("file:///", pyngrok_config=pyngrok_config).public_url
         time.sleep(1)
         tunnel = ngrok.get_tunnels()[0]
         api_url = ngrok.get_ngrok_process(pyngrok_config).api_url
@@ -392,12 +393,11 @@ class TestNgrok(NgrokTestCase):
     def test_ngrok_tunnel_refresh_metrics(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
-        public_url = ngrok.connect(urlparse(current_process.api_url).port)
+        ngrok_tunnel = ngrok.connect(urlparse(current_process.api_url).port, options={"bind_tls": True})
         time.sleep(1)
-        ngrok_tunnel = list(filter(lambda t: t.public_url == public_url, ngrok.get_tunnels()))[0]
         self.assertEqual(0, ngrok_tunnel.metrics.get("http").get("count"))
 
-        urlopen("{}/status".format(public_url)).read()
+        urlopen("{}/status".format(ngrok_tunnel.public_url)).read()
         time.sleep(3)
 
         # WHEN
