@@ -9,7 +9,6 @@ import zipfile
 
 import yaml
 from future.standard_library import install_aliases
-from pyngrok import conf
 
 from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
 
