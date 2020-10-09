@@ -75,9 +75,9 @@ _default_pyngrok_config = PyngrokConfig()
 
 def get_default():
     """
-    Get the default config to be used with methods in the :mod:`~pyngrok.ngrok` module. To not use this
-    default, the ``pyngrok_config`` keyword arg can also be passed individually to most of these methods, or
-    change the default with :func:`~pyngrok.conf.set_default`.
+    Get the default config to be used with methods in the :mod:`~pyngrok.ngrok` module. To override the
+    default individually, the ``pyngrok_config`` keyword arg can also be passed to most of these methods,
+    or set a new default config with :func:`~pyngrok.conf.set_default`.
 
     :return: The default ``pyngrok_config``.
     :rtype: PyngrokConfig
@@ -87,8 +87,8 @@ def get_default():
 
 def set_default(pyngrok_config):
     """
-    Set a new default config to be used with methods in the :mod:`~pyngrok.ngrok` module. To not use the
-    default, the ``pyngrok_config`` keyword arg can also be passed individually to most of these methods.
+    Set a new default config to be used with methods in the :mod:`~pyngrok.ngrok` module. To override the
+    default individually, the ``pyngrok_config`` keyword arg can also be passed to most of these methods.
 
     :param pyngrok_config: The new ``pyngrok_config`` to be used by default.
     :type pyngrok_config: PyngrokConfig
