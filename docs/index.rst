@@ -314,7 +314,7 @@ Either use :class:`~pyngrok.conf.PyngrokConfig`:
 
     ngrok.get_tunnels(pyngrok_config=pyngrok_config)
 
-or override the default to not have to pass ``pyngrok_config`` to each method:
+or override it on the default:
 
 .. code-block:: python
 
@@ -341,7 +341,7 @@ Either use :class:`~pyngrok.conf.PyngrokConfig`:
 
     ngrok.connect(pyngrok_config=pyngrok_config)
 
-or override the default:
+or override it on the default:
 
 .. code-block:: python
 
