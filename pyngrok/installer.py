@@ -66,14 +66,16 @@ def get_ngrok_bin():
 
 def install_ngrok(ngrok_path, **kwargs):
     """
-    Download and install ``ngrok`` for the current system in the given location.
+    Download and install the latest ``ngrok`` for the current system, overwriting any existing contents
+    at the given path.
 
     :param ngrok_path: The path to where the ``ngrok`` binary will be downloaded.
     :type ngrok_path: str
     :param kwargs: Remaining kwargs will be passed to :func:`_download_file`.
     :type kwargs: dict, optional
     """
-    logger.debug("Binary not found at {}, installing ngrok ...".format(ngrok_path))
+    logger.debug(
+        "Installing ngrok to {}{} ...".format(ngrok_path, ", overwriting" if os.path.exists(ngrok_path) else ""))
 
     ngrok_dir = os.path.dirname(ngrok_path)
 
