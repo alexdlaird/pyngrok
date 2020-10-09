@@ -163,6 +163,8 @@ class NgrokProcess:
         If a monitor thread is already running, nothing will be done.
         """
         if self._monitor_thread is None:
+            logger.debug("Monitor thread will be started")
+
             self._monitor_thread = threading.Thread(target=self._monitor_process)
             self._monitor_thread.daemon = True
             self._monitor_thread.start()
@@ -177,6 +179,8 @@ class NgrokProcess:
         its logs.
         """
         if self._monitor_thread is not None:
+            logger.debug("Monitor thread will be stopped")
+
             self._monitor_thread.alive = False
 
 
@@ -251,7 +255,11 @@ def set_auth_token(pyngrok_config, token):
     """
     start = [pyngrok_config.ngrok_path, "authtoken", token, "--log=stdout"]
     if pyngrok_config.config_path:
+        logger.info("Updating authtoken for \"config_path\": {}".format(pyngrok_config.config_path))
         start.append("--config={}".format(pyngrok_config.config_path))
+    else:
+        logger.info(
+            "Updating authtoken for default \"config_path\" of \"ngrok_path\": {}".format(pyngrok_config.ngrok_path))
 
     result = subprocess.check_output(start)
 
@@ -272,6 +280,9 @@ def is_process_running(ngrok_path):
         if _current_processes[ngrok_path].proc.poll() is None:
             return True
         else:
+            logger.debug(
+                "Removing stale process for \"ngrok_path\" {}".format(ngrok_path))
+
             _current_processes.pop(ngrok_path, None)
 
     return False
@@ -429,7 +440,7 @@ def _start_process(pyngrok_config):
     proc = subprocess.Popen(start, **popen_kwargs)
     atexit.register(_terminate_process, proc)
 
-    logger.info("ngrok process starting: {}".format(proc.pid))
+    logger.debug("ngrok process starting with PID: {}".format(proc.pid))
 
     ngrok_process = NgrokProcess(proc, pyngrok_config)
     _current_processes[pyngrok_config.ngrok_path] = ngrok_process
@@ -440,7 +451,7 @@ def _start_process(pyngrok_config):
         ngrok_process._log_startup_line(line)
 
         if ngrok_process.healthy():
-            logger.info("ngrok process has started: {}".format(ngrok_process.api_url))
+            logger.debug("ngrok process has started with API URL: {}".format(ngrok_process.api_url))
 
             if pyngrok_config.monitor_thread:
                 ngrok_process.start_monitor_thread()

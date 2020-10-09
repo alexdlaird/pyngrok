@@ -79,6 +79,8 @@ class NgrokTunnel:
         """
         Refresh the metrics from the tunnel.
         """
+        logger.info("Refreshing metrics for tunnel: {}".format(self.public_url))
+
         data = api_request("{}{}".format(self.api_url, self.uri), method="GET", data=None,
                            timeout=self.pyngrok_config.request_timeout)
 
@@ -195,6 +197,8 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
         else:
             name = "{}-file-{}".format(proto, uuid.uuid4())
 
+    logger.info("Opening tunnel named: {}".format(name))
+
     config = {
         "name": name,
         "addr": port,
@@ -204,7 +208,7 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
 
     api_url = get_ngrok_process(pyngrok_config).api_url
 
-    logger.debug("Connecting tunnel with options: {}".format(options))
+    logger.debug("Creating tunnel with options: {}".format(options))
 
     tunnel = NgrokTunnel(api_request("{}/api/tunnels".format(api_url), method="POST", data=options,
                                      timeout=pyngrok_config.request_timeout),
@@ -240,7 +244,7 @@ def disconnect(public_url, pyngrok_config=None):
     tunnels = get_tunnels(pyngrok_config)
     for tunnel in tunnels:
         if tunnel.public_url == public_url:
-            logger.debug("Disconnecting tunnel: {}".format(tunnel.public_url))
+            logger.info("Disconnecting tunnel: {}".format(tunnel.public_url))
 
             api_request("{}{}".format(api_url, tunnel.uri), method="DELETE",
                         timeout=pyngrok_config.request_timeout)
@@ -371,8 +375,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
         response_data = response.read().decode("utf-8")
 
         status_code = response.getcode()
-        logger.debug("Response status code: {}".format(status_code))
-        logger.debug("Response: {}".format(response_data))
+        logger.debug("Response {}: {}".format(status_code, response_data.strip()))
 
         if str(status_code)[0] != "2":
             raise PyngrokNgrokHTTPError("ngrok client API returned {}: {}".format(status_code, response_data), url,
@@ -387,8 +390,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
         response_data = e.read().decode("utf-8")
 
         status_code = e.getcode()
-        logger.debug("Response status code: {}".format(status_code))
-        logger.debug("Response: {}".format(response_data))
+        logger.debug("Response {}: {}".format(status_code, response_data.strip()))
 
         raise PyngrokNgrokHTTPError("ngrok client exception, API returned {}: {}".format(status_code, response_data),
                                     e.url,

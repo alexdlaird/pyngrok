@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - [ngrok.get_version()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.get_version) to get `ngrok` and `pyngrok` versions in a tuple.
 - `data` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel), which holds the original tunnel data.
 - Stability improvements.
+- Logging improvements.
 
 ### Changed
 - [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect) now returns a [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel) instead of a `str` of the public URL. The returned `NgrokTunnel` has a reference to the previously returned `public_url` in it.

@@ -47,6 +47,8 @@ PLATFORMS = {
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
 
+_print_progress_enabled = True
+
 
 def get_ngrok_bin():
     """
@@ -74,7 +76,8 @@ def install_ngrok(ngrok_path, **kwargs):
     :param kwargs: Remaining kwargs will be passed to :func:`_download_file`.
     :type kwargs: dict, optional
     """
-    logger.debug("Binary not found at {}, installing ngrok ...".format(ngrok_path))
+    logger.debug(
+        "Installing ngrok to {}{} ...".format(ngrok_path, ", overwriting" if os.path.exists(ngrok_path) else ""))
 
     ngrok_dir = os.path.dirname(ngrok_path)
 
@@ -153,6 +156,8 @@ def install_default_config(config_path, data=None):
     validate_config(config)
 
     with open(config_path, "w") as config_file:
+        logger.debug("Installing default ngrok config to {} ...".format(config_path))
+
         yaml.dump(config, config_file)
 
 
@@ -198,9 +203,10 @@ def _download_file(url, retries=0, **kwargs):
         response = urlopen(url, **kwargs)
 
         status_code = response.getcode()
-        logger.debug("Response status code: {}".format(status_code))
 
         if status_code != StatusCodes.OK:
+            logger.debug("Response status code: {}".format(status_code))
+
             return None
 
         length = response.getheader("Content-Length")
@@ -239,10 +245,12 @@ def _download_file(url, retries=0, **kwargs):
 
 
 def _print_progress(line):
-    sys.stdout.write("{}\r".format(line))
-    sys.stdout.flush()
+    if _print_progress_enabled:
+        sys.stdout.write("{}\r".format(line))
+        sys.stdout.flush()
 
 
 def _clear_progress(spaces=100):
-    sys.stdout.write((" " * spaces) + "\r")
-    sys.stdout.flush()
+    if _print_progress_enabled:
+        sys.stdout.write((" " * spaces) + "\r")
+        sys.stdout.flush()
