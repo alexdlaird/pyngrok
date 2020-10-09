@@ -248,6 +248,10 @@ def disconnect(public_url, pyngrok_config=None):
     if public_url not in _current_tunnels:
         get_tunnels(pyngrok_config)
 
+    # If the given URL is still not in the list of tunnels, it is not active, nothing to do
+    if public_url not in _current_tunnels:
+        return
+
     tunnel = _current_tunnels[public_url]
 
     logger.info("Disconnecting tunnel: {}".format(tunnel.public_url))
