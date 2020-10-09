@@ -50,7 +50,7 @@ DEFAULT_RETRY_COUNT = 0
 
 def get_ngrok_bin():
     """
-    Retrieve the ``ngrok`` executable for the current system.
+    Get the ``ngrok`` executable for the current system.
 
     :return: The name of the ``ngrok`` executable.
     :rtype: str

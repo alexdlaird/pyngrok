@@ -129,7 +129,7 @@ def set_auth_token(token, pyngrok_config=None):
 
 def get_ngrok_process(pyngrok_config=None):
     """
-    Retrieve the current ``ngrok`` process for the given config's ``ngrok_path``.
+    Get the current ``ngrok`` process for the given config's ``ngrok_path``.
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
@@ -250,7 +250,7 @@ def disconnect(public_url, pyngrok_config=None):
 
 def get_tunnels(pyngrok_config=None):
     """
-    Retrieve a list of active ``ngrok`` tunnels for the given config's ``ngrok_path``.
+    Get a list of active ``ngrok`` tunnels for the given config's ``ngrok_path``.
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
@@ -292,6 +292,25 @@ def kill(pyngrok_config=None):
         pyngrok_config = conf.DEFAULT_PYNGROK_CONFIG
 
     process.kill_process(pyngrok_config.ngrok_path)
+
+
+def get_version(pyngrok_config=None):
+    """
+    Get a tuple with the ``ngrok`` and ``pyngrok`` versions.
+
+    :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
+        defaults to ``conf.DEFAULT_PYNGROK_CONFIG`` (which can be overridden instead,
+        `as shown here <index.html#config-file>`_).
+    :type pyngrok_config: PyngrokConfig, optional
+    :return: A tuple of ``(ngrok_version, pyngrok_version)``.
+    :rtype: tuple
+    """
+    if pyngrok_config is None:
+        pyngrok_config = conf.DEFAULT_PYNGROK_CONFIG
+
+    ngrok_version = process.get_version(pyngrok_config.ngrok_path)
+
+    return ngrok_version, __version__
 
 
 def api_request(url, method="GET", data=None, params=None, timeout=4):

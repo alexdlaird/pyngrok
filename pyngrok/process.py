@@ -264,6 +264,7 @@ def is_process_running(ngrok_path):
     Check if the ``ngrok`` process is currently running.
 
     :param ngrok_path: The path to the ``ngrok`` binary.
+    :type ngrok_path: str
     :return: ``True`` if ``ngrok`` is running from the given path.
     """
     if ngrok_path in _current_processes:
@@ -278,7 +279,7 @@ def is_process_running(ngrok_path):
 
 def get_process(pyngrok_config):
     """
-    Retrieve the current ``ngrok`` process for the given config's ``ngrok_path``.
+    Get the current ``ngrok`` process for the given config's ``ngrok_path``.
 
     If ``ngrok`` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
@@ -338,11 +339,31 @@ def run_process(ngrok_path, args):
     subprocess.call(start)
 
 
+def get_version(ngrok_path):
+    """
+    Get the version of the given ``ngrok`` binary.
+
+    :param ngrok_path: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
+        defaults to ``conf.DEFAULT_PYNGROK_CONFIG`` (which can be overridden instead,
+        `as shown here <index.html#config-file>`_).
+    :type ngrok_path: PyngrokConfig, optional
+    :return: A tuple of ``(ngrok_version, pyngrok_version)``.
+    :rtype: tuple
+    """
+    _validate_path(ngrok_path)
+
+    output = subprocess.check_output([ngrok_path, "--version"])
+
+    return output.decode("utf-8").split("version ")[1].strip()
+
+
 def _validate_path(ngrok_path):
     """
-    Validate the given path exists, is a ``ngrok``, and is ready to be started, otherwise raise a relevant exception.
+    Validate the given path exists, is a ``ngrok`` binary, and is ready to be started, otherwise raise a
+    relevant exception.
 
     :param ngrok_path: The path to the ``ngrok`` binary.
+    :type ngrok_path: str
     """
     if not os.path.exists(ngrok_path):
         raise PyngrokNgrokError(

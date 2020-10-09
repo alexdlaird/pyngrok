@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [5.0.0](https://github.com/alexdlaird/pyngrok/compare/4.1.14...5.0.0) - TBD
 ### Added
 - [process.is_process_running()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.process.is_process_running) to check if `ngrok` is already running without also implicitly starting it.
+- [ngrok.get_version()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.get_version) to get `ngrok` and `pyngrok` versions in a tuple.
 - `data` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel), which holds the original tunnel data.
 - Stability improvements.
 
