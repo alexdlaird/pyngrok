@@ -153,9 +153,8 @@ log is processed, this function will be called, passing a :class:`~pyngrok.proce
 
     ngrok.connect()
 
-If these events aren't necessary for our use case, some resources can be freed up by turning them off.
-
-Either use :class:`~pyngrok.conf.PyngrokConfig` to not start the thread in the first place:
+If these events aren't necessary for our use case, some resources can be freed up by turning them off. Set
+``monitor_thread`` to ``False`` in :class:`~pyngrok.conf.PyngrokConfig`:
 
 .. code-block:: python
 
@@ -165,7 +164,8 @@ Either use :class:`~pyngrok.conf.PyngrokConfig` to not start the thread in the f
 
     ngrok.connect()
 
-or call the :func:`~pyngrok.process.NgrokProcess.stop_monitor_thread` method when we're done using it:
+Alternatively, :func:`~pyngrok.process.NgrokProcess.stop_monitor_thread` can be used to stop monitoring on a
+running process:
 
 .. code-block:: python
 
@@ -216,7 +216,7 @@ The default ``pyngrok_config`` object can updated with our own object using :fun
     from pyngrok import conf
 
     pyngrok_config = conf.PyngrokConfig(log_event_callback=log_event_callback,
-                                        monitor_thread=False)
+                                        max_logs=10)
     conf.set_default(pyngrok_config)
 
 
@@ -313,12 +313,12 @@ folder. We can override this behavior by updating our default :class:`~pyngrok.c
 
     conf.get_default().config_path = "/opt/ngrok/config.yml"
 
-    ngrok.get_tunnels()
+    ngrok.connect()
 
 Binary Path
 -----------
 
-The ``pyngrok`` package manages its own ``ngrok`` binary. However, we can use our ``ngrok`` binary if we
+The ``pyngrok`` package manages its own ``ngrok`` binary. We can use our ``ngrok`` binary if we
 want by updating the default :class:`~pyngrok.conf.PyngrokConfig`:
 
 .. code-block:: python

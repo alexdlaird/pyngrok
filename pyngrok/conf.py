@@ -19,8 +19,23 @@ class PyngrokConfig:
     optional when it is instantiated, and default values will be used for parameters not passed.
 
     Use :func:`~pyngrok.conf.get_default` and :func:`~pyngrok.conf.set_default` to interact with the default
-    ``pyngrok_config``, or pass this object as the ``pyngrok_config`` keyword arg to most methods in
-    the :mod:`~pyngrok.ngrok` module to override the default.
+    ``pyngrok_config``, or pass another instance of this object as the ``pyngrok_config`` keyword arg to most
+    methods in the :mod:`~pyngrok.ngrok` module to override the default.
+
+    .. code-block:: python
+
+        from pyngrok import conf, ngrok
+
+        # Here we update the entire default config
+        pyngrok_config = conf.PyngrokConfig(ngrok_path="/usr/local/bin/ngrok")
+        conf.set_default(pyngrok_config)
+
+        # Here we update just one variable in the default config
+        conf.get_default().ngrok_path = "/usr/local/bin/ngrok"
+
+        # Here we leave the default config as-is and pass an override
+        pyngrok_config = conf.PyngrokConfig(ngrok_path="/usr/local/bin/ngrok")
+        ngrok.connect(pyngrok_config=pyngrok_config)
 
     :var ngrok_path: The path to the ``ngrok`` binary, defaults to the value in
         `conf.DEFAULT_NGROK_PATH <index.html#config-file>`_
