@@ -29,6 +29,8 @@ __version__ = "5.0.0"
 
 logger = logging.getLogger(__name__)
 
+_current_tunnels = {}
+
 
 class NgrokTunnel:
     """
@@ -219,6 +221,8 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
                                          timeout=pyngrok_config.request_timeout),
                              pyngrok_config, api_url)
 
+    _current_tunnels[tunnel.public_url] = tunnel
+
     return tunnel
 
 
@@ -241,15 +245,17 @@ def disconnect(public_url, pyngrok_config=None):
 
     api_url = get_ngrok_process(pyngrok_config).api_url
 
-    tunnels = get_tunnels(pyngrok_config)
-    for tunnel in tunnels:
-        if tunnel.public_url == public_url:
-            logger.info("Disconnecting tunnel: {}".format(tunnel.public_url))
+    if public_url not in _current_tunnels:
+        get_tunnels(pyngrok_config)
 
-            api_request("{}{}".format(api_url, tunnel.uri), method="DELETE",
-                        timeout=pyngrok_config.request_timeout)
+    tunnel = _current_tunnels[public_url]
 
-            break
+    logger.info("Disconnecting tunnel: {}".format(tunnel.public_url))
+
+    api_request("{}{}".format(api_url, tunnel.uri), method="DELETE",
+                timeout=pyngrok_config.request_timeout)
+
+    _current_tunnels.pop(public_url, None)
 
 
 def get_tunnels(pyngrok_config=None):
@@ -274,12 +280,13 @@ def get_tunnels(pyngrok_config=None):
 
     api_url = get_ngrok_process(pyngrok_config).api_url
 
-    tunnels = []
+    _current_tunnels.clear()
     for tunnel in api_request("{}/api/tunnels".format(api_url), method="GET", data=None,
                               timeout=pyngrok_config.request_timeout)["tunnels"]:
-        tunnels.append(NgrokTunnel(tunnel, pyngrok_config, api_url))
+        ngrok_tunnel = NgrokTunnel(tunnel, pyngrok_config, api_url)
+        _current_tunnels[ngrok_tunnel.public_url] = ngrok_tunnel
 
-    return tunnels
+    return list(_current_tunnels.values())
 
 
 def kill(pyngrok_config=None):
@@ -296,6 +303,8 @@ def kill(pyngrok_config=None):
         pyngrok_config = conf.DEFAULT_PYNGROK_CONFIG
 
     process.kill_process(pyngrok_config.ngrok_path)
+
+    _current_tunnels.clear()
 
 
 def get_version(pyngrok_config=None):
