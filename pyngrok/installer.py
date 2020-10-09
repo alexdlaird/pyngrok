@@ -129,8 +129,8 @@ def _install_ngrok_zip(ngrok_path, zip_path):
 
 def install_default_config(config_path, data=None):
     """
-    Install the default ``ngrok`` config. If one is not already present, created one. Before saving
-    new values to the default config, validate that they are compatible with ``pyngrok``.
+    Install the given data to the ``ngrok`` config. If a config is not already present for the given path, create one.
+    Before saving new data to the default config, validate that they are compatible with ``pyngrok``.
 
     :param config_path: The path to where the ``ngrok`` config should be installed.
     :type config_path: str
