@@ -228,19 +228,20 @@ def connect(port=None, proto=None, name=None, options=None, pyngrok_config=None)
     if name and name in tunnel_definitions:
         tunnel_definition = tunnel_definitions[name]
 
-        port = tunnel_definition.get("addr", "80")
-        proto = tunnel_definition.get("proto", "http")
+        port = tunnel_definition.get("addr")
+        proto = tunnel_definition.get("proto")
         # Use the tunnel definition as the base, but override with any passed in options
         tunnel_definition.update(options)
         options = tunnel_definition
-    elif not name:
-        if not port:
-            port = "80"
-        else:
-            port = str(port)
-        if not proto:
-            proto = "http"
 
+    if not port:
+        port = "80"
+    else:
+        port = str(port)
+    if not proto:
+        proto = "http"
+
+    if not name:
         if not port.startswith("file://"):
             name = "{}-{}-{}".format(proto, port, uuid.uuid4())
         else:
