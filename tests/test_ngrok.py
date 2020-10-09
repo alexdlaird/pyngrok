@@ -9,7 +9,7 @@ import yaml
 
 from future.standard_library import install_aliases
 
-from pyngrok import ngrok, process, conf
+from pyngrok import ngrok, process, conf, installer
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
 from .testcase import NgrokTestCase
@@ -55,7 +55,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
 
         # WHEN
-        url = ngrok.connect(5000, pyngrok_config=self.pyngrok_config).public_url
+        ngrok_tunnel = ngrok.connect(5000, pyngrok_config=self.pyngrok_config)
         current_process = ngrok.get_ngrok_process()
 
         # THEN
@@ -63,9 +63,10 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNotNone(current_process)
         self.assertIsNone(current_process.proc.poll())
         self.assertTrue(current_process._monitor_thread.is_alive())
-        self.assertIsNotNone(url)
+        self.assertIsNotNone(ngrok_tunnel.name)
+        self.assertIsNotNone(ngrok_tunnel.public_url)
         self.assertIsNotNone(process.get_process(self.pyngrok_config))
-        self.assertIn('http://', url)
+        self.assertIn('http://', ngrok_tunnel.public_url)
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     def test_multiple_connections_fails(self):
@@ -425,3 +426,63 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertIsNotNone(ngrok_version)
         self.assertEqual(ngrok.__version__, pyngrok_version)
+
+    def test_tunnel_definitions(self):
+        if "NGROK_AUTHTOKEN" not in os.environ:
+            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+
+        # GIVEN
+        config = {
+            "tunnels": {
+                "config-tunnel": {
+                    "proto": "http",
+                    "addr": "8000",
+                    "subdomain": "pyngrok1"
+                }
+            }
+        }
+        config_path = os.path.join(self.config_dir, "config2.yml")
+        installer.install_default_config(config_path, config)
+        pyngrok_config = PyngrokConfig(config_path=config_path,
+                                       auth_token=os.environ["NGROK_AUTHTOKEN"])
+
+        # WHEN
+        ngrok_tunnel = ngrok.connect(name="config-tunnel", pyngrok_config=pyngrok_config)
+
+        # THEN
+        self.assertEqual(ngrok_tunnel.name, "config-tunnel (http)")
+        self.assertEqual(ngrok_tunnel.config["addr"],
+                         "http://localhost:{}".format(config["tunnels"]["config-tunnel"]["addr"]))
+        self.assertEqual(ngrok_tunnel.proto, config["tunnels"]["config-tunnel"]["proto"])
+        self.assertEqual(ngrok_tunnel.public_url,
+                         "http://{}.ngrok.io".format(config["tunnels"]["config-tunnel"]["subdomain"]))
+
+    def test_tunnel_definitions_pyngrok_default(self):
+        if "NGROK_AUTHTOKEN" not in os.environ:
+            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+
+        # GIVEN
+        config = {
+            "tunnels": {
+                "pyngrok-default": {
+                    "proto": "http",
+                    "addr": "8080",
+                    "subdomain": "pyngrok2"
+                }
+            }
+        }
+        config_path = os.path.join(self.config_dir, "config2.yml")
+        installer.install_default_config(config_path, config)
+        pyngrok_config = PyngrokConfig(config_path=config_path,
+                                       auth_token=os.environ["NGROK_AUTHTOKEN"])
+
+        # WHEN
+        ngrok_tunnel = ngrok.connect(pyngrok_config=pyngrok_config)
+
+        # THEN
+        self.assertEqual(ngrok_tunnel.name, "pyngrok-default (http)")
+        self.assertEqual(ngrok_tunnel.config["addr"],
+                         "http://localhost:{}".format(config["tunnels"]["pyngrok-default"]["addr"]))
+        self.assertEqual(ngrok_tunnel.proto, config["tunnels"]["pyngrok-default"]["proto"])
+        self.assertEqual(ngrok_tunnel.public_url,
+                         "http://{}.ngrok.io".format(config["tunnels"]["pyngrok-default"]["subdomain"]))

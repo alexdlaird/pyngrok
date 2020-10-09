@@ -9,6 +9,7 @@ import zipfile
 
 import yaml
 from future.standard_library import install_aliases
+from pyngrok import conf
 
 from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
 
@@ -47,6 +48,7 @@ PLATFORMS = {
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
 
+_config_cache = None
 _print_progress_enabled = True
 
 
@@ -127,6 +129,30 @@ def _install_ngrok_zip(ngrok_path, zip_path):
     _clear_progress()
 
 
+def get_ngrok_config(config_path, use_cache=True):
+    """
+    Get the ``ngrok`` config from the given path.
+
+    :param config_path: The ``ngrok`` config path to read.
+    :type config_path: str
+    :param use_cache: Use the cached version of the cache (if populated).
+    :type use_cache: bool
+    :return: The ``ngrok`` config.
+    :rtype: dict
+    """
+    global _config_cache
+
+    if not _config_cache or not use_cache:
+        with open(config_path, "r") as config_file:
+            config = yaml.safe_load(config_file)
+            if config is None:
+                config = {}
+
+        _config_cache = config
+
+    return _config_cache
+
+
 def install_default_config(config_path, data=None):
     """
     Install the given data to the ``ngrok`` config. If a config is not already present for the given path, create one.
@@ -146,12 +172,9 @@ def install_default_config(config_path, data=None):
     if not os.path.exists(config_path):
         open(config_path, "w").close()
 
-    with open(config_path, "r") as config_file:
-        config = yaml.safe_load(config_file)
-        if config is None:
-            config = {}
+    config = get_ngrok_config(config_path, use_cache=False)
 
-        config.update(data)
+    config.update(data)
 
     validate_config(config)
 

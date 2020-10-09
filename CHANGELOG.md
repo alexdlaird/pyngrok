@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [5.0.0](https://github.com/alexdlaird/pyngrok/compare/4.1.14...5.0.0) - TBD
 ### Added
+- Support for [`ngrok`'s tunnel definitions](https://ngrok.com/docs#tunnel-definitions) when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect). If a tunnel definition in `ngrok`'s config matches the given `name`, it will be used to start the tunnel.
+- Support for a [`ngrok` tunnel definition](https://ngrok.com/docs#tunnel-definitions) named "pyngrok-default" when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect). When `name` is `None` and a "pyngrok-default" tunnel definition exists it `ngrok`'s config, it will be used.
 - [process.is_process_running()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.process.is_process_running) to check if `ngrok` is already running without also implicitly starting it.
 - [ngrok.get_version()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.get_version) to get `ngrok` and `pyngrok` versions in a tuple.
 - [conf.get_default()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.conf.get_default), replacing the need for direct references to `conf.DEFAULT_PYNGROK_CONFIG`.

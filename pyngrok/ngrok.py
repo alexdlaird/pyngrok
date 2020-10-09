@@ -172,10 +172,13 @@ def get_ngrok_process(pyngrok_config=None):
     return process.get_process(pyngrok_config)
 
 
-def connect(port="80", proto="http", name=None, options=None, pyngrok_config=None):
+def connect(port=None, proto=None, name=None, options=None, pyngrok_config=None):
     """
     Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning a object representing
     the connected tunnel.
+
+    If a tunnel definition in `ngrok`'s config matches the given `name`, it will be used to start the tunnel. When
+    `name` is `None` and a "pyngrok-default" tunnel definition exists it `ngrok`'s config, it will be used.
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
@@ -184,11 +187,13 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
     :class:`~pyngrok.conf.PyngrokConfig`.
 
     :param port: The local port to which the tunnel will forward traffic, defaults to "80". Can also be
-        a `local directory or network address <https://ngrok.com/docs#http-file-urls>`_.
+        a `local directory or network address <https://ngrok.com/docs#http-file-urls>`_. This maps to the ``addr``
+        in ``ngrok``'s tunnel definitions.
     :type port: str, optional
     :param proto: The protocol to tunnel, defaults to "http".
     :type proto: str, optional
-    :param name: A friendly name for the tunnel.
+    :param name: A friendly name for the tunnel, or the name of a `ngrok tunnel definition <https://ngrok.com/docs#tunnel-definitions>`_
+        to be used.
     :type name: str, optional
     :param options: Parameters passed to `configuration for the ngrok
         tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
@@ -204,8 +209,38 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
-    port = str(port)
-    if not name:
+    if pyngrok_config.config_path is not None:
+        config_path = pyngrok_config.config_path
+    else:
+        config_path = conf.DEFAULT_NGROK_CONFIG_PATH
+
+    if os.path.exists(config_path):
+        config = installer.get_ngrok_config(config_path)
+    else:
+        config = {}
+
+    # If a "pyngrok-default" tunnel definition exists in the ngrok config, use that
+    tunnel_definitions = config.get("tunnels", {})
+    if not name and "pyngrok-default" in tunnel_definitions:
+        name = "pyngrok-default"
+
+    # Use a tunnel definition for the given name, if it exists
+    if name and name in tunnel_definitions:
+        tunnel_definition = tunnel_definitions[name]
+
+        port = tunnel_definition.get("addr", "80")
+        proto = tunnel_definition.get("proto", "http")
+        # Use the tunnel definition as the base, but override with any passed in options
+        tunnel_definition.update(options)
+        options = tunnel_definition
+    elif not name:
+        if not port:
+            port = "80"
+        else:
+            port = str(port)
+        if not proto:
+            proto = "http"
+
         if not port.startswith("file://"):
             name = "{}-{}-{}".format(proto, port, uuid.uuid4())
         else:
