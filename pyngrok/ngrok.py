@@ -93,19 +93,34 @@ class NgrokTunnel:
         self.metrics = self.data["metrics"]
 
 
-def install_ngrok(ngrok_path):
+def install_ngrok(pyngrok_config=None):
     """
-    Download, install, and initialize ``ngrok`` for the current system at the given path. If ``ngrok`` and its default
+    Download, install, and initialize ``ngrok`` for the given config. If ``ngrok`` and its default
     config is already installed, calling this method will do nothing.
 
-    :param ngrok_path: The path to the ``ngrok`` binary.
-    :type ngrok_path: str
+    :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
+        overriding :func:`~pyngrok.conf.get_default()`.
+    :type pyngrok_config: PyngrokConfig, optional
     """
-    if not os.path.exists(ngrok_path):
-        installer.install_ngrok(ngrok_path)
+    if pyngrok_config is None:
+        pyngrok_config = conf.get_default()
 
-    if not os.path.exists(conf.DEFAULT_NGROK_CONFIG_PATH):
-        installer.install_default_config(conf.DEFAULT_NGROK_CONFIG_PATH)
+    if not os.path.exists(pyngrok_config.ngrok_path):
+        installer.install_ngrok(pyngrok_config.ngrok_path)
+
+    # If no config_path is set, ngrok will use its default path
+    if pyngrok_config.config_path is not None:
+        config_path = pyngrok_config.config_path
+    else:
+        config_path = conf.DEFAULT_NGROK_CONFIG_PATH
+
+    # Install the config to the requested path
+    if not os.path.exists(config_path):
+        installer.install_default_config(config_path)
+
+    # Install the default config, even if we don't need it this time, if it doesn't already exist
+    if config_path != conf.DEFAULT_NGROK_CONFIG_PATH and not os.path.exists(config_path):
+        installer.install_default_config(config_path)
 
 
 def set_auth_token(token, pyngrok_config=None):
@@ -125,7 +140,7 @@ def set_auth_token(token, pyngrok_config=None):
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
-    install_ngrok(pyngrok_config.ngrok_path)
+    install_ngrok(pyngrok_config)
 
     process.set_auth_token(pyngrok_config, token)
 
@@ -152,7 +167,7 @@ def get_ngrok_process(pyngrok_config=None):
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
-    install_ngrok(pyngrok_config.ngrok_path)
+    install_ngrok(pyngrok_config)
 
     return process.get_process(pyngrok_config)
 
@@ -425,7 +440,7 @@ def run(args=None, pyngrok_config=None):
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
-    install_ngrok(pyngrok_config.ngrok_path)
+    install_ngrok(pyngrok_config)
 
     process.run_process(pyngrok_config.ngrok_path, args)
 

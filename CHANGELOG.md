@@ -21,6 +21,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `ngrok.disconnect()` no longer installs and starts `ngrok`, it simply returns if the `ngrok` process has not been started.
 - Renamed `conf.DEFAULT_PYNGROK_CONFIG` to `conf._default_pyngrok_config` (use [conf.set_default()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.conf.set_default) instead).
 - Renamed `ngrok.ensure_ngrok_installed()` to `ngrok.install_ngrok()`.
+- `ngrok.install_ngrok()` (formerly `ngrok.ensure_ngrok_installed()`) changed its signature, now takes a `pyngrok_config` (optional) instead of `ngrok_path` as its only arg.
 - Renamed `process._ensure_path_ready()` to `process._validate_path()`.
 
 ## [4.1.14](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.14) - TBD

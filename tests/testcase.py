@@ -40,8 +40,8 @@ class NgrokTestCase(unittest.TestCase):
             shutil.rmtree(self.config_dir)
 
     @staticmethod
-    def given_ngrok_installed(ngrok_path):
-        ngrok.install_ngrok(ngrok_path)
+    def given_ngrok_installed(pyngrok_config):
+        ngrok.install_ngrok(pyngrok_config)
 
     @staticmethod
     def given_ngrok_not_installed(ngrok_path):
