@@ -332,6 +332,7 @@ def _ensure_path_ready(ngrok_path):
     exception if not.
 
     :param ngrok_path: The path to the ``ngrok`` binary.
+    :type ngrok_path: str
     """
     if not os.path.exists(ngrok_path):
         raise PyngrokNgrokError(
