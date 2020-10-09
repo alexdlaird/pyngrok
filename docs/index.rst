@@ -213,7 +213,7 @@ The default ``pyngrok_config`` object can updated with our own object using :fun
 
 .. code-block:: python
 
-    from pyngrok import conf, ngrok
+    from pyngrok import conf
 
     pyngrok_config = conf.PyngrokConfig(log_event_callback=log_event_callback,
                                         monitor_thread=False)
