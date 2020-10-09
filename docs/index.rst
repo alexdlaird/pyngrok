@@ -144,7 +144,7 @@ log is processed, this function will be called, passing a :class:`~pyngrok.proce
 
 .. code-block:: python
 
-    from pyngrok.ngrok import PyngrokConfig
+    from pyngrok.conf import PyngrokConfig
     from pyngrok import ngrok
 
     def log_event_callback(log):
@@ -160,7 +160,7 @@ Either use :class:`~pyngrok.conf.PyngrokConfig` to not start the thread in the f
 
 .. code-block:: python
 
-    from pyngrok.ngrok import PyngrokConfig
+    from pyngrok.conf import PyngrokConfig
     from pyngrok import ngrok
 
     pyngrok_config = PyngrokConfig(monitor_thread=False)
