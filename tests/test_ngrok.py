@@ -63,11 +63,22 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNotNone(current_process)
         self.assertIsNone(current_process.proc.poll())
         self.assertTrue(current_process._monitor_thread.is_alive())
-        self.assertIsNotNone(ngrok_tunnel.name)
+        self.assertTrue(ngrok_tunnel.name.startswith("http-5000-"))
+        self.assertEqual("http", ngrok_tunnel.proto)
+        self.assertEqual("http://localhost:5000", ngrok_tunnel.config["addr"])
         self.assertIsNotNone(ngrok_tunnel.public_url)
         self.assertIsNotNone(process.get_process(self.pyngrok_config))
         self.assertIn('http://', ngrok_tunnel.public_url)
         self.assertEqual(len(process._current_processes.keys()), 1)
+
+    def test_connect_name(self):
+        # WHEN
+        ngrok_tunnel = ngrok.connect(name="my-tunnel", pyngrok_config=self.pyngrok_config)
+
+        # THEN
+        self.assertEqual(ngrok_tunnel.name, "my-tunnel (http)")
+        self.assertEqual("http", ngrok_tunnel.proto)
+        self.assertEqual("http://localhost:80", ngrok_tunnel.config["addr"])
 
     def test_multiple_connections_fails(self):
         # WHEN
@@ -161,15 +172,14 @@ class TestNgrok(NgrokTestCase):
     def test_api_get_request_success(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
-        ngrok.connect()
+        ngrok_tunnel = ngrok.connect()
         time.sleep(1)
-        tunnel = ngrok.get_tunnels()[0]
 
         # WHEN
-        response = ngrok.api_request("{}{}".format(current_process.api_url, tunnel.uri), "GET")
+        response = ngrok.api_request("{}{}".format(current_process.api_url, ngrok_tunnel.uri), "GET")
 
         # THEN
-        self.assertEqual(tunnel.name, response["name"])
+        self.assertEqual(ngrok_tunnel.name, response["name"])
 
     def test_api_request_query_params(self):
         # GIVEN
@@ -232,13 +242,12 @@ class TestNgrok(NgrokTestCase):
     def test_api_request_timeout(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
-        ngrok.connect()
+        ngrok_tunnel = ngrok.connect()
         time.sleep(1)
-        tunnels = ngrok.get_tunnels()
 
         # WHEN
         with self.assertRaises(PyngrokNgrokURLError) as cm:
-            ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri), "DELETE",
+            ngrok.api_request("{}{}".format(current_process.api_url, ngrok_tunnel.uri), "DELETE",
                               timeout=0.0001)
 
         # THEN
@@ -261,16 +270,17 @@ class TestNgrok(NgrokTestCase):
                                        auth_token=os.environ["NGROK_AUTHTOKEN"], region="au")
 
         # WHEN
-        url = ngrok.connect(5000, "tcp", options={"subdomain": subdomain}, pyngrok_config=pyngrok_config).public_url
+        ngrok_tunnel = ngrok.connect(5000, "tcp", options={"subdomain": subdomain}, pyngrok_config=pyngrok_config)
         current_process = ngrok.get_ngrok_process()
 
         # THEN
         self.assertIsNotNone(current_process)
         self.assertIsNone(current_process.proc.poll())
-        self.assertIsNotNone(url)
+        self.assertIsNotNone(ngrok_tunnel.public_url)
         self.assertIsNotNone(process.get_process(pyngrok_config))
-        self.assertIn("tcp://", url)
-        self.assertIn(".au.", url)
+        self.assertEqual("localhost:5000", ngrok_tunnel.config["addr"])
+        self.assertIn("tcp://", ngrok_tunnel.public_url)
+        self.assertIn(".au.", ngrok_tunnel.public_url)
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     def test_regional_subdomain(self):
@@ -335,7 +345,7 @@ class TestNgrok(NgrokTestCase):
                                        auth_token=os.environ["NGROK_AUTHTOKEN"])
 
         # WHEN
-        url = ngrok.connect("file:///", pyngrok_config=pyngrok_config).public_url
+        ngrok_tunnel = ngrok.connect("file:///", pyngrok_config=pyngrok_config)
         current_process = ngrok.get_ngrok_process()
         time.sleep(1)
         tunnels = ngrok.get_tunnels()
@@ -345,19 +355,12 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNotNone(current_process)
         self.assertIsNone(current_process.proc.poll())
         self.assertTrue(current_process._monitor_thread.is_alive())
-        self.assertIsNotNone(url)
+        self.assertTrue(ngrok_tunnel.name.startswith("http-file-"))
+        self.assertEqual("file:///", ngrok_tunnel.config["addr"])
+        self.assertIsNotNone(ngrok_tunnel.public_url)
         self.assertIsNotNone(process.get_process(self.pyngrok_config))
-        self.assertIn('http://', url)
+        self.assertIn('http://', ngrok_tunnel.public_url)
         self.assertEqual(len(process._current_processes.keys()), 1)
-
-        # WHEN
-        ngrok.disconnect(url)
-        time.sleep(1)
-        tunnels = ngrok.get_tunnels()
-
-        # THEN
-        # There is still one tunnel left, as we only disconnected the http tunnel
-        self.assertEqual(len(tunnels), 1)
 
     def test_disconnect_fileserver(self):
         if "NGROK_AUTHTOKEN" not in os.environ:
@@ -369,8 +372,6 @@ class TestNgrok(NgrokTestCase):
                                        auth_token=os.environ["NGROK_AUTHTOKEN"])
         url = ngrok.connect("file:///", pyngrok_config=pyngrok_config).public_url
         time.sleep(1)
-        tunnel = ngrok.get_tunnels()[0]
-        api_url = ngrok.get_ngrok_process(pyngrok_config).api_url
 
         # WHEN
         ngrok.disconnect(url)
@@ -389,17 +390,16 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 0)
         pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
                                        auth_token=os.environ["NGROK_AUTHTOKEN"])
-        ngrok.connect("file:///", pyngrok_config=pyngrok_config)
+        ngrok_tunnel = ngrok.connect("file:///", pyngrok_config=pyngrok_config)
         time.sleep(1)
-        tunnel = ngrok.get_tunnels()[0]
         api_url = ngrok.get_ngrok_process(pyngrok_config).api_url
 
         # WHEN
-        response = ngrok.api_request("{}{}".format(api_url, tunnel.uri), "GET")
+        response = ngrok.api_request("{}{}".format(api_url, ngrok_tunnel.uri), "GET")
 
         # THEN
-        self.assertEqual(tunnel.name, response["name"])
-        self.assertIn("file", tunnel.name)
+        self.assertEqual(ngrok_tunnel.name, response["name"])
+        self.assertTrue(ngrok_tunnel.name.startswith("http-file-"))
 
     def test_ngrok_tunnel_refresh_metrics(self):
         # GIVEN
@@ -434,10 +434,14 @@ class TestNgrok(NgrokTestCase):
         # GIVEN
         config = {
             "tunnels": {
-                "config-tunnel": {
+                "http-tunnel": {
                     "proto": "http",
                     "addr": "8000",
                     "subdomain": "pyngrok1"
+                },
+                "tcp-tunnel": {
+                    "proto": "tcp",
+                    "addr": "22"
                 }
             }
         }
@@ -447,15 +451,23 @@ class TestNgrok(NgrokTestCase):
                                        auth_token=os.environ["NGROK_AUTHTOKEN"])
 
         # WHEN
-        ngrok_tunnel = ngrok.connect(name="config-tunnel", pyngrok_config=pyngrok_config)
+        http_tunnel = ngrok.connect(name="http-tunnel", pyngrok_config=pyngrok_config)
+        ssh_tunnel = ngrok.connect(name="tcp-tunnel", pyngrok_config=pyngrok_config)
 
         # THEN
-        self.assertEqual(ngrok_tunnel.name, "config-tunnel (http)")
-        self.assertEqual(ngrok_tunnel.config["addr"],
-                         "http://localhost:{}".format(config["tunnels"]["config-tunnel"]["addr"]))
-        self.assertEqual(ngrok_tunnel.proto, config["tunnels"]["config-tunnel"]["proto"])
-        self.assertEqual(ngrok_tunnel.public_url,
-                         "http://{}.ngrok.io".format(config["tunnels"]["config-tunnel"]["subdomain"]))
+        print(http_tunnel)
+        print(ssh_tunnel)
+        self.assertEqual(http_tunnel.name, "http-tunnel (http)")
+        self.assertEqual(http_tunnel.config["addr"],
+                         "http://localhost:{}".format(config["tunnels"]["http-tunnel"]["addr"]))
+        self.assertEqual(http_tunnel.proto, config["tunnels"]["http-tunnel"]["proto"])
+        self.assertEqual(http_tunnel.public_url,
+                         "http://{}.ngrok.io".format(config["tunnels"]["http-tunnel"]["subdomain"]))
+        self.assertEqual(ssh_tunnel.name, "tcp-tunnel")
+        self.assertEqual(ssh_tunnel.config["addr"],
+                         "localhost:{}".format(config["tunnels"]["tcp-tunnel"]["addr"]))
+        self.assertEqual(ssh_tunnel.proto, config["tunnels"]["tcp-tunnel"]["proto"])
+        self.assertTrue(ssh_tunnel.public_url.startswith("tcp://"))
 
     def test_tunnel_definitions_pyngrok_default(self):
         if "NGROK_AUTHTOKEN" not in os.environ:
