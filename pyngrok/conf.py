@@ -19,8 +19,8 @@ class PyngrokConfig:
     optional when it is instantiated, and default values will be used for parameters not passed.
 
     Use :func:`~pyngrok.conf.get_default` and :func:`~pyngrok.conf.set_default` to interact with the default
-    ``pyngrok_config``, or pass a :class:`~pyngrok.conf.PyngrokConfig` object individually as the
-    ``pyngrok_config`` arg to most methods in the :mod:`~pyngrok.ngrok` module.
+    ``pyngrok_config``, or pass this object as the ``pyngrok_config`` keyword arg to most methods in
+    the :mod:`~pyngrok.ngrok` module to override the default.
 
     :var ngrok_path: The path to the ``ngrok`` binary, defaults to the value in
         `conf.DEFAULT_NGROK_PATH <index.html#config-file>`_
@@ -76,8 +76,8 @@ _default_pyngrok_config = PyngrokConfig()
 def get_default():
     """
     Get the default config to be used with methods in the :mod:`~pyngrok.ngrok` module. To not use this
-    default, the ``pyngrok_config`` arg can also be passed individually to most of these methods, or change
-    the default with :func:`~pyngrok.conf.set_default`.
+    default, the ``pyngrok_config`` keyword arg can also be passed individually to most of these methods, or
+    change the default with :func:`~pyngrok.conf.set_default`.
 
     :return: The default ``pyngrok_config``.
     :rtype: PyngrokConfig
@@ -88,7 +88,7 @@ def get_default():
 def set_default(pyngrok_config):
     """
     Set a new default config to be used with methods in the :mod:`~pyngrok.ngrok` module. To not use the
-    default, the ``pyngrok_config`` arg can also be passed individually to most of these methods.
+    default, the ``pyngrok_config`` keyword arg can also be passed individually to most of these methods.
 
     :param pyngrok_config: The new ``pyngrok_config`` to be used by default.
     :type pyngrok_config: PyngrokConfig

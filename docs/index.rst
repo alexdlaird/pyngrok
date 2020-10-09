@@ -144,15 +144,14 @@ log is processed, this function will be called, passing a :class:`~pyngrok.proce
 
 .. code-block:: python
 
-    from pyngrok.conf import PyngrokConfig
-    from pyngrok import ngrok
+    from pyngrok import conf, ngrok
 
     def log_event_callback(log):
         print(str(log))
 
-    pyngrok_config = PyngrokConfig(log_event_callback=log_event_callback)
+    conf.get_default().log_event_callback = log_event_callback
 
-    ngrok.connect(pyngrok_config=pyngrok_config)
+    ngrok.connect()
 
 If these events aren't necessary for our use case, some resources can be freed up by turning them off.
 
@@ -160,12 +159,11 @@ Either use :class:`~pyngrok.conf.PyngrokConfig` to not start the thread in the f
 
 .. code-block:: python
 
-    from pyngrok.conf import PyngrokConfig
-    from pyngrok import ngrok
+    from pyngrok import conf, ngrok
 
-    pyngrok_config = PyngrokConfig(monitor_thread=False)
+    conf.get_default().monitor_thread = False
 
-    ngrok.connect(pyngrok_config=pyngrok_config)
+    ngrok.connect()
 
 or call the :func:`~pyngrok.process.NgrokProcess.stop_monitor_thread` method when we're done using it:
 
@@ -210,12 +208,22 @@ Configuration
 ``PyngrokConfig``
 -----------------
 
-``pyngrok``'s interactions with the ``ngrok`` binary (and other things) can be configured using
-:class:`~pyngrok.conf.PyngrokConfig`. Most methods accept ``pyngrok_config`` as a keyword argument, and
-:class:`~pyngrok.process.NgrokProcess` will maintain a reference to its own :class:`~pyngrok.conf.PyngrokConfig` once a
-process has been started. If ``pyngrok_config`` is not given, its documented defaults will be used.
+``pyngrok``'s interactions with the ``ngrok`` binary can be configured using :class:`~pyngrok.conf.PyngrokConfig`.
+The default ``pyngrok_config`` object can updated with our own object using :func:`~pyngrok.conf.set_default`:
 
-The ``pyngrok_config`` argument is only used when the ``ngrok`` process is first started, which will only be
+.. code-block:: python
+
+    from pyngrok import conf, ngrok
+
+    pyngrok_config = conf.PyngrokConfig(log_event_callback=log_event_callback,
+                                        monitor_thread=False)
+    conf.set_default(pyngrok_config)
+
+
+Most methods in the :mod:`~pyngrok.ngrok` module also accept a ``pyngrok_config`` keyword arg, which can be used
+to pass in the config rather than updating the default as shown above.
+
+The ``pyngrok_config`` argument is only used when the ``ngrok`` process is first started, which will be
 the first time most methods in the :mod:`~pyngrok.ngrok` module are called. You can check if a process is already or
 still running by calling its :func:`~pyngrok.process.NgrokProcess.healthy` method.
 
@@ -252,12 +260,11 @@ We can also override ``ngrok``'s installed auth token using :class:`~pyngrok.con
 
 .. code-block:: python
 
-    from pyngrok.conf import PyngrokConfig
-    from pyngrok import ngrok
+    from pyngrok import conf, ngrok
 
-    pyngrok_config = PyngrokConfig(auth_token="<NGROK_AUTH_TOKEN>")
+    conf.get_default().auth_token = "<NGROK_AUTH_TOKEN>"
 
-    ngrok.connect(pyngrok_config=pyngrok_config)
+    ngrok.connect()
 
 Setting the ``region``
 ----------------------
@@ -267,12 +274,11 @@ the ``region`` parameter in :class:`~pyngrok.conf.PyngrokConfig`:
 
 .. code-block:: python
 
-    from pyngrok.conf import PyngrokConfig
-    from pyngrok import ngrok
+    from pyngrok import conf, ngrok
 
-    pyngrok_config = PyngrokConfig(region="au")
+    conf.get_default().region = "au"
 
-    ngrok_tunnel = ngrok.connect(pyngrok_config=pyngrok_config)
+    ngrok_tunnel = ngrok.connect()
     url = ngrok_tunnel.public_url
 
 Passing ``options``
@@ -287,14 +293,12 @@ Here is an example starting ``ngrok`` in Australia, then opening a tunnel with s
 
 .. code-block:: python
 
-    from pyngrok.conf import PyngrokConfig
-    from pyngrok import ngrok
+    from pyngrok import conf, ngrok
 
+    conf.get_default().region = "au"
     options = {"subdomain": "foo", "auth": "username:password"}
-    pyngrok_config = PyngrokConfig(region="au")
 
-    ngrok_tunnel = ngrok.connect(options=options,
-                                 pyngrok_config=pyngrok_config)
+    ngrok_tunnel = ngrok.connect(options=options)
     url = ngrok_tunnel.public_url
 
 Config File
@@ -305,49 +309,25 @@ folder. We can override this behavior by updating our default :class:`~pyngrok.c
 
 .. code-block:: python
 
-    from pyngrok import ngrok, conf
+    from pyngrok import conf, ngrok
 
-    pyngrok_config = conf.PyngrokConfig(config_path="/opt/ngrok/config.yml")
-    conf.set_default(pyngrok_config)
+    conf.get_default().config_path = "/opt/ngrok/config.yml"
 
     ngrok.get_tunnels()
-
-or pass a ``pyngrok_config`` when calling methods to override the default individually:
-
-.. code-block:: python
-
-    from pyngrok.conf import PyngrokConfig
-    from pyngrok import ngrok
-
-    pyngrok_config = PyngrokConfig(config_path="/opt/ngrok/config.yml")
-
-    ngrok.get_tunnels(pyngrok_config=pyngrok_config)
 
 Binary Path
 -----------
 
 The ``pyngrok`` package manages its own ``ngrok`` binary. However, we can use our ``ngrok`` binary if we
-want by updating our default :class:`~pyngrok.conf.PyngrokConfig`:
+want by updating the default :class:`~pyngrok.conf.PyngrokConfig`:
 
 .. code-block:: python
 
-    from pyngrok import ngrok, conf
+    from pyngrok import conf, ngrok
 
-    pyngrok_config = conf.PyngrokConfig(ngrok_path="/usr/local/bin/ngrok")
-    conf.set_default(pyngrok_config)
+    conf.get_default().ngrok_path = "/usr/local/bin/ngrok"
 
     ngrok.connect()
-
-or pass a ``pyngrok_config`` when calling methods to override the default individually:
-
-.. code-block:: python
-
-    from pyngrok.conf import PyngrokConfig
-    from pyngrok import ngrok
-
-    pyngrok_config = PyngrokConfig(ngrok_path="/usr/local/bin/ngrok")
-
-    ngrok.connect(pyngrok_config=pyngrok_config)
 
 Command Line Usage
 ==================
