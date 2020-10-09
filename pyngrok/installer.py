@@ -108,7 +108,9 @@ def _install_ngrok_zip(ngrok_path, zip_path):
     Extract the ``ngrok`` zip file to the given path.
 
     :param ngrok_path: The path where ``ngrok`` will be installed.
+    :type ngrok_path: str
     :param zip_path: The path to the ``ngrok`` zip file to be extracted.
+    :type zip_path: str
     """
     _print_progress("Installing ngrok ... ")
 
