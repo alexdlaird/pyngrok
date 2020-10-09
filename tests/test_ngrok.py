@@ -52,12 +52,14 @@ class TestNgrok(NgrokTestCase):
     def test_connect(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
 
         # WHEN
         url = ngrok.connect(5000, pyngrok_config=self.pyngrok_config).public_url
         current_process = ngrok.get_ngrok_process()
 
         # THEN
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
         self.assertIsNotNone(current_process)
         self.assertIsNone(current_process.proc.poll())
         self.assertTrue(current_process._monitor_thread.is_alive())
@@ -82,11 +84,14 @@ class TestNgrok(NgrokTestCase):
         # GIVEN
         url = ngrok.connect(pyngrok_config=self.pyngrok_config).public_url
         time.sleep(1)
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
 
         # WHEN
         tunnels = ngrok.get_tunnels()
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 2)
 
         # THEN
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 2)
         self.assertEqual(len(tunnels), 2)
         for tunnel in tunnels:
             if tunnel.proto == "http":
@@ -110,15 +115,18 @@ class TestNgrok(NgrokTestCase):
         time.sleep(1)
         tunnels = ngrok.get_tunnels()
         # Two tunnels, as one each was created for "http" and "https"
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 2)
         self.assertEqual(len(tunnels), 2)
 
         # WHEN
         ngrok.disconnect(url)
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
         time.sleep(1)
         tunnels = ngrok.get_tunnels()
 
         # THEN
         # There is still one tunnel left, as we only disconnected the http tunnel
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
         self.assertEqual(len(tunnels), 1)
 
     def test_kill(self):
@@ -127,12 +135,14 @@ class TestNgrok(NgrokTestCase):
         time.sleep(1)
         ngrok_process = process.get_process(self.pyngrok_config)
         monitor_thread = ngrok_process._monitor_thread
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
 
         # WHEN
         ngrok.kill()
         time.sleep(1)
 
         # THEN
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
         self.assertIsNotNone(ngrok_process.proc.poll())
         self.assertFalse(monitor_thread.is_alive())
         self.assertEqual(len(process._current_processes.keys()), 0)

@@ -35,6 +35,8 @@ class NgrokTestCase(unittest.TestCase):
             except OSError:
                 pass
 
+        ngrok._current_tunnels.clear()
+
         if os.path.exists(self.config_dir):
             shutil.rmtree(self.config_dir)
 
