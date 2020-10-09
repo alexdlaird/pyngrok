@@ -354,10 +354,8 @@ def get_version(ngrok_path):
     """
     Get the version of the given ``ngrok`` binary.
 
-    :param ngrok_path: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
-        defaults to ``conf.DEFAULT_PYNGROK_CONFIG`` (which can be overridden instead,
-        `as shown here <index.html#config-file>`_).
-    :type ngrok_path: PyngrokConfig, optional
+    :param ngrok_path: The path to the ``ngrok`` binary.
+    :type ngrok_path: str
     :return: A tuple of ``(ngrok_version, pyngrok_version)``.
     :rtype: tuple
     """

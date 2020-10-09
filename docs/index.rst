@@ -301,9 +301,18 @@ Config File
 -----------
 
 By default, `ngrok will look for its config file <https://ngrok.com/docs#config>`_ in the home directory's ``.ngrok2``
-folder. We can override this behavior in one of two ways.
+folder. We can override this behavior by updating our default :class:`~pyngrok.conf.PyngrokConfig`:
 
-Either use :class:`~pyngrok.conf.PyngrokConfig`:
+.. code-block:: python
+
+    from pyngrok import ngrok, conf
+
+    pyngrok_config = conf.PyngrokConfig(config_path="/opt/ngrok/config.yml")
+    conf.set_default(pyngrok_config)
+
+    ngrok.get_tunnels()
+
+or pass a ``pyngrok_config`` when calling methods to override the default individually:
 
 .. code-block:: python
 
@@ -314,23 +323,22 @@ Either use :class:`~pyngrok.conf.PyngrokConfig`:
 
     ngrok.get_tunnels(pyngrok_config=pyngrok_config)
 
-or override it on the default:
+Binary Path
+-----------
+
+The ``pyngrok`` package manages its own ``ngrok`` binary. However, we can use our ``ngrok`` binary if we
+want by updating our default :class:`~pyngrok.conf.PyngrokConfig`:
 
 .. code-block:: python
 
     from pyngrok import ngrok, conf
 
-    conf.DEFAULT_PYNGROK_CONFIG.config_path = "/opt/ngrok/config.yml"
+    pyngrok_config = conf.PyngrokConfig(ngrok_path="/usr/local/bin/ngrok")
+    conf.set_default(pyngrok_config)
 
-    ngrok.get_tunnels()
+    ngrok.connect()
 
-Binary Path
------------
-
-The ``pyngrok`` package manages its own ``ngrok`` binary. However, we can use our ``ngrok`` binary if we
-want in one of two ways.
-
-Either use :class:`~pyngrok.conf.PyngrokConfig`:
+or pass a ``pyngrok_config`` when calling methods to override the default individually:
 
 .. code-block:: python
 
@@ -340,16 +348,6 @@ Either use :class:`~pyngrok.conf.PyngrokConfig`:
     pyngrok_config = PyngrokConfig(ngrok_path="/usr/local/bin/ngrok")
 
     ngrok.connect(pyngrok_config=pyngrok_config)
-
-or override it on the default:
-
-.. code-block:: python
-
-    from pyngrok import ngrok, conf
-
-    conf.DEFAULT_PYNGROK_CONFIG.ngrok_path = "/usr/local/bin/ngrok"
-
-    ngrok.connect()
 
 Command Line Usage
 ==================

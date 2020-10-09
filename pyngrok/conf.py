@@ -4,7 +4,7 @@ from pyngrok.installer import get_ngrok_bin
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.13"
+__version__ = "5.0.0"
 
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
@@ -18,8 +18,9 @@ class PyngrokConfig:
     An object containing ``pyngrok``'s configuration for interacting with the ``ngrok`` binary. All values are
     optional when it is instantiated, and default values will be used for parameters not passed.
 
-    On import, ``conf.DEFAULT_PYNGROK_CONFIG`` is instantiated to a :class:`~pyngrok.conf.PyngrokConfig` with default values. When ``pyngrok_config`` is
-    not passed to methods in :mod:`~pyngrok.ngrok`, this default will be used.
+    Use :func:`~pyngrok.conf.get_default` and :func:`~pyngrok.conf.set_default` to interact with the default
+    ``pyngrok_config``, or pass a :class:`~pyngrok.conf.PyngrokConfig` object individually as the
+    ``pyngrok_config`` arg to most methods in the :mod:`~pyngrok.ngrok` module.
 
     :var ngrok_path: The path to the ``ngrok`` binary, defaults to the value in
         `conf.DEFAULT_NGROK_PATH <index.html#config-file>`_
@@ -69,4 +70,29 @@ class PyngrokConfig:
         self.start_new_session = start_new_session
 
 
-DEFAULT_PYNGROK_CONFIG = PyngrokConfig()
+_default_pyngrok_config = PyngrokConfig()
+
+
+def get_default():
+    """
+    Get the default config to be used with methods in the :mod:`~pyngrok.ngrok` module. To not use this
+    default, the ``pyngrok_config`` arg can also be passed individually to most of these methods, or change
+    the default with :func:`~pyngrok.conf.set_default`.
+
+    :return: The default ``pyngrok_config``.
+    :rtype: PyngrokConfig
+    """
+    return _default_pyngrok_config
+
+
+def set_default(pyngrok_config):
+    """
+    Set a new default config to be used with methods in the :mod:`~pyngrok.ngrok` module. To not use the
+    default, the ``pyngrok_config`` arg can also be passed individually to most of these methods.
+
+    :param pyngrok_config: The new ``pyngrok_config`` to be used by default.
+    :type pyngrok_config: PyngrokConfig
+    """
+    global _default_pyngrok_config
+
+    _default_pyngrok_config = pyngrok_config

@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Added
 - [process.is_process_running()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.process.is_process_running) to check if `ngrok` is already running without also implicitly starting it.
 - [ngrok.get_version()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.get_version) to get `ngrok` and `pyngrok` versions in a tuple.
+- [conf.get_default()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.conf.get_default), replacing the need for direct references to `conf.DEFAULT_PYNGROK_CONFIG`.
+- [conf.set_default()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.conf.set_default), replacing the need for direct references to `conf.DEFAULT_PYNGROK_CONFIG`.
 - `data` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel), which holds the original tunnel data.
 - Stability improvements.
 - Logging improvements.
@@ -17,6 +19,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect) now returns a [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel) instead of a `str` of the public URL. The returned `NgrokTunnel` has a reference to the previously returned `public_url` in it.
 - [NgrokTunnel.`__init`__()'s](https://pyngrok.readthedocs.io/en/develop/_modules/pyngrok/ngrok.html#NgrokTunnel) params (`data`, `pyngrok_config`, and `api_url`) are now required.
 - `ngrok.disconnect()` no longer installs and starts `ngrok`, it simply returns if the `ngrok` process has not been started.
+- Renamed `conf.DEFAULT_PYNGROK_CONFIG` to `conf._default_pyngrok_config` (use [conf.set_default()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.conf.set_default) instead).
 - Renamed `ngrok.ensure_ngrok_installed()` to `ngrok.install_ngrok()`.
 - Renamed `process._ensure_path_ready()` to `process._validate_path()`.
 
