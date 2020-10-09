@@ -2,22 +2,27 @@
 <ul>
     <li><a class="reference internal" href="{{ pathto(master_doc) }}">Basic Usage</a>
         <ul>
-            <li><a class="reference internal" href="{{ pathto(master_doc) }}#installation">Installation</a></li>
-            <li><a class="reference internal" href="{{ pathto(master_doc) }}#open-a-tunnel">Open a Tunnel</a></li>
-            <li><a class="reference internal" href="{{ pathto(master_doc) }}#configuration">Configuration</a></li>
-            <li><a class="reference internal" href="{{ pathto(master_doc) }}#event-logs">Event Logs</a></li>
-            <li><a class="reference internal" href="{{ pathto(master_doc) }}#command-line-usage">Command Line Usage</a>
+            <li><a class="reference internal" href="{{ pathto(master_doc) | trim("#") }}#installation">Installation</a>
+            </li>
+            <li><a class="reference internal" href="{{ pathto(master_doc) | trim("#") }}#open-a-tunnel">Open a
+                Tunnel</a></li>
+            <li><a class="reference internal"
+                   href="{{ pathto(master_doc) | trim("#") }}#configuration">Configuration</a></li>
+            <li><a class="reference internal" href="{{ pathto(master_doc) | trim("#") }}#event-logs">Event Logs</a></li>
+            <li><a class="reference internal" href="{{ pathto(master_doc) | trim("#") }}#command-line-usage">Command
+                Line Usage</a>
             </li>
         </ul>
     </li>
-    <li><a class="reference internal" href="{{ pathto(master_doc) }}#dive-deeper">Dive Deeper</a>
+    <li><a class="reference internal" href="{{ pathto(master_doc) | trim("#") }}#dive-deeper">Dive Deeper</a>
         <ul>
             <li><a class="reference internal" href="{{ pathto("api") }}">API Documentation</a></li>
             <li><a class="reference internal" href="{{ pathto("integrations") }}">Integration Examples</a></li>
             <li><a class="reference internal" href="{{ pathto("troubleshooting") }}">Troubleshooting</a></li>
             <li><a href="https://github.com/alexdlaird/pyngrok/blob/master/CHANGELOG.md">Changelog</a></li>
             <li><a href="https://github.com/alexdlaird/pyngrok/issues">Issues</a></li>
-            <li><a class="reference internal" href="{{ pathto(master_doc) }}#contributing">Contributing</a></li>
+            <li><a class="reference internal" href="{{ pathto(master_doc) | trim("#") }}#contributing">Contributing</a>
+            </li>
         </ul>
     </li>
 </ul>
