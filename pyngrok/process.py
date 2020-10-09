@@ -30,6 +30,7 @@ __copyright__ = "Copyright 2020, Alex Laird"
 __version__ = "5.0.0"
 
 logger = logging.getLogger(__name__)
+ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))
 
 _current_processes = {}
 
@@ -114,7 +115,7 @@ class NgrokProcess:
         if log.line == "":
             return None
 
-        logger.log(getattr(logging, log.lvl), log.line)
+        ngrok_logger.log(getattr(logging, log.lvl), log.line)
         self.logs.append(log)
         if len(self.logs) > self.pyngrok_config.max_logs:
             self.logs.pop(0)

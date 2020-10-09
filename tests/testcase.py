@@ -7,7 +7,6 @@ from psutil import AccessDenied, NoSuchProcess
 
 from pyngrok import ngrok, installer, conf
 from pyngrok import process
-from pyngrok.conf import PyngrokConfig
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
@@ -22,8 +21,8 @@ class NgrokTestCase(unittest.TestCase):
         config_path = os.path.join(self.config_dir, "config.yml")
 
         conf.DEFAULT_NGROK_CONFIG_PATH = config_path
-
-        self.pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH)
+        self.pyngrok_config = conf.get_default()
+        self.pyngrok_config.config_path = conf.DEFAULT_NGROK_CONFIG_PATH
 
         installer.DEFAULT_RETRY_COUNT = 1
 
