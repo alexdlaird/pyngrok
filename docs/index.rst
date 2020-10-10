@@ -287,12 +287,13 @@ the ``region`` parameter in :class:`~pyngrok.conf.PyngrokConfig`:
     # <NgrokTunnel: "http://<public_sub>.au.ngrok.io" -> "http://localhost:80">
     ngrok_tunnel = ngrok.connect()
 
-Passing ``options``
--------------------
+Passing ``options`` as ``kwargs``
+---------------------------------
 
 It is possible to configure the tunnel when it is created, for instance adding authentication,
 a subdomain, or other tunnel properties `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_.
-Any remaining ``kwargs`` passed to :func:`~pyngrok.ngrok.connect` will be passed to the tunnel as these properties.
+This is accomplished by passing these ``options`` as additional ``kwargs`` to :func:`~pyngrok.ngrok.connect`,
+then they will be used as properties for the tunnel when it is created.
 
 Here is an example starting ``ngrok`` in Australia, then opening a tunnel with subdomain
 ``foo`` that requires basic authentication for requests.
