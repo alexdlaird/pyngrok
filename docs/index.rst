@@ -189,7 +189,7 @@ can be accomplished by using ``pyngrok`` to open a ``tcp`` tunnel to the desired
 
     # Open a tunnel to MySQL with a Reserved TCP Address
     ngrok.connect(3306, "tcp",
-                  options={"remote_addr": "1.tcp.ngrok.io:12345"})
+                  remote_addr="1.tcp.ngrok.io:12345")
 
 
 We can also serve up local directories via `ngrok's built-in fileserver <https://ngrok.com/docs#http-file-urls>`_.
@@ -287,10 +287,10 @@ Here is an example starting ``ngrok`` in Australia, then opening a tunnel with s
     from pyngrok.conf import PyngrokConfig
     from pyngrok import ngrok
 
-    options = {"subdomain": "foo", "auth": "username:password"}
     pyngrok_config = PyngrokConfig(region="au")
 
-    url = ngrok.connect(options=options,
+    url = ngrok.connect(subdomain="foo",
+                        auth="username:password",
                         pyngrok_config=pyngrok_config)
 
 Config File

@@ -155,7 +155,7 @@ def get_ngrok_process(pyngrok_config=None):
     return process.get_process(pyngrok_config)
 
 
-def connect(port="80", proto="http", name=None, options=None, pyngrok_config=None):
+def connect(port="80", proto="http", name=None, pyngrok_config=None, return_ngrok_tunnel=False, **options):
     """
     Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning the connected
     public URL that tunnels to the local port.
@@ -173,20 +173,27 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
     :type proto: str, optional
     :param name: A friendly name for the tunnel.
     :type name: str, optional
-    :param options: Parameters passed to `configuration for the ngrok
-        tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
-    :type options: dict[str, str], optional
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         defaults to ``conf.DEFAULT_PYNGROK_CONFIG`` (which can be overridden instead,
         `as shown here <index.html#config-file>`_).
     :type pyngrok_config: PyngrokConfig, optional
-    :return: The connected public URL.
+    :param return_ngrok_tunnel: ``True`` if a :class:`~pyngrok.ngrok.NgrokTunnel` should be returned, ``False`` for ``str``.
+    :type return_ngrok_tunnel: bool, optional
+    :param options: Remaining ``kwargs`` are passed as `configuration for the ngrok
+        tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
+    :type options: dict, optional
+    :return: The connected public URL if ``return_ngrok_tunnel`` is ``False``, otherwise a :class:`~pyngrok.ngrok.NgrokTunnel`.
     :rtype: str
     """
     if options is None:
         options = {}
     if pyngrok_config is None:
         pyngrok_config = conf.DEFAULT_PYNGROK_CONFIG
+
+    if "options" in options:
+        logger.warning(
+            "Support for passing \"options\" as a dict is deprecated and will be removed in 5.0.0, unpack the dict as kwargs")
+        options.update(options.get("options", {}))
 
     port = str(port)
     if not name:
@@ -213,7 +220,12 @@ def connect(port="80", proto="http", name=None, options=None, pyngrok_config=Non
     if proto == "http" and not options.get("bind_tls", False):
         tunnel.public_url = tunnel.public_url.replace("https", "http")
 
-    return tunnel.public_url
+    if return_ngrok_tunnel:
+        return tunnel
+    else:
+        logger.warning("Support for \"return_ngrok_tunnel\" as \"False\" is deprecated and will be removed in 5.0.0, "
+                       "when this method will return a NgrokTunnel instead of a str")
+        return tunnel.public_url
 
 
 def disconnect(public_url, pyngrok_config=None):
