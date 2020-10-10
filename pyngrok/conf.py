@@ -12,6 +12,8 @@ DEFAULT_CONFIG_PATH = None
 
 DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ngrok.yml")
 
+_default_pyngrok_config = None
+
 
 class PyngrokConfig:
     """
@@ -82,10 +84,6 @@ class PyngrokConfig:
         self.startup_timeout = startup_timeout
         self.max_logs = max_logs
         self.request_timeout = request_timeout
-        self.start_new_session = start_new_session
-
-
-_default_pyngrok_config = PyngrokConfig()
 
 
 def get_default():
@@ -97,6 +95,9 @@ def get_default():
     :return: The default ``pyngrok_config``.
     :rtype: PyngrokConfig
     """
+    if _default_pyngrok_config is None:
+        set_default(PyngrokConfig())
+
     return _default_pyngrok_config
 
 
