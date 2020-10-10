@@ -43,11 +43,11 @@ which returns a `NgrokTunnel` that has a reference to the public URL generated b
 from pyngrok import ngrok
 
 # Open a HTTP tunnel on the default port 80
+# <NgrokTunnel: "http://<public_sub>.ngrok.io" -> "http://localhost:80">
 http_tunnel = ngrok.connect()
-public_url = http_tunnel.public_url
 # Open a SSH tunnel
+# <NgrokTunnel: "tcp://0.tcp.ngrok.io:12345" -> "localhost:22">
 ssh_tunnel = ngrok.connect(22, "tcp")
-ssh_url = ssh_tunnel.public_url
 ```
 
 The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes an optional

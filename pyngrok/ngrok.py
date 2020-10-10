@@ -83,7 +83,7 @@ class NgrokTunnel:
         """
         logger.info("Refreshing metrics for tunnel: {}".format(self.public_url))
 
-        data = api_request("{}{}".format(self.api_url, self.uri), method="GET", data=None,
+        data = api_request("{}{}".format(self.api_url, self.uri), method="GET",
                            timeout=self.pyngrok_config.request_timeout)
 
         if "metrics" not in data:
@@ -228,8 +228,8 @@ def connect(port=None, proto=None, name=None, options=None, pyngrok_config=None)
     if name and name in tunnel_definitions:
         tunnel_definition = tunnel_definitions[name]
 
-        port = tunnel_definition.get("addr")
-        proto = tunnel_definition.get("proto")
+        port = tunnel_definition.get("addr") if not port else port
+        proto = tunnel_definition.get("proto") if not proto else proto
         # Use the tunnel definition as the base, but override with any passed in options
         tunnel_definition.update(options)
         options = tunnel_definition
@@ -332,7 +332,7 @@ def get_tunnels(pyngrok_config=None):
     api_url = get_ngrok_process(pyngrok_config).api_url
 
     _current_tunnels.clear()
-    for tunnel in api_request("{}/api/tunnels".format(api_url), method="GET", data=None,
+    for tunnel in api_request("{}/api/tunnels".format(api_url), method="GET",
                               timeout=pyngrok_config.request_timeout)["tunnels"]:
         ngrok_tunnel = NgrokTunnel(tunnel, pyngrok_config, api_url)
         _current_tunnels[ngrok_tunnel.public_url] = ngrok_tunnel

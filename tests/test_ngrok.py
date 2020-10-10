@@ -455,8 +455,6 @@ class TestNgrok(NgrokTestCase):
         ssh_tunnel = ngrok.connect(name="tcp-tunnel", pyngrok_config=pyngrok_config)
 
         # THEN
-        print(http_tunnel)
-        print(ssh_tunnel)
         self.assertEqual(http_tunnel.name, "http-tunnel (http)")
         self.assertEqual(http_tunnel.config["addr"],
                          "http://localhost:{}".format(config["tunnels"]["http-tunnel"]["addr"]))
@@ -489,12 +487,17 @@ class TestNgrok(NgrokTestCase):
                                        auth_token=os.environ["NGROK_AUTHTOKEN"])
 
         # WHEN
-        ngrok_tunnel = ngrok.connect(pyngrok_config=pyngrok_config)
+        ngrok_tunnel1 = ngrok.connect(pyngrok_config=pyngrok_config)
+        ngrok_tunnel2 = ngrok.connect(port=5000, options={"subdomain": "pyngrok3"}, pyngrok_config=pyngrok_config)
 
         # THEN
-        self.assertEqual(ngrok_tunnel.name, "pyngrok-default (http)")
-        self.assertEqual(ngrok_tunnel.config["addr"],
+        self.assertEqual(ngrok_tunnel1.name, "pyngrok-default (http)")
+        self.assertEqual(ngrok_tunnel1.config["addr"],
                          "http://localhost:{}".format(config["tunnels"]["pyngrok-default"]["addr"]))
-        self.assertEqual(ngrok_tunnel.proto, config["tunnels"]["pyngrok-default"]["proto"])
-        self.assertEqual(ngrok_tunnel.public_url,
+        self.assertEqual(ngrok_tunnel1.proto, config["tunnels"]["pyngrok-default"]["proto"])
+        self.assertEqual(ngrok_tunnel1.public_url,
                          "http://{}.ngrok.io".format(config["tunnels"]["pyngrok-default"]["subdomain"]))
+        self.assertEqual(ngrok_tunnel2.name, "pyngrok-default (http)")
+        self.assertEqual(ngrok_tunnel2.config["addr"], "http://localhost:5000")
+        self.assertEqual(ngrok_tunnel2.proto, config["tunnels"]["pyngrok-default"]["proto"])
+        self.assertEqual(ngrok_tunnel2.public_url, "http://pyngrok3.ngrok.io")
