@@ -84,6 +84,7 @@ class PyngrokConfig:
         self.startup_timeout = startup_timeout
         self.max_logs = max_logs
         self.request_timeout = request_timeout
+        self.start_new_session = start_new_session
 
 
 def get_default():
