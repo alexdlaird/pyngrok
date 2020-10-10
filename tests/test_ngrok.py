@@ -224,7 +224,7 @@ class TestNgrok(NgrokTestCase):
     def test_api_request_fails(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
-        bad_options = {
+        bad_data = {
             "name": str(uuid.uuid4()),
             "addr": "8080",
             "proto": "invalid-proto"
@@ -232,7 +232,7 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         with self.assertRaises(PyngrokNgrokHTTPError) as cm:
-            ngrok.api_request("{}/api/tunnels".format(current_process.api_url), "POST", data=bad_options)
+            ngrok.api_request("{}/api/tunnels".format(current_process.api_url), "POST", data=bad_data)
 
         # THEN
         self.assertEqual(StatusCodes.BAD_REQUEST, cm.exception.status_code)
