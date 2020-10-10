@@ -172,7 +172,7 @@ def get_ngrok_process(pyngrok_config=None):
     return process.get_process(pyngrok_config)
 
 
-def connect(addr=None, proto=None, name=None, options=None, pyngrok_config=None):
+def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     """
     Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning a object representing
     the connected tunnel.
@@ -194,17 +194,15 @@ def connect(addr=None, proto=None, name=None, options=None, pyngrok_config=None)
     :param name: A friendly name for the tunnel, or the name of a `ngrok tunnel definition <https://ngrok.com/docs#tunnel-definitions>`_
         to be used.
     :type name: str, optional
-    :param options: Parameters passed to `configuration for the ngrok
-        tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
-    :type options: dict[str, str], optional
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
     :type pyngrok_config: PyngrokConfig, optional
+    :param options: Remaining kwargs are passed to `configuration for the ngrok
+        tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
+    :type options: dict, optional
     :return: The created ``ngrok`` tunnel.
     :rtype: NgrokTunnel
     """
-    if options is None:
-        options = {}
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 

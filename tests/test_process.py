@@ -297,7 +297,7 @@ class TestProcess(NgrokTestCase):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
-        public_url = ngrok.connect(urlparse(current_process.api_url).port, options={"bind_tls": True},
+        public_url = ngrok.connect(urlparse(current_process.api_url).port, bind_tls=True,
                                    pyngrok_config=self.pyngrok_config).public_url
         ngrok_process = ngrok.get_ngrok_process()
         monitor_thread = ngrok_process._monitor_thread
