@@ -467,7 +467,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(ssh_tunnel.proto, config["tunnels"]["tcp-tunnel"]["proto"])
         self.assertTrue(ssh_tunnel.public_url.startswith("tcp://"))
 
-    def test_tunnel_definitions_pyngrok_default(self):
+    def test_tunnel_definitions_pyngrok_default_with_overrides(self):
         if "NGROK_AUTHTOKEN" not in os.environ:
             self.skipTest("NGROK_AUTHTOKEN environment variable not set")
 
@@ -488,7 +488,7 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         ngrok_tunnel1 = ngrok.connect(pyngrok_config=pyngrok_config)
-        ngrok_tunnel2 = ngrok.connect(port=5000, options={"subdomain": "pyngrok3"}, pyngrok_config=pyngrok_config)
+        ngrok_tunnel2 = ngrok.connect(5000, options={"subdomain": "pyngrok3"}, pyngrok_config=pyngrok_config)
 
         # THEN
         self.assertEqual(ngrok_tunnel1.name, "pyngrok-default (http)")

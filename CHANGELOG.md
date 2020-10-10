@@ -19,6 +19,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 - [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect) now returns a [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel) instead of a `str` of the public URL. The returned `NgrokTunnel` has a reference to the previously returned `public_url` in it.
+- [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect) changed its signature, renamed kwarg `port` (the first arg) to `addr` to match `ngrok`'s documentation.
 - [NgrokTunnel.`__init`__()'s](https://pyngrok.readthedocs.io/en/develop/_modules/pyngrok/ngrok.html#NgrokTunnel) params (`data`, `pyngrok_config`, and `api_url`) are now required.
 - `ngrok.disconnect()` no longer installs and starts `ngrok`, it simply returns if the `ngrok` process has not been started.
 - Renamed `conf.DEFAULT_PYNGROK_CONFIG` to `conf._default_pyngrok_config` (use [conf.set_default()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.conf.set_default) instead).

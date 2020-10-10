@@ -172,7 +172,7 @@ def get_ngrok_process(pyngrok_config=None):
     return process.get_process(pyngrok_config)
 
 
-def connect(port=None, proto=None, name=None, options=None, pyngrok_config=None):
+def connect(addr=None, proto=None, name=None, options=None, pyngrok_config=None):
     """
     Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning a object representing
     the connected tunnel.
@@ -186,10 +186,9 @@ def connect(port=None, proto=None, name=None, options=None, pyngrok_config=None)
     If ``ngrok`` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
 
-    :param port: The local port to which the tunnel will forward traffic, defaults to "80". Can also be
-        a `local directory or network address <https://ngrok.com/docs#http-file-urls>`_. This maps to the ``addr``
-        in ``ngrok``'s tunnel definitions.
-    :type port: str, optional
+    :param addr: The local port to which the tunnel will forward traffic, or a
+        `local directory or network address <https://ngrok.com/docs#http-file-urls>`_, defaults to "80".
+    :type addr: str, optional
     :param proto: The protocol to tunnel, defaults to "http".
     :type proto: str, optional
     :param name: A friendly name for the tunnel, or the name of a `ngrok tunnel definition <https://ngrok.com/docs#tunnel-definitions>`_
@@ -228,22 +227,22 @@ def connect(port=None, proto=None, name=None, options=None, pyngrok_config=None)
     if name and name in tunnel_definitions:
         tunnel_definition = tunnel_definitions[name]
 
-        port = tunnel_definition.get("addr") if not port else port
+        addr = tunnel_definition.get("addr") if not addr else addr
         proto = tunnel_definition.get("proto") if not proto else proto
         # Use the tunnel definition as the base, but override with any passed in options
         tunnel_definition.update(options)
         options = tunnel_definition
 
-    if not port:
-        port = "80"
+    if not addr:
+        addr = "80"
     else:
-        port = str(port)
+        addr = str(addr)
     if not proto:
         proto = "http"
 
     if not name:
-        if not port.startswith("file://"):
-            name = "{}-{}-{}".format(proto, port, uuid.uuid4())
+        if not addr.startswith("file://"):
+            name = "{}-{}-{}".format(proto, addr, uuid.uuid4())
         else:
             name = "{}-file-{}".format(proto, uuid.uuid4())
 
@@ -251,7 +250,7 @@ def connect(port=None, proto=None, name=None, options=None, pyngrok_config=None)
 
     config = {
         "name": name,
-        "addr": port,
+        "addr": addr,
         "proto": proto
     }
     options.update(config)
