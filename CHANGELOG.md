@@ -3,11 +3,16 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.13...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.2.0...HEAD)
+
+## [4.2.0](https://github.com/alexdlaird/pyngrok/compare/4.1.14...4.2.0) - TBD
 ### Added
-- `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
 - [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect) replaced `options` with kwargs, maintained backwards compatibility. Support for passing `options` as a dict will be removed in 5.0.0, unpack the dict as `kwargs`.
 - [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect) added `return_ngrok_tunnel` to its args, which defaults to `False`. This will be removed and `True` will be the default behavior in 5.0.0.
+
+## [4.1.14](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.14) - TBD
+### Added
+- `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
 - Documentation improvements.
 
 ## [4.1.13](https://github.com/alexdlaird/pyngrok/compare/4.1.12...4.1.13) - 2020-10-02
