@@ -74,7 +74,7 @@ def install_ngrok(ngrok_path, **kwargs):
 
     :param ngrok_path: The path to where the ``ngrok`` binary will be downloaded.
     :type ngrok_path: str
-    :param kwargs: Remaining kwargs will be passed to :func:`_download_file`.
+    :param kwargs: Remaining ``kwargs`` will be passed to :func:`_download_file`.
     :type kwargs: dict, optional
     """
     logger.debug(
@@ -206,7 +206,7 @@ def _download_file(url, retries=0, **kwargs):
     :type url: str
     :param retries: The number of retries to attempt, if download fails.
     :type retries: int, optional
-    :param kwargs: Remaining kwargs will be passed to :py:func:`urllib.request.urlopen`.
+    :param kwargs: Remaining ``kwargs`` will be passed to :py:func:`urllib.request.urlopen`.
     :type kwargs: dict, optional
     :return: The path to the downloaded temporary file.
     :rtype: str

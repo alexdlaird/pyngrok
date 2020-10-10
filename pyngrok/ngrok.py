@@ -177,8 +177,10 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning a object representing
     the connected tunnel.
 
-    If a tunnel definition in `ngrok`'s config matches the given `name`, it will be used to start the tunnel. When
-    `name` is `None` and a "pyngrok-default" tunnel definition exists it `ngrok`'s config, it will be used.
+    If a `tunnel definition in ngrok's config file <https://ngrok.com/docs#tunnel-definitions>`_ matches the given
+    ``name``, it will be loaded and used to start the tunnel. When ``name`` is ``None`` and a "pyngrok-default" tunnel
+    definition exists in ``ngrok``'s config, it will be loaded and use. Any ``kwargs`` passed as ``options`` will
+    override properties from the loaded tunnel definition.
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
@@ -197,7 +199,7 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
     :type pyngrok_config: PyngrokConfig, optional
-    :param options: Remaining kwargs are passed to `configuration for the ngrok
+    :param options: Remaining ``kwargs`` are passed as `configuration for the ngrok
         tunnel <https://ngrok.com/docs#tunnel-definitions>`_.
     :type options: dict, optional
     :return: The created ``ngrok`` tunnel.
