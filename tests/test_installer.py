@@ -1,7 +1,7 @@
 import os
 import socket
 
-from mock import mock
+import mock
 
 from pyngrok import ngrok, installer, conf
 from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError

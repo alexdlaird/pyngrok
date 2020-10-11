@@ -4,7 +4,7 @@ import sys
 import time
 
 from future.standard_library import install_aliases
-from mock import mock
+import mock
 
 from pyngrok import process, installer, conf, ngrok
 from pyngrok.conf import PyngrokConfig
