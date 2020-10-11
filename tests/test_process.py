@@ -1,6 +1,5 @@
 import os
 import platform
-import sys
 import time
 from unittest import mock
 from urllib.parse import urlparse
