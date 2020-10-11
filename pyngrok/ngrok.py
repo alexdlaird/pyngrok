@@ -4,6 +4,7 @@ import os
 import socket
 import sys
 import uuid
+import warnings
 
 from future.standard_library import install_aliases
 
@@ -191,8 +192,9 @@ def connect(port="80", proto="http", name=None, pyngrok_config=None, return_ngro
         pyngrok_config = conf.DEFAULT_PYNGROK_CONFIG
 
     if "options" in options:
-        logger.warning(
-            "Support for passing \"options\" as a dict is deprecated and will be removed in 5.0.0, unpack the dict as kwargs")
+        warnings.warn(
+            "Support for passing \"options\" as a dict is deprecated and will be removed in 5.0.0, unpack the dict as kwargs",
+            DeprecationWarning, 2)
         options.update(options.pop("options", {}))
 
     port = str(port)
@@ -225,8 +227,8 @@ def connect(port="80", proto="http", name=None, pyngrok_config=None, return_ngro
     if return_ngrok_tunnel:
         return tunnel
     else:
-        logger.warning("Support for \"return_ngrok_tunnel\" as \"False\" is deprecated and will be removed in 5.0.0, "
-                       "when this method will return a NgrokTunnel instead of a str")
+        warnings.warn("Support for \"return_ngrok_tunnel\" as \"False\" is deprecated and will be removed in 5.0.0, "
+                      "when this method will return a NgrokTunnel instead of a str", DeprecationWarning, 2)
         return tunnel.public_url
 
 
@@ -368,7 +370,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
 
         status_code = response.getcode()
         logger.debug("Response status code: {}".format(status_code))
-        logger.debug("Response: {}".format(response_data))
+        logger.debug("Response: {}".format(response_data.strip()))
 
         if str(status_code)[0] != "2":
             raise PyngrokNgrokHTTPError("ngrok client API returned {}: {}".format(status_code, response_data), url,
@@ -384,7 +386,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
 
         status_code = e.getcode()
         logger.debug("Response status code: {}".format(status_code))
-        logger.debug("Response: {}".format(response_data))
+        logger.debug("Response: {}".format(response_data.strip()))
 
         raise PyngrokNgrokHTTPError("ngrok client exception, API returned {}: {}".format(status_code, response_data),
                                     e.url,
