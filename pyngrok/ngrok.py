@@ -218,7 +218,9 @@ def connect(port="80", proto="http", name=None, pyngrok_config=None, return_ngro
                          pyngrok_config=pyngrok_config, api_url=api_url)
 
     if proto == "http" and not options.get("bind_tls", False):
-        tunnel.public_url = tunnel.public_url.replace("https", "http")
+        tunnel = NgrokTunnel(api_request("{}{}%20%28http%29".format(api_url, tunnel.uri), method="GET",
+                                         timeout=pyngrok_config.request_timeout),
+                             pyngrok_config, api_url)
 
     if return_ngrok_tunnel:
         return tunnel
