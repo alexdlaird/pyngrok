@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.0.0...HEAD)
 
+<<<<<<< HEAD
 ## [5.0.0](https://github.com/alexdlaird/pyngrok/compare/4.2.0...5.0.0) - TBD
 ### Added
 - Support for [`ngrok`'s tunnel definitions](https://ngrok.com/docs#tunnel-definitions) when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect). If a tunnel definition in `ngrok`'s config matches the given `name`, it will be used to start the tunnel.
@@ -32,8 +33,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Support for Python 2.7. To use `pyngrok` with Python 2.7, pin `pyngrok>=4.1,<4.2`.
 
 ## [4.2.0](https://github.com/alexdlaird/pyngrok/compare/4.1.14...4.2.0) - TBD
-- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.ngrok.connect) replaced `options` with kwargs, maintained backwards compatibility. Support for passing `options` as a dict will be removed in 5.0.0, unpack the dict as `kwargs`.
-- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.ngrok.connect) added `return_ngrok_tunnel` to its args, which defaults to `False`. This will be removed and `True` will be the default behavior in 5.0.0.
+
+**4.2.x will not continue to be a supported** version of `pyngrok`. This release is meant to **ease migration between
+4.1.x and 5.0.0** by adding backwards compatible versions of some of those features. If you need Python 2.7 support or
+do not want to mess with **breaking changes coming in 5.0.0**, pin `pyngrok>=4.1,<4.2`.
+
+### Added
+- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.ngrok.connect) replaced `options` with `kwargs`, maintained backwards compatibility. Support for passing `options` as a dict will be removed in 5.0.0, unpack the dict as `kwargs`.
+- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.ngrok.connect) added `return_ngrok_tunnel` to its args, which defaults to `False` for backwards compatibility. This will default to `True` in 5.0.0, and the flag will be removed.
+- [conf.get_default()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.conf.get_default). This replaces the need to directly reference `conf.DEFAULT_PYNGROK_CONFIG`, which will be removed in 5.0.0.
 
 ## [4.1.14](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.14) - TBD
 ### Added
@@ -138,7 +146,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [4.0.0](https://github.com/alexdlaird/pyngrok/compare/3.1.1...4.0.0) - 2020-06-06
 ### Added
-- `PyngrokConfig`, which contains all of `pyngrok`'s configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of kwargs. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig).
+- `PyngrokConfig`, which contains all of `pyngrok`'s configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of `kwargs`. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig).
 - `log_event_callback` is a new configuration parameter in `PyngrokConfig`, a callback that will be invoked each time a `ngrok` log is emitted.
 - `monitor_thread` is a new configuration parameter in `PyngrokConfig` which determines whether `ngrok` should continue to be monitored (for logs, etc.) after it has finished starting. Defaults to `True`.
 - `startup_timeout` is a new configuration parameter in `PyngrokConfig`. 
