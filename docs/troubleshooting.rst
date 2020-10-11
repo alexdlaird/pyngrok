@@ -59,7 +59,6 @@ ensure you have a handler streaming logs and your level is set to ``DEBUG``. Her
 .. code-block:: python
 
     import logging
-    import sys
 
     from pyngrok import ngrok
 
@@ -96,7 +95,7 @@ enabling logging (as illustrated in the section above) so you can see where thin
     Python 3.7.6 (default, Dec 30 2019, 19:38:28)
     [Clang 11.0.0 (clang-1100.0.33.16)] on darwin
     Type "help", "copyright", "credits" or "license" for more information.
-    >>> import logging, sys
+    >>> import logging
     >>> from pyngrok import ngrok
     >>> logger = logging.getLogger()
     >>> logger.setLevel(logging.DEBUG)

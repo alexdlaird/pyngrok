@@ -70,6 +70,7 @@ variable that let's us configure from an environment variable whether we want to
 .. code-block:: python
 
     import os
+    import sys
 
     # ... The rest of our Django settings
 
