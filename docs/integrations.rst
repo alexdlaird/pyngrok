@@ -439,7 +439,7 @@ Now create ``server.py`` with the following code:
     sock.listen(1)
 
     # Open a ngrok tunnel to the socket
-    public_url = ngrok.connect(port, "tcp", remote_addr="{}:{}".format(host, port))
+    public_url = ngrok.connect(port, "tcp", options={"remote_addr": "{}:{}".format(host, port)})
     print("ngrok tunnel \"{}\" -> \"tcp://127.0.0.1:{}/\"".format(public_url, port))
 
     while True:
