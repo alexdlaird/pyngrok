@@ -421,10 +421,10 @@ def _start_process(pyngrok_config):
         start.append("--region={}".format(pyngrok_config.region))
 
     popen_kwargs = {"stdout": subprocess.PIPE, "universal_newlines": True}
-    if sys.version_info.major >= 3 and os.name == "posix":
+    if os.name == "posix":
         popen_kwargs.update(start_new_session=pyngrok_config.start_new_session)
     elif pyngrok_config.start_new_session:
-        logger.warning("Ignoring start_new_session=True, which requires Python 3 and POSIX")
+        logger.warning("Ignoring start_new_session=True, which requires POSIX")
     proc = subprocess.Popen(start, **popen_kwargs)
     atexit.register(_terminate_process, proc)
 
