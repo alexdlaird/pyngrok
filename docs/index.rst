@@ -359,6 +359,11 @@ available on the command line.
 
 For details on how to fully leverage ``ngrok`` from the command line, see `ngrok's official documentation <https://ngrok.com/docs>`_.
 
+Python 2.7
+==========
+
+The last version of `pyngrok` to support Python 2.7 was 4.1. To use `pyngrok` with Python 2.7, pin `pyngrok>=4.1,<4.2`.
+
 Dive Deeper
 ===========
 

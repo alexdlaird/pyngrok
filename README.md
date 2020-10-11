@@ -60,6 +60,11 @@ ngrok http 80
 
 For details on how to fully leverage `ngrok` from the command line, see [ngrok's official documentation](https://ngrok.com/docs).
 
+### Python 2.7
+
+The last version of ``pyngrok`` to support Python 2.7 was 4.1. To use ``pyngrok`` with Python 2.7,
+pin ``pyngrok>=4.1,<4.2``.
+
 ## Documentation
 
 For more advanced usage, `pyngrok`'s official documentation is available at [http://pyngrok.readthedocs.io](http://pyngrok.readthedocs.io).
