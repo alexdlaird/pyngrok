@@ -121,7 +121,8 @@ class NgrokProcess:
         :rtype: bool
         """
         if self.api_url is None or \
-                not self._tunnel_started or not self._client_connected:
+                not self._tunnel_started or \
+                not self._client_connected:
             return False
 
         if not self.api_url.lower().startswith("http"):
@@ -133,8 +134,7 @@ class NgrokProcess:
         if response.getcode() != HTTPStatus.OK:
             return False
 
-        return self.proc.poll() is None and \
-               self.startup_error is None
+        return self.proc.poll() is None and self.startup_error is None
 
     def _monitor_process(self):
         thread = threading.current_thread()

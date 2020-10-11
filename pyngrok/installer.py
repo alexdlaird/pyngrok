@@ -47,10 +47,10 @@ def get_ngrok_bin():
     :return: The name of the ``ngrok`` executable.
     :rtype: str
     """
-    system = platform.system()
-    if system in ["Darwin", "Linux", "FreeBSD"]:
+    system = platform.system().lower()
+    if system in ["darwin", "linux", "freebsd"]:
         return "ngrok"
-    elif system == "Windows" or "cygwin" in system.lower():  # pragma: no cover
+    elif system in ["windows", "cygwin"]:  # pragma: no cover
         return "ngrok.exe"
     else:  # pragma: no cover
         raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
@@ -75,7 +75,8 @@ def install_ngrok(ngrok_path, **kwargs):
         os.makedirs(ngrok_dir)
 
     arch = "x86_64" if sys.maxsize > 2 ** 32 else "i386"
-    if platform.uname()[4].startswith("arm") or platform.uname()[4].startswith("aarch64"):
+    if platform.uname()[4].startswith("arm") or \
+            platform.uname()[4].startswith("aarch64"):
         arch += "_arm"
     system = platform.system().lower()
     if "cygwin" in system:

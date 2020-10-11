@@ -108,7 +108,8 @@ def install_ngrok(pyngrok_config=None):
         installer.install_default_config(config_path)
 
     # Install the default config, even if we don't need it this time, if it doesn't already exist
-    if conf.DEFAULT_NGROK_CONFIG_PATH != config_path and not os.path.exists(conf.DEFAULT_NGROK_CONFIG_PATH):
+    if conf.DEFAULT_NGROK_CONFIG_PATH != config_path and \
+            not os.path.exists(conf.DEFAULT_NGROK_CONFIG_PATH):
         installer.install_default_config(conf.DEFAULT_NGROK_CONFIG_PATH)
 
 
@@ -222,10 +223,7 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
         tunnel_definition.update(options)
         options = tunnel_definition
 
-    if not addr:
-        addr = "80"
-    else:
-        addr = str(addr)
+    addr = str(addr) if addr else "80"
     if not proto:
         proto = "http"
 
