@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [4.1.15](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.15) - 2020-10-11
 ### Added
-- `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/4.1.14/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
+- `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/4.1.15/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
 - Documentation improvements.
 
 ## [4.1.13](https://github.com/alexdlaird/pyngrok/compare/4.1.12...4.1.13) - 2020-10-02
