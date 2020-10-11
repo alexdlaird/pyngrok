@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.2.0...HEAD)
 
-## [4.2.0](https://github.com/alexdlaird/pyngrok/compare/4.1.14...4.2.0) - TBD
+## [4.2.0](https://github.com/alexdlaird/pyngrok/compare/4.1.14...4.2.0) - 2020-10-11
 
 The next release, 5.0.0, contains breaking changes, including dropping support for Python 2.7. 4.2.x is meant to ease
 migration between 4.1.x and 5.0.0 and should not be pinned, as it will not be supported after 5.0.0 is released. To
