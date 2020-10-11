@@ -4,24 +4,13 @@ import os
 import socket
 import sys
 import uuid
-
-from future.standard_library import install_aliases
+from http import HTTPStatus
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
+from urllib.request import urlopen, Request
 
 from pyngrok import process, conf, installer
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
-
-install_aliases()
-
-from urllib.parse import urlencode
-from urllib.request import urlopen, Request, HTTPError, URLError
-
-try:
-    from http import HTTPStatus as StatusCodes
-except ImportError:  # pragma: no cover
-    try:
-        from http import client as StatusCodes
-    except ImportError:
-        import httplib as StatusCodes
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
@@ -437,7 +426,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
         if str(status_code)[0] != "2":
             raise PyngrokNgrokHTTPError("ngrok client API returned {}: {}".format(status_code, response_data), url,
                                         status_code, None, request.headers, response_data)
-        elif status_code == StatusCodes.NO_CONTENT:
+        elif status_code == HTTPStatus.NO_CONTENT:
             return None
 
         return json.loads(response_data)

@@ -3,29 +3,17 @@ import platform
 import sys
 import time
 import uuid
+from unittest import mock
+from urllib.parse import urlparse
+from urllib.request import urlopen
+from http import HTTPStatus
 
-import mock
 import yaml
-
-from future.standard_library import install_aliases
 
 from pyngrok import ngrok, process, conf, installer
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
-from .testcase import NgrokTestCase
-
-install_aliases()
-
-from urllib.parse import urlparse
-from urllib.request import urlopen
-
-try:
-    from http import HTTPStatus as StatusCodes
-except ImportError:
-    try:
-        from http import client as StatusCodes
-    except ImportError:
-        import httplib as StatusCodes
+from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
@@ -235,7 +223,7 @@ class TestNgrok(NgrokTestCase):
             ngrok.api_request("{}/api/tunnels".format(current_process.api_url), "POST", data=bad_data)
 
         # THEN
-        self.assertEqual(StatusCodes.BAD_REQUEST, cm.exception.status_code)
+        self.assertEqual(HTTPStatus.BAD_REQUEST, cm.exception.status_code)
         self.assertIn("invalid tunnel configuration", str(cm.exception))
         self.assertIn("protocol name", str(cm.exception))
 

@@ -2,20 +2,15 @@ import os
 import platform
 import sys
 import time
-
-from future.standard_library import install_aliases
-from mock import mock
+from unittest import mock
+from urllib.parse import urlparse
+from urllib.request import urlopen
 
 from pyngrok import process, installer, conf, ngrok
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokError
 from pyngrok.process import NgrokLog
-from .testcase import NgrokTestCase
-
-install_aliases()
-
-from urllib.parse import urlparse
-from urllib.request import urlopen
+from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"

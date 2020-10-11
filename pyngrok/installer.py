@@ -6,23 +6,12 @@ import sys
 import tempfile
 import time
 import zipfile
-
-import yaml
-from future.standard_library import install_aliases
-
-from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
-
-install_aliases()
-
+from http import HTTPStatus
 from urllib.request import urlopen
 
-try:
-    from http import HTTPStatus as StatusCodes
-except ImportError:  # pragma: no cover
-    try:
-        from http import client as StatusCodes
-    except ImportError:
-        import httplib as StatusCodes
+import yaml
+
+from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
@@ -226,7 +215,7 @@ def _download_file(url, retries=0, **kwargs):
 
         status_code = response.getcode()
 
-        if status_code != StatusCodes.OK:
+        if status_code != HTTPStatus.OK:
             logger.debug("Response status code: {}".format(status_code))
 
             return None

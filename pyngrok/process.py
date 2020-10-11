@@ -6,24 +6,13 @@ import subprocess
 import sys
 import threading
 import time
+from http import HTTPStatus
+from urllib.request import Request, urlopen
 
 import yaml
-from future.standard_library import install_aliases
 
 from pyngrok import conf, installer
 from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError
-
-install_aliases()
-
-from urllib.request import urlopen, Request
-
-try:
-    from http import HTTPStatus as StatusCodes
-except ImportError:  # pragma: no cover
-    try:
-        from http import client as StatusCodes
-    except ImportError:
-        import httplib as StatusCodes
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
@@ -142,7 +131,7 @@ class NgrokProcess:
         # Ensure the process is available for requests before registering it as healthy
         request = Request("{}/api/tunnels".format(self.api_url))
         response = urlopen(request)
-        if response.getcode() != StatusCodes.OK:
+        if response.getcode() != HTTPStatus.OK:
             return False
 
         return self.proc.poll() is None and \
