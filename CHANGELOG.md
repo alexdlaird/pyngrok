@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.2.0...HEAD)
 
 ## [4.2.0](https://github.com/alexdlaird/pyngrok/compare/4.1.14...4.2.0) - TBD
+**4.2.x will not continue to be a supported version of `pyngrok`. This release is meant to ease migration between 4.1.x
+and 5.0.0. If you need Python 2.7 support or do not want to mess with breaking changes from 5.0.0,
+pin `pyngrok>=4.1,<4.2`.**
+
 ### Added
 - [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.ngrok.connect) replaced `options` with kwargs, maintained backwards compatibility. Support for passing `options` as a dict will be removed in 5.0.0, unpack the dict as `kwargs`.
 - [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.ngrok.connect) added `return_ngrok_tunnel` to its args, which defaults to `False`. This will be removed and `True` will be the default behavior in 5.0.0.
