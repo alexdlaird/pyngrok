@@ -7,23 +7,23 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [5.0.0](https://github.com/alexdlaird/pyngrok/compare/4.2.0...5.0.0) - TBD
 ### Added
-- Support for [`ngrok`'s tunnel definitions](https://ngrok.com/docs#tunnel-definitions) when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect). If a tunnel definition in `ngrok`'s config matches the given `name`, it will be used to start the tunnel.
-- Support for a [`ngrok` tunnel definition](https://ngrok.com/docs#tunnel-definitions) named "pyngrok-default" when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect). When `name` is `None` and a "pyngrok-default" tunnel definition exists it `ngrok`'s config, it will be used.
-- [process.is_process_running()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.process.is_process_running) to check if `ngrok` is already running without also implicitly starting it.
-- [ngrok.get_version()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.get_version) to get `ngrok` and `pyngrok` versions in a tuple.
-- [conf.get_default()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.conf.get_default), replacing the need for direct references to `conf.DEFAULT_PYNGROK_CONFIG`.
-- [conf.set_default()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.conf.set_default), replacing the need for direct references to `conf.DEFAULT_PYNGROK_CONFIG`.
-- `data` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel), which holds the original tunnel data.
+- Support for [`ngrok`'s tunnel definitions](https://ngrok.com/docs#tunnel-definitions) when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect). If a tunnel definition in `ngrok`'s config matches the given `name`, it will be used to start the tunnel.
+- Support for a [`ngrok` tunnel definition](https://ngrok.com/docs#tunnel-definitions) named "pyngrok-default" when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect). When `name` is `None` and a "pyngrok-default" tunnel definition exists it `ngrok`'s config, it will be used.
+- [process.is_process_running()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.process.is_process_running) to check if `ngrok` is already running without also implicitly starting it.
+- [ngrok.get_version()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.get_version) to get `ngrok` and `pyngrok` versions in a tuple.
+- [conf.get_default()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.conf.get_default), replacing the need for direct references to `conf.DEFAULT_PYNGROK_CONFIG`.
+- [conf.set_default()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.conf.set_default), replacing the need for direct references to `conf.DEFAULT_PYNGROK_CONFIG`.
+- `data` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.NgrokTunnel), which holds the original tunnel data.
 - Stability improvements.
 - Logging improvements.
 
 ### Changed
-- [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect) now returns a [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel) instead of a `str` of the public URL. The returned `NgrokTunnel` has a reference to the previously returned `public_url` in it.
-- [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect) changed its signature, renamed kwarg `port` (the first arg) to `addr` to match `ngrok`'s documentation.
-- [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect) changed its signature, the `options` kwarg should now be unpacked, pass each option directly to the method as a kwarg.
-- [NgrokTunnel.`__init`__()'s](https://pyngrok.readthedocs.io/en/develop/_modules/pyngrok/ngrok.html#NgrokTunnel) params (`data`, `pyngrok_config`, and `api_url`) are now required.
+- [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect) now returns a [NgrokTunnel](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.NgrokTunnel) instead of a `str` of the public URL. The returned `NgrokTunnel` has a reference to the previously returned `public_url` in it.
+- [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect) changed its signature, renamed kwarg `port` (the first arg) to `addr` to match `ngrok`'s documentation.
+- [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect) changed its signature, the `options` kwarg should now be unpacked, pass each option directly to the method as a kwarg.
+- [NgrokTunnel.`__init`__()'s](https://pyngrok.readthedocs.io/en/5.0.0/_modules/pyngrok/ngrok.html#NgrokTunnel) params (`data`, `pyngrok_config`, and `api_url`) are now required.
 - `ngrok.disconnect()` no longer installs and starts `ngrok`, it simply returns if the `ngrok` process has not been started.
-- Renamed `conf.DEFAULT_PYNGROK_CONFIG` to `conf._default_pyngrok_config` (use [conf.set_default()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.conf.set_default) instead).
+- Renamed `conf.DEFAULT_PYNGROK_CONFIG` to `conf._default_pyngrok_config` (use [conf.set_default()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.conf.set_default) instead).
 - Renamed `ngrok.ensure_ngrok_installed()` to `ngrok.install_ngrok()`.
 - `ngrok.install_ngrok()` (formerly `ngrok.ensure_ngrok_installed()`) changed its signature, now takes a `pyngrok_config` (optional) instead of `ngrok_path` as its only arg.
 - Renamed `process._ensure_path_ready()` to `process._validate_path()`.
@@ -32,12 +32,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Support for Python 2.7. To use `pyngrok` with Python 2.7, pin `pyngrok>=4.1,<4.2`.
 
 ## [4.2.0](https://github.com/alexdlaird/pyngrok/compare/4.1.14...4.2.0) - TBD
-- [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect) replaced `options` with kwargs, maintained backwards compatibility. Support for passing `options` as a dict will be removed in 5.0.0, unpack the dict as `kwargs`.
-- [ngrok.connect()](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect) added `return_ngrok_tunnel` to its args, which defaults to `False`. This will be removed and `True` will be the default behavior in 5.0.0.
+- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.ngrok.connect) replaced `options` with kwargs, maintained backwards compatibility. Support for passing `options` as a dict will be removed in 5.0.0, unpack the dict as `kwargs`.
+- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.ngrok.connect) added `return_ngrok_tunnel` to its args, which defaults to `False`. This will be removed and `True` will be the default behavior in 5.0.0.
 
 ## [4.1.14](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.14) - TBD
 ### Added
-- `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
+- `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/4.1.14/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
 - Documentation improvements.
 
 ## [4.1.13](https://github.com/alexdlaird/pyngrok/compare/4.1.12...4.1.13) - 2020-10-02
