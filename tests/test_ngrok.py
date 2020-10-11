@@ -27,7 +27,7 @@ class TestNgrok(NgrokTestCase):
         ngrok.run()
 
         # THEN
-        mock_call.assert_called_once()
+        mock_call.assert_called_once_with()
 
     @mock.patch("subprocess.call")
     def test_main(self, mock_call):
@@ -35,7 +35,7 @@ class TestNgrok(NgrokTestCase):
         ngrok.main()
 
         # THEN
-        mock_call.assert_called_once()
+        mock_call.assert_called_once_with()
 
     def test_connect(self):
         # GIVEN

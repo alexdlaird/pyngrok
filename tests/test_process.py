@@ -131,7 +131,7 @@ class TestProcess(NgrokTestCase):
             self.assertFalse(monitor_thread1.is_alive())
             self.assertTrue(ngrok_process2._monitor_thread.is_alive())
 
-            mock_atexit.assert_called()
+            mock_atexit.assert_called_with()
             self.assertNoZombies()
 
     def test_multiple_processes_different_binaries(self):
@@ -254,7 +254,7 @@ class TestProcess(NgrokTestCase):
             pass
 
         # THEN
-        mock_popen.assert_called()
+        mock_popen.assert_called_with()
         if sys.version_info.major >= 3 and os.name == "posix":
             self.assertIn("start_new_session", mock_popen.call_args[1])
         else:
