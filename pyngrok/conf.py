@@ -4,7 +4,7 @@ from pyngrok.installer import get_ngrok_bin
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.13"
+__version__ = "4.2.0"
 
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
@@ -70,3 +70,14 @@ class PyngrokConfig:
 
 
 DEFAULT_PYNGROK_CONFIG = PyngrokConfig()
+
+
+def get_default():
+    """
+    Get the default config to be used with methods in the :mod:`~pyngrok.ngrok` module. To override the
+    default individually, the ``pyngrok_config`` keyword arg can also be passed to most of these methods.
+
+    :return: The default ``pyngrok_config``.
+    :rtype: PyngrokConfig
+    """
+    return DEFAULT_PYNGROK_CONFIG
