@@ -15,6 +15,7 @@ from .testcase import NgrokTestCase
 install_aliases()
 
 from urllib.parse import urlparse
+from urllib.request import urlopen
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
@@ -302,10 +303,7 @@ class TestProcess(NgrokTestCase):
         self.assertTrue(monitor_thread.is_alive())
         ngrok_process.stop_monitor_thread()
         # Make a request to the tunnel to force a log through, which will allow the thread to trigger its own teardown
-        try:
-            ngrok.api_request(public_url)
-        except:
-            pass
+        urlopen("{}/status".format(public_url)).read()
         time.sleep(1)
 
         # THEN
