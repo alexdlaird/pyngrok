@@ -17,7 +17,7 @@ Python 2.7 support is still needed, pin `pyngrok>=4.1,<4.2`.
 - [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.ngrok.connect) added `return_ngrok_tunnel` to its args, which defaults to `False` for backwards compatibility. This will default to `True` in 5.0.0, and the flag will be removed.
 - [conf.get_default()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.conf.get_default), replacing the need to directly reference `conf.DEFAULT_PYNGROK_CONFIG`, which will be removed in 5.0.0.
 
-## [4.1.14](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.14) - TBD
+## [4.1.14](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.14) - 2020-10-11
 ### Added
 - `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/4.1.14/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
 - Documentation improvements.
