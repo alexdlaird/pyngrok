@@ -294,7 +294,9 @@ class TestProcess(NgrokTestCase):
     def test_stop_monitor_thread(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config.ngrok_path)
-        public_url = ngrok.connect(pyngrok_config=self.pyngrok_config)
+        current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
+        public_url = ngrok.connect(urlparse(current_process.api_url).port, options={"bind_tls": True},
+                                   pyngrok_config=self.pyngrok_config)
         ngrok_process = ngrok.get_ngrok_process()
         monitor_thread = ngrok_process._monitor_thread
 
