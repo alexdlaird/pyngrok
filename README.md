@@ -34,6 +34,12 @@ conda install -c conda-forge pyngrok
 That's it! `pyngrok` is now available as a package to our Python projects, and `ngrok` is now available from
 the command line.
 
+## 4.1.x to 5.0.0
+
+Breaking changes are coming in 5.0.0, and 4.2.x is meant to ease migration between 4.1.x and 5.0.0.
+[See the changelog](https://github.com/alexdlaird/pyngrok/blob/master/CHANGELOG.md#420---2020-10-11) for more details
+on how to prepare for this.
+
 ## Basic Usage
 
 To open a tunnel, use the [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method,
