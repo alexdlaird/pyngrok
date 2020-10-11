@@ -242,10 +242,11 @@ assumes we have also added ``!pip install flask`` to our dependency code block.
     os.environ["FLASK_ENV"] = "development"
 
     app = Flask(__name__)
+    port = 5000
 
     # Open a ngrok tunnel to the HTTP server
-    public_url = ngrok.connect(5000)
-    print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, 5000))
+    public_url = ngrok.connect(port)
+    print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, port))
 
     # Update any base URLs to use the public ngrok URL
     app.config["BASE_URL"] = public_url
