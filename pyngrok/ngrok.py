@@ -26,7 +26,7 @@ except ImportError:  # pragma: no cover
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.14"
+__version__ = "4.1.15"
 
 logger = logging.getLogger(__name__)
 
@@ -354,7 +354,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
 
         status_code = response.getcode()
         logger.debug("Response status code: {}".format(status_code))
-        logger.debug("Response: {}".format(response_data))
+        logger.debug("Response: {}".format(response_data.strip()))
 
         if str(status_code)[0] != "2":
             raise PyngrokNgrokHTTPError("ngrok client API returned {}: {}".format(status_code, response_data), url,
@@ -370,7 +370,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
 
         status_code = e.getcode()
         logger.debug("Response status code: {}".format(status_code))
-        logger.debug("Response: {}".format(response_data))
+        logger.debug("Response: {}".format(response_data.strip()))
 
         raise PyngrokNgrokHTTPError("ngrok client exception, API returned {}: {}".format(status_code, response_data),
                                     e.url,

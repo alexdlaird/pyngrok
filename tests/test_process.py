@@ -19,7 +19,7 @@ from urllib.request import urlopen
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.14"
+__version__ = "4.1.15"
 
 
 class TestProcess(NgrokTestCase):
