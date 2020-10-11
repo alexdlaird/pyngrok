@@ -193,7 +193,7 @@ def connect(port="80", proto="http", name=None, pyngrok_config=None, return_ngro
     if "options" in options:
         logger.warning(
             "Support for passing \"options\" as a dict is deprecated and will be removed in 5.0.0, unpack the dict as kwargs")
-        options.update(options.get("options", {}))
+        options.update(options.pop("options", {}))
 
     port = str(port)
     if not name:
