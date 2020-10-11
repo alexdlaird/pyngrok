@@ -49,13 +49,6 @@ or ``conda``:
 That's it! ``pyngrok`` is now available `as a package to our Python projects <#open-a-tunnel>`_,
 and ``ngrok`` is now available `from the command line <#command-line-usage>`_.
 
-4.1.x to 5.0.0
-==============
-
-The next release, 5.0.0, contains breaking changes, including dropping support for Python 2.7. 4.2.x is meant to ease
-migration between 4.1.x and 5.0.0. `See the changelog <https://github.com/alexdlaird/pyngrok/blob/master/CHANGELOG.md#420---2020-10-11>`_
-for more details on how to prepare for this.
-
 Open a Tunnel
 =============
 
