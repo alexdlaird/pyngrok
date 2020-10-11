@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.0.0...HEAD)
 
-## [5.0.0](https://github.com/alexdlaird/pyngrok/compare/4.2.0...5.0.0) - TBD
+## [5.0.0](https://github.com/alexdlaird/pyngrok/compare/4.2.1...5.0.0) - TBD
 ### Added
 - Support for [`ngrok`'s tunnel definitions](https://ngrok.com/docs#tunnel-definitions) when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect). If a tunnel definition in `ngrok`'s config matches the given `name`, it will be used to start the tunnel.
 - Support for a [`ngrok` tunnel definition](https://ngrok.com/docs#tunnel-definitions) named "pyngrok-default" when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect). When `name` is `None` and a "pyngrok-default" tunnel definition exists it `ngrok`'s config, it will be used.
@@ -31,7 +31,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Removed
 - Support for Python 2.7. To use `pyngrok` with Python 2.7, pin `pyngrok>=4.1,<4.2`.
 
-## [4.2.0](https://github.com/alexdlaird/pyngrok/compare/4.1.14...4.2.0) - 2020-10-11
+## [4.2.1](https://github.com/alexdlaird/pyngrok/compare/4.1.15...4.2.1) - 2020-10-11
 
 The next release, 5.0.0, contains breaking changes, including dropping support for Python 2.7. 4.2.x is meant to ease
 migration between 4.1.x and 5.0.0 and should not be pinned, as it will not be supported after 5.0.0 is released. To
@@ -39,13 +39,13 @@ prepare for these breaking changes, see the changelog below. To avoid these brea
 Python 2.7 support is still needed, pin `pyngrok>=4.1,<4.2`.
 
 ### Added
-- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.ngrok.connect) replaced `options` with `kwargs`, maintained backwards compatibility. Support for passing `options` as a dict will be removed in 5.0.0, unpack the dict as `kwargs`.
-- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.ngrok.connect) added `return_ngrok_tunnel` to its args, which defaults to `False` for backwards compatibility. This will default to `True` in 5.0.0, and the flag will be removed.
-- [conf.get_default()](https://pyngrok.readthedocs.io/en/4.2.0/api.html#pyngrok.conf.get_default), replacing the need to directly reference `conf.DEFAULT_PYNGROK_CONFIG`, which will be removed in 5.0.0.
+- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.1/api.html#pyngrok.ngrok.connect) replaced `options` with `kwargs`, maintained backwards compatibility. Support for passing `options` as a dict will be removed in 5.0.0, unpack the dict as `kwargs`.
+- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.1/api.html#pyngrok.ngrok.connect) added `return_ngrok_tunnel` to its args, which defaults to `False` for backwards compatibility. This will default to `True` in 5.0.0, and the flag will be removed.
+- [conf.get_default()](https://pyngrok.readthedocs.io/en/4.2.1/api.html#pyngrok.conf.get_default), replacing the need to directly reference `conf.DEFAULT_PYNGROK_CONFIG`, which will be removed in 5.0.0.
 
-## [4.1.14](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.14) - 2020-10-11
+## [4.1.15](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.15) - 2020-10-11
 ### Added
-- `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/4.1.14/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
+- `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/4.1.15/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
 - Documentation improvements.
 
 ## [4.1.13](https://github.com/alexdlaird/pyngrok/compare/4.1.12...4.1.13) - 2020-10-02
