@@ -43,7 +43,7 @@ same place.
 
             # Open a ngrok tunnel to the dev server
             public_url = ngrok.connect(port)
-            print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
+            print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, port))
 
             # Update any base URLs or webhooks to use the public ngrok URL
             app.config["BASE_URL"] = public_url
@@ -106,8 +106,8 @@ to do this is one of our ``apps.py`` by `extending AppConfig <https://docs.djang
                 port = addrport.port if addrport.netloc and addrport.port else 8000
 
                 # Open a ngrok tunnel to the dev server
-                public_url = ngrok.connect(port).rstrip("/")
-                print("ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
+                public_url = ngrok.connect(port)
+                print("ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, port))
 
                 # Update any base URLs or webhooks to use the public ngrok URL
                 settings.BASE_URL = public_url
@@ -169,7 +169,7 @@ we should add a variable that let's us configure from an environment variable wh
 
         # Open a ngrok tunnel to the dev server
         public_url = ngrok.connect(port)
-        logger.info("ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
+        logger.info("ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, port))
 
         # Update any base URLs or webhooks to use the public ngrok URL
         settings.BASE_URL = public_url
@@ -245,7 +245,7 @@ assumes we have also added ``!pip install flask`` to our dependency code block.
 
     # Open a ngrok tunnel to the HTTP server
     public_url = ngrok.connect(5000)
-    print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, 5000))
+    print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, 5000))
 
     # Update any base URLs to use the public ngrok URL
     app.config["BASE_URL"] = public_url
@@ -392,7 +392,7 @@ server. We can use ``pyngrok`` to expose it to the web via a tunnel, as show in 
     httpd = HTTPServer(server_address, BaseHTTPRequestHandler)
 
     public_url = ngrok.connect(port)
-    print("ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
+    print("ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, port))
 
     try:
         # Block until CTRL-C or some other terminating event
@@ -440,7 +440,7 @@ Now create ``server.py`` with the following code:
 
     # Open a ngrok tunnel to the socket
     public_url = ngrok.connect(port, "tcp", options={"remote_addr": "{}:{}".format(host, port)})
-    print("ngrok tunnel \"{}\" -> \"tcp://127.0.0.1:{}/\"".format(public_url, port))
+    print("ngrok tunnel \"{}\" -> \"tcp://127.0.0.1:{}\"".format(public_url, port))
 
     while True:
         connection = None
