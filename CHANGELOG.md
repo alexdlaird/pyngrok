@@ -3,8 +3,11 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.13...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/4.1.14...HEAD)
+
+## [4.1.14](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.14) - 2020-10-11
 ### Added
+- `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/4.1.14/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
  - Documentation improvements.
 
 ## [4.1.13](https://github.com/alexdlaird/pyngrok/compare/4.1.12...4.1.13) - 2020-10-02
@@ -105,7 +108,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [4.0.0](https://github.com/alexdlaird/pyngrok/compare/3.1.1...4.0.0) - 2020-06-06
 ### Added
-- `PyngrokConfig`, which contains all of `pyngrok`'s configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of kwargs. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig).
+- `PyngrokConfig`, which contains all of `pyngrok`'s configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of `kwargs`. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig).
 - `log_event_callback` is a new configuration parameter in `PyngrokConfig`, a callback that will be invoked each time a `ngrok` log is emitted.
 - `monitor_thread` is a new configuration parameter in `PyngrokConfig` which determines whether `ngrok` should continue to be monitored (for logs, etc.) after it has finished starting. Defaults to `True`.
 - `startup_timeout` is a new configuration parameter in `PyngrokConfig`. 

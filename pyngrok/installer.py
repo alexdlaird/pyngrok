@@ -71,7 +71,7 @@ def install_ngrok(ngrok_path, **kwargs):
 
     :param ngrok_path: The path to where the ``ngrok`` binary will be downloaded.
     :type ngrok_path: str
-    :param kwargs: Remaining kwargs will be passed to :func:`_download_file`.
+    :param kwargs: Remaining ``kwargs`` will be passed to :func:`_download_file`.
     :type kwargs: dict, optional
     """
     logger.debug(
@@ -127,7 +127,7 @@ def _install_ngrok_zip(ngrok_path, zip_path):
 
 def install_default_config(config_path, data=None):
     """
-    Install the default ``ngrok`` config. If one is not already present, created one. Before saving
+    Install the default ``ngrok`` config. If one is not already present, create one. Before saving
     new values to the default config, validate that they are compatible with ``pyngrok``.
 
     :param config_path: The path to where the ``ngrok`` config should be installed.
@@ -180,7 +180,7 @@ def _download_file(url, retries=0, **kwargs):
     :type url: str
     :param retries: The number of retries to attempt, if download fails.
     :type retries: int, optional
-    :param kwargs: Remaining kwargs will be passed to :py:func:`urllib.request.urlopen`.
+    :param kwargs: Remaining ``kwargs`` will be passed to :py:func:`urllib.request.urlopen`.
     :type kwargs: dict, optional
     :return: The path to the downloaded temporary file.
     :rtype: str

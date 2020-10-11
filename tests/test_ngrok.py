@@ -16,6 +16,7 @@ from .testcase import NgrokTestCase
 
 install_aliases()
 
+from urllib.parse import urlparse
 from urllib.request import urlopen
 
 try:
@@ -28,7 +29,7 @@ except ImportError:
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.13"
+__version__ = "4.1.14"
 
 
 class TestNgrok(NgrokTestCase):
@@ -163,13 +164,11 @@ class TestNgrok(NgrokTestCase):
         # GIVEN
         tunnel_name = "tunnel (1)"
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
-        public_url = ngrok.connect(name=tunnel_name).replace("http", "https")
+        public_url = ngrok.connect(urlparse(current_process.api_url).port, name=tunnel_name).replace("http", "https")
         time.sleep(1)
 
-        try:
-            urlopen(public_url)
-        except:
-            pass
+        urlopen(public_url).read()
+        time.sleep(3)
 
         # WHEN
         response1 = ngrok.api_request("{}/api/requests/http".format(current_process.api_url), "GET")
@@ -179,8 +178,8 @@ class TestNgrok(NgrokTestCase):
                                       params={"tunnel_name": "{} (http)".format(tunnel_name)})
 
         # THEN
-        self.assertEqual(1, len(response1["requests"]))
-        self.assertEqual(1, len(response2["requests"]))
+        self.assertGreater(len(response1["requests"]), 0)
+        self.assertGreater(len(response2["requests"]), 0)
         self.assertEqual(0, len(response3["requests"]))
 
     def test_api_request_delete_data_updated(self):
@@ -389,3 +388,20 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertEqual(tunnel.name, response["name"])
         self.assertIn("file", tunnel.name)
+
+    def test_ngrok_tunnel_refresh_metrics(self):
+        # GIVEN
+        current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
+        public_url = ngrok.connect(urlparse(current_process.api_url).port)
+        time.sleep(1)
+        ngrok_tunnel = list(filter(lambda t: t.public_url == public_url, ngrok.get_tunnels()))[0]
+        self.assertEqual(0, ngrok_tunnel.metrics.get("http").get("count"))
+
+        urlopen("{}/status".format(public_url)).read()
+        time.sleep(3)
+
+        # WHEN
+        ngrok_tunnel.refresh_metrics()
+
+        # THEN
+        self.assertGreater(ngrok_tunnel.metrics.get("http").get("count"), 0)
