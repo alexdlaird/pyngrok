@@ -53,8 +53,9 @@ and ``ngrok`` is now available `from the command line <#command-line-usage>`_.
 ==============
 
 The next release, 5.0.0, contains breaking changes, including dropping support for Python 2.7. 4.2.x is meant to ease
-migration between 4.1.x and 5.0.0. `See the changelog <https://github.com/alexdlaird/pyngrok/blob/master/CHANGELOG.md#420---2020-10-11>`_
-for more details on how to prepare for this.
+migration between 4.1.x and 5.0.0 and should not be pinned, as it will not be supported after 5.0.0 is released. To
+prepare for these breaking changes, `see the changelog <https://github.com/alexdlaird/pyngrok/blob/master/CHANGELOG.md#420---2020-10-11>`_
+To avoid these breaking changes altogether, or if Python 2.7 support is still needed, pin ``pyngrok>=4.1,<4.2``.
 
 Open a Tunnel
 =============
