@@ -47,6 +47,7 @@ Python 2.7 support is still needed, pin `pyngrok>=4.1,<4.2`.
 ### Added
 - `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/4.1.15/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
 - Documentation improvements.
+- Logging improvements.
 
 ## [4.1.13](https://github.com/alexdlaird/pyngrok/compare/4.1.12...4.1.13) - 2020-10-02
 ### Added
