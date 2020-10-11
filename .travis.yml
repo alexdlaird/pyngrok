@@ -45,7 +45,7 @@ jobs:
       language: shell
       osx_image: "xcode11.2"
       install:
-        - alias python=python3
+        - export PYTHON_BIN=python3
     - name: "Windows, Python: 3.7"
       os: windows
       language: shell
