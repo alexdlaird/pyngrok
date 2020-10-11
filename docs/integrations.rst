@@ -43,7 +43,7 @@ same place.
 
             # Open a ngrok tunnel to the dev server
             public_url = ngrok.connect(port)
-            print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, port))
+            print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, port))
 
             # Update any base URLs or webhooks to use the public ngrok URL
             app.config["BASE_URL"] = public_url
