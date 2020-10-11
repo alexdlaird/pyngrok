@@ -3,10 +3,10 @@ import platform
 import sys
 import time
 import uuid
+from http import HTTPStatus
 from unittest import mock
 from urllib.parse import urlparse
 from urllib.request import urlopen
-from http import HTTPStatus
 
 import yaml
 
@@ -302,7 +302,7 @@ class TestNgrok(NgrokTestCase):
             yaml.dump({"web_addr": False}, config_file)
 
         # WHEN
-        with self.assertRaises(PyngrokError) as e:
+        with self.assertRaises(PyngrokError):
             ngrok.connect(pyngrok_config=self.pyngrok_config)
 
     def test_log_format_json_not_allowed(self):
