@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - [ngrok.get_version()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.get_version) to get `ngrok` and `pyngrok` versions in a tuple.
 - [conf.get_default()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.conf.get_default), replacing the need for direct references to `conf.DEFAULT_PYNGROK_CONFIG`.
 - [conf.set_default()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.conf.set_default), replacing the need for direct references to `conf.DEFAULT_PYNGROK_CONFIG`.
+- `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/4.1.16/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
 - `data` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.NgrokTunnel), which holds the original tunnel data.
 - Stability improvements.
 - Documentation improvements.
