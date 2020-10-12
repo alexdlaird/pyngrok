@@ -6,7 +6,6 @@ import uuid
 
 import mock
 import yaml
-
 from future.standard_library import install_aliases
 
 from pyngrok import ngrok, process, conf
@@ -405,3 +404,11 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertGreater(ngrok_tunnel.metrics.get("http").get("count"), 0)
+
+    def test_version(self):
+        # WHEN
+        ngrok_version, pyngrok_version = ngrok.get_version()
+
+        # THEN
+        self.assertIsNotNone(ngrok_version)
+        self.assertEqual(ngrok.__version__, pyngrok_version)

@@ -344,6 +344,22 @@ def _ensure_path_ready(ngrok_path):
         raise PyngrokNgrokError("ngrok is already running for the \"ngrok_path\": {}".format(ngrok_path))
 
 
+def get_version(ngrok_path):
+    """
+    Get the version of the given ``ngrok`` binary.
+
+    :param ngrok_path: The path to the ``ngrok`` binary.
+    :type ngrok_path: str
+    :return: A tuple of ``(ngrok_version, pyngrok_version)``.
+    :rtype: tuple
+    """
+    _ensure_path_ready(ngrok_path)
+
+    output = subprocess.check_output([ngrok_path, "--version"])
+
+    return output.decode("utf-8").split("version ")[1].strip()
+
+
 def _validate_config(config_path):
     with open(config_path, "r") as config_file:
         config = yaml.safe_load(config_file)

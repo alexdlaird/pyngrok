@@ -295,6 +295,25 @@ def kill(pyngrok_config=None):
     process.kill_process(pyngrok_config.ngrok_path)
 
 
+def get_version(pyngrok_config=None):
+    """
+    Get a tuple with the ``ngrok`` and ``pyngrok`` versions.
+
+    :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
+        defaults to ``conf.DEFAULT_PYNGROK_CONFIG`` (which can be overridden instead,
+        `as shown here <index.html#config-file>`_).
+    :type pyngrok_config: PyngrokConfig, optional
+    :return: A tuple of ``(ngrok_version, pyngrok_version)``.
+    :rtype: tuple
+    """
+    if pyngrok_config is None:
+        pyngrok_config = conf.DEFAULT_PYNGROK_CONFIG
+
+    ngrok_version = process.get_version(pyngrok_config.ngrok_path)
+
+    return ngrok_version, __version__
+
+
 def api_request(url, method="GET", data=None, params=None, timeout=4):
     """
     Invoke an API request to the given URL, returning JSON data from the response as a dict.
