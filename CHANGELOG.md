@@ -15,6 +15,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - [conf.set_default()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.conf.set_default), replacing the need for direct references to `conf.DEFAULT_PYNGROK_CONFIG`.
 - `data` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.NgrokTunnel), which holds the original tunnel data.
 - Stability improvements.
+- Documentation improvements.
 - Logging improvements.
 
 ### Changed
