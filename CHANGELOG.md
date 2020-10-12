@@ -8,7 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [4.1.16](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.16) - 2020-10-12
 ### Added
 - [ngrok.get_version()](https://pyngrok.readthedocs.io/en/4.1.16/api.html#pyngrok.ngrok.get_version) to get `ngrok` and `pyngrok` versions in a tuple.
-- `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/4.1.15/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
+- `refresh_metrics()` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/4.1.16/api.html#pyngrok.ngrok.NgrokTunnel.refresh_metrics).
 - Documentation improvements.
 - Logging improvements.
 
