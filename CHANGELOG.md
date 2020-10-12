@@ -33,7 +33,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Removed
 - Support for Python 2.7. To use `pyngrok` with Python 2.7, pin `pyngrok>=4.1,<4.2`.
 
-## [4.2.1](https://github.com/alexdlaird/pyngrok/compare/4.1.16...4.2.1) - 2020-10-12
+## [4.2.2](https://github.com/alexdlaird/pyngrok/compare/4.1.16...4.2.2) - 2020-10-12
 
 The next release, 5.0.0, contains breaking changes, including dropping support for Python 2.7. 4.2.x is meant to ease
 migration between 4.1.x and 5.0.0 and should not be pinned, as it will not be supported after 5.0.0 is released. To
@@ -41,9 +41,9 @@ prepare for these breaking changes, see the changelog below. To avoid these brea
 Python 2.7 support is still needed, pin `pyngrok>=4.1,<4.2`.
 
 ### Added
-- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.1/api.html#pyngrok.ngrok.connect) replaced `options` with `kwargs`, maintained backwards compatibility. Support for passing `options` as a dict will be removed in 5.0.0, unpack the dict as `kwargs`.
-- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.1/api.html#pyngrok.ngrok.connect) added `return_ngrok_tunnel` to its args, which defaults to `False` for backwards compatibility. This will default to `True` in 5.0.0, and the flag will be removed.
-- [conf.get_default()](https://pyngrok.readthedocs.io/en/4.2.1/api.html#pyngrok.conf.get_default), replacing the need to directly reference `conf.DEFAULT_PYNGROK_CONFIG`, which will be removed in 5.0.0.
+- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.2/api.html#pyngrok.ngrok.connect) replaced `options` with `kwargs`, maintained backwards compatibility. Support for passing `options` as a dict will be removed in 5.0.0, unpack the dict as `kwargs`.
+- [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.2/api.html#pyngrok.ngrok.connect) added `return_ngrok_tunnel` to its args, which defaults to `False` for backwards compatibility. This will default to `True` in 5.0.0, and the flag will be removed.
+- [conf.get_default()](https://pyngrok.readthedocs.io/en/4.2.2/api.html#pyngrok.conf.get_default), replacing the need to directly reference `conf.DEFAULT_PYNGROK_CONFIG`, which will be removed in 5.0.0.
 
 ## [4.1.16](https://github.com/alexdlaird/pyngrok/compare/4.1.13...4.1.16) - 2020-10-12
 ### Added
