@@ -32,6 +32,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Removed
 - Support for Python 2.7. To use `pyngrok` with Python 2.7, pin `pyngrok>=4.1,<4.2`.
+- `return_ngrok_tunnel` from `ngrok.connect()`. The `kwarg` can still be passed, but it will do nothing, it now always uses the `True` behavior. 
 
 ## [4.2.2](https://github.com/alexdlaird/pyngrok/compare/4.1.16...4.2.2) - 2020-10-12
 
