@@ -351,15 +351,15 @@ def capture_run_process(ngrok_path, args):
     :type ngrok_path: str
     :param args: The args to pass to ``ngrok``.
     :type args: list[str]
-    :return: A tuple of ``(ngrok_version, pyngrok_version)``.
-    :rtype: tuple
+    :return: The output from the process.
+    :rtype: str
     """
     _validate_path(ngrok_path)
 
     start = [ngrok_path] + args
     output = subprocess.check_output(start)
 
-    return output.decode("utf-8").split("version ")[1].strip()
+    return output.decode("utf-8").strip()
 
 
 def _validate_path(ngrok_path):

@@ -356,7 +356,7 @@ def get_version(pyngrok_config=None):
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
-    ngrok_version = process.capture_run_process(pyngrok_config.ngrok_path, ["--version"])
+    ngrok_version = process.capture_run_process(pyngrok_config.ngrok_path, ["--version"]).split("version ")[1]
 
     return ngrok_version, __version__
 
