@@ -68,7 +68,7 @@ class NgrokTunnel:
 
     def refresh_metrics(self):
         """
-        Refresh the metrics for the tunnel from ``ngrok``.
+        Get the latest metrics for the tunnel and update the ``metrics`` variable.
         """
         logger.info("Refreshing metrics for tunnel: {}".format(self.public_url))
 
@@ -356,14 +356,30 @@ def get_version(pyngrok_config=None):
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
-    ngrok_version = process.get_version(pyngrok_config.ngrok_path)
+    ngrok_version = process.capture_run_process(pyngrok_config.ngrok_path, ["--version"])
 
     return ngrok_version, __version__
 
 
+def update(pyngrok_config=None):
+    """
+    Update ``ngrok`` for the given config's ``ngrok_path``, if an update is available.
+
+    :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
+        overriding :func:`~pyngrok.conf.get_default()`.
+    :type pyngrok_config: PyngrokConfig, optional
+    :return: The result from the ``ngrok`` update.
+    :rtype: str
+    """
+    if pyngrok_config is None:
+        pyngrok_config = conf.get_default()
+
+    return process.capture_run_process(pyngrok_config.ngrok_path, ["update"])
+
+
 def api_request(url, method="GET", data=None, params=None, timeout=4):
     """
-    Invoke an API request to the given URL, returning JSON data from the response as a dict.
+    Invoke an API request to the given URL, returning JSON data from the response.
 
     One use for this method is making requests to ``ngrok`` tunnels:
 

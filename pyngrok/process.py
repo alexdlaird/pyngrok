@@ -339,18 +339,25 @@ def run_process(ngrok_path, args):
     subprocess.call(start)
 
 
-def get_version(ngrok_path):
+def capture_run_process(ngrok_path, args):
     """
-    Get the version of the given ``ngrok`` binary.
+    Start a blocking ``ngrok`` process with the binary at the given path and the passed args. When the process
+    returns, so will this method, and the captured output from the process along with it.
+
+    This method is meant for invoking ``ngrok`` directly (for instance, from the command line) and is not
+    necessarily compatible with non-blocking API methods. For that, use :func:`~pyngrok.process.get_process`.
 
     :param ngrok_path: The path to the ``ngrok`` binary.
     :type ngrok_path: str
+    :param args: The args to pass to ``ngrok``.
+    :type args: list[str]
     :return: A tuple of ``(ngrok_version, pyngrok_version)``.
     :rtype: tuple
     """
     _validate_path(ngrok_path)
 
-    output = subprocess.check_output([ngrok_path, "--version"])
+    start = [ngrok_path] + args
+    output = subprocess.check_output(start)
 
     return output.decode("utf-8").split("version ")[1].strip()
 
