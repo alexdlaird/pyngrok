@@ -6,27 +6,16 @@ import sys
 import tempfile
 import time
 import zipfile
+from http import HTTPStatus
+from urllib.request import urlopen
 
 import yaml
-from future.standard_library import install_aliases
 
 from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
 
-install_aliases()
-
-from urllib.request import urlopen
-
-try:
-    from http import HTTPStatus as StatusCodes
-except ImportError:  # pragma: no cover
-    try:
-        from http import client as StatusCodes
-    except ImportError:
-        import httplib as StatusCodes
-
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.2"
+__version__ = "5.0.0"
 
 logger = logging.getLogger(__name__)
 
@@ -47,18 +36,21 @@ PLATFORMS = {
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
 
+_config_cache = None
+_print_progress_enabled = True
+
 
 def get_ngrok_bin():
     """
-    Retrieve the ``ngrok`` executable for the current system.
+    Get the ``ngrok`` executable for the current system.
 
     :return: The name of the ``ngrok`` executable.
     :rtype: str
     """
-    system = platform.system()
-    if system in ["Darwin", "Linux", "FreeBSD"]:
+    system = platform.system().lower()
+    if system in ["darwin", "linux", "freebsd"]:
         return "ngrok"
-    elif system == "Windows" or "cygwin" in system.lower():  # pragma: no cover
+    elif system in ["windows", "cygwin"]:  # pragma: no cover
         return "ngrok.exe"
     else:  # pragma: no cover
         raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
@@ -83,7 +75,8 @@ def install_ngrok(ngrok_path, **kwargs):
         os.makedirs(ngrok_dir)
 
     arch = "x86_64" if sys.maxsize > 2 ** 32 else "i386"
-    if platform.uname()[4].startswith("arm") or platform.uname()[4].startswith("aarch64"):
+    if platform.uname()[4].startswith("arm") or \
+            platform.uname()[4].startswith("aarch64"):
         arch += "_arm"
     system = platform.system().lower()
     if "cygwin" in system:
@@ -125,10 +118,34 @@ def _install_ngrok_zip(ngrok_path, zip_path):
     _clear_progress()
 
 
+def get_ngrok_config(config_path, use_cache=True):
+    """
+    Get the ``ngrok`` config from the given path.
+
+    :param config_path: The ``ngrok`` config path to read.
+    :type config_path: str
+    :param use_cache: Use the cached version of the cache (if populated).
+    :type use_cache: bool
+    :return: The ``ngrok`` config.
+    :rtype: dict
+    """
+    global _config_cache
+
+    if not _config_cache or not use_cache:
+        with open(config_path, "r") as config_file:
+            config = yaml.safe_load(config_file)
+            if config is None:
+                config = {}
+
+        _config_cache = config
+
+    return _config_cache
+
+
 def install_default_config(config_path, data=None):
     """
-    Install the default ``ngrok`` config. If one is not already present, create one. Before saving
-    new values to the default config, validate that they are compatible with ``pyngrok``.
+    Install the given data to the ``ngrok`` config. If a config is not already present for the given path, create one.
+    Before saving new data to the default config, validate that they are compatible with ``pyngrok``.
 
     :param config_path: The path to where the ``ngrok`` config should be installed.
     :type config_path: str
@@ -144,16 +161,15 @@ def install_default_config(config_path, data=None):
     if not os.path.exists(config_path):
         open(config_path, "w").close()
 
-    with open(config_path, "r") as config_file:
-        config = yaml.safe_load(config_file)
-        if config is None:
-            config = {}
+    config = get_ngrok_config(config_path, use_cache=False)
 
-        config.update(data)
+    config.update(data)
 
     validate_config(config)
 
     with open(config_path, "w") as config_file:
+        logger.debug("Installing default ngrok config to {} ...".format(config_path))
+
         yaml.dump(config, config_file)
 
 
@@ -199,9 +215,10 @@ def _download_file(url, retries=0, **kwargs):
         response = urlopen(url, **kwargs)
 
         status_code = response.getcode()
-        logger.debug("Response status code: {}".format(status_code))
 
-        if status_code != StatusCodes.OK:
+        if status_code != HTTPStatus.OK:
+            logger.debug("Response status code: {}".format(status_code))
+
             return None
 
         length = response.getheader("Content-Length")
@@ -240,10 +257,12 @@ def _download_file(url, retries=0, **kwargs):
 
 
 def _print_progress(line):
-    sys.stdout.write("{}\r".format(line))
-    sys.stdout.flush()
+    if _print_progress_enabled:
+        sys.stdout.write("{}\r".format(line))
+        sys.stdout.flush()
 
 
 def _clear_progress(spaces=100):
-    sys.stdout.write((" " * spaces) + "\r")
-    sys.stdout.flush()
+    if _print_progress_enabled:
+        sys.stdout.write((" " * spaces) + "\r")
+        sys.stdout.flush()

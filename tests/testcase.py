@@ -7,11 +7,10 @@ from psutil import AccessDenied, NoSuchProcess
 
 from pyngrok import ngrok, installer, conf
 from pyngrok import process
-from pyngrok.conf import PyngrokConfig
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.12"
+__version__ = "5.0.0"
 
 
 class NgrokTestCase(unittest.TestCase):
@@ -22,8 +21,8 @@ class NgrokTestCase(unittest.TestCase):
         config_path = os.path.join(self.config_dir, "config.yml")
 
         conf.DEFAULT_NGROK_CONFIG_PATH = config_path
-
-        self.pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH)
+        self.pyngrok_config = conf.get_default()
+        self.pyngrok_config.config_path = conf.DEFAULT_NGROK_CONFIG_PATH
 
         installer.DEFAULT_RETRY_COUNT = 1
 
@@ -35,12 +34,14 @@ class NgrokTestCase(unittest.TestCase):
             except OSError:
                 pass
 
+        ngrok._current_tunnels.clear()
+
         if os.path.exists(self.config_dir):
             shutil.rmtree(self.config_dir)
 
     @staticmethod
-    def given_ngrok_installed(ngrok_path):
-        ngrok.ensure_ngrok_installed(ngrok_path)
+    def given_ngrok_installed(pyngrok_config):
+        ngrok.install_ngrok(pyngrok_config)
 
     @staticmethod
     def given_ngrok_not_installed(ngrok_path):

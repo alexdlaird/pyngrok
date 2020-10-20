@@ -1,6 +1,5 @@
 coverage
 codecov
 nose
-mock
 twine
 psutil<=5.6.7

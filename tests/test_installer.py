@@ -1,15 +1,14 @@
 import os
 import socket
-
-import mock
+from unittest import mock
 
 from pyngrok import ngrok, installer, conf
 from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
-from .testcase import NgrokTestCase
+from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.14"
+__version__ = "5.0.0"
 
 
 class TestInstaller(NgrokTestCase):

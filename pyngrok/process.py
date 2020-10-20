@@ -3,32 +3,19 @@ import logging
 import os
 import shlex
 import subprocess
-import sys
 import threading
 import time
+from http import HTTPStatus
+from urllib.request import Request, urlopen
 
 import yaml
-from future.standard_library import install_aliases
 
-from pyngrok import conf
+from pyngrok import conf, installer
 from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError
-from pyngrok.installer import validate_config
-
-install_aliases()
-
-from urllib.request import urlopen, Request
-
-try:
-    from http import HTTPStatus as StatusCodes
-except ImportError:  # pragma: no cover
-    try:
-        from http import client as StatusCodes
-    except ImportError:
-        import httplib as StatusCodes
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.13"
+__version__ = "5.0.0"
 
 logger = logging.getLogger(__name__)
 ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))
@@ -134,7 +121,8 @@ class NgrokProcess:
         :rtype: bool
         """
         if self.api_url is None or \
-                not self._tunnel_started or not self._client_connected:
+                not self._tunnel_started or \
+                not self._client_connected:
             return False
 
         if not self.api_url.lower().startswith("http"):
@@ -143,11 +131,10 @@ class NgrokProcess:
         # Ensure the process is available for requests before registering it as healthy
         request = Request("{}/api/tunnels".format(self.api_url))
         response = urlopen(request)
-        if response.getcode() != StatusCodes.OK:
+        if response.getcode() != HTTPStatus.OK:
             return False
 
-        return self.proc.poll() is None and \
-               self.startup_error is None
+        return self.proc.poll() is None and self.startup_error is None
 
     def _monitor_process(self):
         thread = threading.current_thread()
@@ -165,6 +152,8 @@ class NgrokProcess:
         If a monitor thread is already running, nothing will be done.
         """
         if self._monitor_thread is None:
+            logger.debug("Monitor thread will be started")
+
             self._monitor_thread = threading.Thread(target=self._monitor_process)
             self._monitor_thread.daemon = True
             self._monitor_thread.start()
@@ -179,6 +168,8 @@ class NgrokProcess:
         its logs.
         """
         if self._monitor_thread is not None:
+            logger.debug("Monitor thread will be stopped")
+
             self._monitor_thread.alive = False
 
 
@@ -253,7 +244,11 @@ def set_auth_token(pyngrok_config, token):
     """
     start = [pyngrok_config.ngrok_path, "authtoken", token, "--log=stdout"]
     if pyngrok_config.config_path:
+        logger.info("Updating authtoken for \"config_path\": {}".format(pyngrok_config.config_path))
         start.append("--config={}".format(pyngrok_config.config_path))
+    else:
+        logger.info(
+            "Updating authtoken for default \"config_path\" of \"ngrok_path\": {}".format(pyngrok_config.ngrok_path))
 
     result = subprocess.check_output(start)
 
@@ -261,9 +256,30 @@ def set_auth_token(pyngrok_config, token):
         raise PyngrokNgrokError("An error occurred when saving the auth token: {}".format(result))
 
 
+def is_process_running(ngrok_path):
+    """
+    Check if the ``ngrok`` process is currently running.
+
+    :param ngrok_path: The path to the ``ngrok`` binary.
+    :type ngrok_path: str
+    :return: ``True`` if ``ngrok`` is running from the given path.
+    """
+    if ngrok_path in _current_processes:
+        # Ensure the process is still running and hasn't been killed externally, otherwise cleanup
+        if _current_processes[ngrok_path].proc.poll() is None:
+            return True
+        else:
+            logger.debug(
+                "Removing stale process for \"ngrok_path\" {}".format(ngrok_path))
+
+            _current_processes.pop(ngrok_path, None)
+
+    return False
+
+
 def get_process(pyngrok_config):
     """
-    Retrieve the current ``ngrok`` process for the given config's ``ngrok_path``.
+    Get the current ``ngrok`` process for the given config's ``ngrok_path``.
 
     If ``ngrok`` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
@@ -273,12 +289,8 @@ def get_process(pyngrok_config):
     :return: The ``ngrok`` process.
     :rtype: NgrokProcess
     """
-    if pyngrok_config.ngrok_path in _current_processes:
-        # Ensure the process is still running and hasn't been killed externally
-        if _current_processes[pyngrok_config.ngrok_path].proc.poll() is None:
-            return _current_processes[pyngrok_config.ngrok_path]
-        else:
-            _current_processes.pop(pyngrok_config.ngrok_path, None)
+    if is_process_running(pyngrok_config.ngrok_path):
+        return _current_processes[pyngrok_config.ngrok_path]
 
     return _start_process(pyngrok_config)
 
@@ -291,7 +303,7 @@ def kill_process(ngrok_path):
     :param ngrok_path: The path to the ``ngrok`` binary.
     :type ngrok_path: str
     """
-    if ngrok_path in _current_processes:
+    if is_process_running(ngrok_path):
         ngrok_process = _current_processes[ngrok_path]
 
         logger.info("Killing ngrok process: {}".format(ngrok_process.proc.pid))
@@ -321,23 +333,46 @@ def run_process(ngrok_path, args):
     :param args: The args to pass to ``ngrok``.
     :type args: list[str]
     """
-    _ensure_path_ready(ngrok_path)
+    _validate_path(ngrok_path)
 
     start = [ngrok_path] + args
     subprocess.call(start)
 
 
-def _ensure_path_ready(ngrok_path):
+def capture_run_process(ngrok_path, args):
     """
-    Ensure the binary for ``ngrok`` at the given path is ready to be started, raise a relevant
-    exception if not.
+    Start a blocking ``ngrok`` process with the binary at the given path and the passed args. When the process
+    returns, so will this method, and the captured output from the process along with it.
+
+    This method is meant for invoking ``ngrok`` directly (for instance, from the command line) and is not
+    necessarily compatible with non-blocking API methods. For that, use :func:`~pyngrok.process.get_process`.
+
+    :param ngrok_path: The path to the ``ngrok`` binary.
+    :type ngrok_path: str
+    :param args: The args to pass to ``ngrok``.
+    :type args: list[str]
+    :return: The output from the process.
+    :rtype: str
+    """
+    _validate_path(ngrok_path)
+
+    start = [ngrok_path] + args
+    output = subprocess.check_output(start)
+
+    return output.decode("utf-8").strip()
+
+
+def _validate_path(ngrok_path):
+    """
+    Validate the given path exists, is a ``ngrok`` binary, and is ready to be started, otherwise raise a
+    relevant exception.
 
     :param ngrok_path: The path to the ``ngrok`` binary.
     :type ngrok_path: str
     """
     if not os.path.exists(ngrok_path):
         raise PyngrokNgrokError(
-            "ngrok binary was not found. Be sure to call \"ngrok.ensure_ngrok_installed()\" first for "
+            "ngrok binary was not found. Be sure to call \"ngrok.install_ngrok()\" first for "
             "\"ngrok_path\": {}".format(ngrok_path))
 
     if ngrok_path in _current_processes:
@@ -349,7 +384,7 @@ def _validate_config(config_path):
         config = yaml.safe_load(config_file)
 
     if config is not None:
-        validate_config(config)
+        installer.validate_config(config)
 
 
 def _terminate_process(process):
@@ -372,11 +407,13 @@ def _start_process(pyngrok_config):
     :return: The ``ngrok`` process.
     :rtype: NgrokProcess
     """
-    _ensure_path_ready(pyngrok_config.ngrok_path)
     if pyngrok_config.config_path is not None:
-        _validate_config(pyngrok_config.config_path)
+        config_path = pyngrok_config.config_path
     else:
-        _validate_config(conf.DEFAULT_NGROK_CONFIG_PATH)
+        config_path = conf.DEFAULT_NGROK_CONFIG_PATH
+
+    _validate_path(pyngrok_config.ngrok_path)
+    _validate_config(config_path)
 
     start = [pyngrok_config.ngrok_path, "start", "--none", "--log=stdout"]
     if pyngrok_config.config_path:
@@ -390,14 +427,14 @@ def _start_process(pyngrok_config):
         start.append("--region={}".format(pyngrok_config.region))
 
     popen_kwargs = {"stdout": subprocess.PIPE, "universal_newlines": True}
-    if sys.version_info.major >= 3 and os.name == "posix":
+    if os.name == "posix":
         popen_kwargs.update(start_new_session=pyngrok_config.start_new_session)
     elif pyngrok_config.start_new_session:
-        logger.warning("Ignoring start_new_session=True, which requires Python 3 and POSIX")
+        logger.warning("Ignoring start_new_session=True, which requires POSIX")
     proc = subprocess.Popen(start, **popen_kwargs)
     atexit.register(_terminate_process, proc)
 
-    logger.info("ngrok process starting: {}".format(proc.pid))
+    logger.debug("ngrok process starting with PID: {}".format(proc.pid))
 
     ngrok_process = NgrokProcess(proc, pyngrok_config)
     _current_processes[pyngrok_config.ngrok_path] = ngrok_process
@@ -408,7 +445,7 @@ def _start_process(pyngrok_config):
         ngrok_process._log_startup_line(line)
 
         if ngrok_process.healthy():
-            logger.info("ngrok process has started: {}".format(ngrok_process.api_url))
+            logger.debug("ngrok process has started with API URL: {}".format(ngrok_process.api_url))
 
             if pyngrok_config.monitor_thread:
                 ngrok_process.start_monitor_thread()
