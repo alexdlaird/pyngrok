@@ -2,4 +2,4 @@ coverage
 codecov
 nose
 twine
-psutil<5.7.4
+psutil
