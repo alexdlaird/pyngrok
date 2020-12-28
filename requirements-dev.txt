@@ -1,5 +1,4 @@
 coverage
 codecov
 nose
-twine
 psutil

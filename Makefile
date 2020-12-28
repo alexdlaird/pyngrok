@@ -61,6 +61,7 @@ upload:
 	@rm -rf *.egg-info dist
 	@( \
 		source venv/bin/activate; \
+		python -m pip install twine
 		python setup.py sdist; \
 		python -m twine upload dist/*; \
 	)
