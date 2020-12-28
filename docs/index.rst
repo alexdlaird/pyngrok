@@ -10,8 +10,8 @@ pyngrok - a Python wrapper for ngrok
 
 .. image:: https://badge.fury.io/py/pyngrok.svg
    :target: https://badge.fury.io/py/pyngrok
-.. image:: https://travis-ci.org/alexdlaird/pyngrok.svg?branch=master
-   :target: https://travis-ci.org/alexdlaird/pyngrok
+.. image:: https://travis-ci.com/alexdlaird/pyngrok.svg?branch=master
+   :target: https://travis-ci.com/alexdlaird/pyngrok
 .. image:: https://codecov.io/gh/alexdlaird/pyngrok/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/alexdlaird/pyngrok
 .. image:: https://readthedocs.org/projects/pyngrok/badge/?version=latest
