@@ -10,6 +10,7 @@ python:
   - "pypy3"
 install:
   - python -m pip install virtualenv
+  - python -m pip install cryptography --no-binary cryptography
   - python -m virtualenv venv
   - make install
 script:
