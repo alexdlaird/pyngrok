@@ -9,6 +9,12 @@ import zipfile
 from http import HTTPStatus
 from urllib.request import urlopen
 
+import ssl
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
+
 import yaml
 
 from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
@@ -212,7 +218,7 @@ def _download_file(url, retries=0, **kwargs):
         logger.debug("Download ngrok from {} ...".format(url))
 
         local_filename = url.split("/")[-1]
-        response = urlopen(url, **kwargs)
+        response = urlopen(url, **kwargs, context=ctx)
 
         status_code = response.getcode()
 
