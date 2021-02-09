@@ -13,8 +13,8 @@ from pyngrok import process, conf, installer
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "5.0.1"
+__copyright__ = "Copyright 2021, Alex Laird"
+__version__ = "5.0.2"
 
 logger = logging.getLogger(__name__)
 
