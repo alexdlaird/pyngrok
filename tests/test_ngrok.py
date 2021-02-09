@@ -102,12 +102,32 @@ class TestNgrok(NgrokTestCase):
                 self.assertEqual(tunnel.public_url, url.replace("http", "https"))
                 self.assertEqual(tunnel.config["addr"], "http://localhost:80")
 
-    def test_bind_tls_https(self):
+    def test_bind_tls_both(self):
+        # WHEN
+        url = ngrok.connect(bind_tls="both", pyngrok_config=self.pyngrok_config).public_url
+        num_tunnels = len(ngrok.get_tunnels())
+
+        # THEN
+        self.assertTrue(url.startswith("http"))
+        self.assertEqual(num_tunnels, 2)
+
+    def test_bind_tls_https_only(self):
         # WHEN
         url = ngrok.connect(bind_tls=True, pyngrok_config=self.pyngrok_config).public_url
+        num_tunnels = len(ngrok.get_tunnels())
 
         # THEN
         self.assertTrue(url.startswith("https"))
+        self.assertEqual(num_tunnels, 1)
+
+    def test_bind_tls_http_only(self):
+        # WHEN
+        url = ngrok.connect(bind_tls=False, pyngrok_config=self.pyngrok_config).public_url
+        num_tunnels = len(ngrok.get_tunnels())
+
+        # THEN
+        self.assertTrue(url.startswith("http"))
+        self.assertEqual(num_tunnels, 1)
 
     def test_disconnect(self):
         # GIVEN
@@ -168,6 +188,7 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertEqual(ngrok_tunnel.name, response["name"])
+        self.assertTrue(ngrok_tunnel.public_url.startswith("http"))
 
     def test_api_request_query_params(self):
         # GIVEN

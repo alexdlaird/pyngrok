@@ -3,8 +3,11 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.0.1...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.0.2...HEAD)
+
+## [5.0.2](https://github.com/alexdlaird/pyngrok/compare/5.0.1...5.0.2) - TBD
 ### Fixed
+- Errors when `bind_tls` was set to `False`.
 - Documentation improvements.
 
 ## [5.0.1](https://github.com/alexdlaird/pyngrok/compare/5.0.0...5.0.1) - 2020-12-28

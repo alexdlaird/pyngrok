@@ -70,6 +70,13 @@ The :func:`~pyngrok.ngrok.connect` method takes ``kwargs`` as well, which allows
 additional properties that are `supported by ngrok <https://ngrok.com/docs#tunnel-definitions>`_,
 `as shown below <#passing-options-as-kwargs>`__.
 
+.. note::
+
+    ``ngrok``'s default ``http`` behavior when no additional properties are passed is to open *two* tunnels,
+    one ``http`` and one ``https``. ``pyngrok``'s :func:`~pyngrok.ngrok.connect` method will return the ``http``
+    tunnel in this case. If we only need a single tunnel, for instance if we only want an ``https`` tunnel, we
+    can pass ``bind_tls=True``.
+
 Get Active Tunnels
 ==================
 
@@ -227,7 +234,7 @@ Most methods in the :mod:`~pyngrok.ngrok` module also accept a ``pyngrok_config`
 to pass in the config rather than updating the default as shown above.
 
 The ``pyngrok_config`` argument is only used when the ``ngrok`` process is first started, which will be
-the first time most methods in the :mod:`~pyngrok.ngrok` module are called. You can check if a process is already or
+the first time most methods in the :mod:`~pyngrok.ngrok` module are called. We can check if a process is already or
 still running by calling its :func:`~pyngrok.process.NgrokProcess.healthy` method.
 
 .. note::
