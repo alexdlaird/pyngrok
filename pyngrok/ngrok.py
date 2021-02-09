@@ -164,7 +164,7 @@ def get_ngrok_process(pyngrok_config=None):
 
 def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     """
-    Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning a object representing
+    Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning an object representing
     the connected tunnel.
 
     If a `tunnel definition in ngrok's config file <https://ngrok.com/docs#tunnel-definitions>`_ matches the given
@@ -177,6 +177,12 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
 
     If ``ngrok`` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
+
+    .. note::
+
+        ``ngrok``'s default behavior for ``http`` when no additional properties are passed is to open *two* tunnels,
+        one ``http`` and one ``https``. This method will return a reference to the ``http`` tunnel in this case. If
+        only a single tunnel is needed, pass ``bind_tls=True``.
 
     :param addr: The local port to which the tunnel will forward traffic, or a
         `local directory or network address <https://ngrok.com/docs#http-file-urls>`_, defaults to "80".
