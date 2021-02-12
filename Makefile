@@ -31,12 +31,6 @@ test: install
 		python `which nosetests` --with-coverage --cover-erase --cover-package=. --cover-html --cover-html-dir=_build/coverage; \
 	)
 
-test-race:
-	@( \
-		source venv/bin/activate; \
-		for i in {1..$(RACE_ITERATIONS)}; do python `which nosetests` || break; done; \
-	)
-
 docs: install
 	@( \
 		source venv/bin/activate; \
