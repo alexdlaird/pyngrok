@@ -51,6 +51,3 @@ jobs:
       - name: Upload coverage
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9'
         uses: codecov/codecov-action@v1
-        with:
-          functionalities: html
-          directory: ./_build/coverage
