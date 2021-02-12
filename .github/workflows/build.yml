@@ -1,4 +1,4 @@
-name: build
+name: "CI/CD"
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: Build
 
     strategy:
       fail-fast: false
