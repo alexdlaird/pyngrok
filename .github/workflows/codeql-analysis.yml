@@ -9,6 +9,7 @@ on:
 jobs:
   analyse:
     name: Analyse
+
     runs-on: ubuntu-latest
 
     steps:

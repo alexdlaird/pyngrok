@@ -1,30 +1,42 @@
-name: deploy
+name: "CI/CD"
 
 on:
-  workflow_run:
-    workflows: ["build"]
-    types:
-      - completed
+  release:
+    types: [created]
 
 jobs:
   deploy:
-    name: Publish Python package on release
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    name: Deploy
 
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@master
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v1
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          python-version: 3.9
-      - name: Prepare dist
+          python-version: 3.x
+      - name: Install dependencies
         run: |
           make install
-          make local
-      - name: Publish a Python distribution to PyPI
-        uses: pypa/gh-action-pypi-publish@master
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          python -m pip install --upgrade pip
+          python -m pip install setuptools wheel twine
+      - name: Get version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+      - name: Validate version
+        run: |
+          make validate-release VERSION=${{ steps.get_version.outputs.VERSION }}
+      - name: Run tests
+        run: |
+          make test
+      - name: Build
+        run: |
+          make local docs
+          python setup.py sdist bdist_wheel
+      - name: Publish
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          twine upload dist/*

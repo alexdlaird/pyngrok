@@ -1,4 +1,4 @@
-name: build
+name: "CI/CD"
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: Build
 
     strategy:
       fail-fast: false
@@ -36,16 +37,13 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          python -m pip install virtualenv
-          python -m virtualenv venv
           make install
       - name: Run tests
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
             nosetests --traverse-namespace
           else
-            make test
-            make local
+            make test local
           fi
         shell: bash
       - name: Upload coverage
