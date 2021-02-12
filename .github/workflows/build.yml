@@ -44,8 +44,7 @@ jobs:
           if [ "$RUNNER_OS" == "Windows" ]; then
             nosetests --traverse-namespace
           else
-            make test
-            make local
+            make test local
           fi
         shell: bash
       - name: Upload coverage
