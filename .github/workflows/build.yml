@@ -1,7 +1,6 @@
 name: CI
 
-on:
-  [push, pull_request]
+on: [push]
 
 jobs:
   build:
@@ -38,10 +37,10 @@ jobs:
         make install
     - name: Run tests
       run: |
-        if [ "$RUNNER_OS" != "Windows" ]; then
+        if [ "$RUNNER_OS" == "Windows" ]; then
           # TODO: finish migrating from Travis
           make test
-        else [ "$RUNNER_OS" == "Windows" ]; then
+        else
           make test
           make local
         fi
