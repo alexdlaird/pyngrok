@@ -28,13 +28,7 @@ clean: nopyc
 test: install
 	@( \
 		source venv/bin/activate; \
-		python `which nosetests` --with-coverage --cover-erase --cover-package=. --cover-html --cover-html-dir=_build/coverage; \
-	)
-
-test-race:
-	@( \
-		source venv/bin/activate; \
-		for i in {1..$(RACE_ITERATIONS)}; do python `which nosetests` || break; done; \
+		python `which nosetests` --with-coverage --cover-erase --cover-package=. --cover-xml --cover-xml-file=_build/coverage/coverage.xml --cover-html --cover-html-dir=_build/coverage; \
 	)
 
 docs: install
