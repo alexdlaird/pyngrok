@@ -10,6 +10,10 @@ jobs:
   build:
     name: Build
 
+    env:
+      NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      NGROK_SUBDOMAIN: ${{ secrets.NGROK_SUBDOMAIN }}
+
     strategy:
       fail-fast: false
       matrix:
