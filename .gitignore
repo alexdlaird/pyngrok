@@ -2,7 +2,6 @@
 *.iml
 *.pyc
 .coverage
-coverage.xml
 *.log
 venv
 dist/
