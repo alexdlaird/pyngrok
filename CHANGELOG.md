@@ -5,7 +5,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.0.2...HEAD)
 
-## [5.0.2](https://github.com/alexdlaird/pyngrok/compare/5.0.1...5.0.2) - 2021-02-09
+## [5.0.2](https://github.com/alexdlaird/pyngrok/compare/5.0.1...5.0.2) - 2021-02-12
+### Changed
+- Migrated build from Travis CI to GitHub Actions.
+
 ### Fixed
 - Errors when `bind_tls` was set to `False`.
 - Documentation improvements.

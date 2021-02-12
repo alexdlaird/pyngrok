@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
+      - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
           python-version: 3.x
@@ -32,8 +32,8 @@ jobs:
           make test
       - name: Build
         run: |
-          make local docs
-          python setup.py sdist bdist_wheel
+          make docs
+          make local
       - name: Publish
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
