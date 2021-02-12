@@ -42,9 +42,7 @@ jobs:
       - name: Run tests
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
-            echo %CD%
-            source venv/bin/activate
-            nosetests
+            nosetests --traverse-namespace
           else
             make test
             make local
