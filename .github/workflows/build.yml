@@ -49,5 +49,5 @@ jobs:
           fi
         shell: bash
       - name: Upload coverage
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9'
         uses: codecov/codecov-action@v1
-        if: matrix.os == "ubuntu-latest" && matrix.python-version == "3.9"
