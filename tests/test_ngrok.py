@@ -17,7 +17,7 @@ from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2021, Alex Laird"
-__version__ = "5.0.2"
+__version__ = "5.0.3"
 
 
 class TestNgrok(NgrokTestCase):
@@ -273,8 +273,7 @@ class TestNgrok(NgrokTestCase):
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        subdomain = "pyngrok-{}-{}-{}{}-tcp".format(platform.system(), platform.python_implementation(),
-                                                    sys.version_info[0], sys.version_info[1]).lower()
+        subdomain = self.get_unique_subdomain()
         pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
                                        auth_token=os.environ["NGROK_AUTHTOKEN"], region="au")
 
@@ -298,8 +297,7 @@ class TestNgrok(NgrokTestCase):
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        subdomain = "pyngrok-{}-{}-{}{}-http".format(platform.system(), platform.python_implementation(),
-                                                     sys.version_info[0], sys.version_info[1]).lower()
+        subdomain = self.get_unique_subdomain()
         pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
                                        auth_token=os.environ["NGROK_AUTHTOKEN"], region="au")
 
@@ -440,13 +438,15 @@ class TestNgrok(NgrokTestCase):
         if "NGROK_AUTHTOKEN" not in os.environ:
             self.skipTest("NGROK_AUTHTOKEN environment variable not set")
 
+        subdomain = self.get_unique_subdomain()
+
         # GIVEN
         config = {
             "tunnels": {
                 "http-tunnel": {
                     "proto": "http",
                     "addr": "8000",
-                    "subdomain": "pyngrok1"
+                    "subdomain": subdomain
                 },
                 "tcp-tunnel": {
                     "proto": "tcp",
@@ -480,24 +480,28 @@ class TestNgrok(NgrokTestCase):
         if "NGROK_AUTHTOKEN" not in os.environ:
             self.skipTest("NGROK_AUTHTOKEN environment variable not set")
 
+        subdomain_config = "pyngrok2-{}-{}-{}{}-http".format(platform.system(), platform.python_implementation(),
+                                                             sys.version_info[0], sys.version_info[1]).lower()
+
         # GIVEN
         config = {
             "tunnels": {
                 "pyngrok-default": {
                     "proto": "http",
                     "addr": "8080",
-                    "subdomain": "pyngrok2"
+                    "subdomain": subdomain_config
                 }
             }
         }
         config_path = os.path.join(self.config_dir, "config2.yml")
         installer.install_default_config(config_path, config)
+        subdomain = self.get_unique_subdomain()
         pyngrok_config = PyngrokConfig(config_path=config_path,
                                        auth_token=os.environ["NGROK_AUTHTOKEN"])
 
         # WHEN
         ngrok_tunnel1 = ngrok.connect(pyngrok_config=pyngrok_config)
-        ngrok_tunnel2 = ngrok.connect(5000, subdomain="pyngrok3", pyngrok_config=pyngrok_config)
+        ngrok_tunnel2 = ngrok.connect(5000, subdomain=subdomain, pyngrok_config=pyngrok_config)
 
         # THEN
         self.assertEqual(ngrok_tunnel1.name, "pyngrok-default (http)")
@@ -509,4 +513,4 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(ngrok_tunnel2.name, "pyngrok-default (http)")
         self.assertEqual(ngrok_tunnel2.config["addr"], "http://localhost:5000")
         self.assertEqual(ngrok_tunnel2.proto, config["tunnels"]["pyngrok-default"]["proto"])
-        self.assertEqual(ngrok_tunnel2.public_url, "http://pyngrok3.ngrok.io")
+        self.assertIn(subdomain, ngrok_tunnel2.public_url)

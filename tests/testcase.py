@@ -1,5 +1,8 @@
 import os
+import platform
 import shutil
+import sys
+import time
 import unittest
 
 import psutil
@@ -9,8 +12,8 @@ from pyngrok import ngrok, installer, conf
 from pyngrok import process
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "5.0.0"
+__copyright__ = "Copyright 2021, Alex Laird"
+__version__ = "5.0.3"
 
 
 class NgrokTestCase(unittest.TestCase):
@@ -55,3 +58,8 @@ class NgrokTestCase(unittest.TestCase):
         except (AccessDenied, NoSuchProcess):
             # Some OSes are flaky on this assertion, but that isn't an indication anything is wrong, so pass
             pass
+
+    def get_unique_subdomain(self):
+        return "pyngrok-{}-{}-{}-{}{}-tcp".format(int(round(time.time() * 1000)), platform.system(),
+                                                  platform.python_implementation(), sys.version_info[0],
+                                                  sys.version_info[1]).lower()
