@@ -2,7 +2,7 @@ name: "CI/CD"
 
 on:
   release:
-    types: [created]
+    types: [ created ]
 
 jobs:
   deploy:
