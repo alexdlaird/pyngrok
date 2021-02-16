@@ -43,7 +43,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: |
+        run:
           make install
       - name: Run tests
         run: |

@@ -29,10 +29,10 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       - name: Validate version
-        run: |
+        run:
           make validate-release VERSION=${{ steps.get_version.outputs.VERSION }}
       - name: Run tests
-        run: |
+        run:
           make test
       - name: Build
         run: |
@@ -42,5 +42,5 @@ jobs:
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: |
+        run:
           twine upload dist/*
