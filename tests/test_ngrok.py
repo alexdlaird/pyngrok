@@ -480,8 +480,7 @@ class TestNgrok(NgrokTestCase):
         if "NGROK_AUTHTOKEN" not in os.environ:
             self.skipTest("NGROK_AUTHTOKEN environment variable not set")
 
-        subdomain_config = "pyngrok2-{}-{}-{}{}-http".format(platform.system(), platform.python_implementation(),
-                                                             sys.version_info[0], sys.version_info[1]).lower()
+        subdomain = self.get_unique_subdomain()
 
         # GIVEN
         config = {
@@ -489,7 +488,7 @@ class TestNgrok(NgrokTestCase):
                 "pyngrok-default": {
                     "proto": "http",
                     "addr": "8080",
-                    "subdomain": subdomain_config
+                    "subdomain": subdomain
                 }
             }
         }
