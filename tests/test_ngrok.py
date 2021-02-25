@@ -1,6 +1,4 @@
 import os
-import platform
-import sys
 import time
 import uuid
 from http import HTTPStatus
@@ -68,7 +66,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual("http", ngrok_tunnel.proto)
         self.assertEqual("http://localhost:80", ngrok_tunnel.config["addr"])
 
-    def test_multiple_connections_fails(self):
+    def test_multiple_connections_no_token_fails(self):
         # WHEN
         with self.assertRaises(PyngrokNgrokHTTPError) as cm:
             ngrok.connect(5000, pyngrok_config=self.pyngrok_config)
