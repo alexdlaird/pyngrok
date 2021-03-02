@@ -2,7 +2,7 @@
 
 [![PyPI Version](https://badge.fury.io/py/pyngrok.svg)](https://badge.fury.io/py/pyngrok)
 [![CI/CD](https://github.com/alexdlaird/pyngrok/workflows/CI/CD/badge.svg)](https://github.com/alexdlaird/pyngrok/actions?query=workflow%3ACI%2FCD)
-[![Codecov](https://codecov.io/gh/alexdlaird/pyngrok/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdlaird/pyngrok)
+[![Codecov](https://codecov.io/gh/alexdlaird/pyngrok/branch/main/graph/badge.svg)](https://codecov.io/gh/alexdlaird/pyngrok)
 [![Docs](https://readthedocs.org/projects/pyngrok/badge/?version=latest)](https://pyngrok.readthedocs.io/en/latest/?badge=latest)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pyngrok.svg)](https://pypi.org/project/pyngrok/)
 [![PyPI License](https://img.shields.io/pypi/l/pyngrok.svg)](https://pypi.org/project/pyngrok/)
@@ -74,7 +74,7 @@ to use `pyngrok` with this version of Python. Its legacy documentation can be fo
 
 ## Contributing
 
-If you would like to get involved, be sure to review the [Contribution Guide](https://github.com/alexdlaird/pyngrok/blob/master/CONTRIBUTING.rst).
+If you would like to get involved, be sure to review the [Contribution Guide](https://github.com/alexdlaird/pyngrok/blob/main/CONTRIBUTING.rst).
 
 Want to contribute financially? If you've found `pyngrok` useful, [a donation](https://www.paypal.me/alexdlaird>) would
 also be greatly appreciated!
