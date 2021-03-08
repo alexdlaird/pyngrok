@@ -460,6 +460,7 @@ def _start_process(pyngrok_config):
         kill_process(pyngrok_config.ngrok_path)
 
         if ngrok_process.startup_error is not None:
+            print(log)
             raise PyngrokNgrokError("The ngrok process errored on start: {}.".format(ngrok_process.startup_error),
                                     ngrok_process.logs,
                                     ngrok_process.startup_error)
