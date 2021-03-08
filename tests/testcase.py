@@ -81,17 +81,18 @@ def retry_connection_reset():
     delay, backoff, and then retry the test.
     """
 
-    def deco_retry(f):
-        @wraps(f)
-        def f_retry(*args, **kwargs):
-            delay = 3
+    def decorator(func):
+
+        @wraps(func)
+        def inner(*args, **kwargs):
+            delay = 2
             retries = 3
             while retries > 1:
                 try:
-                    return f(*args, **kwargs)
+                    return func(*args, **kwargs)
                 except PyngrokNgrokError as e:
                     # Raise the exception if it's not the specific edge case we're looking for
-                    if e.startup_error != "EOF.":
+                    if e.ngrok_error != "EOF":
                         raise e
 
                     logger.warning("ngrok reset our connection, retrying in {} seconds ...".format(delay))
@@ -100,8 +101,8 @@ def retry_connection_reset():
                     retries -= 1
                     delay *= 2
 
-            return f(*args, **kwargs)
+            return func(*args, **kwargs)
 
-        return f_retry
+        return inner
 
-    return deco_retry
+    return decorator
