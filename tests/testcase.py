@@ -5,6 +5,7 @@ import shutil
 import sys
 import time
 import unittest
+import uuid
 from functools import wraps
 
 import psutil
@@ -67,7 +68,7 @@ class NgrokTestCase(unittest.TestCase):
             pass
 
     def get_unique_subdomain(self):
-        return "pyngrok-{}-{}-{}-{}{}-tcp".format(int(round(time.time() * 1000)), platform.system(),
+        return "pyngrok-{}-{}-{}-{}{}-tcp".format(uuid.uuid4(), platform.system(),
                                                   platform.python_implementation(), sys.version_info[0],
                                                   sys.version_info[1]).lower()
 
