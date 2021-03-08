@@ -85,7 +85,7 @@ def retry_connection_reset():
                     if e.startup_error != "EOF.":
                         raise e
 
-                    logger.warning("ngrok reset our connection, retrying in {} seconds ...".format(e, delay))
+                    logger.warning("ngrok reset our connection, retrying in {} seconds ...".format(delay))
                     time.sleep(delay)
 
                     retries -= 1
