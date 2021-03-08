@@ -11,7 +11,7 @@ If you would like to contribute to the code, the process is pretty simple:
 4. Build and test locally with ``make local test``
 5. Submit a `pull requests <https://help.github.com/en/articles/creating-a-pull-request-from-a-fork>`_ to get the changes merged.
 
-Also be sure to review the `Code of Conduct <https://github.com/alexdlaird/pyngrok/blob/master/CODE_OF_CONDUCT.md>`_ before
+Also be sure to review the `Code of Conduct <https://github.com/alexdlaird/pyngrok/blob/main/CODE_OF_CONDUCT.md>`_ before
 submitting issues or pull requests.
 
 Want to contribute financially? If you've found ``pyngrok`` useful, `a donation <https://www.paypal.me/alexdlaird>`_
