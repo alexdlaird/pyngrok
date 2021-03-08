@@ -1,9 +1,11 @@
+import logging
 import os
 import platform
 import shutil
 import sys
 import time
 import unittest
+from functools import wraps
 
 import psutil
 from psutil import AccessDenied, NoSuchProcess
@@ -13,7 +15,12 @@ from pyngrok import process
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2021, Alex Laird"
-__version__ = "5.0.3"
+__version__ = "5.0.4"
+
+from pyngrok.exception import PyngrokNgrokError
+
+logger = logging.getLogger(__name__)
+ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))
 
 
 class NgrokTestCase(unittest.TestCase):
@@ -63,3 +70,39 @@ class NgrokTestCase(unittest.TestCase):
         return "pyngrok-{}-{}-{}-{}{}-tcp".format(int(round(time.time() * 1000)), platform.system(),
                                                   platform.python_implementation(), sys.version_info[0],
                                                   sys.version_info[1]).lower()
+
+
+def retry_connection_reset():
+    """
+    This decorator can be applied to tests that are flaky due to ngrok failing to reconnect the remote session. The EOF
+    error is seen when the ngrok remote host says "failed to reconnect session", which may mean ngrok itself is having
+    issues (unrelated to the test, retry), or it can be seen when ngrok is throttling connections from the test account
+    (too many consecutive or concurrent connections, slow down and retry). In either case, this decorator will apply a
+    delay, backoff, and then retry the test.
+    """
+
+    def decorator(func):
+
+        @wraps(func)
+        def inner(*args, **kwargs):
+            delay = 2
+            retries = 3
+            while retries > 1:
+                try:
+                    return func(*args, **kwargs)
+                except PyngrokNgrokError as e:
+                    # Raise the exception if it's not the specific edge case we're looking for
+                    if e.ngrok_error != "EOF":
+                        raise e
+
+                    logger.warning("ngrok reset our connection, retrying in {} seconds ...".format(delay))
+                    time.sleep(delay)
+
+                    retries -= 1
+                    delay *= 2
+
+            return func(*args, **kwargs)
+
+        return inner
+
+    return decorator
