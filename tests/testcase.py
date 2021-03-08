@@ -73,6 +73,14 @@ class NgrokTestCase(unittest.TestCase):
 
 
 def retry_connection_reset():
+    """
+    This decorator can be applied to tests that are flaky due to ngrok failing to reconnect the remote session. The EOF
+    error is seen when the ngrok remote host says "failed to reconnect session", which may mean ngrok itself is having
+    issues (unrelated to the test, retry), or it can be seen when ngrok is throttling connections from the test account
+    (too many consecutive or concurrent connections, slow down and retry). In either case, this decorator will apply a
+    delay, backoff, and then retry the test.
+    """
+
     def deco_retry(f):
         @wraps(f)
         def f_retry(*args, **kwargs):
@@ -82,6 +90,7 @@ def retry_connection_reset():
                 try:
                     return f(*args, **kwargs)
                 except PyngrokNgrokError as e:
+                    # Raise the exception if it's not the specific edge case we're looking for
                     if e.startup_error != "EOF.":
                         raise e
 

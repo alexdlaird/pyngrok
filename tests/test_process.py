@@ -33,19 +33,7 @@ class TestProcess(NgrokTestCase):
         self.assertIsNotNone(ngrok_process.proc.poll())
         self.assertFalse(monitor_thread.is_alive())
 
-    def test_get_process_no_binary(self):
-        # GIVEN
-        self.given_ngrok_not_installed(conf.DEFAULT_NGROK_PATH)
-        self.assertEqual(len(process._current_processes.keys()), 0)
-
-        # WHEN
-        with self.assertRaises(PyngrokNgrokError) as cm:
-            process.get_process(self.pyngrok_config)
-
-        # THEN
-        self.assertIn("ngrok binary was not found", str(cm.exception))
-        self.assertEqual(len(process._current_processes.keys()), 0)
-
+    @retry_connection_reset()
     def test_start_process_port_in_use(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
@@ -183,52 +171,6 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(ngrok_process1, process.get_process(self.pyngrok_config))
         self.assertEqual(len(process._current_processes.keys()), 1)
 
-    def test_log_parsing(self):
-        # WHEN
-        ngrok_log = NgrokLog("lvl=INFO msg=Test")
-        # THEN
-        self.assertEqual(ngrok_log.lvl, "INFO")
-        self.assertEqual(ngrok_log.msg, "Test")
-
-        # WHEN
-        ngrok_log = NgrokLog("lvl=WARN msg=Test=Test")
-        # THEN
-        self.assertEqual(ngrok_log.lvl, "WARNING")
-        self.assertEqual(ngrok_log.msg, "Test=Test")
-
-        # WHEN
-        ngrok_log = NgrokLog("lvl=WARN msg=\"Test=Test with spaces\"")
-        # THEN
-        self.assertEqual(ngrok_log.lvl, "WARNING")
-        self.assertEqual(ngrok_log.msg, "Test=Test with spaces")
-
-        # WHEN
-        ngrok_log = NgrokLog("lvl=ERR no_msg")
-        # THEN
-        self.assertEqual(ngrok_log.lvl, "ERROR")
-        self.assertIsNone(ngrok_log.msg)
-
-        # WHEN
-        ngrok_log = NgrokLog("lvl=CRIT")
-        # THEN
-        self.assertEqual(ngrok_log.lvl, "CRITICAL")
-        self.assertIsNone(ngrok_log.msg)
-
-        # WHEN
-        ngrok_log = NgrokLog("lvl=")
-        # THEN
-        self.assertEqual(ngrok_log.lvl, "NOTSET")
-
-        # WHEN
-        ngrok_log = NgrokLog("key=val")
-        # THEN
-        self.assertEqual(ngrok_log.lvl, "NOTSET")
-
-        # WHEN
-        ngrok_log = NgrokLog("lvl=FAKE")
-        # THEN
-        self.assertEqual(ngrok_log.lvl, "NOTSET")
-
     @retry_connection_reset()
     def test_process_logs(self):
         # GIVEN
@@ -318,3 +260,67 @@ class TestProcess(NgrokTestCase):
         self.assertFalse(monitor_thread.is_alive())
         self.assertIsNone(ngrok_process._monitor_thread)
         self.assertTrue(ngrok_process.pyngrok_config.monitor_thread)
+
+    ################################################################################
+    # Tests below this point don't need to start a long-lived ngrok process, they
+    # are asserting on pyngrok-specific code or edge cases.
+    ################################################################################
+
+    def test_get_process_no_binary(self):
+        # GIVEN
+        self.given_ngrok_not_installed(conf.DEFAULT_NGROK_PATH)
+        self.assertEqual(len(process._current_processes.keys()), 0)
+
+        # WHEN
+        with self.assertRaises(PyngrokNgrokError) as cm:
+            process.get_process(self.pyngrok_config)
+
+        # THEN
+        self.assertIn("ngrok binary was not found", str(cm.exception))
+        self.assertEqual(len(process._current_processes.keys()), 0)
+
+    def test_log_parsing(self):
+        # WHEN
+        ngrok_log = NgrokLog("lvl=INFO msg=Test")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "INFO")
+        self.assertEqual(ngrok_log.msg, "Test")
+
+        # WHEN
+        ngrok_log = NgrokLog("lvl=WARN msg=Test=Test")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "WARNING")
+        self.assertEqual(ngrok_log.msg, "Test=Test")
+
+        # WHEN
+        ngrok_log = NgrokLog("lvl=WARN msg=\"Test=Test with spaces\"")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "WARNING")
+        self.assertEqual(ngrok_log.msg, "Test=Test with spaces")
+
+        # WHEN
+        ngrok_log = NgrokLog("lvl=ERR no_msg")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "ERROR")
+        self.assertIsNone(ngrok_log.msg)
+
+        # WHEN
+        ngrok_log = NgrokLog("lvl=CRIT")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "CRITICAL")
+        self.assertIsNone(ngrok_log.msg)
+
+        # WHEN
+        ngrok_log = NgrokLog("lvl=")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "NOTSET")
+
+        # WHEN
+        ngrok_log = NgrokLog("key=val")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "NOTSET")
+
+        # WHEN
+        ngrok_log = NgrokLog("lvl=FAKE")
+        # THEN
+        self.assertEqual(ngrok_log.lvl, "NOTSET")

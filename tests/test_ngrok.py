@@ -177,15 +177,6 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 0)
         self.assertNoZombies()
 
-    def test_set_auth_token(self):
-        # WHEN
-        ngrok.set_auth_token("807ad30a-73be-48d8", pyngrok_config=self.pyngrok_config)
-        with open(self.pyngrok_config.config_path, "r") as f:
-            contents = f.read()
-
-        # THEN
-        self.assertIn("807ad30a-73be-48d8", contents)
-
     @retry_connection_reset()
     def test_api_get_request_success(self):
         # GIVEN
@@ -276,11 +267,6 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertIn("timed out", cm.exception.reason)
 
-    def test_api_request_security_error(self):
-        # WHEN
-        with self.assertRaises(PyngrokSecurityError):
-            ngrok.api_request("file:{}".format(__file__))
-
     @retry_connection_reset()
     def test_regional_tcp(self):
         if "NGROK_AUTHTOKEN" not in os.environ:
@@ -330,33 +316,6 @@ class TestNgrok(NgrokTestCase):
         self.assertIn(".au.", url)
         self.assertIn(subdomain, url)
         self.assertEqual(len(process._current_processes.keys()), 1)
-
-    def test_web_addr_false_not_allowed(self):
-        # GIVEN
-        with open(self.pyngrok_config.config_path, "w") as config_file:
-            yaml.dump({"web_addr": False}, config_file)
-
-        # WHEN
-        with self.assertRaises(PyngrokError):
-            ngrok.connect(pyngrok_config=self.pyngrok_config)
-
-    def test_log_format_json_not_allowed(self):
-        # GIVEN
-        with open(self.pyngrok_config.config_path, "w") as config_file:
-            yaml.dump({"log_format": "json"}, config_file)
-
-        # WHEN
-        with self.assertRaises(PyngrokError):
-            ngrok.connect(pyngrok_config=self.pyngrok_config)
-
-    def test_log_level_warn_not_allowed(self):
-        # GIVEN
-        with open(self.pyngrok_config.config_path, "w") as config_file:
-            yaml.dump({"log_level": "warn"}, config_file)
-
-        # WHEN
-        with self.assertRaises(PyngrokError):
-            ngrok.connect(pyngrok_config=self.pyngrok_config)
 
     @retry_connection_reset()
     def test_connect_fileserver(self):
@@ -446,14 +405,6 @@ class TestNgrok(NgrokTestCase):
         self.assertGreater(ngrok_tunnel.metrics.get("http").get("count"), 0)
         self.assertGreater(ngrok_tunnel.data["metrics"].get("http").get("count"), 0)
 
-    def test_version(self):
-        # WHEN
-        ngrok_version, pyngrok_version = ngrok.get_version()
-
-        # THEN
-        self.assertIsNotNone(ngrok_version)
-        self.assertEqual(ngrok.__version__, pyngrok_version)
-
     @retry_connection_reset()
     def test_tunnel_definitions(self):
         if "NGROK_AUTHTOKEN" not in os.environ:
@@ -535,3 +486,57 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(ngrok_tunnel2.config["addr"], "http://localhost:5000")
         self.assertEqual(ngrok_tunnel2.proto, config["tunnels"]["pyngrok-default"]["proto"])
         self.assertIn(subdomain, ngrok_tunnel2.public_url)
+
+    ################################################################################
+    # Tests below this point don't need to start a long-lived ngrok process, they
+    # are asserting on pyngrok-specific code or edge cases.
+    ################################################################################
+
+    def test_web_addr_false_not_allowed(self):
+        # GIVEN
+        with open(self.pyngrok_config.config_path, "w") as config_file:
+            yaml.dump({"web_addr": False}, config_file)
+
+        # WHEN
+        with self.assertRaises(PyngrokError):
+            ngrok.connect(pyngrok_config=self.pyngrok_config)
+
+    def test_log_format_json_not_allowed(self):
+        # GIVEN
+        with open(self.pyngrok_config.config_path, "w") as config_file:
+            yaml.dump({"log_format": "json"}, config_file)
+
+        # WHEN
+        with self.assertRaises(PyngrokError):
+            ngrok.connect(pyngrok_config=self.pyngrok_config)
+
+    def test_log_level_warn_not_allowed(self):
+        # GIVEN
+        with open(self.pyngrok_config.config_path, "w") as config_file:
+            yaml.dump({"log_level": "warn"}, config_file)
+
+        # WHEN
+        with self.assertRaises(PyngrokError):
+            ngrok.connect(pyngrok_config=self.pyngrok_config)
+
+    def test_api_request_security_error(self):
+        # WHEN
+        with self.assertRaises(PyngrokSecurityError):
+            ngrok.api_request("file:{}".format(__file__))
+
+    def test_version(self):
+        # WHEN
+        ngrok_version, pyngrok_version = ngrok.get_version()
+
+        # THEN
+        self.assertIsNotNone(ngrok_version)
+        self.assertEqual(ngrok.__version__, pyngrok_version)
+
+    def test_set_auth_token(self):
+        # WHEN
+        ngrok.set_auth_token("807ad30a-73be-48d8", pyngrok_config=self.pyngrok_config)
+        with open(self.pyngrok_config.config_path, "r") as f:
+            contents = f.read()
+
+        # THEN
+        self.assertIn("807ad30a-73be-48d8", contents)
