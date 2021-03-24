@@ -202,7 +202,8 @@ class TestProcess(NgrokTestCase):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
         log_event_callback_mock = mock.MagicMock()
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config, log_event_callback=log_event_callback_mock, max_logs=5)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, log_event_callback=log_event_callback_mock,
+                                                max_logs=5)
 
         # WHEN
         ngrok.connect(pyngrok_config=pyngrok_config)
@@ -246,6 +247,25 @@ class TestProcess(NgrokTestCase):
         self.assertFalse(monitor_thread.is_alive())
         self.assertIsNone(ngrok_process._monitor_thread)
         self.assertTrue(ngrok_process.pyngrok_config.monitor_thread)
+
+    @mock.patch("subprocess.Popen")
+    def test_retry_session_connection_failure(self, mock_proc_readline):
+        # GIVEN
+        log_line = "lvl=eror msg=\"failed to reconnect session\" err=EOF"
+        mock_proc_readline.return_value.stdout.readline.side_effect = [log_line, log_line, log_line]
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, reconnect_session_retries=2)
+        self.given_ngrok_installed(pyngrok_config)
+
+        # WHEN
+        with self.assertRaises(PyngrokNgrokError) as cm:
+            process._start_process(pyngrok_config)
+
+        # THEN
+        self.assertIsNotNone(cm)
+        self.assertEqual(cm.exception.ngrok_logs[-1].msg, "failed to reconnect session")
+        self.assertEqual(cm.exception.ngrok_error, "EOF")
+        self.assertEqual(mock_proc_readline.call_count, 3)
+        self.assertEqual(len(process._current_processes.keys()), 0)
 
     ################################################################################
     # Tests below this point don't need to start a long-lived ngrok process, they

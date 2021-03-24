@@ -9,7 +9,8 @@ from urllib.request import urlopen
 import yaml
 
 from pyngrok import ngrok, process, installer
-from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
+from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError, \
+    PyngrokNgrokError
 from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
@@ -496,9 +497,16 @@ class TestNgrok(NgrokTestCase):
         with self.assertRaises(PyngrokSecurityError):
             ngrok.api_request("file:{}".format(__file__))
 
+    @mock.patch("pyngrok.process.capture_run_process")
+    def test_update(self, mock_capture_run_process):
+        ngrok.update(pyngrok_config=self.pyngrok_config)
+
+        self.assertEqual(mock_capture_run_process.call_count, 1)
+        self.assertEqual("update", mock_capture_run_process.call_args[0][1][0])
+
     def test_version(self):
         # WHEN
-        ngrok_version, pyngrok_version = ngrok.get_version()
+        ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=self.pyngrok_config)
 
         # THEN
         self.assertIsNotNone(ngrok_version)
@@ -512,3 +520,16 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertIn("807ad30a-73be-48d8", contents)
+
+    @mock.patch("subprocess.check_output")
+    def test_set_auth_token_fails(self, mock_check_output):
+        # GIVEN
+        error_msg = "An error occurred"
+        mock_check_output.return_value = error_msg
+
+        # WHEN
+        with self.assertRaises(PyngrokNgrokError) as cm:
+            ngrok.set_auth_token("807ad30a-73be-48d8", pyngrok_config=self.pyngrok_config)
+
+        # THEN
+        self.assertIn(": {}".format(error_msg), str(cm.exception))

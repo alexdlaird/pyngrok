@@ -73,7 +73,7 @@ class TestInstaller(NgrokTestCase):
             ngrok.connect(pyngrok_config=self.pyngrok_config)
 
         # THEN
-        self.assertEqual(mock_urlopen.call_count, 2)
+        self.assertEqual(mock_urlopen.call_count, 4)
         self.assertFalse(os.path.exists(conf.DEFAULT_NGROK_PATH))
 
     def test_download_file_security_error(self):

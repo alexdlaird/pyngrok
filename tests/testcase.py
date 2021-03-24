@@ -31,10 +31,14 @@ class NgrokTestCase(unittest.TestCase):
 
         conf.DEFAULT_NGROK_CONFIG_PATH = config_path
         self.pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
+                                            # When running parallel CI/CD tests against the same ngrok account, ngrok
+                                            # can start rejecting connections, which is easily mitigated with retries
+                                            # to ensure test stability
                                             reconnect_session_retries=10)
         conf.set_default(self.pyngrok_config)
 
-        installer.DEFAULT_RETRY_COUNT = 1
+        # ngrok's CDN can be flaky, so make sure its flakiness isn't reflect in our CI/CD test runs
+        installer.DEFAULT_RETRY_COUNT = 3
 
     def tearDown(self):
         for p in list(process._current_processes.values()):

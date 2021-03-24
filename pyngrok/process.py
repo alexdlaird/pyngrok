@@ -311,7 +311,7 @@ def kill_process(ngrok_path):
         try:
             ngrok_process.proc.kill()
             ngrok_process.proc.wait()
-        except OSError as e:
+        except OSError as e:  # pragma: no cover
             # If the process was already killed, nothing to do but cleanup state
             if e.errno != 3:
                 raise e
@@ -393,7 +393,7 @@ def _terminate_process(process):
 
     try:
         process.terminate()
-    except OSError:
+    except OSError:  # pragma: no cover
         logger.debug("ngrok process already terminated: {}".format(process.pid))
 
 
