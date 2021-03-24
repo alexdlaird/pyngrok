@@ -14,8 +14,8 @@ import yaml
 from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "5.0.0"
+__copyright__ = "Copyright 2021, Alex Laird"
+__version__ = "5.0.5"
 
 logger = logging.getLogger(__name__)
 
@@ -194,7 +194,7 @@ def _download_file(url, retries=0, **kwargs):
 
     :param url: The URL to download.
     :type url: str
-    :param retries: The number of retries to attempt, if download fails.
+    :param retries: The retry attempt index, if download fails.
     :type retries: int, optional
     :param kwargs: Remaining ``kwargs`` will be passed to :py:func:`urllib.request.urlopen`.
     :type kwargs: dict, optional
@@ -249,6 +249,7 @@ def _download_file(url, retries=0, **kwargs):
         return download_path
     except socket.timeout as e:
         if retries < DEFAULT_RETRY_COUNT:
+            logger.warning("ngrok download failed, retrying in 0.5 seconds ...")
             time.sleep(0.5)
 
             return _download_file(url, retries + 1, **kwargs)

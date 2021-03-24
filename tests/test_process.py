@@ -9,15 +9,14 @@ from pyngrok import process, installer, conf, ngrok
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokError
 from pyngrok.process import NgrokLog
-from tests.testcase import NgrokTestCase, retry_connection_reset
+from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2021, Alex Laird"
-__version__ = "5.0.4"
+__version__ = "5.0.5"
 
 
 class TestProcess(NgrokTestCase):
-    @retry_connection_reset()
     def test_terminate_process(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
@@ -33,7 +32,6 @@ class TestProcess(NgrokTestCase):
         self.assertIsNotNone(ngrok_process.proc.poll())
         self.assertFalse(monitor_thread.is_alive())
 
-    @retry_connection_reset()
     def test_start_process_port_in_use(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
@@ -71,7 +69,6 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assertNoZombies()
 
-    @retry_connection_reset()
     def test_process_external_kill(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
@@ -95,7 +92,6 @@ class TestProcess(NgrokTestCase):
         self.assertFalse(monitor_thread.is_alive())
         self.assertNoZombies()
 
-    @retry_connection_reset()
     def test_process_external_kill_get_process_restart(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
@@ -124,7 +120,6 @@ class TestProcess(NgrokTestCase):
             self.assertTrue(mock_atexit.called)
             self.assertNoZombies()
 
-    @retry_connection_reset()
     def test_multiple_processes_different_binaries(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
@@ -153,7 +148,6 @@ class TestProcess(NgrokTestCase):
         self.assertTrue(ngrok_process2._monitor_thread.is_alive())
         self.assertTrue(urlparse(ngrok_process2.api_url).port, "4041")
 
-    @retry_connection_reset()
     def test_multiple_processes_same_binary_fails(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
@@ -171,7 +165,6 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(ngrok_process1, process.get_process(self.pyngrok_config))
         self.assertEqual(len(process._current_processes.keys()), 1)
 
-    @retry_connection_reset()
     def test_process_logs(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
@@ -186,7 +179,6 @@ class TestProcess(NgrokTestCase):
             self.assertIsNotNone(log.msg)
 
     @mock.patch("subprocess.Popen")
-    @retry_connection_reset()
     def test_start_new_session(self, mock_popen):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
@@ -208,7 +200,6 @@ class TestProcess(NgrokTestCase):
         else:
             self.assertNotIn("start_new_session", mock_popen.call_args[1])
 
-    @retry_connection_reset()
     def test_log_event_callback_and_max_logs(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
@@ -225,7 +216,6 @@ class TestProcess(NgrokTestCase):
         self.assertGreater(log_event_callback_mock.call_count, len(ngrok_process.logs))
         self.assertEqual(len(ngrok_process.logs), 5)
 
-    @retry_connection_reset()
     def test_no_monitor_thread(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
@@ -238,7 +228,6 @@ class TestProcess(NgrokTestCase):
         # THEN
         self.assertIsNone(ngrok_process._monitor_thread)
 
-    @retry_connection_reset()
     def test_stop_monitor_thread(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)

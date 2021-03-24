@@ -2,7 +2,6 @@
 
 SHELL := /usr/bin/env bash
 PYTHON_BIN ?= python
-RACE_ITERATIONS ?= 100
 
 all: virtualenv install
 

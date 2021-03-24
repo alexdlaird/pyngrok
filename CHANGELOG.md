@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.0.4...HEAD)
+### Added
+- `reconnect_session_retries` is a new configuration parameter in `PyngrokConfig`, which determines the max number of times to retry establishing a new session with `ngrok` if the connection fails on startup.
+
 ### Fixed
 - Build improvements.
 
@@ -283,7 +286,7 @@ Python 2.7 support is still needed, pin `pyngrok>=4.1,<4.2`.
 ### Added
 - `api_url` variable to `NgrokProcess` class.
 - `startup_logs` variable to `NgrokProcess` class.
-- `startup_errors` variable to `NgrokProcess` class.
+- `startup_error` variable to `NgrokProcess` class.
 - `pyngrok` console alias that mirrors `ngrok`.
 - `pyngrok`'s version is now also reported alongside `ngrok`'s version when invoked via the console.
 

@@ -14,8 +14,8 @@ from pyngrok import conf, installer
 from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "5.0.0"
+__copyright__ = "Copyright 2021, Alex Laird"
+__version__ = "5.0.5"
 
 logger = logging.getLogger(__name__)
 ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))
@@ -397,13 +397,15 @@ def _terminate_process(process):
         logger.debug("ngrok process already terminated: {}".format(process.pid))
 
 
-def _start_process(pyngrok_config):
+def _start_process(pyngrok_config, retries=0):
     """
     Start a ``ngrok`` process with no tunnels. This will start the ``ngrok`` web interface, against
     which HTTP requests can be made to create, interact with, and destroy tunnels.
 
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary.
     :type pyngrok_config: PyngrokConfig
+    :param retries: The retry attempt index, if ``ngrok`` fails to establish the tunnel.
+    :type retries: int, optional
     :return: The ``ngrok`` process.
     :rtype: NgrokProcess
     """
@@ -460,9 +462,16 @@ def _start_process(pyngrok_config):
         kill_process(pyngrok_config.ngrok_path)
 
         if ngrok_process.startup_error is not None:
-            raise PyngrokNgrokError("The ngrok process errored on start: {}.".format(ngrok_process.startup_error),
-                                    ngrok_process.logs,
-                                    ngrok_process.startup_error)
+            if ngrok_process.logs[-1].msg == "failed to reconnect session" and \
+                    retries < pyngrok_config.reconnect_session_retries:
+                logger.warning("ngrok reset our connection, retrying in 0.5 seconds ...")
+                time.sleep(0.5)
+
+                return _start_process(pyngrok_config, retries + 1)
+            else:
+                raise PyngrokNgrokError("The ngrok process errored on start: {}.".format(ngrok_process.startup_error),
+                                        ngrok_process.logs,
+                                        ngrok_process.startup_error)
         else:
             raise PyngrokNgrokError("The ngrok process was unable to start.", ngrok_process.logs)
 

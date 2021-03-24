@@ -4,7 +4,7 @@ from unittest import mock
 
 from pyngrok import ngrok, installer, conf
 from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
-from tests.testcase import NgrokTestCase, retry_connection_reset
+from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2021, Alex Laird"
@@ -12,7 +12,6 @@ __version__ = "5.0.5"
 
 
 class TestInstaller(NgrokTestCase):
-    @retry_connection_reset()
     def test_installer(self):
         # GIVEN
         if os.path.exists(conf.DEFAULT_NGROK_PATH):
@@ -25,7 +24,6 @@ class TestInstaller(NgrokTestCase):
         # THEN
         self.assertTrue(os.path.exists(conf.DEFAULT_NGROK_PATH))
 
-    @retry_connection_reset()
     def test_config_provisioned(self):
         # GIVEN
         if os.path.exists(self.pyngrok_config.config_path):
@@ -37,6 +35,11 @@ class TestInstaller(NgrokTestCase):
 
         # THEN
         self.assertTrue(os.path.exists(self.pyngrok_config.config_path))
+
+    ################################################################################
+    # Tests below this point don't need to start a long-lived ngrok process, they
+    # are asserting on pyngrok-specific code or edge cases.
+    ################################################################################
 
     @mock.patch("pyngrok.installer.urlopen")
     def test_installer_download_fails(self, mock_urlopen):
