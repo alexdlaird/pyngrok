@@ -4,14 +4,15 @@ from unittest import mock
 
 from pyngrok import ngrok, installer, conf
 from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
-from tests.testcase import NgrokTestCase
+from tests.testcase import NgrokTestCase, retry_connection_reset
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "5.0.0"
+__copyright__ = "Copyright 2021, Alex Laird"
+__version__ = "5.0.5"
 
 
 class TestInstaller(NgrokTestCase):
+    @retry_connection_reset()
     def test_installer(self):
         # GIVEN
         if os.path.exists(conf.DEFAULT_NGROK_PATH):
@@ -24,6 +25,7 @@ class TestInstaller(NgrokTestCase):
         # THEN
         self.assertTrue(os.path.exists(conf.DEFAULT_NGROK_PATH))
 
+    @retry_connection_reset()
     def test_config_provisioned(self):
         # GIVEN
         if os.path.exists(self.pyngrok_config.config_path):
