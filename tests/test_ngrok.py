@@ -8,8 +8,7 @@ from urllib.request import urlopen
 
 import yaml
 
-from pyngrok import ngrok, process, conf, installer
-from pyngrok.conf import PyngrokConfig
+from pyngrok import ngrok, process, installer
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
 from tests.testcase import NgrokTestCase
 
@@ -257,9 +256,8 @@ class TestNgrok(NgrokTestCase):
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        subdomain = self.get_unique_subdomain()
-        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
-                                       auth_token=os.environ["NGROK_AUTHTOKEN"], region="au")
+        subdomain = self.create_unique_subdomain()
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, auth_token=os.environ["NGROK_AUTHTOKEN"], region="au")
 
         # WHEN
         ngrok_tunnel = ngrok.connect(5000, "tcp", subdomain=subdomain, pyngrok_config=pyngrok_config)
@@ -281,9 +279,8 @@ class TestNgrok(NgrokTestCase):
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        subdomain = self.get_unique_subdomain()
-        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
-                                       auth_token=os.environ["NGROK_AUTHTOKEN"], region="au")
+        subdomain = self.create_unique_subdomain()
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, auth_token=os.environ["NGROK_AUTHTOKEN"], region="au")
 
         # WHEN
         url = ngrok.connect(5000, subdomain=subdomain, pyngrok_config=pyngrok_config).public_url
@@ -305,8 +302,7 @@ class TestNgrok(NgrokTestCase):
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
-                                       auth_token=os.environ["NGROK_AUTHTOKEN"])
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, auth_token=os.environ["NGROK_AUTHTOKEN"])
 
         # WHEN
         ngrok_tunnel = ngrok.connect("file:///", pyngrok_config=pyngrok_config)
@@ -332,8 +328,7 @@ class TestNgrok(NgrokTestCase):
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
-                                       auth_token=os.environ["NGROK_AUTHTOKEN"])
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, auth_token=os.environ["NGROK_AUTHTOKEN"])
         url = ngrok.connect("file:///", pyngrok_config=pyngrok_config).public_url
         time.sleep(1)
 
@@ -352,8 +347,7 @@ class TestNgrok(NgrokTestCase):
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
-                                       auth_token=os.environ["NGROK_AUTHTOKEN"])
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, auth_token=os.environ["NGROK_AUTHTOKEN"])
         ngrok_tunnel = ngrok.connect("file:///", pyngrok_config=pyngrok_config)
         time.sleep(1)
         api_url = ngrok.get_ngrok_process(pyngrok_config).api_url
@@ -387,7 +381,7 @@ class TestNgrok(NgrokTestCase):
         if "NGROK_AUTHTOKEN" not in os.environ:
             self.skipTest("NGROK_AUTHTOKEN environment variable not set")
 
-        subdomain = self.get_unique_subdomain()
+        subdomain = self.create_unique_subdomain()
 
         # GIVEN
         config = {
@@ -405,8 +399,7 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config2.yml")
         installer.install_default_config(config_path, config)
-        pyngrok_config = PyngrokConfig(config_path=config_path,
-                                       auth_token=os.environ["NGROK_AUTHTOKEN"])
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, auth_token=os.environ["NGROK_AUTHTOKEN"])
 
         # WHEN
         http_tunnel = ngrok.connect(name="http-tunnel", pyngrok_config=pyngrok_config)
@@ -429,7 +422,7 @@ class TestNgrok(NgrokTestCase):
         if "NGROK_AUTHTOKEN" not in os.environ:
             self.skipTest("NGROK_AUTHTOKEN environment variable not set")
 
-        subdomain = self.get_unique_subdomain()
+        subdomain = self.create_unique_subdomain()
 
         # GIVEN
         config = {
@@ -443,9 +436,8 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config2.yml")
         installer.install_default_config(config_path, config)
-        subdomain = self.get_unique_subdomain()
-        pyngrok_config = PyngrokConfig(config_path=config_path,
-                                       auth_token=os.environ["NGROK_AUTHTOKEN"])
+        subdomain = self.create_unique_subdomain()
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, auth_token=os.environ["NGROK_AUTHTOKEN"])
 
         # WHEN
         ngrok_tunnel1 = ngrok.connect(pyngrok_config=pyngrok_config)

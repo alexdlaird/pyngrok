@@ -6,7 +6,6 @@ from urllib.parse import urlparse
 from urllib.request import urlopen
 
 from pyngrok import process, installer, conf, ngrok
-from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokError
 from pyngrok.process import NgrokLog
 from tests.testcase import NgrokTestCase
@@ -42,11 +41,11 @@ class TestProcess(NgrokTestCase):
         self.assertTrue(ngrok_process._monitor_thread.is_alive())
 
         ngrok_path2 = os.path.join(conf.BIN_DIR, "2", installer.get_ngrok_bin())
-        pyngrok_config2 = PyngrokConfig(ngrok_path=ngrok_path2)
+        pyngrok_config2 = self.copy_with_updates(self.pyngrok_config, ngrok_path=ngrok_path2)
         self.given_ngrok_installed(pyngrok_config2)
         config_path2 = os.path.join(self.config_dir, "config2.yml")
         installer.install_default_config(config_path2, {"web_addr": ngrok_process.api_url.lstrip("http://")})
-        pyngrok_config2 = PyngrokConfig(ngrok_path=ngrok_path2, config_path=config_path2)
+        pyngrok_config2 = self.copy_with_updates(self.pyngrok_config, config_path=config_path2, ngrok_path=ngrok_path2)
 
         error = None
         retries = 0
@@ -127,11 +126,11 @@ class TestProcess(NgrokTestCase):
         installer.install_default_config(self.pyngrok_config.config_path, {"web_addr": "localhost:4040"})
 
         ngrok_path2 = os.path.join(conf.BIN_DIR, "2", installer.get_ngrok_bin())
-        pyngrok_config2 = PyngrokConfig(ngrok_path=ngrok_path2)
+        pyngrok_config2 = self.copy_with_updates(self.pyngrok_config, ngrok_path=ngrok_path2)
         self.given_ngrok_installed(pyngrok_config2)
         config_path2 = os.path.join(self.config_dir, "config2.yml")
         installer.install_default_config(config_path2, {"web_addr": "localhost:4041"})
-        pyngrok_config2 = PyngrokConfig(ngrok_path=ngrok_path2, config_path=config_path2)
+        pyngrok_config2 = self.copy_with_updates(self.pyngrok_config, config_path=config_path2, ngrok_path=ngrok_path2)
 
         # WHEN
         ngrok_process1 = process._start_process(self.pyngrok_config)
@@ -184,8 +183,7 @@ class TestProcess(NgrokTestCase):
         self.given_ngrok_installed(self.pyngrok_config)
 
         # WHEN
-        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
-                                       start_new_session=True)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, start_new_session=True)
         try:
             process._start_process(pyngrok_config=pyngrok_config)
         except TypeError:
@@ -204,8 +202,7 @@ class TestProcess(NgrokTestCase):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
         log_event_callback_mock = mock.MagicMock()
-        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
-                                       log_event_callback=log_event_callback_mock, max_logs=5)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, log_event_callback=log_event_callback_mock, max_logs=5)
 
         # WHEN
         ngrok.connect(pyngrok_config=pyngrok_config)
@@ -219,7 +216,7 @@ class TestProcess(NgrokTestCase):
     def test_no_monitor_thread(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config)
-        pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH, monitor_thread=False)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, monitor_thread=False)
 
         # WHEN
         ngrok.connect(pyngrok_config=pyngrok_config)

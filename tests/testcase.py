@@ -5,9 +5,11 @@ import shutil
 import sys
 import unittest
 import uuid
+from copy import copy
 
 import psutil
 from psutil import AccessDenied, NoSuchProcess
+from pyngrok.conf import PyngrokConfig
 
 from pyngrok import ngrok, installer, conf
 from pyngrok import process
@@ -28,9 +30,9 @@ class NgrokTestCase(unittest.TestCase):
         config_path = os.path.join(self.config_dir, "config.yml")
 
         conf.DEFAULT_NGROK_CONFIG_PATH = config_path
-        self.pyngrok_config = conf.get_default()
-        self.pyngrok_config.config_path = conf.DEFAULT_NGROK_CONFIG_PATH
-        self.pyngrok_config.reconnect_session_retries = 10
+        self.pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
+                                            reconnect_session_retries=10)
+        conf.set_default(self.pyngrok_config)
 
         installer.DEFAULT_RETRY_COUNT = 1
 
@@ -56,6 +58,21 @@ class NgrokTestCase(unittest.TestCase):
         if os.path.exists(ngrok_path):
             os.remove(ngrok_path)
 
+    @staticmethod
+    def create_unique_subdomain():
+        return "pyngrok-{}-{}-{}-{}{}-tcp".format(uuid.uuid4(), platform.system(),
+                                                  platform.python_implementation(), sys.version_info[0],
+                                                  sys.version_info[1]).lower()
+
+    @staticmethod
+    def copy_with_updates(to_copy, **kwargs):
+        copied = copy(to_copy)
+
+        for key, value in kwargs.items():
+            copied.__setattr__(key, value)
+
+        return copied
+
     def assertNoZombies(self):
         try:
             self.assertEqual(0, len(
@@ -63,8 +80,3 @@ class NgrokTestCase(unittest.TestCase):
         except (AccessDenied, NoSuchProcess):
             # Some OSes are flaky on this assertion, but that isn't an indication anything is wrong, so pass
             pass
-
-    def get_unique_subdomain(self):
-        return "pyngrok-{}-{}-{}-{}{}-tcp".format(uuid.uuid4(), platform.system(),
-                                                  platform.python_implementation(), sys.version_info[0],
-                                                  sys.version_info[1]).lower()
