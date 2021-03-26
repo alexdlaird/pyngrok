@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.0.4...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.0.5...HEAD)
+
+## [5.0.5](https://github.com/alexdlaird/pyngrok/compare/5.0.4...5.0.5) - 2021-03-25
 ### Added
 - `reconnect_session_retries` is a new configuration parameter in `PyngrokConfig`, which determines the max number of times to retry establishing a new session with `ngrok` if the connection fails on startup.
 
