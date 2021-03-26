@@ -25,7 +25,7 @@ setup(
         pyngrok=pyngrok.ngrok:main
     """,
     include_package_data=True,
-    description="A Python wrapper for Ngrok.",
+    description="A Python wrapper for ngrok.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Alex Laird",
