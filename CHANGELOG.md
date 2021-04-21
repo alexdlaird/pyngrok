@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.0.5...HEAD)
 ### Fixed
+- Build improvements.
 - Documentation improvements.
 
 ## [5.0.5](https://github.com/alexdlaird/pyngrok/compare/5.0.4...5.0.5) - 2021-03-25
@@ -67,7 +68,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Removed
 - Support for Python 2.7. To use `pyngrok` with Python 2.7, pin `pyngrok>=4.1,<4.2`.
-- `return_ngrok_tunnel` from `ngrok.connect()`. The `kwarg` can still be passed, but it will do nothing, it now always uses the `True` behavior. 
+- `return_ngrok_tunnel` from `ngrok.connect()`. The `kwarg` can still be passed, but it will do nothing, it now always uses the `True` behavior.
 
 ## [4.2.2](https://github.com/alexdlaird/pyngrok/compare/4.1.16...4.2.2) - 2020-10-12
 
@@ -189,7 +190,7 @@ Python 2.7 support is still needed, pin `pyngrok>=4.1,<4.2`.
 - `PyngrokConfig`, which contains all of `pyngrok`'s configuration for interacting with the `ngrok` binary rather than passing these values around in an ever-growing list of `kwargs`. It is documented [here](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.conf.PyngrokConfig).
 - `log_event_callback` is a new configuration parameter in `PyngrokConfig`, a callback that will be invoked each time a `ngrok` log is emitted.
 - `monitor_thread` is a new configuration parameter in `PyngrokConfig` which determines whether `ngrok` should continue to be monitored (for logs, etc.) after it has finished starting. Defaults to `True`.
-- `startup_timeout` is a new configuration parameter in `PyngrokConfig`. 
+- `startup_timeout` is a new configuration parameter in `PyngrokConfig`.
 - `max_logs` is a new configuration parameter in `PyngrokConfig`.
 - `start_monitor_thread()` and `stop_monitor_thread()` to [NgrokProcess](https://pyngrok.readthedocs.io/en/4.0.0/api.html#pyngrok.process.NgrokProcess).
 
@@ -325,7 +326,7 @@ Python 2.7 support is still needed, pin `pyngrok>=4.1,<4.2`.
 ### Added
 - Configurable `timeout` parameter for `ngrok.connect()`, `ngrok.disconnect()`, and `ngrok.get_tunnels()` in [ngrok module](https://pyngrok.readthedocs.io/en/1.4.0/api.html#module-pyngrok.ngrok).
 - A changelog, code of conduct, and contributing guide.
-- A pull request template. 
+- A pull request template.
 - Documentation now builds and publishes to [pyngrok.readthedocs.io](https://pyngrok.readthedocs.io).
 - `proc` variable to `NgrokProcess`, which will replace `process` in the future due to module shadowing (`process` is still set for backwards compatibility, but it should no longer be relied upon as it will be removed in a future release).
 
