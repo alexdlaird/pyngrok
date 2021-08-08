@@ -15,14 +15,14 @@ from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, Py
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2021, Alex Laird"
-__version__ = "5.0.5"
+__version__ = "5.0.6"
 
 logger = logging.getLogger(__name__)
 
 CDN_URL_PREFIX = "https://bin.equinox.io/c/4VmDzA7iaHb/"
 PLATFORMS = {
     "darwin_x86_64": CDN_URL_PREFIX + "ngrok-stable-darwin-amd64.zip",
-    "darwin_i386": CDN_URL_PREFIX + "ngrok-stable-darwin-386.zip",
+    "darwin_x86_64_arm": CDN_URL_PREFIX + "ngrok-stable-darwin-arm64.zip",
     "windows_x86_64": CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
     "windows_i386": CDN_URL_PREFIX + "ngrok-stable-windows-386.zip",
     "linux_x86_64_arm": CDN_URL_PREFIX + "ngrok-stable-linux-arm64.zip",

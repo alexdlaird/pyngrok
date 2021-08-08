@@ -4,7 +4,7 @@ from setuptools import setup
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2021, Alex Laird"
-__version__ = "5.0.5"
+__version__ = "5.0.6"
 
 name = "pyngrok" if os.environ.get("BUILD_PACKAGE_AS_NGROK", "False") != "True" else "ngrok"
 
