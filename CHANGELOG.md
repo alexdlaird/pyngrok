@@ -3,7 +3,15 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.0.5...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.0.6...HEAD)
+
+## [5.0.6](https://github.com/alexdlaird/pyngrok/compare/5.0.5...5.0.6) - 2021-08-08
+### Added
+- Darwin 64-bit ARM support, as this was added to `ngrok` itself.
+
+### Removed
+- Darwin 386 support, as this was removed from `ngrok` itself.
+
 ### Fixed
 - Build improvements.
 - Documentation improvements.
