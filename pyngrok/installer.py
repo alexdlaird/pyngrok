@@ -149,7 +149,7 @@ def install_default_config(config_path, data=None):
 
     :param config_path: The path to where the ``ngrok`` config should be installed.
     :type config_path: str
-    :param data: A dictionary of things to added to the default config.
+    :param data: A dictionary of things to add to the default config.
     :type data: dict, optional
     """
     if data is None:
