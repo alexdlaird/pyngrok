@@ -29,7 +29,7 @@ class NgrokTunnel:
     :vartype data: dict
     :var name: The name of the tunnel.
     :vartype name: str
-    :var proto: A valid `tunnel protocol <https://ngrok.com/docs#tunnel-definitions>`_.
+    :var proto: The protocol of the tunnel.
     :vartype proto: str
     :var uri: The tunnel URI, a relative path that can be used to make requests to the ``ngrok`` web interface.
     :vartype uri: str
@@ -187,7 +187,7 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     :param addr: The local port to which the tunnel will forward traffic, or a
         `local directory or network address <https://ngrok.com/docs#http-file-urls>`_, defaults to "80".
     :type addr: str, optional
-    :param proto: The protocol to tunnel, defaults to "http".
+    :param proto: A valid `tunnel protocol <https://ngrok.com/docs#tunnel-definitions>`_, defaults to "http".
     :type proto: str, optional
     :param name: A friendly name for the tunnel, or the name of a `ngrok tunnel definition <https://ngrok.com/docs#tunnel-definitions>`_
         to be used.
