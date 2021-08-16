@@ -78,7 +78,7 @@ class NgrokProcess:
         elif self._line_has_error(log):
             self.startup_error = log.err
         else:
-            # Log `ngrok` startup states as they come in
+            # Log ngrok startup states as they come in
             if "starting web service" in log.msg and log.addr is not None:
                 self.api_url = "http://{}".format(log.addr)
             elif "tunnel session started" in log.msg:

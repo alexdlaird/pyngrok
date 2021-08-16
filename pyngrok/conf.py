@@ -48,7 +48,7 @@ class PyngrokConfig:
     :vartype auth_token: str
     :var region: The region in which ``ngrok`` should start.
     :vartype region: str
-    :var monitor_thread: Whether ``ngrok`` should continue to be monitored (for logs, etc.) after it startup
+    :var monitor_thread: Whether ``ngrok`` should continue to be monitored (for logs, etc.) after startup
         is complete.
     :vartype monitor_thread: bool
     :var log_event_callback: A callback that will be invoked each time ``ngrok`` emits a log. ``monitor_thread``
