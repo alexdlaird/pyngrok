@@ -10,7 +10,6 @@ jobs:
 
     env:
       NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-      NGROK_SUBDOMAIN: ${{ secrets.NGROK_SUBDOMAIN }}
 
     runs-on: ubuntu-latest
 
