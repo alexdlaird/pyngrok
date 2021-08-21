@@ -251,9 +251,9 @@ class TestProcess(NgrokTestCase):
     @mock.patch("subprocess.Popen")
     def test_retry_session_connection_failure(self, mock_proc_readline):
         # GIVEN
-        log_line = "lvl=eror msg=\"failed to reconnect session\" err=EOF"
+        log_line = "lvl=eror msg=\"some error\" err=EOF"
         mock_proc_readline.return_value.stdout.readline.side_effect = [log_line, log_line, log_line]
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config, reconnect_session_retries=2)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config)
         self.given_ngrok_installed(pyngrok_config)
 
         # WHEN
@@ -262,9 +262,9 @@ class TestProcess(NgrokTestCase):
 
         # THEN
         self.assertIsNotNone(cm)
-        self.assertEqual(cm.exception.ngrok_logs[-1].msg, "failed to reconnect session")
+        self.assertEqual(cm.exception.ngrok_logs[-1].msg, "some error")
         self.assertEqual(cm.exception.ngrok_error, "EOF")
-        self.assertEqual(mock_proc_readline.call_count, 3)
+        self.assertEqual(mock_proc_readline.call_count, 1)
         self.assertEqual(len(process._current_processes.keys()), 0)
 
     ################################################################################

@@ -134,7 +134,7 @@ class NgrokProcess:
         if response.getcode() != HTTPStatus.OK:
             return False
 
-        return self.proc.poll() is None and self.startup_error is None
+        return self.proc.poll() is None
 
     def _monitor_process(self):
         thread = threading.current_thread()
@@ -397,15 +397,13 @@ def _terminate_process(process):
         logger.debug("ngrok process already terminated: {}".format(process.pid))
 
 
-def _start_process(pyngrok_config, retries=0):
+def _start_process(pyngrok_config):
     """
     Start a ``ngrok`` process with no tunnels. This will start the ``ngrok`` web interface, against
     which HTTP requests can be made to create, interact with, and destroy tunnels.
 
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary.
     :type pyngrok_config: PyngrokConfig
-    :param retries: The retry attempt index, if ``ngrok`` fails to establish the tunnel.
-    :type retries: int, optional
     :return: The ``ngrok`` process.
     :rtype: NgrokProcess
     """
@@ -449,12 +447,13 @@ def _start_process(pyngrok_config, retries=0):
         if ngrok_process.healthy():
             logger.debug("ngrok process has started with API URL: {}".format(ngrok_process.api_url))
 
+            ngrok_process.startup_error = None
+
             if pyngrok_config.monitor_thread:
                 ngrok_process.start_monitor_thread()
 
             break
-        elif ngrok_process.startup_error is not None or \
-                ngrok_process.proc.poll() is not None:
+        elif ngrok_process.proc.poll() is not None:
             break
 
     if not ngrok_process.healthy():
@@ -462,16 +461,9 @@ def _start_process(pyngrok_config, retries=0):
         kill_process(pyngrok_config.ngrok_path)
 
         if ngrok_process.startup_error is not None:
-            if ngrok_process.logs[-1].msg == "failed to reconnect session" and \
-                    retries < pyngrok_config.reconnect_session_retries:
-                logger.warning("ngrok reset our connection, retrying in 0.5 seconds ...")
-                time.sleep(0.5)
-
-                return _start_process(pyngrok_config, retries + 1)
-            else:
-                raise PyngrokNgrokError("The ngrok process errored on start: {}.".format(ngrok_process.startup_error),
-                                        ngrok_process.logs,
-                                        ngrok_process.startup_error)
+            raise PyngrokNgrokError("The ngrok process errored on start: {}.".format(ngrok_process.startup_error),
+                                    ngrok_process.logs,
+                                    ngrok_process.startup_error)
         else:
             raise PyngrokNgrokError("The ngrok process was unable to start.", ngrok_process.logs)
 

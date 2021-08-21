@@ -62,9 +62,6 @@ class PyngrokConfig:
     :vartype request_timeout: float
     :var start_new_session: Passed to :py:class:`subprocess.Popen` when launching ``ngrok``. (Python 3 and POSIX only)
     :vartype start_new_session: bool
-    :var reconnect_session_retries: The max number of times to retry establishing a new session with ``ngrok`` if the
-        connection fails on startup.
-    :vartype reconnect_session_retries: int
     """
 
     def __init__(self,
@@ -77,8 +74,7 @@ class PyngrokConfig:
                  startup_timeout=15,
                  max_logs=100,
                  request_timeout=4,
-                 start_new_session=False,
-                 reconnect_session_retries=0):
+                 start_new_session=False):
         self.ngrok_path = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
         self.config_path = DEFAULT_CONFIG_PATH if config_path is None else config_path
         self.auth_token = auth_token
@@ -89,7 +85,6 @@ class PyngrokConfig:
         self.max_logs = max_logs
         self.request_timeout = request_timeout
         self.start_new_session = start_new_session
-        self.reconnect_session_retries = reconnect_session_retries
 
 
 def get_default():
