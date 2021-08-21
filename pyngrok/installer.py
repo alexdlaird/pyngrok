@@ -124,7 +124,7 @@ def get_ngrok_config(config_path, use_cache=True):
 
     :param config_path: The ``ngrok`` config path to read.
     :type config_path: str
-    :param use_cache: Use the cached version of the cache (if populated).
+    :param use_cache: Use the cached version of the config (if populated).
     :type use_cache: bool
     :return: The ``ngrok`` config.
     :rtype: dict
