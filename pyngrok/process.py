@@ -77,7 +77,7 @@ class NgrokProcess:
             return
         elif self._line_has_error(log):
             self.startup_error = log.err
-        else:
+        elif log.msg:
             # Log ngrok startup states as they come in
             if "starting web service" in log.msg and log.addr is not None:
                 self.api_url = "http://{}".format(log.addr)
