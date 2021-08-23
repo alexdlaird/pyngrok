@@ -2,8 +2,8 @@
 Integration Examples
 ====================
 
-``pyngrok`` is useful in any number of integrations to let us test things locally without having to deploy,
-for instance to test locally without having to deploy or configure anything. Below are some common usage examples.
+``pyngrok`` is useful in any number of integrations, for instance to test locally without having to deploy or configure
+anything. Below are some common usage examples.
 
 Flask
 -----
