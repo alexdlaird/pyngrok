@@ -3,7 +3,12 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.0.6...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.1.0...HEAD)
+
+## [5.0.6](https://github.com/alexdlaird/pyngrok/compare/5.0.6...5.1.0) - 2021-08-24
+### Removed
+- `reconnect_session_retries` from `JavaNgrokConfig`, instead relying on `ngrok`'s own built-in retry mechanism on startup fails.
+
 ### Fixed
 - Logging improvements.
 - Documentation improvements.

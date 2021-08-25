@@ -14,7 +14,7 @@ from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, Pyngr
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2021, Alex Laird"
-__version__ = "5.0.6"
+__version__ = "5.1.0"
 
 logger = logging.getLogger(__name__)
 
