@@ -32,7 +32,7 @@ jobs:
           - python-version: 3.8
             os: ubuntu-latest
           - python-version: 3.9
-              os: ubuntu-latest
+            os: ubuntu-latest
           - python-version: pypy3
             os: ubuntu-latest
 
