@@ -6,6 +6,7 @@ import sys
 import tempfile
 import time
 import zipfile
+import ssl
 from http import HTTPStatus
 from urllib.request import urlopen
 
@@ -212,7 +213,7 @@ def _download_file(url, retries=0, **kwargs):
         logger.debug("Download ngrok from {} ...".format(url))
 
         local_filename = url.split("/")[-1]
-        response = urlopen(url, **kwargs)
+        response = urlopen(url, context=ssl.SSLContext(), **kwargs)
 
         status_code = response.getcode()
 
