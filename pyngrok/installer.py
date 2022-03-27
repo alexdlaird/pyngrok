@@ -19,19 +19,19 @@ __version__ = "5.1.0"
 
 logger = logging.getLogger(__name__)
 
-CDN_URL_PREFIX = "https://bin.equinox.io/c/4VmDzA7iaHb/"
+CDN_URL_PREFIX = "https://bin.equinox.io/c/bNyj1mQVY4c/"
 PLATFORMS = {
-    "darwin_x86_64": CDN_URL_PREFIX + "ngrok-stable-darwin-amd64.zip",
-    "darwin_x86_64_arm": CDN_URL_PREFIX + "ngrok-stable-darwin-arm64.zip",
-    "windows_x86_64": CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
-    "windows_i386": CDN_URL_PREFIX + "ngrok-stable-windows-386.zip",
-    "linux_x86_64_arm": CDN_URL_PREFIX + "ngrok-stable-linux-arm64.zip",
-    "linux_i386_arm": CDN_URL_PREFIX + "ngrok-stable-linux-arm.zip",
-    "linux_i386": CDN_URL_PREFIX + "ngrok-stable-linux-386.zip",
-    "linux_x86_64": CDN_URL_PREFIX + "ngrok-stable-linux-amd64.zip",
-    "freebsd_x86_64": CDN_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip",
-    "freebsd_i386": CDN_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
-    "cygwin_x86_64": CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
+    "darwin_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-darwin-amd64.zip",
+    "darwin_x86_64_arm": CDN_URL_PREFIX + "ngrok-v3-stable-darwin-arm64.zip",
+    "windows_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-windows-amd64.zip",
+    "windows_i386": CDN_URL_PREFIX + "ngrok-v3-stable-windows-386.zip",
+    "linux_x86_64_arm": CDN_URL_PREFIX + "ngrok-v3-stable-linux-arm64.zip",
+    "linux_i386_arm": CDN_URL_PREFIX + "ngrok-v3-stable-linux-arm.zip",
+    "linux_i386": CDN_URL_PREFIX + "ngrok-v3-stable-linux-386.zip",
+    "linux_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-linux-amd64.zip",
+    "freebsd_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-freebsd-amd64.zip",
+    "freebsd_i386": CDN_URL_PREFIX + "ngrok-v3-stable-freebsd-386.zip",
+    "cygwin_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-windows-amd64.zip",
 }
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
