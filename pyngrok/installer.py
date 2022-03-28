@@ -154,6 +154,10 @@ def install_default_config(config_path, data=None):
     """
     if data is None:
         data = {}
+    if "version" not in data:
+        data["version"] = "2"
+    if "region" not in data:
+        data["region"] = "us"
 
     config_dir = os.path.dirname(config_path)
     if not os.path.exists(config_dir):
