@@ -1,4 +1,5 @@
 import os
+import platform
 
 from pyngrok.installer import get_ngrok_bin
 
@@ -10,7 +11,12 @@ BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
 DEFAULT_CONFIG_PATH = None
 
-DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ngrok.yml")
+system = platform.system()
+
+if system == 'Darwin':
+    DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), "Library/Application Support/ngrok/ngrok.yml")
+else:
+    DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ngrok.yml")
 
 _default_pyngrok_config = None
 
