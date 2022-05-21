@@ -13,7 +13,7 @@ from pyngrok import process, conf, installer
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2021, Alex Laird"
+__copyright__ = "Copyright 2022, Alex Laird"
 __version__ = "5.1.0"
 
 logger = logging.getLogger(__name__)
@@ -256,7 +256,7 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
                                      timeout=pyngrok_config.request_timeout),
                          pyngrok_config, api_url)
 
-    if proto == "http" and options.get("bind_tls", "both") == "both":
+    if proto == "http" and options.get("scheme", "both") == "both":
         tunnel = NgrokTunnel(api_request("{}{}%20%28http%29".format(api_url, tunnel.uri), method="GET",
                                          timeout=pyngrok_config.request_timeout),
                              pyngrok_config, api_url)
