@@ -49,9 +49,6 @@ or ``conda``:
 That's it! ``pyngrok`` is now available `as a package to our Python projects <#open-a-tunnel>`_,
 and ``ngrok`` is now available `from the command line <#command-line-usage>`_.
 
-``ngrok`` Versions
-==================
-
 Open a Tunnel
 =============
 
