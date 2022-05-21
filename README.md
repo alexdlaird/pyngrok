@@ -66,6 +66,11 @@ For details on how to fully leverage `ngrok` from the command line, see [ngrok's
 
 For more advanced usage, `pyngrok`'s official documentation is available at [http://pyngrok.readthedocs.io](http://pyngrok.readthedocs.io).
 
+### `ngrok` Version Compatibility
+
+`pyngrok` is compatible with `ngrok` 2.x. If you use `pyngrok` to manage the `ngrok` binary, there will
+be no issues. But when providing your own binary, or when referencing `ngrok` documentation, ensure it is 2.x.
+
 ### Python 2.7
 
 The last version of `pyngrok` that supports Python 2.7 is 4.1.x, so we need to pin `pyngrok>=4.1,<4.2` if we still want

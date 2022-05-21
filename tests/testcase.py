@@ -15,7 +15,7 @@ from pyngrok import ngrok, installer, conf
 from pyngrok import process
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2021, Alex Laird"
+__copyright__ = "Copyright 2022, Alex Laird"
 __version__ = "5.1.0"
 
 logger = logging.getLogger(__name__)

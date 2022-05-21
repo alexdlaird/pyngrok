@@ -14,7 +14,7 @@ import yaml
 from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2021, Alex Laird"
+__copyright__ = "Copyright 2022, Alex Laird"
 __version__ = "5.1.0"
 
 logger = logging.getLogger(__name__)

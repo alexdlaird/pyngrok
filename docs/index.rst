@@ -49,6 +49,9 @@ or ``conda``:
 That's it! ``pyngrok`` is now available `as a package to our Python projects <#open-a-tunnel>`_,
 and ``ngrok`` is now available `from the command line <#command-line-usage>`_.
 
+``ngrok`` Versions
+==================
+
 Open a Tunnel
 =============
 
@@ -333,8 +336,8 @@ folder. We can override this behavior by updating our default :class:`~pyngrok.c
 Binary Path
 -----------
 
-The ``pyngrok`` package manages its own ``ngrok`` binary. We can use our ``ngrok`` binary if we
-want by updating the default :class:`~pyngrok.conf.PyngrokConfig`:
+The ``pyngrok`` package manages its own ``ngrok`` binary, and is compatible with ``ngrok`` 2.x. We can
+use our ``ngrok`` binary if we want by updating the default :class:`~pyngrok.conf.PyngrokConfig`:
 
 .. code-block:: python
 
@@ -356,6 +359,12 @@ available on the command line.
     ngrok http 80
 
 For details on how to fully leverage ``ngrok`` from the command line, see `ngrok's official documentation <https://ngrok.com/docs>`_.
+
+``ngrok`` Version Compatibility
+===============================
+
+`pyngrok` is compatible with `ngrok` 2.x. If you use `pyngrok` to manage the `ngrok` binary, there will
+be no issues. But when providing your own binary, or when referencing `ngrok` documentation, ensure it is 2.x.
 
 Python 2.7
 ==========

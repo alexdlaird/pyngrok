@@ -14,7 +14,7 @@ from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, Pyngr
 from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2021, Alex Laird"
+__copyright__ = "Copyright 2022, Alex Laird"
 __version__ = "5.1.0"
 
 
