@@ -2,6 +2,8 @@ import logging
 import os
 import platform
 import shutil
+from random import randint
+
 import sys
 import unittest
 import uuid
@@ -60,7 +62,7 @@ class NgrokTestCase(unittest.TestCase):
 
     @staticmethod
     def create_unique_subdomain():
-        return "pyngrok-{}-{}-{}-{}{}-tcp".format(uuid.uuid4(), platform.system(),
+        return "pyngrok-{}-{}-{}-{}{}-tcp".format(randint(1000000000000000, 9999999999999999), platform.system(),
                                                   platform.python_implementation(), sys.version_info[0],
                                                   sys.version_info[1]).lower()
 
