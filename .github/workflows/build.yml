@@ -24,14 +24,14 @@ jobs:
         python-version: [ 3.9 ]
         include:
           - python-version: 3.5
-            os: ubuntu-latest
+            os: ubuntu-20.04
           - python-version: 3.6
-            os: ubuntu-latest
+            os: ubuntu-20.04
           - python-version: 3.7
             os: ubuntu-latest
           - python-version: 3.8
             os: ubuntu-latest
-          - python-version: pypy3
+          - python-version: pypy-3.7
             os: ubuntu-latest
 
     runs-on: ${{ matrix.os }}
