@@ -15,11 +15,12 @@ from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, Py
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "5.1.0"
+__version__ = "5.2.0"
 
 logger = logging.getLogger(__name__)
 
 CDN_URL_PREFIX = "https://bin.equinox.io/c/bNyj1mQVY4c/"
+CDN_V2_URL_PREFIX = "https://bin.equinox.io/c/4VmDzA7iaHb/"
 PLATFORMS = {
     "darwin_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-darwin-amd64.zip",
     "darwin_x86_64_arm": CDN_URL_PREFIX + "ngrok-v3-stable-darwin-arm64.zip",
@@ -33,6 +34,20 @@ PLATFORMS = {
     "freebsd_i386": CDN_URL_PREFIX + "ngrok-v3-stable-freebsd-386.zip",
     "cygwin_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-windows-amd64.zip",
 }
+PLATFORMS_V2 = {
+    "darwin_x86_64": CDN_V2_URL_PREFIX + "ngrok-stable-darwin-amd64.zip",
+    "darwin_x86_64_arm": CDN_V2_URL_PREFIX + "ngrok-stable-darwin-arm64.zip",
+    "windows_x86_64": CDN_V2_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
+    "windows_i386": CDN_V2_URL_PREFIX + "ngrok-stable-windows-386.zip",
+    "linux_x86_64_arm": CDN_V2_URL_PREFIX + "ngrok-stable-linux-arm64.zip",
+    "linux_i386_arm": CDN_V2_URL_PREFIX + "ngrok-stable-linux-arm.zip",
+    "linux_i386": CDN_V2_URL_PREFIX + "ngrok-stable-linux-386.zip",
+    "linux_x86_64": CDN_V2_URL_PREFIX + "ngrok-stable-linux-amd64.zip",
+    "freebsd_x86_64": CDN_V2_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip",
+    "freebsd_i386": CDN_V2_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
+    "cygwin_x86_64": CDN_V2_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
+}
+SUPPORTED_VERSIONS = ["2", "3"]
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
 
@@ -56,16 +71,23 @@ def get_ngrok_bin():
         raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
 
 
-def install_ngrok(ngrok_path, **kwargs):
+def install_ngrok(ngrok_path, version="3", **kwargs):
     """
     Download and install the latest ``ngrok`` for the current system, overwriting any existing contents
     at the given path.
 
     :param ngrok_path: The path to where the ``ngrok`` binary will be downloaded.
     :type ngrok_path: str
+    :var monitor_thread: Whether ``ngrok`` should continue to be monitored (for logs, etc.) after startup
+        is complete.
+    :param version: The version of ``ngrok` to be installed.
+    :type version: str
     :param kwargs: Remaining ``kwargs`` will be passed to :func:`_download_file`.
     :type kwargs: dict, optional
     """
+    if version not in SUPPORTED_VERSIONS:
+        raise PyngrokError("\"version\" must be a supported version: {}".format(SUPPORTED_VERSIONS))
+
     logger.debug(
         "Installing ngrok to {}{} ...".format(ngrok_path, ", overwriting" if os.path.exists(ngrok_path) else ""))
 
@@ -84,7 +106,10 @@ def install_ngrok(ngrok_path, **kwargs):
 
     plat = system + "_" + arch
     try:
-        url = PLATFORMS[plat]
+        if version == "3":
+            url = PLATFORMS[plat]
+        elif version == "2":
+            url = PLATFORMS_V2[plat]
 
         logger.debug("Platform to download: {}".format(plat))
     except KeyError:

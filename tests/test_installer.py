@@ -8,7 +8,7 @@ from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "5.0.5"
+__version__ = "5.2.0"
 
 
 class TestInstaller(NgrokTestCase):
@@ -20,9 +20,28 @@ class TestInstaller(NgrokTestCase):
 
         # WHEN
         ngrok.connect(pyngrok_config=self.pyngrok_config)
+        ngrok.kill(self.pyngrok_config)
+        ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=self.pyngrok_config)
 
         # THEN
         self.assertTrue(os.path.exists(conf.DEFAULT_NGROK_PATH))
+        self.assertTrue(ngrok_version.startswith("3"))
+
+    def test_installer_v2(self):
+        # GIVEN
+        if os.path.exists(conf.DEFAULT_NGROK_PATH):
+            os.remove(conf.DEFAULT_NGROK_PATH)
+        self.assertFalse(os.path.exists(conf.DEFAULT_NGROK_PATH))
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, ngrok_version="2")
+
+        # WHEN
+        ngrok.connect(pyngrok_config=pyngrok_config)
+        ngrok.kill(self.pyngrok_config)
+        ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=pyngrok_config)
+
+        # THEN
+        self.assertTrue(os.path.exists(conf.DEFAULT_NGROK_PATH))
+        self.assertTrue(ngrok_version.startswith("2"))
 
     def test_config_provisioned(self):
         # GIVEN

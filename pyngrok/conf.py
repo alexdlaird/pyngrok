@@ -4,7 +4,7 @@ from pyngrok.installer import get_ngrok_bin
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "5.1.0"
+__version__ = "5.2.0"
 
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
@@ -62,6 +62,8 @@ class PyngrokConfig:
     :vartype request_timeout: float
     :var start_new_session: Passed to :py:class:`subprocess.Popen` when launching ``ngrok``. (Python 3 and POSIX only)
     :vartype start_new_session: bool
+    :var ngrok_version: The version of ``ngrok`` to be installed.
+    :vartype ngrok_version: str
     """
 
     def __init__(self,
@@ -74,7 +76,8 @@ class PyngrokConfig:
                  startup_timeout=15,
                  max_logs=100,
                  request_timeout=4,
-                 start_new_session=False):
+                 start_new_session=False,
+                 ngrok_version="3"):
         self.ngrok_path = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
         self.config_path = DEFAULT_CONFIG_PATH if config_path is None else config_path
         self.auth_token = auth_token
@@ -85,6 +88,7 @@ class PyngrokConfig:
         self.max_logs = max_logs
         self.request_timeout = request_timeout
         self.start_new_session = start_new_session
+        self.ngrok_version = ngrok_version
 
 
 def get_default():

@@ -14,7 +14,7 @@ from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, Pyngr
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "5.1.0"
+__version__ = "5.2.0"
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +95,7 @@ def install_ngrok(pyngrok_config=None):
         pyngrok_config = conf.get_default()
 
     if not os.path.exists(pyngrok_config.ngrok_path):
-        installer.install_ngrok(pyngrok_config.ngrok_path)
+        installer.install_ngrok(pyngrok_config.ngrok_path, pyngrok_config.ngrok_version)
 
     # If no config_path is set, ngrok will use its default path
     if pyngrok_config.config_path is not None:
@@ -256,7 +256,7 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
                                      timeout=pyngrok_config.request_timeout),
                          pyngrok_config, api_url)
 
-    if proto == "http" and options.get("bind_tls", "both") == "both":
+    if proto == "http" and options.get("scheme", "https") == "both":
         tunnel = NgrokTunnel(api_request("{}{}%20%28http%29".format(api_url, tunnel.uri), method="GET",
                                          timeout=pyngrok_config.request_timeout),
                              pyngrok_config, api_url)

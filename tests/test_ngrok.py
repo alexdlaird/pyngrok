@@ -15,7 +15,7 @@ from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "5.1.0"
+__version__ = "5.2.0"
 
 
 class TestNgrok(NgrokTestCase):
@@ -42,6 +42,29 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         ngrok_tunnel = ngrok.connect(5000, pyngrok_config=self.pyngrok_config)
+        current_process = ngrok.get_ngrok_process()
+
+        # THEN
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
+        self.assertIsNotNone(current_process)
+        self.assertIsNone(current_process.proc.poll())
+        self.assertTrue(current_process._monitor_thread.is_alive())
+        self.assertTrue(ngrok_tunnel.name.startswith("http-5000-"))
+        self.assertEqual("https", ngrok_tunnel.proto)
+        self.assertEqual("http://localhost:5000", ngrok_tunnel.config["addr"])
+        self.assertIsNotNone(ngrok_tunnel.public_url)
+        self.assertIsNotNone(process.get_process(self.pyngrok_config))
+        self.assertIn('https://', ngrok_tunnel.public_url)
+        self.assertEqual(len(process._current_processes.keys()), 1)
+
+    def test_connect_v2(self):
+        # GIVEN
+        self.assertEqual(len(process._current_processes.keys()), 0)
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, ngrok_version="2")
+
+        # WHEN
+        ngrok_tunnel = ngrok.connect(5000, pyngrok_config=pyngrok_config)
         current_process = ngrok.get_ngrok_process()
 
         # THEN
