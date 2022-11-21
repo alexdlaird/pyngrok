@@ -73,11 +73,11 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNone(current_process.proc.poll())
         self.assertTrue(current_process._monitor_thread.is_alive())
         self.assertTrue(ngrok_tunnel.name.startswith("http-5000-"))
-        self.assertEqual("http", ngrok_tunnel.proto)
+        self.assertEqual("https", ngrok_tunnel.proto)
         self.assertEqual("http://localhost:5000", ngrok_tunnel.config["addr"])
         self.assertIsNotNone(ngrok_tunnel.public_url)
         self.assertIsNotNone(process.get_process(self.pyngrok_config))
-        self.assertIn('http://', ngrok_tunnel.public_url)
+        self.assertIn('https://', ngrok_tunnel.public_url)
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     def test_connect_name(self):
@@ -85,8 +85,8 @@ class TestNgrok(NgrokTestCase):
         ngrok_tunnel = ngrok.connect(name="my-tunnel", pyngrok_config=self.pyngrok_config)
 
         # THEN
-        self.assertEqual(ngrok_tunnel.name, "my-tunnel (http)")
-        self.assertEqual("http", ngrok_tunnel.proto)
+        self.assertEqual(ngrok_tunnel.name, "my-tunnel")
+        self.assertEqual("https", ngrok_tunnel.proto)
         self.assertEqual("http://localhost:80", ngrok_tunnel.config["addr"])
 
     def test_multiple_connections_no_token_fails(self):

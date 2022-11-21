@@ -256,7 +256,9 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
                                      timeout=pyngrok_config.request_timeout),
                          pyngrok_config, api_url)
 
-    if proto == "http" and options.get("scheme", "https") == "both":
+    scheme = "bind_tls" if pyngrok_config.ngrok_version == "2" else "scheme"
+    default_scheme = "both" if pyngrok_config.ngrok_version == "2" else "https"
+    if proto == "http" and options.get(scheme, "default_scheme") == "both":
         tunnel = NgrokTunnel(api_request("{}{}%20%28http%29".format(api_url, tunnel.uri), method="GET",
                                          timeout=pyngrok_config.request_timeout),
                              pyngrok_config, api_url)
