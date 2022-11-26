@@ -313,7 +313,7 @@ Here is an example starting ``ngrok`` in Australia, then opening a tunnel with s
 
     # <NgrokTunnel: "http://foo.au.ngrok.io" -> "http://localhost:80">
     ngrok_tunnel = ngrok.connect(subdomain="foo",
-                                 auth="username:password")
+                                 **{"basic-auth": "username:password"})
 
 Config File
 -----------

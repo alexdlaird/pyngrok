@@ -6,7 +6,6 @@ from random import randint
 
 import sys
 import unittest
-import uuid
 from copy import copy
 
 import psutil
@@ -18,7 +17,7 @@ from pyngrok import process
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "5.1.0"
+__version__ = "6.0.0"
 
 logger = logging.getLogger(__name__)
 ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))
@@ -30,10 +29,19 @@ class NgrokTestCase(unittest.TestCase):
         if not os.path.exists(self.config_dir):
             os.makedirs(self.config_dir)
         config_path = os.path.join(self.config_dir, "config.yml")
-
         conf.DEFAULT_NGROK_CONFIG_PATH = config_path
-        self.pyngrok_config = PyngrokConfig(config_path=conf.DEFAULT_NGROK_CONFIG_PATH)
+
+        ngrok_path_v3 = os.path.join(conf.BIN_DIR, "v3", installer.get_ngrok_bin())
+        self.pyngrok_config = PyngrokConfig(ngrok_path=ngrok_path_v3,
+                                            config_path=conf.DEFAULT_NGROK_CONFIG_PATH)
+
+        ngrok_path_v2 = os.path.join(conf.BIN_DIR, "v2", installer.get_ngrok_bin())
         conf.set_default(self.pyngrok_config)
+
+        self.pyngrok_config_ngrok_v2 = PyngrokConfig(
+            ngrok_path=ngrok_path_v2,
+            config_path=os.path.join(self.config_dir, "config_v2.yml"),
+            ngrok_version="v2")
 
         # ngrok's CDN can be flaky, so make sure its flakiness isn't reflect in our CI/CD test runs
         installer.DEFAULT_RETRY_COUNT = 3
@@ -56,9 +64,9 @@ class NgrokTestCase(unittest.TestCase):
         ngrok.install_ngrok(pyngrok_config)
 
     @staticmethod
-    def given_ngrok_not_installed(ngrok_path):
-        if os.path.exists(ngrok_path):
-            os.remove(ngrok_path)
+    def given_file_doesnt_exist(path):
+        if os.path.exists(path):
+            os.remove(path)
 
     @staticmethod
     def create_unique_subdomain():

@@ -15,7 +15,7 @@ from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, Py
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "5.2.0"
+__version__ = "6.0.0"
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ PLATFORMS_V2 = {
     "freebsd_i386": CDN_V2_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
     "cygwin_x86_64": CDN_V2_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
 }
-SUPPORTED_VERSIONS = ["2", "3"]
+SUPPORTED_NGROK_VERSIONS = ["v2", "v3"]
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
 
@@ -71,7 +71,7 @@ def get_ngrok_bin():
         raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
 
 
-def install_ngrok(ngrok_path, version="3", **kwargs):
+def install_ngrok(ngrok_path, ngrok_version="v3", **kwargs):
     """
     Download and install the latest ``ngrok`` for the current system, overwriting any existing contents
     at the given path.
@@ -80,13 +80,13 @@ def install_ngrok(ngrok_path, version="3", **kwargs):
     :type ngrok_path: str
     :var monitor_thread: Whether ``ngrok`` should continue to be monitored (for logs, etc.) after startup
         is complete.
-    :param version: The version of ``ngrok` to be installed.
-    :type version: str
+    :param ngrok_version: The major version of ``ngrok`` to be installed.
+    :type ngrok_version: str
     :param kwargs: Remaining ``kwargs`` will be passed to :func:`_download_file`.
     :type kwargs: dict, optional
     """
-    if version not in SUPPORTED_VERSIONS:
-        raise PyngrokError("\"version\" must be a supported version: {}".format(SUPPORTED_VERSIONS))
+    if ngrok_version not in SUPPORTED_NGROK_VERSIONS:
+        raise PyngrokError("\"ngrok_version\" must be a supported version: {}".format(SUPPORTED_NGROK_VERSIONS))
 
     logger.debug(
         "Installing ngrok to {}{} ...".format(ngrok_path, ", overwriting" if os.path.exists(ngrok_path) else ""))
@@ -106,10 +106,10 @@ def install_ngrok(ngrok_path, version="3", **kwargs):
 
     plat = system + "_" + arch
     try:
-        if version == "3":
-            url = PLATFORMS[plat]
-        elif version == "2":
+        if ngrok_version == "v2":
             url = PLATFORMS_V2[plat]
+        else:
+            url = PLATFORMS[plat]
 
         logger.debug("Platform to download: {}".format(plat))
     except KeyError:
