@@ -11,11 +11,13 @@ from urllib.request import Request, urlopen
 import yaml
 
 from pyngrok import conf, installer
-from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError
+from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError, PyngrokError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
 __version__ = "5.2.0"
+
+from pyngrok.installer import SUPPORTED_NGROK_VERSIONS
 
 logger = logging.getLogger(__name__)
 ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))
@@ -244,8 +246,11 @@ def set_auth_token(pyngrok_config, token):
     """
     if pyngrok_config.ngrok_version == "v2":
         start = [pyngrok_config.ngrok_path, "authtoken", token, "--log=stdout"]
-    else:
+    elif pyngrok_config.ngrok_version == "v3":
         start = [pyngrok_config.ngrok_path, "config", "add-authtoken", token, "--log=stdout"]
+    else:
+        raise PyngrokError("\"ngrok_version\" must be a supported version: {}".format(SUPPORTED_NGROK_VERSIONS))
+
     if pyngrok_config.config_path:
         logger.info("Updating authtoken for \"config_path\": {}".format(pyngrok_config.config_path))
         start.append("--config={}".format(pyngrok_config.config_path))

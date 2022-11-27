@@ -51,7 +51,7 @@ SUPPORTED_NGROK_VERSIONS = ["v2", "v3"]
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
 
-_config_cache = None
+_config_cache = {}
 _print_progress_enabled = True
 
 
@@ -83,9 +83,6 @@ def install_ngrok(ngrok_path, ngrok_version="v2", **kwargs):
     :param kwargs: Remaining ``kwargs`` will be passed to :func:`_download_file`.
     :type kwargs: dict, optional
     """
-    if ngrok_version not in SUPPORTED_NGROK_VERSIONS:
-        raise PyngrokError("\"ngrok_version\" must be a supported version: {}".format(SUPPORTED_NGROK_VERSIONS))
-
     logger.debug(
         "Installing ngrok to {}{} ...".format(ngrok_path, ", overwriting" if os.path.exists(ngrok_path) else ""))
 
@@ -106,8 +103,10 @@ def install_ngrok(ngrok_path, ngrok_version="v2", **kwargs):
     try:
         if ngrok_version == "v2":
             url = PLATFORMS_V2[plat]
-        else:
+        elif ngrok_version == "v3":
             url = PLATFORMS[plat]
+        else:
+            raise PyngrokError("\"ngrok_version\" must be a supported version: {}".format(SUPPORTED_NGROK_VERSIONS))
 
         logger.debug("Platform to download: {}".format(plat))
     except KeyError:
@@ -141,7 +140,7 @@ def _install_ngrok_zip(ngrok_path, zip_path):
     _clear_progress()
 
 
-def get_ngrok_config(config_path, use_cache=True):
+def get_ngrok_config(config_path, use_cache=True, ngrok_version="v2"):
     """
     Get the ``ngrok`` config from the given path.
 
@@ -149,20 +148,37 @@ def get_ngrok_config(config_path, use_cache=True):
     :type config_path: str
     :param use_cache: Use the cached version of the config (if populated).
     :type use_cache: bool
+    :param ngrok_version: The major version of ``ngrok`` installed.
+    :type ngrok_version: str, optional
     :return: The ``ngrok`` config.
     :rtype: dict
     """
-    global _config_cache
-
-    if not _config_cache or not use_cache:
+    if config_path not in _config_cache or not use_cache:
         with open(config_path, "r") as config_file:
             config = yaml.safe_load(config_file)
             if config is None:
-                config = {}
+                config = get_default_config(ngrok_version)
 
-        _config_cache = config
+        _config_cache[config_path] = config
 
-    return _config_cache
+    return _config_cache[config_path]
+
+
+def get_default_config(ngrok_version):
+    """
+    Get the default config params for the given major version of ``ngrok``.
+
+    :param ngrok_version: The major version of ``ngrok`` installed.
+    :type ngrok_version: str, optional
+    :return: The default config.
+    :rtype: dict
+    """
+    if ngrok_version == "v2":
+        return {}
+    elif ngrok_version == "v3":
+        return {"version": "2", "region": "us"}
+    else:
+        raise PyngrokError("\"ngrok_version\" must be a supported version: {}".format(SUPPORTED_NGROK_VERSIONS))
 
 
 def install_default_config(config_path, data=None, ngrok_version="v2"):
@@ -179,12 +195,8 @@ def install_default_config(config_path, data=None, ngrok_version="v2"):
     """
     if data is None:
         data = {}
-    if ngrok_version == "v3":
-        # These parameters are required for a valid ngrok v3 config file
-        if "version" not in data:
-            data["version"] = "2"
-        if "region" not in data:
-            data["region"] = "us"
+
+    data.update(get_default_config(ngrok_version))
 
     config_dir = os.path.dirname(config_path)
     if not os.path.exists(config_dir):

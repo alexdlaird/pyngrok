@@ -16,6 +16,8 @@ __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
 __version__ = "5.2.0"
 
+from pyngrok.installer import get_default_config
+
 logger = logging.getLogger(__name__)
 
 _current_tunnels = {}
@@ -214,7 +216,7 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     if os.path.exists(config_path):
         config = installer.get_ngrok_config(config_path)
     else:
-        config = {}
+        config = get_default_config(pyngrok_config.ngrok_version)
 
     # If a "pyngrok-default" tunnel definition exists in the ngrok config, use that
     tunnel_definitions = config.get("tunnels", {})
