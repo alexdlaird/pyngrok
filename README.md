@@ -66,6 +66,17 @@ For details on how to fully leverage `ngrok` from the command line, see [ngrok's
 
 For more advanced usage, `pyngrok`'s official documentation is available at [http://pyngrok.readthedocs.io](http://pyngrok.readthedocs.io).
 
+### `ngrok` Version Compatibility
+
+`pyngrok` is compatible with `ngrok` 2.x and 3.x, but by default it will install 2.x. To install 3.x instead,
+change ``ngrok_version``:
+
+```python
+from pyngrok import conf
+
+conf.get_default().ngrok_version = "v3"
+```
+
 ### Python 2.7
 
 The last version of `pyngrok` that supports Python 2.7 is 4.1.x, so we need to pin `pyngrok>=4.1,<4.2` if we still want
