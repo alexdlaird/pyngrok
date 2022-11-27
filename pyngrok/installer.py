@@ -78,10 +78,8 @@ def install_ngrok(ngrok_path, ngrok_version="v2", **kwargs):
 
     :param ngrok_path: The path to where the ``ngrok`` binary will be downloaded.
     :type ngrok_path: str
-    :var monitor_thread: Whether ``ngrok`` should continue to be monitored (for logs, etc.) after startup
-        is complete.
     :param ngrok_version: The major version of ``ngrok`` to be installed.
-    :type ngrok_version: str
+    :type ngrok_version: str, optional
     :param kwargs: Remaining ``kwargs`` will be passed to :func:`_download_file`.
     :type kwargs: dict, optional
     """
@@ -167,7 +165,7 @@ def get_ngrok_config(config_path, use_cache=True):
     return _config_cache
 
 
-def install_default_config(config_path, data=None):
+def install_default_config(config_path, data=None, ngrok_version="v2"):
     """
     Install the given data to the ``ngrok`` config. If a config is not already present for the given path, create one.
     Before saving new data to the default config, validate that they are compatible with ``pyngrok``.
@@ -176,14 +174,17 @@ def install_default_config(config_path, data=None):
     :type config_path: str
     :param data: A dictionary of things to add to the default config.
     :type data: dict, optional
+    :param ngrok_version: The major version of ``ngrok`` installed.
+    :type ngrok_version: str, optional
     """
     if data is None:
         data = {}
-    # These parameters are required for a valid ngrok v3 config file
-    if "version" not in data:
-        data["version"] = "2"
-    if "region" not in data:
-        data["region"] = "us"
+    if ngrok_version == "v3":
+        # These parameters are required for a valid ngrok v3 config file
+        if "version" not in data:
+            data["version"] = "2"
+        if "region" not in data:
+            data["region"] = "us"
 
     config_dir = os.path.dirname(config_path)
     if not os.path.exists(config_dir):

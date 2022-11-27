@@ -44,7 +44,8 @@ class TestProcess(NgrokTestCase):
         pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2, ngrok_path=ngrok_path_v2_2)
         self.given_ngrok_installed(pyngrok_config_v2_2)
         config_path_v2_2 = os.path.join(self.config_dir, "config_v2_2.yml")
-        installer.install_default_config(config_path_v2_2, {"web_addr": ngrok_process.api_url.lstrip("http://")})
+        installer.install_default_config(config_path_v2_2, {"web_addr": ngrok_process.api_url.lstrip("http://")},
+                                         ngrok_version="v2")
         pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2, config_path=config_path_v2_2,
                                                      ngrok_path=ngrok_path_v2_2)
 
@@ -82,7 +83,8 @@ class TestProcess(NgrokTestCase):
         pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3, ngrok_path=ngrok_path_v3_2)
         self.given_ngrok_installed(pyngrok_config_v3_2)
         config_path_v3_2 = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path_v3_2, {"web_addr": ngrok_process.api_url.lstrip("http://")})
+        installer.install_default_config(config_path_v3_2, {"web_addr": ngrok_process.api_url.lstrip("http://")},
+                                         ngrok_version="v3")
         pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path_v3_2,
                                                      ngrok_path=ngrok_path_v3_2)
 
@@ -164,7 +166,7 @@ class TestProcess(NgrokTestCase):
 
         self.given_ngrok_installed(self.pyngrok_config_v2)
         config_path_v2_1 = os.path.join(self.config_dir, "config_v2_1.yml")
-        installer.install_default_config(config_path_v2_1, {"web_addr": "localhost:4040"})
+        installer.install_default_config(config_path_v2_1, {"web_addr": "localhost:4040"}, ngrok_version="v2")
         pyngrok_config_v2_1 = self.copy_with_updates(self.pyngrok_config_v2, config_path=config_path_v2_1,
                                                      ngrok_path=self.pyngrok_config_v2.ngrok_path)
 
@@ -172,13 +174,13 @@ class TestProcess(NgrokTestCase):
         pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2, ngrok_path=ngrok_path_v2_2)
         self.given_ngrok_installed(pyngrok_config_v2_2)
         config_path_v2_2 = os.path.join(self.config_dir, "config_v2_2.yml")
-        installer.install_default_config(config_path_v2_2, {"web_addr": "localhost:4041"})
+        installer.install_default_config(config_path_v2_2, {"web_addr": "localhost:4041"}, ngrok_version="v2")
         pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2, config_path=config_path_v2_2,
                                                      ngrok_path=ngrok_path_v2_2)
 
         self.given_ngrok_installed(self.pyngrok_config_v3)
         config_path_v3_1 = os.path.join(self.config_dir, "config_v3_1.yml")
-        installer.install_default_config(config_path_v3_1, {"web_addr": "localhost:4042"})
+        installer.install_default_config(config_path_v3_1, {"web_addr": "localhost:4042"}, ngrok_version="v3")
         pyngrok_config_v3_1 = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path_v3_1,
                                                      ngrok_path=self.pyngrok_config_v3.ngrok_path)
 
@@ -186,7 +188,7 @@ class TestProcess(NgrokTestCase):
         pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3, ngrok_path=ngrok_path_v3_2)
         self.given_ngrok_installed(pyngrok_config_v3_2)
         config_path_v3_2 = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path_v3_2, {"web_addr": "localhost:4043"})
+        installer.install_default_config(config_path_v3_2, {"web_addr": "localhost:4043"}, ngrok_version="v3")
         pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path_v3_2,
                                                      ngrok_path=ngrok_path_v3_2)
 
