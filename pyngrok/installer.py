@@ -1,3 +1,4 @@
+import copy
 import logging
 import os
 import platform
@@ -195,6 +196,8 @@ def install_default_config(config_path, data=None, ngrok_version="v2"):
     """
     if data is None:
         data = {}
+    else:
+        data = copy.deepcopy(data)
 
     data.update(get_default_config(ngrok_version))
 
