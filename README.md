@@ -68,7 +68,7 @@ For more advanced usage, `pyngrok`'s official documentation is available at [htt
 
 ### `ngrok` Version Compatibility
 
-`pyngrok` is compatible with `ngrok` 2.x and 3.x, but by default it will install 2.x. To install 3.x instead,
+`pyngrok` is compatible with `ngrok` v2 and v3, but by default it will install 2.x. To install 3.x instead,
 change ``ngrok_version``:
 
 ```python
