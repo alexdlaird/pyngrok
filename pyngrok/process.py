@@ -15,7 +15,7 @@ from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "6.0.0"
+__version__ = "5.2.0"
 
 logger = logging.getLogger(__name__)
 ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))

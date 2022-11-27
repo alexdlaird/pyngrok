@@ -15,7 +15,7 @@ from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, Py
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "6.0.0"
+__version__ = "5.2.0"
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,7 @@ def get_ngrok_bin():
         raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
 
 
-def install_ngrok(ngrok_path, ngrok_version="v3", **kwargs):
+def install_ngrok(ngrok_path, ngrok_version="v2", **kwargs):
     """
     Download and install the latest ``ngrok`` for the current system, overwriting any existing contents
     at the given path.

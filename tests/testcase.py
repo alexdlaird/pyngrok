@@ -17,7 +17,7 @@ from pyngrok import process
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "6.0.0"
+__version__ = "5.2.0"
 
 logger = logging.getLogger(__name__)
 ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))
@@ -31,17 +31,18 @@ class NgrokTestCase(unittest.TestCase):
         config_path = os.path.join(self.config_dir, "config.yml")
         conf.DEFAULT_NGROK_CONFIG_PATH = config_path
 
-        ngrok_path_v3 = os.path.join(conf.BIN_DIR, "v3", installer.get_ngrok_bin())
-        self.pyngrok_config = PyngrokConfig(ngrok_path=ngrok_path_v3,
-                                            config_path=conf.DEFAULT_NGROK_CONFIG_PATH)
-
         ngrok_path_v2 = os.path.join(conf.BIN_DIR, "v2", installer.get_ngrok_bin())
-        conf.set_default(self.pyngrok_config)
-
-        self.pyngrok_config_ngrok_v2 = PyngrokConfig(
+        self.pyngrok_config_v2 = PyngrokConfig(
             ngrok_path=ngrok_path_v2,
             config_path=os.path.join(self.config_dir, "config_v2.yml"),
             ngrok_version="v2")
+
+        ngrok_path_v3 = os.path.join(conf.BIN_DIR, "v3", installer.get_ngrok_bin())
+        self.pyngrok_config_v3 = PyngrokConfig(ngrok_path=ngrok_path_v3,
+                                               config_path=conf.DEFAULT_NGROK_CONFIG_PATH,
+                                               ngrok_version="v3")
+
+        conf.set_default(self.pyngrok_config_v2)
 
         # ngrok's CDN can be flaky, so make sure its flakiness isn't reflect in our CI/CD test runs
         installer.DEFAULT_RETRY_COUNT = 3
