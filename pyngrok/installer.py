@@ -179,6 +179,7 @@ def install_default_config(config_path, data=None):
     """
     if data is None:
         data = {}
+    # These parameters are required for a valid ngrok v3 config file
     if "version" not in data:
         data["version"] = "2"
     if "region" not in data:

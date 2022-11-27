@@ -175,11 +175,14 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
 
+    ``pyngrok`` is compatible with ``ngrok`` 2.x and 3.x, but by default it will install 2.x. To install 3.x instead,
+    change ``ngrok_version`` in :class:`~pyngrok.conf.PyngrokConfig`'s:
+
     If ``ngrok`` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
 
     .. note::
-        ``ngrok``'s default behavior for ``http`` when no additional properties are passed is to open *two* tunnels,
+        ``ngrok`` v2's default behavior for ``http`` when no additional properties are passed is to open *two* tunnels,
         one ``http`` and one ``https``. This method will return a reference to the ``http`` tunnel in this case. If
         only a single tunnel is needed, pass ``bind_tls=True`` and a reference to the ``https`` tunnel will be returned.
 
@@ -200,11 +203,6 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     :return: The created ``ngrok`` tunnel.
     :rtype: NgrokTunnel
     """
-    if "schemes" in options and "bind_tls" in options:
-        raise PyngrokError(
-            "\"bind_tls\" and \"schemes\" cannot both be passed. Use \"bind_tls\" for ngrok v2, "
-            "otherwise use \"schemes\"")
-
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
@@ -251,6 +249,17 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
         "proto": proto
     }
     options.update(config)
+
+    # Upgrade legacy parameters, if present
+    if pyngrok_config.ngrok_version == "v3" and "bind_tls" in options:
+        if options.get("bind_tls") is True or options.get("bind_tls") == "true":
+            options["schemes"] = ["https"]
+        elif not options.get("bind_tls") is not False or options.get("bind_tls") == "false":
+            options["schemes"] = ["http"]
+        else:
+            options["schemes"] = ["http", "https"]
+
+        options.pop("bind_tls")
 
     api_url = get_ngrok_process(pyngrok_config).api_url
 

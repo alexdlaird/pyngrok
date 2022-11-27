@@ -226,7 +226,8 @@ The default ``pyngrok_config`` object can updated with our own object using :fun
     from pyngrok import conf
 
     pyngrok_config = conf.PyngrokConfig(log_event_callback=log_event_callback,
-                                        max_logs=10)
+                                        max_logs=10,
+                                        ngrok_version="v2")
     conf.set_default(pyngrok_config)
 
 
@@ -236,6 +237,15 @@ to pass in the config rather than updating the default as shown above.
 The ``pyngrok_config`` argument is only used when the ``ngrok`` process is first started, which will be
 the first time most methods in the :mod:`~pyngrok.ngrok` module are called. We can check if a process is already or
 still running by calling its :func:`~pyngrok.process.NgrokProcess.healthy` method.
+
+``pyngrok`` is compatible with ``ngrok`` 2.x and 3.x, but by default it will install 2.x. To install 3.x instead,
+change ``ngrok_version``:
+
+.. code-block:: python
+
+    from pyngrok import conf, ngrok
+
+    conf.get_default().ngrok_version = "v3"
 
 .. note::
 
@@ -313,7 +323,7 @@ Here is an example starting ``ngrok`` in Australia, then opening a tunnel with s
 
     # <NgrokTunnel: "http://foo.au.ngrok.io" -> "http://localhost:80">
     ngrok_tunnel = ngrok.connect(subdomain="foo",
-                                 **{"basic-auth": "username:password"})
+                                 auth="username:password")
 
 Config File
 -----------
