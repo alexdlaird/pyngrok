@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [5.2.0](https://github.com/alexdlaird/pyngrok/compare/5.1.0...5.2.0) - 2022-11-28
 ### Added
-- Support for `ngrok` v3 (v2 is still used by default)
+- Support for [`ngrok` v3](https://ngrok.com/docs/guides/upgrade-v2-v3) (v2 is still used by default).
 - Documentation and examples for using `pyngrok` with `ngrok` v3.
 
 ### Fixed
