@@ -177,8 +177,8 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
 
-    ``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install 2.x. To install 3.x instead,
-    change ``ngrok_version`` in :class:`~pyngrok.conf.PyngrokConfig`'s:
+    ``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install v2. To install v3 instead,
+    set ``ngrok_version`` in :class:`~pyngrok.conf.PyngrokConfig`:
 
     If ``ngrok`` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.

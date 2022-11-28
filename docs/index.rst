@@ -238,8 +238,8 @@ The ``pyngrok_config`` argument is only used when the ``ngrok`` process is first
 the first time most methods in the :mod:`~pyngrok.ngrok` module are called. We can check if a process is already or
 still running by calling its :func:`~pyngrok.process.NgrokProcess.healthy` method.
 
-``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install 2.x. To install 3.x instead,
-change ``ngrok_version``:
+``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install v2. To install v3 instead,
+set ``ngrok_version`` in :class:`~pyngrok.conf.PyngrokConfig`:
 
 .. code-block:: python
 
