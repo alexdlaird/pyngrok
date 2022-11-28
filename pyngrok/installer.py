@@ -20,33 +20,33 @@ __version__ = "5.2.0"
 
 logger = logging.getLogger(__name__)
 
-CDN_URL_PREFIX = "https://bin.equinox.io/c/bNyj1mQVY4c/"
-CDN_V2_URL_PREFIX = "https://bin.equinox.io/c/4VmDzA7iaHb/"
+CDN_URL_PREFIX = "https://bin.equinox.io/c/4VmDzA7iaHb/"
+CDN_V3_URL_PREFIX = "https://bin.equinox.io/c/bNyj1mQVY4c/"
 PLATFORMS = {
-    "darwin_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-darwin-amd64.zip",
-    "darwin_x86_64_arm": CDN_URL_PREFIX + "ngrok-v3-stable-darwin-arm64.zip",
-    "windows_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-windows-amd64.zip",
-    "windows_i386": CDN_URL_PREFIX + "ngrok-v3-stable-windows-386.zip",
-    "linux_x86_64_arm": CDN_URL_PREFIX + "ngrok-v3-stable-linux-arm64.zip",
-    "linux_i386_arm": CDN_URL_PREFIX + "ngrok-v3-stable-linux-arm.zip",
-    "linux_i386": CDN_URL_PREFIX + "ngrok-v3-stable-linux-386.zip",
-    "linux_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-linux-amd64.zip",
-    "freebsd_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-freebsd-amd64.zip",
-    "freebsd_i386": CDN_URL_PREFIX + "ngrok-v3-stable-freebsd-386.zip",
-    "cygwin_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-windows-amd64.zip",
+    "darwin_x86_64": CDN_URL_PREFIX + "ngrok-stable-darwin-amd64.zip",
+    "darwin_x86_64_arm": CDN_URL_PREFIX + "ngrok-stable-darwin-arm64.zip",
+    "windows_x86_64": CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
+    "windows_i386": CDN_URL_PREFIX + "ngrok-stable-windows-386.zip",
+    "linux_x86_64_arm": CDN_URL_PREFIX + "ngrok-stable-linux-arm64.zip",
+    "linux_i386_arm": CDN_URL_PREFIX + "ngrok-stable-linux-arm.zip",
+    "linux_i386": CDN_URL_PREFIX + "ngrok-stable-linux-386.zip",
+    "linux_x86_64": CDN_URL_PREFIX + "ngrok-stable-linux-amd64.zip",
+    "freebsd_x86_64": CDN_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip",
+    "freebsd_i386": CDN_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
+    "cygwin_x86_64": CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
 }
-PLATFORMS_V2 = {
-    "darwin_x86_64": CDN_V2_URL_PREFIX + "ngrok-stable-darwin-amd64.zip",
-    "darwin_x86_64_arm": CDN_V2_URL_PREFIX + "ngrok-stable-darwin-arm64.zip",
-    "windows_x86_64": CDN_V2_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
-    "windows_i386": CDN_V2_URL_PREFIX + "ngrok-stable-windows-386.zip",
-    "linux_x86_64_arm": CDN_V2_URL_PREFIX + "ngrok-stable-linux-arm64.zip",
-    "linux_i386_arm": CDN_V2_URL_PREFIX + "ngrok-stable-linux-arm.zip",
-    "linux_i386": CDN_V2_URL_PREFIX + "ngrok-stable-linux-386.zip",
-    "linux_x86_64": CDN_V2_URL_PREFIX + "ngrok-stable-linux-amd64.zip",
-    "freebsd_x86_64": CDN_V2_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip",
-    "freebsd_i386": CDN_V2_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
-    "cygwin_x86_64": CDN_V2_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
+PLATFORMS_V3 = {
+    "darwin_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-darwin-amd64.zip",
+    "darwin_x86_64_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-darwin-arm64.zip",
+    "windows_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-windows-amd64.zip",
+    "windows_i386": CDN_V3_URL_PREFIX + "ngrok-v3-stable-windows-386.zip",
+    "linux_x86_64_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-arm64.zip",
+    "linux_i386_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-arm.zip",
+    "linux_i386": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-386.zip",
+    "linux_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-amd64.zip",
+    "freebsd_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-amd64.zip",
+    "freebsd_i386": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-386.zip",
+    "cygwin_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-windows-amd64.zip",
 }
 SUPPORTED_NGROK_VERSIONS = ["v2", "v3"]
 DEFAULT_DOWNLOAD_TIMEOUT = 6
@@ -85,7 +85,7 @@ def install_ngrok(ngrok_path, ngrok_version="v2", **kwargs):
     :type kwargs: dict, optional
     """
     logger.debug(
-        "Installing ngrok to {}{} ...".format(ngrok_path, ", overwriting" if os.path.exists(ngrok_path) else ""))
+        "Installing ngrok {} to {}{} ...".format(ngrok_version, ngrok_path, ", overwriting" if os.path.exists(ngrok_path) else ""))
 
     ngrok_dir = os.path.dirname(ngrok_path)
 
@@ -103,9 +103,9 @@ def install_ngrok(ngrok_path, ngrok_version="v2", **kwargs):
     plat = system + "_" + arch
     try:
         if ngrok_version == "v2":
-            url = PLATFORMS_V2[plat]
-        elif ngrok_version == "v3":
             url = PLATFORMS[plat]
+        elif ngrok_version == "v3":
+            url = PLATFORMS_V3[plat]
         else:
             raise PyngrokError("\"ngrok_version\" must be a supported version: {}".format(SUPPORTED_NGROK_VERSIONS))
 

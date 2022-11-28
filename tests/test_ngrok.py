@@ -513,7 +513,6 @@ class TestNgrok(NgrokTestCase):
                 }
             }
         }
-        config.update(installer.get_default_config(self.pyngrok_config_v3.ngrok_version))
         config_path = os.path.join(self.config_dir, "config_v2_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v2")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2, config_path=config_path,
@@ -556,7 +555,6 @@ class TestNgrok(NgrokTestCase):
                 }
             }
         }
-        config.update(installer.get_default_config(self.pyngrok_config_v3.ngrok_version))
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
@@ -595,7 +593,6 @@ class TestNgrok(NgrokTestCase):
                 }
             }
         }
-        config.update(installer.get_default_config(self.pyngrok_config_v2.ngrok_version))
         config_path = os.path.join(self.config_dir, "config_v2_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v2")
         subdomain = self.create_unique_subdomain()
