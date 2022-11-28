@@ -184,6 +184,7 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     :class:`~pyngrok.conf.PyngrokConfig`.
 
     .. note::
+
         ``ngrok`` v2's default behavior for ``http`` when no additional properties are passed is to open *two* tunnels,
         one ``http`` and one ``https``. This method will return a reference to the ``http`` tunnel in this case. If
         only a single tunnel is needed, pass ``bind_tls=True`` and a reference to the ``https`` tunnel will be returned.
