@@ -28,6 +28,9 @@ test: install
 	@( \
 		source venv/bin/activate; \
 		coverage run -m unittest discover -b; \
+		coverage xml; \
+		coverage html; \
+		coverage report; \
 	)
 
 docs: install

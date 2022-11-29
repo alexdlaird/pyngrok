@@ -16,6 +16,9 @@ exclude_lines =
     if 0:
     if __name__ == .__main__.:
 
+[xml]
+output = _build/coverage/coverage.xml
+
 [html]
 title = pyngrok Coverage Report
 directory = _build/coverage
