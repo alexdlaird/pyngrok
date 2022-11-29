@@ -14,7 +14,7 @@ from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, Pyngr
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "5.2.0"
+__version__ = "5.2.1"
 
 from pyngrok.installer import get_default_config
 
