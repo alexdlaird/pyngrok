@@ -3,7 +3,14 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.2.0...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.2.1...HEAD)
+
+## [5.2.1](https://github.com/alexdlaird/pyngrok/compare/5.2.0...5.2.1) - 2022-11-29
+### Added
+- Support for Python 3.10 and 3.11.
+
+### Removed
+- Usage of [`nose`](https://nose.readthedocs.io/en/latest/) in testing in favor of [`unittest`](https://docs.python.org/3/library/unittest.html).
 
 ## [5.2.0](https://github.com/alexdlaird/pyngrok/compare/5.1.0...5.2.0) - 2022-11-28
 ### Added

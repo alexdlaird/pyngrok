@@ -1,4 +1,6 @@
 import os
+import unittest
+
 import time
 import uuid
 from http import HTTPStatus
@@ -15,7 +17,7 @@ from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "5.2.0"
+__version__ = "5.2.1"
 
 
 class TestNgrok(NgrokTestCase):
@@ -342,8 +344,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIn("timed out", cm.exception.reason)
 
     def test_regional_tcp_v2(self):
-        if "NGROK_AUTHTOKEN" not in os.environ:
-            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+        unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -366,8 +367,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     def test_regional_tcp_v3(self):
-        if "NGROK_AUTHTOKEN" not in os.environ:
-            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+        unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -389,8 +389,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     def test_regional_subdomain(self):
-        if "NGROK_AUTHTOKEN" not in os.environ:
-            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+        unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -413,8 +412,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     def test_connect_fileserver(self):
-        if "NGROK_AUTHTOKEN" not in os.environ:
-            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+        unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -439,8 +437,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     def test_disconnect_fileserver(self):
-        if "NGROK_AUTHTOKEN" not in os.environ:
-            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+        unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -458,8 +455,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(tunnels), 1)
 
     def test_get_tunnel_fileserver(self):
-        if "NGROK_AUTHTOKEN" not in os.environ:
-            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+        unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
 
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -494,8 +490,7 @@ class TestNgrok(NgrokTestCase):
         self.assertGreater(ngrok_tunnel.data["metrics"].get("http").get("count"), 0)
 
     def test_tunnel_definitions_v2(self):
-        if "NGROK_AUTHTOKEN" not in os.environ:
-            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+        unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
 
         subdomain = self.create_unique_subdomain()
 
@@ -536,8 +531,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(ssh_tunnel.public_url.startswith("tcp://"))
 
     def test_tunnel_definitions_v3(self):
-        if "NGROK_AUTHTOKEN" not in os.environ:
-            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+        unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
 
         subdomain = self.create_unique_subdomain()
 
@@ -578,8 +572,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(ssh_tunnel.public_url.startswith("tcp://"))
 
     def test_tunnel_definitions_pyngrok_default_with_overrides(self):
-        if "NGROK_AUTHTOKEN" not in os.environ:
-            self.skipTest("NGROK_AUTHTOKEN environment variable not set")
+        unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
 
         subdomain = self.create_unique_subdomain()
 
