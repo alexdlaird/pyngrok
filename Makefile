@@ -27,10 +27,7 @@ clean: nopyc
 test: install
 	@( \
 		source venv/bin/activate; \
-		coverage run -m unittest discover -b; \
-		coverage xml; \
-		coverage html; \
-		coverage report; \
+		python -m coverage run -m unittest discover -b && python -m coverage xml && python -m coverage html && python -m coverage report; \
 	)
 
 docs: install
