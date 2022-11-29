@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
-        python-version: [ 3.11 ]
+        python-version: [ "3.11" ]
         include:
           - python-version: "3.5"
             os: ubuntu-20.04
@@ -30,8 +30,6 @@ jobs:
           - python-version: "3.9"
             os: ubuntu-latest
           - python-version: "3.10"
-            os: ubuntu-latest
-          - python-version: "3.11"
             os: ubuntu-latest
           - python-version: "pypy-3.7"
             os: ubuntu-latest
