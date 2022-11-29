@@ -49,11 +49,7 @@ jobs:
           make install
       - name: Run tests
         run: |
-#          if [ "$RUNNER_OS" == "Windows" ]; then
-#            nosetests --traverse-namespace
-#          else
-           make test local
-#          fi
+          make test local
         shell: bash
       - name: Upload coverage
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
