@@ -140,4 +140,4 @@ via a web browser. If so, this at least means ``ngrok`` is able to start before 
 ---------------------------
 
 Familiarize yourself with the `ngrok documentation <https://ngrok.com/docs>`_, especially the sections pertaining to
-`the config file <https://ngrok.com/docs#config>`_ and `the client API <https://ngrok.com/docs#client-api>`_.
+`the config file <https://ngrok.com/docs/ngrok-agent/config>`_ and `the client API <https://ngrok.com/docs/ngrok-agent/api>`_.
