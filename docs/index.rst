@@ -72,7 +72,7 @@ additional properties that are `supported by ngrok <https://ngrok.com/docs/ngrok
 
 .. note::
 
-    ``ngrok``'s default behavior for ``http`` when no additional properties are passed is to open *two* tunnels,
+    ``ngrok`` v2's default behavior for ``http`` when no additional properties are passed is to open *two* tunnels,
     one ``http`` and one ``https``. ``pyngrok``'s :func:`~pyngrok.ngrok.connect` method will return a reference to
     the ``http`` tunnel in this case. If only a single tunnel is needed, pass ``bind_tls=True`` and a reference to
     the ``https`` tunnel will be returned.
