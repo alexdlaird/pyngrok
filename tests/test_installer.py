@@ -2,7 +2,8 @@ import os
 import socket
 from unittest import mock
 
-from pyngrok import ngrok, installer
+from pyngrok import ngrok, installer, conf
+from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
 from tests.testcase import NgrokTestCase
 
@@ -38,6 +39,26 @@ class TestInstaller(NgrokTestCase):
 
         # THEN
         self.assertTrue(os.path.exists(self.pyngrok_config_v3.ngrok_path))
+        self.assertTrue(ngrok_version.startswith("3"))
+
+    def test_installer_default(self):
+        # GIVEN
+        ngrok_path = os.path.join(conf.BIN_DIR, "default", installer.get_ngrok_bin())
+        config_path = os.path.join(self.config_dir, "config_default.yml")
+
+        pyngrok_config = PyngrokConfig(
+            ngrok_path=ngrok_path,
+            config_path=config_path)
+        self.given_file_doesnt_exist(pyngrok_config.ngrok_path)
+        self.assertFalse(os.path.exists(pyngrok_config.ngrok_path))
+
+        # WHEN
+        ngrok.connect(pyngrok_config=pyngrok_config)
+        ngrok.kill(pyngrok_config)
+        ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=pyngrok_config)
+
+        # THEN
+        self.assertTrue(os.path.exists(pyngrok_config.ngrok_path))
         self.assertTrue(ngrok_version.startswith("3"))
 
     def test_config_provisioned(self):

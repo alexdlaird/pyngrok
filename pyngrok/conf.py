@@ -77,7 +77,7 @@ class PyngrokConfig:
                  max_logs=100,
                  request_timeout=4,
                  start_new_session=False,
-                 ngrok_version="v2"):
+                 ngrok_version="v3"):
         self.ngrok_path = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
         self.config_path = DEFAULT_CONFIG_PATH if config_path is None else config_path
         self.auth_token = auth_token

@@ -227,7 +227,7 @@ The default ``pyngrok_config`` object can updated with our own object using :fun
 
     pyngrok_config = conf.PyngrokConfig(log_event_callback=log_event_callback,
                                         max_logs=10,
-                                        ngrok_version="v2")
+                                        ngrok_version="v3")
     conf.set_default(pyngrok_config)
 
 
@@ -238,14 +238,14 @@ The ``pyngrok_config`` argument is only used when the ``ngrok`` process is first
 the first time most methods in the :mod:`~pyngrok.ngrok` module are called. We can check if a process is already or
 still running by calling its :func:`~pyngrok.process.NgrokProcess.healthy` method.
 
-``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install v2. To install v3 instead,
+``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install v3. To install v2 instead,
 set ``ngrok_version`` in :class:`~pyngrok.conf.PyngrokConfig`:
 
 .. code-block:: python
 
     from pyngrok import conf, ngrok
 
-    conf.get_default().ngrok_version = "v3"
+    conf.get_default().ngrok_version = "v2"
 
 .. note::
 
