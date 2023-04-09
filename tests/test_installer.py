@@ -59,7 +59,11 @@ class TestInstaller(NgrokTestCase):
 
         # THEN
         self.assertTrue(os.path.exists(pyngrok_config.ngrok_path))
+<<<<<<< HEAD
         self.assertTrue(ngrok_version.startswith("3"))
+=======
+        self.assertTrue(ngrok_version.startswith("2"))
+>>>>>>> develop
 
     def test_config_provisioned(self):
         # GIVEN
