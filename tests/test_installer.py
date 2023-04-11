@@ -9,7 +9,7 @@ from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "5.2.2"
+__version__ = "6.0.0"
 
 
 class TestInstaller(NgrokTestCase):

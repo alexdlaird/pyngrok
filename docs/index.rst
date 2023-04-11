@@ -226,8 +226,7 @@ The default ``pyngrok_config`` object can updated with our own object using :fun
     from pyngrok import conf
 
     pyngrok_config = conf.PyngrokConfig(log_event_callback=log_event_callback,
-                                        max_logs=10,
-                                        ngrok_version="v3")
+                                        max_logs=10)
     conf.set_default(pyngrok_config)
 
 
