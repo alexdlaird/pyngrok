@@ -11,8 +11,8 @@ from pyngrok.process import NgrokLog
 from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "5.2.0"
+__copyright__ = "Copyright 2023, Alex Laird"
+__version__ = "5.2.2"
 
 
 class TestProcess(NgrokTestCase):

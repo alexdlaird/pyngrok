@@ -11,7 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Documentation updates.
 - Test updates.
 
-## [5.2.2](https://github.com/alexdlaird/pyngrok/compare/5.2.1...5.2.2) - TBD
+## [5.2.2](https://github.com/alexdlaird/pyngrok/compare/5.2.1...5.2.2) - 2023-04-11
 ### Fixed
 - Documentation improvements.
 - Test improvements.
