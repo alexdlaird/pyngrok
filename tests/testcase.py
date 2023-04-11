@@ -17,8 +17,8 @@ from pyngrok import ngrok, installer, conf
 from pyngrok import process
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2022, Alex Laird"
-__version__ = "5.2.1"
+__copyright__ = "Copyright 2023, Alex Laird"
+__version__ = "5.2.2"
 
 logger = logging.getLogger(__name__)
 ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))

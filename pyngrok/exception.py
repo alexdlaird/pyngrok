@@ -1,6 +1,6 @@
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2020, Alex Laird"
-__version__ = "4.1.0"
+__copyright__ = "Copyright 2023, Alex Laird"
+__version__ = "5.2.2"
 
 
 class PyngrokError(Exception):
