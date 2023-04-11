@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.2.2...HEAD)
 
-## [5.2.1](https://github.com/alexdlaird/pyngrok/compare/5.2.1...5.2.2) - TBD
+## [5.2.2](https://github.com/alexdlaird/pyngrok/compare/5.2.1...5.2.2) - TBD
 - Documentation improvements.
 - Test improvements.
 
