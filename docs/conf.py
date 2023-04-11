@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath(".."))
 from pyngrok import ngrok
 
 project = "pyngrok"
-copyright = "2022, Alex Laird"
+copyright = "2023, Alex Laird"
 author = "Alex Laird"
 
 # The short X.Y version
