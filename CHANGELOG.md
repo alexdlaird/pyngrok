@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/6.0.0...HEAD)
 
-## [6.0.0](https://github.com/alexdlaird/pyngrok/compare/5.2.3...6.0.0) - TBD
+## [6.0.0](https://github.com/alexdlaird/pyngrok/compare/5.2.3...6.0.0) - 2023-04-12
 ### Changed
 - Changed default installer behavior to download `ngrok` v3 when no version is specified.
 - Documentation updates.
