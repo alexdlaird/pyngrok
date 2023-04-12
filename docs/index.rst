@@ -237,15 +237,6 @@ The ``pyngrok_config`` argument is only used when the ``ngrok`` process is first
 the first time most methods in the :mod:`~pyngrok.ngrok` module are called. We can check if a process is already or
 still running by calling its :func:`~pyngrok.process.NgrokProcess.healthy` method.
 
-``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install v3. To install v2 instead,
-set ``ngrok_version`` in :class:`~pyngrok.conf.PyngrokConfig`:
-
-.. code-block:: python
-
-    from pyngrok import conf, ngrok
-
-    conf.get_default().ngrok_version = "v2"
-
 .. note::
 
     If ``ngrok`` is not already installed at the ``ngrok_path`` in :class:`~pyngrok.conf.PyngrokConfig`, it
@@ -256,6 +247,18 @@ set ``ngrok_version`` in :class:`~pyngrok.conf.PyngrokConfig`:
     module are ultimately passed down to :py:func:`urllib.request.urlopen`, so as long as we use the
     :mod:`~pyngrok.installer` module ourselves prior to invoking any :mod:`~pyngrok.ngrok` methods, we can can control
     how ``ngrok`` is installed and from where.
+
+``ngrok`` Version Compatibility
+-------------------------------
+
+``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install v3. To install v2 instead,
+set ``ngrok_version`` in :class:`~pyngrok.conf.PyngrokConfig`:
+
+.. code-block:: python
+
+    from pyngrok import conf, ngrok
+
+    conf.get_default().ngrok_version = "v2"
 
 Setting the ``authtoken``
 -------------------------
