@@ -17,7 +17,7 @@ from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "5.2.2"
+__version__ = "5.2.3"
 
 
 class TestNgrok(NgrokTestCase):
@@ -367,7 +367,6 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_regional_tcp_v3(self):
-
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, auth_token=os.environ["NGROK_AUTHTOKEN"],
@@ -385,6 +384,42 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual("localhost:5000", ngrok_tunnel.config["addr"])
         self.assertIn("tcp://", ngrok_tunnel.public_url)
         self.assertIn(".au.", ngrok_tunnel.public_url)
+        self.assertEqual(len(process._current_processes.keys()), 1)
+
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    def test_auth_v2(self):
+        # GIVEN
+        self.assertEqual(len(process._current_processes.keys()), 0)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2, auth_token=os.environ["NGROK_AUTHTOKEN"])
+
+        # WHEN
+        ngrok_tunnel = ngrok.connect(5000, auth="username:password", pyngrok_config=pyngrok_config)
+        current_process = ngrok.get_ngrok_process(pyngrok_config)
+
+        # THEN
+        self.assertIsNotNone(current_process)
+        self.assertIsNone(current_process.proc.poll())
+        self.assertIsNotNone(ngrok_tunnel.public_url)
+        self.assertIsNotNone(process.get_process(pyngrok_config))
+        self.assertEqual(len(process._current_processes.keys()), 1)
+
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    def test_auth_v3(self):
+        # GIVEN
+        self.assertEqual(len(process._current_processes.keys()), 0)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, auth_token=os.environ["NGROK_AUTHTOKEN"])
+
+        # WHEN
+        ngrok_tunnel1 = ngrok.connect(5000, auth="username:password", pyngrok_config=pyngrok_config)
+        ngrok_tunnel2 = ngrok.connect(5000, basic_auth=["username:password"], pyngrok_config=pyngrok_config)
+        current_process = ngrok.get_ngrok_process(pyngrok_config)
+
+        # THEN
+        self.assertIsNotNone(current_process)
+        self.assertIsNone(current_process.proc.poll())
+        self.assertIsNotNone(ngrok_tunnel1.public_url)
+        self.assertIsNotNone(ngrok_tunnel2.public_url)
+        self.assertIsNotNone(process.get_process(pyngrok_config))
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
