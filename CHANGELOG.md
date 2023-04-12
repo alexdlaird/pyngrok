@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/5.2.3...HEAD)
 
-## [5.2.2](https://github.com/alexdlaird/pyngrok/compare/5.2.2...5.2.3) - 2023-04-11
+## [5.2.3](https://github.com/alexdlaird/pyngrok/compare/5.2.2...5.2.3) - 2023-04-11
 ### Added
 - Support for `basic_auth` parameter in `ngrok` v3.
 - Test improvements.
