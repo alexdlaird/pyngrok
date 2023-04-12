@@ -251,14 +251,14 @@ still running by calling its :func:`~pyngrok.process.NgrokProcess.healthy` metho
 ``ngrok`` Version Compatibility
 -------------------------------
 
-``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install v3. To install v2 instead,
+``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install v2. To install v3 instead,
 set ``ngrok_version`` in :class:`~pyngrok.conf.PyngrokConfig`:
 
 .. code-block:: python
 
     from pyngrok import conf, ngrok
 
-    conf.get_default().ngrok_version = "v2"
+    conf.get_default().ngrok_version = "v3"
 
 Setting the ``authtoken``
 -------------------------
