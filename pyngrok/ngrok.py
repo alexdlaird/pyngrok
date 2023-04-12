@@ -254,15 +254,25 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     options.update(config)
 
     # Upgrade legacy parameters, if present
-    if pyngrok_config.ngrok_version == "v3" and "bind_tls" in options:
-        if options.get("bind_tls") is True or options.get("bind_tls") == "true":
-            options["schemes"] = ["https"]
-        elif not options.get("bind_tls") is not False or options.get("bind_tls") == "false":
-            options["schemes"] = ["http"]
-        else:
-            options["schemes"] = ["http", "https"]
+    if pyngrok_config.ngrok_version == "v3":
+        if "bind_tls" in options:
+            if options.get("bind_tls") is True or options.get("bind_tls") == "true":
+                options["schemes"] = ["https"]
+            elif not options.get("bind_tls") is not False or options.get("bind_tls") == "false":
+                options["schemes"] = ["http"]
+            else:
+                options["schemes"] = ["http", "https"]
 
-        options.pop("bind_tls")
+            options.pop("bind_tls")
+
+        if "auth" in options:
+            auth = options.get("auth")
+            if isinstance(auth, list):
+                options["basic_auth"] = auth
+            else:
+                options["basic_auth"] = [auth]
+
+            options.pop("auth")
 
     api_url = get_ngrok_process(pyngrok_config).api_url
 
