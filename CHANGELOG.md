@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/6.0.0...HEAD)
+### Added
+- Test improvements.
 
 ## [6.0.0](https://github.com/alexdlaird/pyngrok/compare/5.2.3...6.0.0) - 2023-04-12
 ### Changed

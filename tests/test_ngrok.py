@@ -569,12 +569,18 @@ class TestNgrok(NgrokTestCase):
                 "http-tunnel": {
                     "proto": "http",
                     "addr": "8000",
-                    "subdomain": subdomain
+                    "subdomain": subdomain,
+                    "oauth": {
+                        "provider": "google",
+                        "allow_domains": ["pyngrok.com"],
+                        "allow_emails": ["email@pyngrok.com"]
+                    }
                 },
                 "tcp-tunnel": {
                     "proto": "tcp",
                     "addr": "22"
                 }
+
             }
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
@@ -585,6 +591,9 @@ class TestNgrok(NgrokTestCase):
         # WHEN
         http_tunnel = ngrok.connect(name="http-tunnel", pyngrok_config=pyngrok_config)
         ssh_tunnel = ngrok.connect(name="tcp-tunnel", pyngrok_config=pyngrok_config)
+        time.sleep(1)
+        response = urlopen(http_tunnel.public_url)
+        time.sleep(3)
 
         # THEN
         self.assertEqual(http_tunnel.name, "http-tunnel")
@@ -593,6 +602,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual("http", config["tunnels"]["http-tunnel"]["proto"])
         self.assertEqual(http_tunnel.public_url,
                          "https://{}.ngrok.io".format(config["tunnels"]["http-tunnel"]["subdomain"]))
+        self.assertIn("https://accounts.google.com/signin/oauth", response.geturl())
         self.assertEqual(ssh_tunnel.name, "tcp-tunnel")
         self.assertEqual(ssh_tunnel.config["addr"],
                          "localhost:{}".format(config["tunnels"]["tcp-tunnel"]["addr"]))
