@@ -1,5 +1,7 @@
 import os
 import platform
+import unittest
+
 import time
 from unittest import mock
 from urllib.parse import urlparse
@@ -12,14 +14,14 @@ from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "5.2.2"
+__version__ = "6.0.1"
 
 
 class TestProcess(NgrokTestCase):
     def test_terminate_process(self):
         # GIVEN
-        self.given_ngrok_installed(self.pyngrok_config_v2)
-        ngrok_process = process._start_process(self.pyngrok_config_v2)
+        self.given_ngrok_installed(self.pyngrok_config_v3)
+        ngrok_process = process._start_process(self.pyngrok_config_v3)
         monitor_thread = ngrok_process._monitor_thread
         self.assertIsNone(ngrok_process.proc.poll())
 
@@ -31,9 +33,11 @@ class TestProcess(NgrokTestCase):
         self.assertIsNotNone(ngrok_process.proc.poll())
         self.assertFalse(monitor_thread.is_alive())
 
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_start_process_port_in_use_v2(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v2)
+        ngrok.set_auth_token(os.environ["NGROK_AUTHTOKEN"], self.pyngrok_config_v2)
         self.assertEqual(len(process._current_processes.keys()), 0)
         ngrok_process = process._start_process(self.pyngrok_config_v2)
         port = urlparse(ngrok_process.api_url).port
@@ -111,8 +115,8 @@ class TestProcess(NgrokTestCase):
 
     def test_process_external_kill(self):
         # GIVEN
-        self.given_ngrok_installed(self.pyngrok_config_v2)
-        ngrok_process = process._start_process(self.pyngrok_config_v2)
+        self.given_ngrok_installed(self.pyngrok_config_v3)
+        ngrok_process = process._start_process(self.pyngrok_config_v3)
         monitor_thread = ngrok_process._monitor_thread
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assertTrue(ngrok_process._monitor_thread.is_alive())
@@ -127,15 +131,15 @@ class TestProcess(NgrokTestCase):
 
         # THEN
         # Try to kill the process via pyngrok, no error, just update state
-        process.kill_process(self.pyngrok_config_v2.ngrok_path)
+        process.kill_process(self.pyngrok_config_v3.ngrok_path)
         self.assertEqual(len(process._current_processes.keys()), 0)
         self.assertFalse(monitor_thread.is_alive())
         self.assertNoZombies()
 
     def test_process_external_kill_get_process_restart(self):
         # GIVEN
-        self.given_ngrok_installed(self.pyngrok_config_v2)
-        ngrok_process1 = process._start_process(self.pyngrok_config_v2)
+        self.given_ngrok_installed(self.pyngrok_config_v3)
+        ngrok_process1 = process._start_process(self.pyngrok_config_v3)
         monitor_thread1 = ngrok_process1._monitor_thread
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assertTrue(ngrok_process1._monitor_thread.is_alive())
@@ -151,7 +155,7 @@ class TestProcess(NgrokTestCase):
         # THEN
         # Try to get process via pyngrok, it has been killed, restart and correct state
         with mock.patch("atexit.register") as mock_atexit:
-            ngrok_process2 = process.get_process(self.pyngrok_config_v2)
+            ngrok_process2 = process.get_process(self.pyngrok_config_v3)
             self.assertNotEqual(ngrok_process1.proc.pid, ngrok_process2.proc.pid)
             self.assertEqual(len(process._current_processes.keys()), 1)
             self.assertFalse(monitor_thread1.is_alive())
@@ -160,6 +164,7 @@ class TestProcess(NgrokTestCase):
             self.assertTrue(mock_atexit.called)
             self.assertNoZombies()
 
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_multiple_processes_different_binaries(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -192,6 +197,9 @@ class TestProcess(NgrokTestCase):
         pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path_v3_2,
                                                      ngrok_path=ngrok_path_v3_2)
 
+        ngrok.set_auth_token(os.environ["NGROK_AUTHTOKEN"], pyngrok_config_v2_1)
+        ngrok.set_auth_token(os.environ["NGROK_AUTHTOKEN"], pyngrok_config_v2_2)
+
         # WHEN
         ngrok_process1 = process._start_process(pyngrok_config_v2_1)
         ngrok_process2 = process._start_process(pyngrok_config_v2_2)
@@ -217,10 +225,13 @@ class TestProcess(NgrokTestCase):
         self.assertTrue(ngrok_process4._monitor_thread.is_alive())
         self.assertTrue(urlparse(ngrok_process4.api_url).port, "4043")
 
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_multiple_processes_same_binary_fails_v2(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v2)
         self.assertEqual(len(process._current_processes.keys()), 0)
+
+        ngrok.set_auth_token(os.environ["NGROK_AUTHTOKEN"], self.pyngrok_config_v2)
 
         # WHEN
         ngrok_process1 = process._start_process(self.pyngrok_config_v2)
@@ -253,10 +264,10 @@ class TestProcess(NgrokTestCase):
 
     def test_process_logs(self):
         # GIVEN
-        self.given_ngrok_installed(self.pyngrok_config_v2)
+        self.given_ngrok_installed(self.pyngrok_config_v3)
 
         # WHEN
-        ngrok_process = process._start_process(self.pyngrok_config_v2)
+        ngrok_process = process._start_process(self.pyngrok_config_v3)
 
         # THEN
         for log in ngrok_process.logs:
@@ -287,9 +298,9 @@ class TestProcess(NgrokTestCase):
 
     def test_log_event_callback_and_max_logs(self):
         # GIVEN
-        self.given_ngrok_installed(self.pyngrok_config_v2)
+        self.given_ngrok_installed(self.pyngrok_config_v3)
         log_event_callback_mock = mock.MagicMock()
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2, log_event_callback=log_event_callback_mock,
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, log_event_callback=log_event_callback_mock,
                                                 max_logs=5)
 
         # WHEN
@@ -303,8 +314,8 @@ class TestProcess(NgrokTestCase):
 
     def test_no_monitor_thread(self):
         # GIVEN
-        self.given_ngrok_installed(self.pyngrok_config_v2)
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2, monitor_thread=False)
+        self.given_ngrok_installed(self.pyngrok_config_v3)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, monitor_thread=False)
 
         # WHEN
         ngrok.connect(pyngrok_config=pyngrok_config)
@@ -315,11 +326,11 @@ class TestProcess(NgrokTestCase):
 
     def test_stop_monitor_thread(self):
         # GIVEN
-        self.given_ngrok_installed(self.pyngrok_config_v2)
-        current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v2)
+        self.given_ngrok_installed(self.pyngrok_config_v3)
+        current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v3)
         public_url = ngrok.connect(urlparse(current_process.api_url).port,
-                                   pyngrok_config=self.pyngrok_config_v2).public_url
-        ngrok_process = ngrok.get_ngrok_process(self.pyngrok_config_v2)
+                                   pyngrok_config=self.pyngrok_config_v3).public_url
+        ngrok_process = ngrok.get_ngrok_process(self.pyngrok_config_v3)
         monitor_thread = ngrok_process._monitor_thread
 
         # WHEN
