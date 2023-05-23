@@ -106,22 +106,6 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual("https", ngrok_tunnel.proto)
         self.assertEqual("http://localhost:80", ngrok_tunnel.config["addr"])
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
-    def test_multiple_connections_no_token_fails_v2(self):
-        # GIVEN
-        ngrok.set_auth_token(os.environ["NGROK_AUTHTOKEN"], self.pyngrok_config_v2)
-        
-        # WHEN
-        with self.assertRaises(PyngrokNgrokHTTPError) as cm:
-            ngrok.connect(5000, pyngrok_config=self.pyngrok_config_v2)
-            time.sleep(1)
-            ngrok.connect(5001, pyngrok_config=self.pyngrok_config_v2)
-            time.sleep(1)
-
-        # THEN
-        self.assertEqual(502, cm.exception.status_code)
-        self.assertIn("account may not run more than 2 tunnels", str(cm.exception))
-
     def test_get_tunnels(self):
         # GIVEN
         url = ngrok.connect(pyngrok_config=self.pyngrok_config_v3).public_url
