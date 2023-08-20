@@ -602,7 +602,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual("http", config["tunnels"]["http-tunnel"]["proto"])
         self.assertEqual(http_tunnel.public_url,
                          "https://{}.ngrok.io".format(config["tunnels"]["http-tunnel"]["subdomain"]))
-        self.assertIn("https://accounts.google.com/signin/oauth", response.geturl())
+        self.assertIn("Sign in - Google Accounts", response.read().decode())
         self.assertEqual(ssh_tunnel.name, "tcp-tunnel")
         self.assertEqual(ssh_tunnel.config["addr"],
                          "localhost:{}".format(config["tunnels"]["tcp-tunnel"]["addr"]))
