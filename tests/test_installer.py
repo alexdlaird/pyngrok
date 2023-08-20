@@ -1,5 +1,6 @@
 import os
 import socket
+import unittest
 from unittest import mock
 
 from pyngrok import ngrok, installer, conf
@@ -9,18 +10,18 @@ from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "6.0.0"
+__version__ = "6.0.1"
 
 
 class TestInstaller(NgrokTestCase):
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_installer_v2(self):
         # GIVEN
         self.given_file_doesnt_exist(self.pyngrok_config_v2.ngrok_path)
         self.assertFalse(os.path.exists(self.pyngrok_config_v2.ngrok_path))
 
         # WHEN
-        ngrok.connect(pyngrok_config=self.pyngrok_config_v2)
-        ngrok.kill(self.pyngrok_config_v2)
+        ngrok.set_auth_token(os.environ["NGROK_AUTHTOKEN"], self.pyngrok_config_v2)
         ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=self.pyngrok_config_v2)
 
         # THEN
@@ -63,14 +64,14 @@ class TestInstaller(NgrokTestCase):
 
     def test_config_provisioned(self):
         # GIVEN
-        self.given_file_doesnt_exist(self.pyngrok_config_v2.config_path)
-        self.assertFalse(os.path.exists(self.pyngrok_config_v2.config_path))
+        self.given_file_doesnt_exist(self.pyngrok_config_v3.config_path)
+        self.assertFalse(os.path.exists(self.pyngrok_config_v3.config_path))
 
         # WHEN
-        ngrok.connect(pyngrok_config=self.pyngrok_config_v2)
+        ngrok.connect(pyngrok_config=self.pyngrok_config_v3)
 
         # THEN
-        self.assertTrue(os.path.exists(self.pyngrok_config_v2.config_path))
+        self.assertTrue(os.path.exists(self.pyngrok_config_v3.config_path))
 
     ################################################################################
     # Tests below this point don't need to start a long-lived ngrok process, they
