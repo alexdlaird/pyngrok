@@ -51,8 +51,9 @@ class PyngrokConfig:
     :var monitor_thread: Whether ``ngrok`` should continue to be monitored (for logs, etc.) after startup
         is complete.
     :vartype monitor_thread: bool
-    :var log_event_callback: A callback that will be invoked each time ``ngrok`` emits a log. ``monitor_thread``
-        must be set to ``True`` or the function will stop being called after ``ngrok`` finishes starting.
+    :var log_event_callback: A callback that will be invoked each time ``ngrok`` emits a log. The function should take
+        one argument of type :py:class:`str`. ``monitor_thread`` must be set to ``True`` or the function will stop being called
+        after ``ngrok`` finishes starting.
     :vartype log_event_callback: types.FunctionType
     :var startup_timeout: The max number of seconds to wait for ``ngrok`` to start before timing out.
     :vartype startup_timeout: int
