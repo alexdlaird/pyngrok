@@ -33,7 +33,7 @@ same place.
             USE_NGROK=os.environ.get("USE_NGROK", "False") == "True" and os.environ.get("WERKZEUG_RUN_MAIN") != "true"
         )
 
-        if app.config.get("ENV") == "development" and app.config["USE_NGROK"]:
+        if app.config["USE_NGROK"]:
             # pyngrok will only be installed, and should only ever be initialized, in a dev environment
             from pyngrok import ngrok
 
@@ -57,7 +57,7 @@ Now Flask can be started in development by the usual means, setting ``USE_NGROK`
 
 .. code-block:: sh
 
-    USE_NGROK=True FLASK_ENV=development FLASK_APP=server.py flask run
+    USE_NGROK=True FLASK_APP=server.py flask run
 
 Django
 ------
@@ -238,8 +238,6 @@ assumes we have also added ``!pip install flask`` to our dependency code block.
 
     from flask import Flask
     from pyngrok import ngrok
-
-    os.environ["FLASK_ENV"] = "development"
 
     app = Flask(__name__)
     port = 5000
