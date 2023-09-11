@@ -51,7 +51,7 @@ ssh_tunnel = ngrok.connect(22, "tcp")
 ```
 
 The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes `kwargs` as
-well, which allows us to pass additional properties that are [supported by ngrok](https://ngrok.com/docs/ngrok-agent/api#start-tunnel).
+well, which allows us to pass additional properties that are [supported by ngrok](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions).
 
 This package puts the default `ngrok` binary on our path, so all features of `ngrok` are
 available on the command line.

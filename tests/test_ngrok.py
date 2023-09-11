@@ -652,6 +652,54 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(tunnels[0].public_url, os.environ["NGROK_EDGE_ENDPOINT"])
 
     @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf("NGROK_EDGE" not in os.environ, "NGROK_EDGE environment variable not set")
+    @unittest.skipIf("NGROK_EDGE_ENDPOINT" not in os.environ, "NGROK_EDGE_ENDPOINT environment variable not set")
+    def test_bind_tls_and_labels_not_allowed(self):
+        # GIVEN
+        config = {
+            "tunnels": {
+                "edge-tunnel": {
+                    "addr": "80",
+                    "labels": [
+                        "edge={}".format(os.environ["NGROK_EDGE"]),
+                    ]
+                }
+            }
+        }
+        config_path = os.path.join(self.config_dir, "config_v3_2.yml")
+        installer.install_default_config(config_path, config, ngrok_version="v3")
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
+                                                auth_token=os.environ["NGROK_AUTHTOKEN"],
+                                                edge_endpoint=os.environ["NGROK_EDGE_ENDPOINT"])
+
+        # WHEN
+        with self.assertRaises(PyngrokError):
+            ngrok.connect(name="edge-tunnel", bind_tls=True, pyngrok_config=pyngrok_config)
+
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf("NGROK_EDGE" not in os.environ, "NGROK_EDGE environment variable not set")
+    def test_labels_edge_endpoint_missing(self):
+        # GIVEN
+        config = {
+            "tunnels": {
+                "edge-tunnel": {
+                    "addr": "80",
+                    "labels": [
+                        "edge={}".format(os.environ["NGROK_EDGE"]),
+                    ]
+                }
+            }
+        }
+        config_path = os.path.join(self.config_dir, "config_v3_2.yml")
+        installer.install_default_config(config_path, config, ngrok_version="v3")
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
+                                                auth_token=os.environ["NGROK_AUTHTOKEN"])
+
+        # WHEN
+        with self.assertRaises(PyngrokError):
+            ngrok.connect(name="edge-tunnel", pyngrok_config=pyngrok_config)
+
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_pyngrok_default_with_overrides(self):
         subdomain = self.create_unique_subdomain()
 
@@ -738,6 +786,11 @@ class TestNgrok(NgrokTestCase):
         # WHEN
         with self.assertRaises(PyngrokError):
             ngrok.connect(pyngrok_config=self.pyngrok_config_v2)
+
+    def test_labels_param_not_allowed(self):
+        # WHEN
+        with self.assertRaises(PyngrokError):
+            ngrok.connect(labels=[])
 
     def test_api_request_security_error(self):
         # WHEN

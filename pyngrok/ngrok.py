@@ -177,7 +177,8 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning an object representing
     the connected tunnel.
 
-    If a `tunnel definition in ngrok's config file <https://ngrok.com/docs/ngrok-agent/api#start-tunnel>`_ matches the given
+    If a `tunnel definition in ngrok's config file
+    <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_ matches the given
     ``name``, it will be loaded and used to start the tunnel. When ``name`` is ``None`` and a "pyngrok-default" tunnel
     definition exists in ``ngrok``'s config, it will be loaded and use. Any ``kwargs`` passed as ``options`` will
     override properties from the loaded tunnel definition.
@@ -200,16 +201,17 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     :param addr: The local port to which the tunnel will forward traffic, or a
         `local directory or network address <https://ngrok.com/docs/secure-tunnels/tunnels/http-tunnels#file-url>`_, defaults to "80".
     :type addr: str, optional
-    :param proto: A valid `tunnel protocol <https://ngrok.com/docs/ngrok-agent/api#start-tunnel>`_, defaults to "http".
+    :param proto: A valid `tunnel protocol
+        <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_, defaults to "http".
     :type proto: str, optional
-    :param name: A friendly name for the tunnel, or the name of a `ngrok tunnel definition <https://ngrok.com/docs/ngrok-agent/api#start-tunnel>`_
+    :param name: A friendly name for the tunnel, or the name of a `ngrok tunnel definition <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_
         to be used.
     :type name: str, optional
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
     :type pyngrok_config: PyngrokConfig, optional
     :param options: Remaining ``kwargs`` are passed as `configuration for the ngrok
-        tunnel <https://ngrok.com/docs/ngrok-agent/api#start-tunnel>`_.
+        tunnel <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_.
     :type options: dict, optional
     :return: The created ``ngrok`` tunnel.
     :rtype: NgrokTunnel
