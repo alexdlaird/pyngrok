@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/6.0.0...HEAD)
 ### Added
+[//]: # (- # TODO document basic support for labels and Cloud Edge)
+[//]: # (- # TODO: document `edge_endpoint` param in conf)
+[//]: # (- # TODO: new `auth` param in api_request())
 - Documentation improvements.
 - Test improvements.
 

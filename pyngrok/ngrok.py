@@ -14,7 +14,7 @@ from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, Pyngr
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "6.0.0"
+__version__ = "6.1.0"
 
 from pyngrok.installer import get_default_config
 
@@ -172,7 +172,7 @@ def set_public_url_with_edge_endpoint(tunnel, edge, api_key):
             break
 
 
-def connect(addr=None, proto=None, name=None, pyngrok_config=None, api_key=None, **options):
+def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     """
     Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning an object representing
     the connected tunnel.
@@ -214,6 +214,9 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, api_key=None,
     :return: The created ``ngrok`` tunnel.
     :rtype: NgrokTunnel
     """
+    if "labels" in options:
+        raise PyngrokError("\"labels\" cannot be passed to connect(), define a tunnel definition in the config file.")
+
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
@@ -242,6 +245,9 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, api_key=None,
         tunnel_definition.update(options)
         options = tunnel_definition
 
+    if "labels" in options and not pyngrok_config.edge_endpoint:
+        raise PyngrokError("\"PyngrokConfig.edge_endpoint\" must be set when \"labels\" is set on the tunnel definition.")
+
     addr = str(addr) if addr else "80"
     # Only apply a default proto label if "labels" isn't defined
     if not proto and "labels" not in options:
@@ -264,6 +270,9 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, api_key=None,
     # Only apply proto when "labels" is not defined
     if "labels" not in options:
         options["proto"] = proto
+
+    if "labels" in options and "bind_tls" in options:
+        raise PyngrokError("\"bind_tls\" cannot be passed along with \"labels\".")
 
     # Upgrade legacy parameters, if present
     if pyngrok_config.ngrok_version == "v3":
@@ -298,6 +307,9 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, api_key=None,
         tunnel = NgrokTunnel(api_request("{}{}%20%28http%29".format(api_url, tunnel.uri), method="GET",
                                          timeout=pyngrok_config.request_timeout),
                              pyngrok_config, api_url)
+
+    if not tunnel.public_url and pyngrok_config.edge_endpoint:
+        tunnel.public_url = pyngrok_config.edge_endpoint
 
     _current_tunnels[tunnel.public_url] = tunnel
 
@@ -365,6 +377,8 @@ def get_tunnels(pyngrok_config=None):
     for tunnel in api_request("{}/api/tunnels".format(api_url), method="GET",
                               timeout=pyngrok_config.request_timeout)["tunnels"]:
         ngrok_tunnel = NgrokTunnel(tunnel, pyngrok_config, api_url)
+        if not ngrok_tunnel.public_url and pyngrok_config.edge_endpoint:
+            ngrok_tunnel.public_url = pyngrok_config.edge_endpoint
         _current_tunnels[ngrok_tunnel.public_url] = ngrok_tunnel
 
     return list(_current_tunnels.values())
