@@ -241,7 +241,7 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
 
     if "labels" in options and not pyngrok_config.edge_endpoint:
         raise PyngrokError(
-            "\"PyngrokConfig.edge_endpoint\" must be set when \"labels\" is set on the tunnel definition.")
+            "\"PyngrokConfig.edge_endpoint\" must be set when \"labels\" is on the tunnel definition.")
 
     addr = str(addr) if addr else "80"
     # Only apply a default proto label if "labels" isn't defined
