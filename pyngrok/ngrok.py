@@ -235,7 +235,8 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
         options = tunnel_definition
 
     addr = str(addr) if addr else "80"
-    if not proto:
+    # Only apply a default proto label if "labels" isn't defined
+    if not proto and "labels" not in options:
         proto = "http"
 
     if not name:
@@ -248,10 +249,13 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
 
     config = {
         "name": name,
-        "addr": addr,
-        "proto": proto
+        "addr": addr
     }
     options.update(config)
+
+    # Only apply proto when "labels" is not defined
+    if "labels" not in options:
+        options["proto"] = proto
 
     # Upgrade legacy parameters, if present
     if pyngrok_config.ngrok_version == "v3":
@@ -409,7 +413,7 @@ def update(pyngrok_config=None):
     return process.capture_run_process(pyngrok_config.ngrok_path, ["update"])
 
 
-def api_request(url, method="GET", data=None, params=None, timeout=4):
+def api_request(url, method="GET", data=None, params=None, timeout=4, auth=None):
     """
     Invoke an API request to the given URL, returning JSON data from the response.
 
@@ -443,6 +447,8 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
     :type params: dict, optional
     :param timeout: The request timeout, in seconds.
     :type timeout: float, optional
+    :param auth: Set as Bearer for an Authorization header.
+    :type auth: str, optional
     :return: The response from the request.
     :rtype: dict
     """
@@ -459,6 +465,9 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
 
     request = Request(url, method=method.upper())
     request.add_header("Content-Type", "application/json")
+    if auth:
+        request.add_header("Ngrok-Version", "2")
+        request.add_header("Authorization", "Bearer {}".format(auth))
 
     logger.debug("Making {} request to {} with data: {}".format(method, url, data))
 
