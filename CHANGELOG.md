@@ -7,15 +7,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [6.1.0](https://github.com/alexdlaird/pyngrok/compare/6.0.0...6.1.0) - TBD
 ### Added
-- Added support for `labels`, so [`ngrok`'s Labeled Tunnel Configuration](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#labeled-tunnel-configuration-properties) is now supported, which enables basic support for [`ngrok`'s Cloud Edge](https://ngrok.com/docs/cloud-edge/).
-- `edge_endpoint` is now a configuration parameter in `PyngrokConfig`, which can be used to define the Endpoint used when Cloud Edge is provisioned using `labels`.
+- Support for `labels`, so [`ngrok`'s Labeled Tunnel Configuration](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#labeled-tunnel-configuration-properties) is now supported, which enables basic support for [`ngrok`'s Cloud Edge](https://ngrok.com/docs/cloud-edge/).
+- `edge_endpoint` to `PyngrokConfig`, which can be used to define the Endpoint used when Cloud Edge is provisioned using `labels`.
 - [ngrok.api_request()](https://pyngrok.readthedocs.io/en/6.1.0/api.html#pyngrok.ngrok.api_request) now takes an `auth` param, so it can now be used to pass the `Bearer` token to `ngrok`'s API.
 - Documentation improvements.
 - Test improvements.
 
 ## [6.0.0](https://github.com/alexdlaird/pyngrok/compare/5.2.3...6.0.0) - 2023-04-12
 ### Changed
-- Changed default installer behavior to download `ngrok` v3 by default.
+- Default installer behavior to download `ngrok` v3 by default.
 - Documentation updates.
 - Test updates.
 

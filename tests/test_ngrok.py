@@ -632,6 +632,7 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         edge_tunnel = ngrok.connect(name="edge-tunnel", pyngrok_config=pyngrok_config)
+        tunnels = ngrok.get_tunnels(pyngrok_config=pyngrok_config)
 
         # THEN
         self.assertEqual(edge_tunnel.name, "edge-tunnel")
@@ -639,11 +640,6 @@ class TestNgrok(NgrokTestCase):
                          "http://localhost:{}".format(config["tunnels"]["edge-tunnel"]["addr"]))
         self.assertTrue(edge_tunnel.config["addr"].startswith("http://"))
         self.assertEqual(edge_tunnel.public_url, os.environ["NGROK_EDGE_ENDPOINT"])
-
-        # WHEN
-        tunnels = ngrok.get_tunnels(pyngrok_config=pyngrok_config)
-
-        # THEN
         self.assertEquals(len(tunnels), 1)
         self.assertEqual(tunnels[0].name, "edge-tunnel")
         self.assertEqual(tunnels[0].config["addr"],
