@@ -631,8 +631,7 @@ class TestNgrok(NgrokTestCase):
                                                 auth_token=os.environ["NGROK_FREE_AUTHTOKEN"])
 
         # WHEN
-        edge_tunnel = ngrok.connect(name="edge-tunnel", pyngrok_config=pyngrok_config,
-                                    api_key="2VFyDKlfoqANqblTV7bGMHw4U2a_7fKr3nzeWhyJS9vMwhEe9")
+        edge_tunnel = ngrok.connect(name="edge-tunnel", pyngrok_config=pyngrok_config)
 
         # THEN
         self.assertEqual(edge_tunnel.name, "edge-tunnel")
