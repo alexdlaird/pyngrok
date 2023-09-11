@@ -164,7 +164,15 @@ def get_ngrok_process(pyngrok_config=None):
     return process.get_process(pyngrok_config)
 
 
-def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
+def set_public_url_with_edge_endpoint(tunnel, edge, api_key):
+    response = api_request("https://api.ngrok.com/endpoints", method="GET", auth=api_key)
+    for endpoint in response["endpoints"]:
+        if "edge" in endpoint and endpoint["edge"]["id"] == edge:
+            tunnel.public_url = endpoint["public_url"]
+            break
+
+
+def connect(addr=None, proto=None, name=None, pyngrok_config=None, api_key=None, **options):
     """
     Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning an object representing
     the connected tunnel.
