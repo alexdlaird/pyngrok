@@ -646,7 +646,7 @@ class TestNgrok(NgrokTestCase):
         ngrok.set_public_url_with_edge_endpoint(edge_tunnel, os.environ["NGROK_FREE_EDGE"], os.environ["NGROK_FREE_API_KEY"])
 
         # THEN
-        # This is empty because ngrok doesn't send endpoint info back when Cloud Edge is used
+        # Now it should be populated since we've updated it by calling the ngrok API
         self.assertNotEquals(edge_tunnel.public_url, os.environ["NGROK_FREE_EDGE_ENDPOINT"])
 
         # WHEN
@@ -665,7 +665,7 @@ class TestNgrok(NgrokTestCase):
         ngrok.set_public_url_with_edge_endpoint(edge_tunnel, os.environ["NGROK_FREE_EDGE"], os.environ["NGROK_FREE_API_KEY"])
 
         # THEN
-        # This is empty because ngrok doesn't send endpoint info back when Cloud Edge is used
+        # Now it should be populated since we've updated it by calling the ngrok API
         self.assertNotEquals(tunnels[0].public_url, os.environ["NGROK_FREE_EDGE_ENDPOINT"])
 
     @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
