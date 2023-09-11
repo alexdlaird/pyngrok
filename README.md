@@ -60,7 +60,7 @@ available on the command line.
 ngrok http 80
 ```
 
-For details on how to fully leverage `ngrok` from the command line, see [ngrok's official documentation](https://ngrok.com/docs).
+For details on how to fully leverage `ngrok` from the command line, see [`ngrok`'s official documentation](https://ngrok.com/docs).
 
 ## Documentation
 
