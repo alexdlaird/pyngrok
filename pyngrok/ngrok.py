@@ -164,6 +164,26 @@ def get_ngrok_process(pyngrok_config=None):
     return process.get_process(pyngrok_config)
 
 
+def _convert_cloud_edge(tunnel, pyngrok_config):
+    if not tunnel.public_url and pyngrok_config.api_key:
+        edge = api_request("https://api.ngrok.com/tunnels/{}".format(tunnel.data["ID"]), method="GET",
+                           auth=pyngrok_config.api_key)["labels"]["edge"]
+        response = api_request("https://api.ngrok.com/endpoints", method="GET", auth=pyngrok_config.api_key)
+
+        while response["next_page_uri"] is not None:
+            for endpoint in response["endpoints"]:
+                if "edge" in endpoint and endpoint["edge"]["id"] == edge:
+                    tunnel.public_url = endpoint["public_url"]
+                    tunnel.proto = endpoint["proto"]
+                    break
+
+            response = api_request(response["next_page_uri"], method="GET", auth=pyngrok_config.api_key)
+
+        if not tunnel.public_url:
+            raise PyngrokError(
+                "No Endpoint is attached to your Cloud Edge, login to the ngrok dashboard to attach an Endpoint to your Edge first.")
+
+
 def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     """
     Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning an object representing
@@ -239,9 +259,9 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
         tunnel_definition.update(options)
         options = tunnel_definition
 
-    if "labels" in options and not pyngrok_config.edge_endpoint:
+    if "labels" in options and not pyngrok_config.api_key:
         raise PyngrokError(
-            "\"PyngrokConfig.edge_endpoint\" must be set when \"labels\" is on the tunnel definition.")
+            "\"PyngrokConfig.api_key\" must be set when \"labels\" is on the tunnel definition.")
 
     addr = str(addr) if addr else "80"
     # Only apply a default proto label if "labels" isn't defined
@@ -303,8 +323,7 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
                                          timeout=pyngrok_config.request_timeout),
                              pyngrok_config, api_url)
 
-    if not tunnel.public_url and pyngrok_config.edge_endpoint:
-        tunnel.public_url = pyngrok_config.edge_endpoint
+    _convert_cloud_edge(tunnel, pyngrok_config)
 
     _current_tunnels[tunnel.public_url] = tunnel
 
@@ -372,8 +391,7 @@ def get_tunnels(pyngrok_config=None):
     for tunnel in api_request("{}/api/tunnels".format(api_url), method="GET",
                               timeout=pyngrok_config.request_timeout)["tunnels"]:
         ngrok_tunnel = NgrokTunnel(tunnel, pyngrok_config, api_url)
-        if not ngrok_tunnel.public_url and pyngrok_config.edge_endpoint:
-            ngrok_tunnel.public_url = pyngrok_config.edge_endpoint
+        _convert_cloud_edge(ngrok_tunnel, pyngrok_config)
         _current_tunnels[ngrok_tunnel.public_url] = ngrok_tunnel
 
     return list(_current_tunnels.values())
