@@ -1,6 +1,7 @@
-name: "CI/CD"
+name: "CI Tests"
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - "**"
