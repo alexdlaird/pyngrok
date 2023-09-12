@@ -3,7 +3,6 @@ import logging
 import os
 import socket
 import sys
-import time
 import uuid
 from http import HTTPStatus
 from urllib.error import HTTPError, URLError
@@ -167,10 +166,9 @@ def get_ngrok_process(pyngrok_config=None):
 
 def _convert_cloud_edge(tunnel, pyngrok_config):
     if not tunnel.public_url and pyngrok_config.api_key:
-        edge = _api_request_with_retries("https://api.ngrok.com/tunnels/{}".format(tunnel.data["ID"]), method="GET",
-                                         auth=pyngrok_config.api_key)["labels"]["edge"]
-        response = _api_request_with_retries("https://api.ngrok.com/endpoints", method="GET",
-                                             auth=pyngrok_config.api_key)
+        edge = api_request("https://api.ngrok.com/tunnels/{}".format(tunnel.data["ID"]), method="GET",
+                           auth=pyngrok_config.api_key)["labels"]["edge"]
+        response = api_request("https://api.ngrok.com/endpoints", method="GET", auth=pyngrok_config.api_key)
 
         while response["next_page_uri"] is not None:
             for endpoint in response["endpoints"]:
@@ -179,7 +177,7 @@ def _convert_cloud_edge(tunnel, pyngrok_config):
                     tunnel.proto = endpoint["proto"]
                     break
 
-            response = _api_request_with_retries(response["next_page_uri"], method="GET", auth=pyngrok_config.api_key)
+            response = api_request(response["next_page_uri"], method="GET", auth=pyngrok_config.api_key)
 
         if not tunnel.public_url:
             raise PyngrokError(
@@ -448,41 +446,6 @@ def update(pyngrok_config=None):
         pyngrok_config = conf.get_default()
 
     return process.capture_run_process(pyngrok_config.ngrok_path, ["update"])
-
-
-def _api_request_with_retries(url, method="GET", data=None, params=None, timeout=4, auth=None, retries=0,
-                              max_retries=3):
-    """
-    Invoke :func:`api_request` with retries. If the request is rate limited, wait 200ms, then retry.
-
-    :param url: The request URL.
-    :type url: str
-    :param method: The HTTP method.
-    :type method: str, optional
-    :param data: The request body.
-    :type data: dict, optional
-    :param params: The URL parameters.
-    :type params: dict, optional
-    :param timeout: The request timeout, in seconds.
-    :type timeout: float, optional
-    :param auth: Set as Bearer for an Authorization header.
-    :type auth: str, optional
-    :param retries: The retry attempt index, if rate limited.
-    :type retries: int, optional
-    :param retries: The maximum number of retries.
-    :type retries: int, optional
-    :return: The response from the request.
-    :rtype: dict
-    """
-    try:
-        response = api_request(url, method, data, params, timeout, auth)
-        return response
-    except PyngrokNgrokHTTPError as e:
-        if e.status_code == 429 and retries < max_retries:
-            time.sleep(0.20)
-            return _api_request_with_retries(url, method, data, params, timeout, auth, retries + 1)
-        else:
-            raise e
 
 
 def api_request(url, method="GET", data=None, params=None, timeout=4, auth=None):
