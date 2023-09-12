@@ -644,7 +644,7 @@ class TestNgrok(NgrokTestCase):
         # WHEN
         edge_http_tunnel = ngrok.connect(name="edge-http-tunnel", pyngrok_config=pyngrok_config)
         edge_tcp_tunnel = ngrok.connect(name="edge-tcp-tunnel", pyngrok_config=pyngrok_config)
-        tunnels = ngrok.get_tunnels(pyngrok_config=pyngrok_config)
+        tunnels = sorted(ngrok.get_tunnels(pyngrok_config=pyngrok_config), key=lambda x: x.proto)
 
         # THEN
         self.assertEqual(edge_http_tunnel.name, "edge-http-tunnel")
