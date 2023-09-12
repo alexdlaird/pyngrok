@@ -674,7 +674,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(tunnels[1].public_url, os.environ["NGROK_TCP_EDGE_ENDPOINT"])
 
     @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
-    @unittest.skipIf("NGROK_EDGE" not in os.environ, "NGROK_EDGE environment variable not set")
+    @unittest.skipIf("NGROK_HTTP_EDGE" not in os.environ, "NGROK_HTTP_EDGE environment variable not set")
     @unittest.skipIf("NGROK_API_KEY" not in os.environ, "NGROK_API_KEY environment variable not set")
     def test_bind_tls_and_labels_not_allowed(self):
         # GIVEN
@@ -683,7 +683,7 @@ class TestNgrok(NgrokTestCase):
                 "edge-tunnel": {
                     "addr": "80",
                     "labels": [
-                        "edge={}".format(os.environ["NGROK_EDGE"]),
+                        "edge={}".format(os.environ["NGROK_HTTP_EDGE"]),
                     ]
                 }
             }
@@ -699,7 +699,7 @@ class TestNgrok(NgrokTestCase):
             ngrok.connect(name="edge-tunnel", bind_tls=True, pyngrok_config=pyngrok_config)
 
     @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
-    @unittest.skipIf("NGROK_EDGE" not in os.environ, "NGROK_EDGE environment variable not set")
+    @unittest.skipIf("NGROK_HTTP_EDGE" not in os.environ, "NGROK_HTTP_EDGE environment variable not set")
     def test_labels_api_key(self):
         # GIVEN
         config = {
@@ -707,7 +707,7 @@ class TestNgrok(NgrokTestCase):
                 "edge-tunnel": {
                     "addr": "80",
                     "labels": [
-                        "edge={}".format(os.environ["NGROK_EDGE"]),
+                        "edge={}".format(os.environ["NGROK_HTTP_EDGE"]),
                     ]
                 }
             }
