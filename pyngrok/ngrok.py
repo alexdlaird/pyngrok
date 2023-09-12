@@ -166,22 +166,31 @@ def get_ngrok_process(pyngrok_config=None):
 
 def _convert_cloud_edge(tunnel, pyngrok_config):
     if not tunnel.public_url and pyngrok_config.api_key:
-        edge = api_request("https://api.ngrok.com/tunnels/{}".format(tunnel.data["ID"]), method="GET",
-                           auth=pyngrok_config.api_key)["labels"]["edge"]
-        response = api_request("https://api.ngrok.com/endpoints", method="GET", auth=pyngrok_config.api_key)
+        tunnel_response = api_request("https://api.ngrok.com/tunnels/{}".format(tunnel.data["ID"]), method="GET",
+                                      auth=pyngrok_config.api_key)
+        if "labels" not in tunnel_response or "edge" not in tunnel_response["labels"]:
+            raise PyngrokError(
+                "Tunnel {} does not have \"labels\", use a Tunnel configured on Cloud Edge.".format(tunnel.data["ID"]))
 
-        while response["next_page_uri"] is not None:
-            for endpoint in response["endpoints"]:
-                if "edge" in endpoint and endpoint["edge"]["id"] == edge:
-                    tunnel.public_url = endpoint["public_url"]
-                    tunnel.proto = endpoint["proto"]
-                    break
+        edge = tunnel_response["labels"]["edge"]
+        if edge.startswith("edghts_"):
+            edges_prefix = "https"
+        elif edge.startswith("edgtcp"):
+            edges_prefix = "tcp"
+        elif edge.startswith("edgtls"):
+            edges_prefix = "tls"
+        else:
+            raise PyngrokError("Unknown Edge prefix: {}.".format(edge))
 
-            response = api_request(response["next_page_uri"], method="GET", auth=pyngrok_config.api_key)
+        edge_response = api_request("https://api.ngrok.com/edges/{}/{}".format(edges_prefix, edge), method="GET",
+                                    auth=pyngrok_config.api_key)
 
-        if not tunnel.public_url:
+        if "hostports" not in edge_response or len(edge_response["hostports"]) < 1:
             raise PyngrokError(
                 "No Endpoint is attached to your Cloud Edge, login to the ngrok dashboard to attach an Endpoint to your Edge first.")
+
+        tunnel.public_url = "{}://{}".format(edges_prefix, edge_response["hostports"][0])
+        tunnel.proto = edges_prefix
 
 
 def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
