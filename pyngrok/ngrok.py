@@ -50,6 +50,7 @@ class NgrokTunnel:
     def __init__(self, data, pyngrok_config, api_url):
         self.data = data
 
+        self.id = data.get("ID", None)
         self.name = data.get("name")
         self.proto = data.get("proto")
         self.uri = data.get("uri")
@@ -164,9 +165,9 @@ def get_ngrok_process(pyngrok_config=None):
     return process.get_process(pyngrok_config)
 
 
-def _convert_cloud_edge(tunnel, pyngrok_config):
-    if not tunnel.public_url and pyngrok_config.api_key:
-        tunnel_response = api_request("https://api.ngrok.com/tunnels/{}".format(tunnel.data["ID"]), method="GET",
+def _apply_cloud_edge_to_tunnel(tunnel, pyngrok_config):
+    if not tunnel.public_url and pyngrok_config.api_key and tunnel.id:
+        tunnel_response = api_request("https://api.ngrok.com/tunnels/{}".format(tunnel.id), method="GET",
                                       auth=pyngrok_config.api_key)
         if "labels" not in tunnel_response or "edge" not in tunnel_response["labels"]:
             raise PyngrokError(
@@ -296,7 +297,7 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
         options["proto"] = proto
 
     if "labels" in options and "bind_tls" in options:
-        raise PyngrokError("\"bind_tls\" cannot be passed along with \"labels\".")
+        raise PyngrokError("\"bind_tls\" cannot be set when \"labels\" is also on the tunnel definition.")
 
     # Upgrade legacy parameters, if present
     if pyngrok_config.ngrok_version == "v3":
@@ -332,7 +333,7 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
                                          timeout=pyngrok_config.request_timeout),
                              pyngrok_config, api_url)
 
-    _convert_cloud_edge(tunnel, pyngrok_config)
+    _apply_cloud_edge_to_tunnel(tunnel, pyngrok_config)
 
     _current_tunnels[tunnel.public_url] = tunnel
 
@@ -400,7 +401,7 @@ def get_tunnels(pyngrok_config=None):
     for tunnel in api_request("{}/api/tunnels".format(api_url), method="GET",
                               timeout=pyngrok_config.request_timeout)["tunnels"]:
         ngrok_tunnel = NgrokTunnel(tunnel, pyngrok_config, api_url)
-        _convert_cloud_edge(ngrok_tunnel, pyngrok_config)
+        _apply_cloud_edge_to_tunnel(ngrok_tunnel, pyngrok_config)
         _current_tunnels[ngrok_tunnel.public_url] = ngrok_tunnel
 
     return list(_current_tunnels.values())

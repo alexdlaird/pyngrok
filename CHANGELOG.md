@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Support for `labels`, so [`ngrok`'s Labeled Tunnel Configuration](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#labeled-tunnel-configuration-properties) is now supported, which enables basic support for [`ngrok`'s Cloud Edge](https://ngrok.com/docs/cloud-edge/).
 - `api_key` to `PyngrokConfig`, which can be set so `pyngrok` can interface with Cloud Edge when using `labels`.
 - [ngrok.api_request()](https://pyngrok.readthedocs.io/en/6.1.0/api.html#pyngrok.ngrok.api_request) now takes an `auth` param, so it can now be used to pass the `Bearer` token to `ngrok`'s API.
+- `id` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/6.1.0/api.html#pyngrok.ngrok.NgrokTunnel).
 - Documentation improvements.
 - Test improvements.
 
