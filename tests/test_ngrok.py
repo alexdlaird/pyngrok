@@ -659,7 +659,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(edge_tcp_tunnel.config["addr"].startswith("tcp://"))
         self.assertEqual(edge_tcp_tunnel.proto, "tcp")
         self.assertEqual(edge_tcp_tunnel.public_url, os.environ["NGROK_TCP_EDGE_ENDPOINT"])
-        self.assertEquals(len(tunnels), 2)
+        self.assertEqual(len(tunnels), 2)
         self.assertEqual(tunnels[0].name, "edge-http-tunnel")
         self.assertEqual(tunnels[0].config["addr"],
                          "http://localhost:{}".format(config["tunnels"]["edge-http-tunnel"]["addr"]))
