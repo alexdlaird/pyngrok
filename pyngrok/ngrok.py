@@ -188,7 +188,7 @@ def _apply_cloud_edge_to_tunnel(tunnel, pyngrok_config):
 
         if "hostports" not in edge_response or len(edge_response["hostports"]) < 1:
             raise PyngrokError(
-                "No Endpoint is attached to your Cloud Edge, login to the ngrok dashboard to attach an Endpoint to your Edge first.")
+                "No Endpoint is attached to your Cloud Edge {}, login to the ngrok dashboard to attach an Endpoint to your Edge first.".format(edge))
 
         tunnel.public_url = "{}://{}".format(edges_prefix, edge_response["hostports"][0])
         tunnel.proto = edges_prefix
