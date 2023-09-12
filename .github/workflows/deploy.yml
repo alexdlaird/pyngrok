@@ -10,6 +10,11 @@ jobs:
 
     env:
       NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      NGROK_HTTP_EDGE: ${{ secrets.NGROK_HTTP_EDGE }}
+      NGROK_TCP_EDGE: ${{ secrets.NGROK_TCP_EDGE }}
+      NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
+      NGROK_HTTP_EDGE_ENDPOINT: ${{ secrets.NGROK_HTTP_EDGE_ENDPOINT }}
+      NGROK_TCP_EDGE_ENDPOINT: ${{ secrets.NGROK_TCP_EDGE_ENDPOINT }}
 
     runs-on: ubuntu-latest
 
