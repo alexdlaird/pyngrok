@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/6.1.0...HEAD)
 
-## [6.1.0](https://github.com/alexdlaird/pyngrok/compare/6.0.0...6.1.0) - TBD
+## [6.1.0](https://github.com/alexdlaird/pyngrok/compare/6.0.0...6.1.0) - 2023-09-12
 ### Added
 - Support for `labels`, so [`ngrok`'s Labeled Tunnel Configuration](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#labeled-tunnel-configuration-properties) is now supported, which enables basic support for [`ngrok`'s Cloud Edge](https://ngrok.com/docs/cloud-edge/).
 - `api_key` to `PyngrokConfig`, which can be set so `pyngrok` can interface with Cloud Edge when using `labels`.
