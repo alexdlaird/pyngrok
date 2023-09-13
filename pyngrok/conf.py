@@ -4,7 +4,7 @@ from pyngrok.installer import get_ngrok_bin
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "6.0.0"
+__version__ = "6.1.0"
 
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
@@ -44,7 +44,7 @@ class PyngrokConfig:
     :vartype ngrok_path: str
     :var config_path: The path to the ``ngrok`` config, defaults to ``None`` and ``ngrok`` manages it.
     :vartype config_path: str
-    :var auth_token: An authtoken to pass to commands (overrides what is in the config).
+    :var auth_token: A ``ngrok`` authtoken to pass to commands (overrides what is in the config).
     :vartype auth_token: str
     :var region: The region in which ``ngrok`` should start.
     :vartype region: str
@@ -65,6 +65,8 @@ class PyngrokConfig:
     :vartype start_new_session: bool
     :var ngrok_version: The major version of ``ngrok`` installed.
     :vartype ngrok_version: str
+    :var api_key: A ``ngrok`` API key.
+    :vartype api_key: str
     """
 
     def __init__(self,
@@ -78,7 +80,8 @@ class PyngrokConfig:
                  max_logs=100,
                  request_timeout=4,
                  start_new_session=False,
-                 ngrok_version="v3"):
+                 ngrok_version="v3",
+                 api_key=None):
         self.ngrok_path = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
         self.config_path = DEFAULT_CONFIG_PATH if config_path is None else config_path
         self.auth_token = auth_token
@@ -90,6 +93,7 @@ class PyngrokConfig:
         self.request_timeout = request_timeout
         self.start_new_session = start_new_session
         self.ngrok_version = ngrok_version
+        self.api_key = api_key
 
 
 def get_default():

@@ -14,7 +14,7 @@ from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, Pyngr
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "6.0.0"
+__version__ = "6.1.0"
 
 from pyngrok.installer import get_default_config
 
@@ -50,6 +50,7 @@ class NgrokTunnel:
     def __init__(self, data, pyngrok_config, api_url):
         self.data = data
 
+        self.id = data.get("ID", None)
         self.name = data.get("name")
         self.proto = data.get("proto")
         self.uri = data.get("uri")
@@ -164,12 +165,42 @@ def get_ngrok_process(pyngrok_config=None):
     return process.get_process(pyngrok_config)
 
 
+def _apply_cloud_edge_to_tunnel(tunnel, pyngrok_config):
+    if not tunnel.public_url and pyngrok_config.api_key and tunnel.id:
+        tunnel_response = api_request("https://api.ngrok.com/tunnels/{}".format(tunnel.id), method="GET",
+                                      auth=pyngrok_config.api_key)
+        if "labels" not in tunnel_response or "edge" not in tunnel_response["labels"]:
+            raise PyngrokError(
+                "Tunnel {} does not have \"labels\", use a Tunnel configured on Cloud Edge.".format(tunnel.data["ID"]))
+
+        edge = tunnel_response["labels"]["edge"]
+        if edge.startswith("edghts_"):
+            edges_prefix = "https"
+        elif edge.startswith("edgtcp"):
+            edges_prefix = "tcp"
+        elif edge.startswith("edgtls"):
+            edges_prefix = "tls"
+        else:
+            raise PyngrokError("Unknown Edge prefix: {}.".format(edge))
+
+        edge_response = api_request("https://api.ngrok.com/edges/{}/{}".format(edges_prefix, edge), method="GET",
+                                    auth=pyngrok_config.api_key)
+
+        if "hostports" not in edge_response or len(edge_response["hostports"]) < 1:
+            raise PyngrokError(
+                "No Endpoint is attached to your Cloud Edge {}, login to the ngrok dashboard to attach an Endpoint to your Edge first.".format(edge))
+
+        tunnel.public_url = "{}://{}".format(edges_prefix, edge_response["hostports"][0])
+        tunnel.proto = edges_prefix
+
+
 def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     """
     Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning an object representing
     the connected tunnel.
 
-    If a `tunnel definition in ngrok's config file <https://ngrok.com/docs/ngrok-agent/api#start-tunnel>`_ matches the given
+    If a `tunnel definition in ngrok's config file
+    <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_ matches the given
     ``name``, it will be loaded and used to start the tunnel. When ``name`` is ``None`` and a "pyngrok-default" tunnel
     definition exists in ``ngrok``'s config, it will be loaded and use. Any ``kwargs`` passed as ``options`` will
     override properties from the loaded tunnel definition.
@@ -192,20 +223,24 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     :param addr: The local port to which the tunnel will forward traffic, or a
         `local directory or network address <https://ngrok.com/docs/secure-tunnels/tunnels/http-tunnels#file-url>`_, defaults to "80".
     :type addr: str, optional
-    :param proto: A valid `tunnel protocol <https://ngrok.com/docs/ngrok-agent/api#start-tunnel>`_, defaults to "http".
+    :param proto: A valid `tunnel protocol
+        <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_, defaults to "http".
     :type proto: str, optional
-    :param name: A friendly name for the tunnel, or the name of a `ngrok tunnel definition <https://ngrok.com/docs/ngrok-agent/api#start-tunnel>`_
+    :param name: A friendly name for the tunnel, or the name of a `ngrok tunnel definition <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_
         to be used.
     :type name: str, optional
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
     :type pyngrok_config: PyngrokConfig, optional
     :param options: Remaining ``kwargs`` are passed as `configuration for the ngrok
-        tunnel <https://ngrok.com/docs/ngrok-agent/api#start-tunnel>`_.
+        tunnel <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_.
     :type options: dict, optional
     :return: The created ``ngrok`` tunnel.
     :rtype: NgrokTunnel
     """
+    if "labels" in options:
+        raise PyngrokError("\"labels\" cannot be passed to connect(), define a tunnel definition in the config file.")
+
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
@@ -234,8 +269,13 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
         tunnel_definition.update(options)
         options = tunnel_definition
 
+    if "labels" in options and not pyngrok_config.api_key:
+        raise PyngrokError(
+            "\"PyngrokConfig.api_key\" must be set when \"labels\" is on the tunnel definition.")
+
     addr = str(addr) if addr else "80"
-    if not proto:
+    # Only apply a default proto label if "labels" isn't defined
+    if not proto and "labels" not in options:
         proto = "http"
 
     if not name:
@@ -248,10 +288,16 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
 
     config = {
         "name": name,
-        "addr": addr,
-        "proto": proto
+        "addr": addr
     }
     options.update(config)
+
+    # Only apply proto when "labels" is not defined
+    if "labels" not in options:
+        options["proto"] = proto
+
+    if "labels" in options and "bind_tls" in options:
+        raise PyngrokError("\"bind_tls\" cannot be set when \"labels\" is also on the tunnel definition.")
 
     # Upgrade legacy parameters, if present
     if pyngrok_config.ngrok_version == "v3":
@@ -286,6 +332,8 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
         tunnel = NgrokTunnel(api_request("{}{}%20%28http%29".format(api_url, tunnel.uri), method="GET",
                                          timeout=pyngrok_config.request_timeout),
                              pyngrok_config, api_url)
+
+    _apply_cloud_edge_to_tunnel(tunnel, pyngrok_config)
 
     _current_tunnels[tunnel.public_url] = tunnel
 
@@ -353,6 +401,7 @@ def get_tunnels(pyngrok_config=None):
     for tunnel in api_request("{}/api/tunnels".format(api_url), method="GET",
                               timeout=pyngrok_config.request_timeout)["tunnels"]:
         ngrok_tunnel = NgrokTunnel(tunnel, pyngrok_config, api_url)
+        _apply_cloud_edge_to_tunnel(ngrok_tunnel, pyngrok_config)
         _current_tunnels[ngrok_tunnel.public_url] = ngrok_tunnel
 
     return list(_current_tunnels.values())
@@ -409,7 +458,7 @@ def update(pyngrok_config=None):
     return process.capture_run_process(pyngrok_config.ngrok_path, ["update"])
 
 
-def api_request(url, method="GET", data=None, params=None, timeout=4):
+def api_request(url, method="GET", data=None, params=None, timeout=4, auth=None):
     """
     Invoke an API request to the given URL, returning JSON data from the response.
 
@@ -443,6 +492,8 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
     :type params: dict, optional
     :param timeout: The request timeout, in seconds.
     :type timeout: float, optional
+    :param auth: Set as Bearer for an Authorization header.
+    :type auth: str, optional
     :return: The response from the request.
     :rtype: dict
     """
@@ -459,6 +510,9 @@ def api_request(url, method="GET", data=None, params=None, timeout=4):
 
     request = Request(url, method=method.upper())
     request.add_header("Content-Type", "application/json")
+    if auth:
+        request.add_header("Ngrok-Version", "2")
+        request.add_header("Authorization", "Bearer {}".format(auth))
 
     logger.debug("Making {} request to {} with data: {}".format(method, url, data))
 

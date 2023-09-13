@@ -3,14 +3,20 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/6.0.0...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/6.1.0...HEAD)
+
+## [6.1.0](https://github.com/alexdlaird/pyngrok/compare/6.0.0...6.1.0) - TBD
 ### Added
+- Support for `labels`, so [`ngrok`'s Labeled Tunnel Configuration](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#labeled-tunnel-configuration-properties) is now supported, which enables basic support for [`ngrok`'s Cloud Edge](https://ngrok.com/docs/cloud-edge/).
+- `api_key` to `PyngrokConfig`, which can be set so `pyngrok` can interface with Cloud Edge when using `labels`.
+- [ngrok.api_request()](https://pyngrok.readthedocs.io/en/6.1.0/api.html#pyngrok.ngrok.api_request) now takes an `auth` param, so it can now be used to pass the `Bearer` token to `ngrok`'s API.
+- `id` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/6.1.0/api.html#pyngrok.ngrok.NgrokTunnel).
 - Documentation improvements.
 - Test improvements.
 
 ## [6.0.0](https://github.com/alexdlaird/pyngrok/compare/5.2.3...6.0.0) - 2023-04-12
 ### Changed
-- Changed default installer behavior to download `ngrok` v3 by default.
+- Default installer behavior to download `ngrok` v3 by default.
 - Documentation updates.
 - Test updates.
 
@@ -96,8 +102,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [5.0.0](https://github.com/alexdlaird/pyngrok/compare/4.2.2...5.0.0) - 2020-10-25
 ### Added
-- Support for [`ngrok`'s tunnel definitions](https://ngrok.com/docs#tunnel-definitions) when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect). If a tunnel definition in `ngrok`'s config matches the given `name`, it will be used to start the tunnel.
-- Support for a [`ngrok` tunnel definition](https://ngrok.com/docs#tunnel-definitions) named "pyngrok-default" when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect). When `name` is `None` and a "pyngrok-default" tunnel definition exists it `ngrok`'s config, it will be used.
+- Support for [`ngrok`'s tunnel definitions](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions) when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect). If a tunnel definition in `ngrok`'s config matches the given `name`, it will be used to start the tunnel.
+- Support for a [`ngrok` tunnel definition](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions) named "pyngrok-default" when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect). When `name` is `None` and a "pyngrok-default" tunnel definition exists it `ngrok`'s config, it will be used.
 - [process.is_process_running()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.process.is_process_running) to check if `ngrok` is already running without also implicitly starting it.
 - [ngrok.get_version()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.get_version) to get `ngrok` and `pyngrok` versions in a tuple.
 - [conf.get_default()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.conf.get_default), replacing the need for direct references to `conf.DEFAULT_PYNGROK_CONFIG`.
@@ -150,7 +156,7 @@ Python 2.7 support is still needed, pin `pyngrok>=4.1,<4.2`.
 - Test `ngrok.api_request()` using `params` for filtering with special characters.
 
 ### Fixed
-- [ngrok.api_request()](https://pyngrok.readthedocs.io/en/4.1.13/api.html#pyngrok.installer)'s `params` is now properly documented as a `dict` instead of a `list`.
+- [ngrok.api_request()](https://pyngrok.readthedocs.io/en/4.1.13/api.html#pyngrok.ngrok.api_request)'s `params` is now properly documented as a `dict` instead of a `list`.
 - Trimmed trailing line return from `ngrok` logs.
 
 ## [4.1.12](https://github.com/alexdlaird/pyngrok/compare/4.1.11...4.1.12) - 2020-09-10
