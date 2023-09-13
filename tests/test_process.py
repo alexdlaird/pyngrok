@@ -370,7 +370,7 @@ class TestProcess(NgrokTestCase):
     # are asserting on pyngrok-specific code or edge cases.
     ################################################################################
 
-    def test_get_process_no_binary(self):
+    def test_start_process_no_binary(self):
         # GIVEN
         self.given_file_doesnt_exist(self.pyngrok_config_v3.ngrok_path)
         self.assertEqual(len(process._current_processes.keys()), 0)
