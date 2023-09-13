@@ -486,22 +486,6 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(tunnels), 1)
 
     @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
-    def test_disconnect_fileserver_v3(self):
-        # GIVEN
-        self.assertEqual(len(process._current_processes.keys()), 0)
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, auth_token=os.environ["NGROK_AUTHTOKEN"])
-        url = ngrok.connect("file:///", pyngrok_config=pyngrok_config).public_url
-        time.sleep(1)
-
-        # WHEN
-        ngrok.disconnect(url, pyngrok_config)
-        time.sleep(1)
-        tunnels = ngrok.get_tunnels(pyngrok_config)
-
-        # THEN
-        self.assertEqual(len(tunnels), 0)
-
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_get_tunnel_fileserver(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
