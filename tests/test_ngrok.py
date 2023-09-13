@@ -701,7 +701,7 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf("NGROK_HTTP_EDGE" not in os.environ, "NGROK_HTTP_EDGE environment variable not set")
-    def test_labels_api_key(self):
+    def test_labels_no_api_key_fails(self):
         # GIVEN
         config = {
             "tunnels": {
