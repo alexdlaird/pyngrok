@@ -14,7 +14,7 @@ from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "6.0.1"
+__version__ = "6.1.0"
 
 
 class TestProcess(NgrokTestCase):
@@ -165,7 +165,7 @@ class TestProcess(NgrokTestCase):
             self.assertNoZombies()
 
     @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
-    def test_multiple_processes_different_binaries(self):
+    def test_multiple_processes_different_binaries_v2(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
 
@@ -278,10 +278,10 @@ class TestProcess(NgrokTestCase):
     @mock.patch("subprocess.Popen")
     def test_start_new_session(self, mock_popen):
         # GIVEN
-        self.given_ngrok_installed(self.pyngrok_config_v2)
+        self.given_ngrok_installed(self.pyngrok_config_v3)
 
         # WHEN
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2, start_new_session=True)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, start_new_session=True)
         try:
             process._start_process(pyngrok_config=pyngrok_config)
         except TypeError:
@@ -351,7 +351,7 @@ class TestProcess(NgrokTestCase):
         # GIVEN
         log_line = "lvl=eror msg=\"some error\" err=EOF"
         mock_proc_readline.return_value.stdout.readline.side_effect = [log_line, log_line, log_line]
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3)
         self.given_ngrok_installed(pyngrok_config)
 
         # WHEN
@@ -372,12 +372,12 @@ class TestProcess(NgrokTestCase):
 
     def test_get_process_no_binary(self):
         # GIVEN
-        self.given_file_doesnt_exist(self.pyngrok_config_v2.ngrok_path)
+        self.given_file_doesnt_exist(self.pyngrok_config_v3.ngrok_path)
         self.assertEqual(len(process._current_processes.keys()), 0)
 
         # WHEN
         with self.assertRaises(PyngrokNgrokError) as cm:
-            process.get_process(self.pyngrok_config_v2)
+            process.get_process(self.pyngrok_config_v3)
 
         # THEN
         self.assertIn("ngrok binary was not found", str(cm.exception))

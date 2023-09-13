@@ -10,7 +10,7 @@ from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "6.0.1"
+__version__ = "6.1.0"
 
 
 class TestInstaller(NgrokTestCase):
@@ -85,31 +85,31 @@ class TestInstaller(NgrokTestCase):
         magic_mock.getcode.return_value = 500
         mock_urlopen.return_value = magic_mock
 
-        self.given_file_doesnt_exist(self.pyngrok_config_v2.ngrok_path)
-        self.assertFalse(os.path.exists(self.pyngrok_config_v2.ngrok_path))
+        self.given_file_doesnt_exist(self.pyngrok_config_v3.ngrok_path)
+        self.assertFalse(os.path.exists(self.pyngrok_config_v3.ngrok_path))
 
         # WHEN
         with self.assertRaises(PyngrokNgrokInstallError):
-            ngrok.connect(pyngrok_config=self.pyngrok_config_v2)
+            ngrok.connect(pyngrok_config=self.pyngrok_config_v3)
 
         # THEN
-        self.assertFalse(os.path.exists(self.pyngrok_config_v2.ngrok_path))
+        self.assertFalse(os.path.exists(self.pyngrok_config_v3.ngrok_path))
 
     @mock.patch("pyngrok.installer.urlopen")
     def test_installer_retry(self, mock_urlopen):
         # GIVEN
         mock_urlopen.side_effect = socket.timeout("The read operation timed out")
 
-        self.given_file_doesnt_exist(self.pyngrok_config_v2.ngrok_path)
-        self.assertFalse(os.path.exists(self.pyngrok_config_v2.ngrok_path))
+        self.given_file_doesnt_exist(self.pyngrok_config_v3.ngrok_path)
+        self.assertFalse(os.path.exists(self.pyngrok_config_v3.ngrok_path))
 
         # WHEN
         with self.assertRaises(PyngrokNgrokInstallError):
-            ngrok.connect(pyngrok_config=self.pyngrok_config_v2)
+            ngrok.connect(pyngrok_config=self.pyngrok_config_v3)
 
         # THEN
         self.assertEqual(mock_urlopen.call_count, 4)
-        self.assertFalse(os.path.exists(self.pyngrok_config_v2.ngrok_path))
+        self.assertFalse(os.path.exists(self.pyngrok_config_v3.ngrok_path))
 
     def test_download_file_security_error(self):
         # WHEN
@@ -119,4 +119,4 @@ class TestInstaller(NgrokTestCase):
     def test_web_addr_false_not_allowed(self):
         # WHEN
         with self.assertRaises(PyngrokError):
-            installer.install_default_config(self.pyngrok_config_v2.config_path, {"web_addr": False})
+            installer.install_default_config(self.pyngrok_config_v3.config_path, {"web_addr": False})
