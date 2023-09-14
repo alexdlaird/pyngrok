@@ -15,7 +15,7 @@ from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError, PyngrokEr
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "5.2.2"
+__version__ = "6.1.1"
 
 from pyngrok.installer import SUPPORTED_NGROK_VERSIONS
 
