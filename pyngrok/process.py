@@ -415,10 +415,7 @@ def _start_process(pyngrok_config):
     :return: The ``ngrok`` process.
     :rtype: NgrokProcess
     """
-    if pyngrok_config.config_path is not None:
-        config_path = pyngrok_config.config_path
-    else:
-        config_path = conf.DEFAULT_NGROK_CONFIG_PATH
+    config_path = conf.get_config_path(pyngrok_config)
 
     _validate_path(pyngrok_config.ngrok_path)
     _validate_config(config_path)

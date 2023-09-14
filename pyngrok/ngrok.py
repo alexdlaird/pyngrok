@@ -100,11 +100,7 @@ def install_ngrok(pyngrok_config=None):
     if not os.path.exists(pyngrok_config.ngrok_path):
         installer.install_ngrok(pyngrok_config.ngrok_path, pyngrok_config.ngrok_version)
 
-    # If no config_path is set, ngrok will use its default path
-    if pyngrok_config.config_path is not None:
-        config_path = pyngrok_config.config_path
-    else:
-        config_path = conf.DEFAULT_NGROK_CONFIG_PATH
+    config_path = conf.get_config_path(pyngrok_config)
 
     # Install the config to the requested path
     if not os.path.exists(config_path):
@@ -188,7 +184,8 @@ def _apply_cloud_edge_to_tunnel(tunnel, pyngrok_config):
 
         if "hostports" not in edge_response or len(edge_response["hostports"]) < 1:
             raise PyngrokError(
-                "No Endpoint is attached to your Cloud Edge {}, login to the ngrok dashboard to attach an Endpoint to your Edge first.".format(edge))
+                "No Endpoint is attached to your Cloud Edge {}, login to the ngrok dashboard to attach an Endpoint to your Edge first.".format(
+                    edge))
 
         tunnel.public_url = "{}://{}".format(edges_prefix, edge_response["hostports"][0])
         tunnel.proto = edges_prefix
@@ -244,24 +241,24 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
-    if pyngrok_config.config_path is not None:
-        config_path = pyngrok_config.config_path
-    else:
-        config_path = conf.DEFAULT_NGROK_CONFIG_PATH
+    config_path = conf.get_config_path(pyngrok_config)
 
     if os.path.exists(config_path):
         config = installer.get_ngrok_config(config_path)
     else:
         config = get_default_config(pyngrok_config.ngrok_version)
 
-    # If a "pyngrok-default" tunnel definition exists in the ngrok config, use that
     tunnel_definitions = config.get("tunnels", {})
+    # If a "pyngrok-default" tunnel definition exists in the ngrok config, use that
     if not name and "pyngrok-default" in tunnel_definitions:
         name = "pyngrok-default"
 
     # Use a tunnel definition for the given name, if it exists
     if name and name in tunnel_definitions:
         tunnel_definition = tunnel_definitions[name]
+
+        if "labels" in tunnel_definition and "bind_tls" in options:
+            raise PyngrokError("\"bind_tls\" cannot be set when \"labels\" is also on the tunnel definition.")
 
         addr = tunnel_definition.get("addr") if not addr else addr
         proto = tunnel_definition.get("proto") if not proto else proto
@@ -295,9 +292,6 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     # Only apply proto when "labels" is not defined
     if "labels" not in options:
         options["proto"] = proto
-
-    if "labels" in options and "bind_tls" in options:
-        raise PyngrokError("\"bind_tls\" cannot be set when \"labels\" is also on the tunnel definition.")
 
     # Upgrade legacy parameters, if present
     if pyngrok_config.ngrok_version == "v3":

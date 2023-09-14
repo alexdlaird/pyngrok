@@ -122,3 +122,17 @@ def set_default(pyngrok_config):
     global _default_pyngrok_config
 
     _default_pyngrok_config = pyngrok_config
+
+
+def get_config_path(pyngrok_config):
+    """
+    Return the ``config_path`` if set on the given ``pyngrok_configg``, otherwise return ``ngrok``'s default path.
+
+    :param pyngrok_config: The ``pyngrok`` configuration to first check for a ``config_path``.
+    :type pyngrok_config: PyngrokConfig
+    :return: The path to the config file.
+    """
+    if pyngrok_config.config_path is not None:
+        return pyngrok_config.config_path
+    else:
+        return DEFAULT_NGROK_CONFIG_PATH
