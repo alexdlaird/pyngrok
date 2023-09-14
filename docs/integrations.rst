@@ -414,7 +414,7 @@ Here is an example of a simple TCP ping/pong server. It opens a local socket, us
 socket, then the client/server communicate via the publicly exposed address.
 
 For this code to run, we first need to go to
-`ngrok's Reserved TCP Addresses <https://dashboard.ngrok.com/endpoints/tcp-addresses>`_ and make a reservation. Set the HOST and PORT
+`ngrok's Reserved TCP Addresses <https://dashboard.ngrok.com/cloud-edge/tcp-addresses>`_ and make a reservation. Set the HOST and PORT
 environment variables pointing to that reserved address.
 
 Now create ``server.py`` with the following code:

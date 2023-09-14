@@ -81,6 +81,32 @@ additional properties that are `supported by ngrok <https://ngrok.com/docs/secur
     the ``http`` tunnel in this case. If only a single tunnel is needed, pass ``bind_tls=True`` and a reference to
     the ``https`` tunnel will be returned.
 
+``ngrok``'s Cloud Edge
+----------------------
+
+To use `ngrok's Cloud Edge <https://ngrok.com/docs/cloud-edge/>`_ with ``pyngrok``, first `configure an Edge on ngrok's dashboard <https://dashboard.ngrok.com/cloud-edge/edges>`_
+(with at least one Endpoint mapped to the Edge), and define a labeled tunnel in `the ngrok config file <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#define-two-labeled-tunnels>`_
+that points to the Edge.
+
+.. code-block:: yaml
+
+    tunnels:
+      some-edge-tunnel:
+        labels:
+          - edge=my_edge_id
+        addr: http://localhost:80
+
+To start a labeled tunnel in ``pyngrok``, pass its ``name`` to :func:`~pyngrok.ngrok.connect`.
+
+.. code-block:: python
+
+    from pyngrok import ngrok
+
+    # Open the Cloud Edge tunnel that is defind in the config file
+    named_tunnel = ngrok.connect(name="some-edge-tunnel")
+
+Once a Cloud Edge tunnel is started, it can be managed through `ngrok's dashboard <https://dashboard.ngrok.com/cloud-edge/edges>`_.
+
 Get Active Tunnels
 ==================
 
@@ -164,7 +190,7 @@ log is processed, this function will be called, passing a :class:`~pyngrok.proce
     ngrok_tunnel = ngrok.connect()
 
 If these events aren't necessary for our use case, some resources can be freed up by turning them off. Set
-``monitor_thread`` to ``False`` in :class:`~pyngrok.conf.PyngrokConfig`:
+``monitor_thread`` to ``False`` in :class:`~pyngrok.conf.PyngrokConfig`.
 
 .. code-block:: python
 
@@ -176,7 +202,7 @@ If these events aren't necessary for our use case, some resources can be freed u
     ngrok_tunnel = ngrok.connect()
 
 Alternatively, :func:`~pyngrok.process.NgrokProcess.stop_monitor_thread` can be used to stop monitoring on a
-running process:
+running process.
 
 .. code-block:: python
 
@@ -223,7 +249,7 @@ Configuration
 -----------------
 
 ``pyngrok``'s interactions with the ``ngrok`` binary can be configured using :class:`~pyngrok.conf.PyngrokConfig`.
-The default ``pyngrok_config`` object can updated with our own object using :func:`~pyngrok.conf.set_default`:
+The default ``pyngrok_config`` object can updated with our own object using :func:`~pyngrok.conf.set_default`.
 
 .. code-block:: python
 
@@ -256,7 +282,7 @@ still running by calling its :func:`~pyngrok.process.NgrokProcess.healthy` metho
 -------------------------------
 
 ``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install v3. To install v2 instead,
-set ``ngrok_version`` in :class:`~pyngrok.conf.PyngrokConfig`:
+set ``ngrok_version`` in :class:`~pyngrok.conf.PyngrokConfig`.
 
 .. code-block:: python
 
@@ -268,8 +294,9 @@ Setting the ``authtoken``
 -------------------------
 
 Running ``ngrok`` with an auth token enables additional features available on our account (for
-instance, the ability to open multiple tunnels concurrently). We can obtain our auth token from
-the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it to ``ngrok``'s config file like this:
+instance, the ability to open multiple tunnels concurrently, or use `ngrok's Cloud Edge <https://ngrok.com/docs/cloud-edge/>`_).
+We can obtain our auth token from the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it to ``ngrok``'s
+config file.
 
 .. code-block:: python
 
@@ -284,7 +311,7 @@ the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it to ``ngrok``
     # <NgrokTunnel: "https://<public_sub2>.ngrok.io" -> "http://localhost:8000">
     ngrok_tunnel2 = ngrok.connect(8000)
 
-We can also override ``ngrok``'s installed auth token using :class:`~pyngrok.conf.PyngrokConfig`:
+We can also override ``ngrok``'s installed auth token using :class:`~pyngrok.conf.PyngrokConfig`.
 
 .. code-block:: python
 
@@ -299,7 +326,7 @@ Setting the ``region``
 ----------------------
 
 By default, ``ngrok`` will open a tunnel in the ``us`` region. To override this, use
-the ``region`` parameter in :class:`~pyngrok.conf.PyngrokConfig`:
+the ``region`` parameter in :class:`~pyngrok.conf.PyngrokConfig`.
 
 .. code-block:: python
 
@@ -335,7 +362,7 @@ Config File
 -----------
 
 By default, `ngrok will look for its config file <https://ngrok.com/docs/ngrok-agent/config>`_ in the home directory's ``.ngrok2``
-folder. We can override this behavior by updating our default :class:`~pyngrok.conf.PyngrokConfig`:
+folder. We can override this behavior by updating our default :class:`~pyngrok.conf.PyngrokConfig`.
 
 .. code-block:: python
 
@@ -350,7 +377,7 @@ Binary Path
 -----------
 
 The ``pyngrok`` package manages its own ``ngrok`` binary. We can use our ``ngrok`` binary if we want
-by updating the default :class:`~pyngrok.conf.PyngrokConfig`:
+by updating the default :class:`~pyngrok.conf.PyngrokConfig`.
 
 .. code-block:: python
 
