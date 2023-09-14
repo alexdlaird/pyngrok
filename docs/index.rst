@@ -10,8 +10,8 @@ pyngrok - a Python wrapper for ngrok
 
 .. image:: https://badge.fury.io/py/pyngrok.svg
    :target: https://badge.fury.io/py/pyngrok
-.. image:: https://github.com/alexdlaird/pyngrok/workflows/CI/CD/badge.svg
-   :target: https://github.com/alexdlaird/pyngrok/actions?query=workflow%3ACI%2FCD
+.. image:: https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml/badge.svg
+   :target: https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml
 .. image:: https://codecov.io/gh/alexdlaird/pyngrok/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/alexdlaird/pyngrok
 .. image:: https://readthedocs.org/projects/pyngrok/badge/?version=latest
@@ -20,8 +20,6 @@ pyngrok - a Python wrapper for ngrok
    :target: https://pypi.org/project/pyngrok/
 .. image:: https://img.shields.io/pypi/l/pyngrok.svg
    :target: https://pypi.org/project/pyngrok/
-.. image:: https://img.shields.io/twitter/url/http/shields.io.svg?style=social
-   :target: https://twitter.com/intent/tweet?text=Check+out+%23pyngrok%2C+a+Python+wrapper+for+%23ngrok+that+lets+you+programmatically+open+secure+%23tunnels+to+local+web+servers%2C+build+%23webhook+integrations%2C+enable+SSH+access%2C+test+chatbots%2C+demo+from+your+own+machine%2C+and+more.%0D%0A%0D%0A&url=https://github.com/alexdlaird/pyngrok&via=alexdlaird
 
 ``pyngrok`` is a Python wrapper for ``ngrok`` that manages its own binary, making ``ngrok`` available via a convenient
 Python API.

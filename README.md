@@ -1,12 +1,11 @@
 <p align="center"><img alt="pyngrok - a Python wrapper for ngrok" src="https://pyngrok.readthedocs.io/en/latest/_images/logo.png" /></p>
 
 [![PyPI Version](https://badge.fury.io/py/pyngrok.svg)](https://badge.fury.io/py/pyngrok)
-[![CI/CD](https://github.com/alexdlaird/pyngrok/workflows/CI/CD/badge.svg)](https://github.com/alexdlaird/pyngrok/actions?query=workflow%3ACI%2FCD)
+[![CI Tests](https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml/badge.svg)](https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml)
 [![Codecov](https://codecov.io/gh/alexdlaird/pyngrok/branch/main/graph/badge.svg)](https://codecov.io/gh/alexdlaird/pyngrok)
 [![Docs](https://readthedocs.org/projects/pyngrok/badge/?version=latest)](https://pyngrok.readthedocs.io/en/latest/?badge=latest)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pyngrok.svg)](https://pypi.org/project/pyngrok/)
 [![PyPI License](https://img.shields.io/pypi/l/pyngrok.svg)](https://pypi.org/project/pyngrok/)
-[![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check+out+%23pyngrok%2C+a+Python+wrapper+for+%23ngrok+that+lets+you+programmatically+open+secure+%23tunnels+to+local+web+servers%2C+build+%23webhook+integrations%2C+enable+SSH+access%2C+test+chatbots%2C+demo+from+your+own+machine%2C+and+more.%0D%0A%0D%0A&url=https://github.com/alexdlaird/pyngrok&via=alexdlaird)
 
 `pyngrok` is a Python wrapper for `ngrok` that manages its own binary, making `ngrok` available via a convenient Python
 API.
