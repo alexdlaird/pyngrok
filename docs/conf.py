@@ -83,11 +83,8 @@ html_theme = "alabaster"
 # documentation.
 #
 html_theme_options = {
-    "show_powered_by": False,
     "github_user": "alexdlaird",
     "github_repo": "pyngrok",
-    "github_banner": True,
-    "show_related": False,
     "note_bg": "#FFF59C",
 }
 
