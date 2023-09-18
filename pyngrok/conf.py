@@ -1,5 +1,5 @@
 import os
-from typing import Optional
+from typing import Optional, Callable
 
 from pyngrok.installer import get_ngrok_bin
 
@@ -53,7 +53,7 @@ class PyngrokConfig:
     :var log_event_callback: A callback that will be invoked each time ``ngrok`` emits a log. The function should take
         one argument of type :py:class:`str`. ``monitor_thread`` must be set to ``True`` or the function will stop being called
         after ``ngrok`` finishes starting.
-    :vartype log_event_callback: types.FunctionType
+    :vartype log_event_callback: typing.Callable
     :var startup_timeout: The max number of seconds to wait for ``ngrok`` to start before timing out.
     :vartype startup_timeout: int
     :var max_logs: The max number of logs to store in :class:`~pyngrok.process.NgrokProcess`'s ``logs`` variable.
@@ -67,20 +67,32 @@ class PyngrokConfig:
     :var api_key: A ``ngrok`` API key.
     :vartype api_key: str
     """
+    ngrok_path: Optional[str]
+    config_path: Optional[str]
+    auth_token: Optional[str]
+    region: Optional[str]
+    monitor_thread: bool
+    log_event_callback: Optional[Callable]
+    startup_timeout: int
+    max_logs: int
+    request_timeout: float
+    start_new_session: bool
+    ngrok_version: str
+    api_key: Optional[str]
 
     def __init__(self,
-                 ngrok_path=None,
-                 config_path=None,
-                 auth_token=None,
-                 region=None,
-                 monitor_thread=True,
-                 log_event_callback=None,
-                 startup_timeout=15,
-                 max_logs=100,
-                 request_timeout=4,
-                 start_new_session=False,
-                 ngrok_version="v3",
-                 api_key=None):
+                 ngrok_path: Optional[str] = None,
+                 config_path: Optional[str] = None,
+                 auth_token: Optional[str] = None,
+                 region: Optional[str] = None,
+                 monitor_thread: bool = True,
+                 log_event_callback: Optional[Callable] = None,
+                 startup_timeout: int = 15,
+                 max_logs: int = 100,
+                 request_timeout: float = 4,
+                 start_new_session: bool = False,
+                 ngrok_version: str = "v3",
+                 api_key: Optional[str] = None) -> None:
         self.ngrok_path = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
         self.config_path = DEFAULT_CONFIG_PATH if config_path is None else config_path
         self.auth_token = auth_token
@@ -98,14 +110,13 @@ class PyngrokConfig:
 _default_pyngrok_config: Optional[PyngrokConfig] = None
 
 
-def get_default():
+def get_default() -> PyngrokConfig:
     """
     Get the default config to be used with methods in the :mod:`~pyngrok.ngrok` module. To override the
     default individually, the ``pyngrok_config`` keyword arg can also be passed to most of these methods,
     or set a new default config with :func:`~pyngrok.conf.set_default`.
 
     :return: The default ``pyngrok_config``.
-    :rtype: PyngrokConfig
     """
     if _default_pyngrok_config is None:
         set_default(PyngrokConfig())
@@ -113,25 +124,23 @@ def get_default():
     return _default_pyngrok_config
 
 
-def set_default(pyngrok_config):
+def set_default(pyngrok_config: PyngrokConfig):
     """
     Set a new default config to be used with methods in the :mod:`~pyngrok.ngrok` module. To override the
     default individually, the ``pyngrok_config`` keyword arg can also be passed to most of these methods.
 
     :param pyngrok_config: The new ``pyngrok_config`` to be used by default.
-    :type pyngrok_config: PyngrokConfig
     """
     global _default_pyngrok_config
 
     _default_pyngrok_config = pyngrok_config
 
 
-def get_config_path(pyngrok_config):
+def get_config_path(pyngrok_config: PyngrokConfig) -> str:
     """
     Return the ``config_path`` if set on the given ``pyngrok_configg``, otherwise return ``ngrok``'s default path.
 
     :param pyngrok_config: The ``pyngrok`` configuration to first check for a ``config_path``.
-    :type pyngrok_config: PyngrokConfig
     :return: The path to the config file.
     """
     if pyngrok_config.config_path is not None:

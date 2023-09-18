@@ -8,7 +8,7 @@ import tempfile
 import time
 import zipfile
 from http import HTTPStatus
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from urllib.request import urlopen
 
 import yaml
@@ -57,12 +57,11 @@ _config_cache: Dict[str, Dict[str, Any]] = {}
 _print_progress_enabled = True
 
 
-def get_ngrok_bin():
+def get_ngrok_bin() -> str:
     """
     Get the ``ngrok`` executable for the current system.
 
     :return: The name of the ``ngrok`` executable.
-    :rtype: str
     """
     system = platform.system().lower()
     if system in ["darwin", "linux", "freebsd"]:
@@ -73,20 +72,20 @@ def get_ngrok_bin():
         raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
 
 
-def install_ngrok(ngrok_path, ngrok_version="v2", **kwargs):
+def install_ngrok(ngrok_path: str,
+                  ngrok_version: Optional[str] = "v2",
+                  **kwargs: Any):
     """
     Download and install the latest ``ngrok`` for the current system, overwriting any existing contents
     at the given path.
 
     :param ngrok_path: The path to where the ``ngrok`` binary will be downloaded.
-    :type ngrok_path: str
     :param ngrok_version: The major version of ``ngrok`` to be installed.
-    :type ngrok_version: str, optional
     :param kwargs: Remaining ``kwargs`` will be passed to :func:`_download_file`.
-    :type kwargs: dict, optional
     """
     logger.debug(
-        "Installing ngrok {} to {}{} ...".format(ngrok_version, ngrok_path, ", overwriting" if os.path.exists(ngrok_path) else ""))
+        "Installing ngrok {} to {}{} ...".format(ngrok_version, ngrok_path,
+                                                 ", overwriting" if os.path.exists(ngrok_path) else ""))
 
     ngrok_dir = os.path.dirname(ngrok_path)
 
@@ -122,14 +121,13 @@ def install_ngrok(ngrok_path, ngrok_version="v2", **kwargs):
         raise PyngrokNgrokInstallError("An error occurred while downloading ngrok from {}: {}".format(url, e))
 
 
-def _install_ngrok_zip(ngrok_path, zip_path):
+def _install_ngrok_zip(ngrok_path: str,
+                       zip_path: str):
     """
     Extract the ``ngrok`` zip file to the given path.
 
     :param ngrok_path: The path where ``ngrok`` will be installed.
-    :type ngrok_path: str
     :param zip_path: The path to the ``ngrok`` zip file to be extracted.
-    :type zip_path: str
     """
     _print_progress("Installing ngrok ... ")
 
@@ -142,18 +140,16 @@ def _install_ngrok_zip(ngrok_path, zip_path):
     _clear_progress()
 
 
-def get_ngrok_config(config_path, use_cache=True, ngrok_version="v2"):
+def get_ngrok_config(config_path: str,
+                     use_cache: bool = True,
+                     ngrok_version: Optional[str] = "v2") -> dict[str, Any]:
     """
     Get the ``ngrok`` config from the given path.
 
     :param config_path: The ``ngrok`` config path to read.
-    :type config_path: str
     :param use_cache: Use the cached version of the config (if populated).
-    :type use_cache: bool
     :param ngrok_version: The major version of ``ngrok`` installed.
-    :type ngrok_version: str, optional
     :return: The ``ngrok`` config.
-    :rtype: dict
     """
     if config_path not in _config_cache or not use_cache:
         with open(config_path, "r") as config_file:
@@ -166,14 +162,12 @@ def get_ngrok_config(config_path, use_cache=True, ngrok_version="v2"):
     return _config_cache[config_path]
 
 
-def get_default_config(ngrok_version):
+def get_default_config(ngrok_version: Optional[str]) -> dict[str, Any]:
     """
     Get the default config params for the given major version of ``ngrok``.
 
     :param ngrok_version: The major version of ``ngrok`` installed.
-    :type ngrok_version: str, optional
     :return: The default config.
-    :rtype: dict
     """
     if ngrok_version == "v2":
         return {}
@@ -183,17 +177,16 @@ def get_default_config(ngrok_version):
         raise PyngrokError("\"ngrok_version\" must be a supported version: {}".format(SUPPORTED_NGROK_VERSIONS))
 
 
-def install_default_config(config_path, data=None, ngrok_version="v2"):
+def install_default_config(config_path: str,
+                           data: Optional[Dict[str, Any]] = None,
+                           ngrok_version: Optional[str] = "v2"):
     """
     Install the given data to the ``ngrok`` config. If a config is not already present for the given path, create one.
     Before saving new data to the default config, validate that they are compatible with ``pyngrok``.
 
     :param config_path: The path to where the ``ngrok`` config should be installed.
-    :type config_path: str
     :param data: A dictionary of things to add to the default config.
-    :type data: dict, optional
     :param ngrok_version: The major version of ``ngrok`` installed.
-    :type ngrok_version: str, optional
     """
     if data is None:
         data = {}
@@ -220,12 +213,11 @@ def install_default_config(config_path, data=None, ngrok_version="v2"):
         yaml.dump(config, config_file)
 
 
-def validate_config(data):
+def validate_config(data: dict[str, Any]):
     """
     Validate that the given dict of config items are valid for ``ngrok`` and ``pyngrok``.
 
     :param data: A dictionary of things to be validated as config items.
-    :type data: dict
     """
     if data.get("web_addr", None) is False:
         raise PyngrokError("\"web_addr\" cannot be False, as the ngrok API is a dependency for pyngrok")
@@ -235,18 +227,16 @@ def validate_config(data):
         raise PyngrokError("\"log_level\" must be \"info\" to be compatible with pyngrok")
 
 
-def _download_file(url, retries=0, **kwargs):
+def _download_file(url: str,
+                   retries: int = 0,
+                   **kwargs: Any) -> str:
     """
     Download a file to a temporary path and emit a status to stdout (if possible) as the download progresses.
 
     :param url: The URL to download.
-    :type url: str
     :param retries: The retry attempt index, if download fails.
-    :type retries: int, optional
     :param kwargs: Remaining ``kwargs`` will be passed to :py:func:`urllib.request.urlopen`.
-    :type kwargs: dict, optional
     :return: The path to the downloaded temporary file.
-    :rtype: str
     """
     kwargs["timeout"] = kwargs.get("timeout", DEFAULT_DOWNLOAD_TIMEOUT)
 
@@ -266,7 +256,7 @@ def _download_file(url, retries=0, **kwargs):
         if status_code != HTTPStatus.OK:
             logger.debug("Response status code: {}".format(status_code))
 
-            return None
+            raise PyngrokNgrokInstallError("Download failed, status code: {}".format(status_code))
 
         length = response.getheader("Content-Length")
         if length:

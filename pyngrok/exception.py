@@ -1,8 +1,8 @@
+from typing import Any, Optional, Dict, List, MutableMapping
+
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "5.2.2"
-
-from typing import Mapping, Any
+__version__ = "6.1.1"
 
 
 class PyngrokError(Exception):
@@ -30,15 +30,18 @@ class PyngrokNgrokError(PyngrokError):
     """
     Raised when an error occurs interacting directly with the ``ngrok`` binary.
 
-    :var error: A description of the error being thrown.
-    :vartype error: str
     :var ngrok_logs: The ``ngrok`` logs, which may be useful for debugging the error.
     :vartype ngrok_logs: list[NgrokLog]
     :var ngrok_error: The error that caused the ``ngrok`` process to fail.
     :vartype ngrok_error: str
     """
+    ngrok_logs: List[Any]
+    ngrok_error: Optional[str]
 
-    def __init__(self, error, ngrok_logs=None, ngrok_error=None):
+    def __init__(self,
+                 error: str,
+                 ngrok_logs: Optional[List[Any]] = None,
+                 ngrok_error: Optional[str] = None) -> None:
         super(PyngrokNgrokError, self).__init__(error)
 
         if ngrok_logs is None:
@@ -53,8 +56,6 @@ class PyngrokNgrokHTTPError(PyngrokNgrokError):
     Raised when an error occurs making a request to the ``ngrok`` web interface. The ``body``
     contains the error response received from ``ngrok``.
 
-    :var error: A description of the error being thrown.
-    :vartype error: str
     :var url: The request URL that failed.
     :vartype url: str
     :var status_code: The response status code from ``ngrok``.
@@ -66,8 +67,19 @@ class PyngrokNgrokHTTPError(PyngrokNgrokError):
     :var body: The response body from ``ngrok``.
     :vartype body: str
     """
+    ur: str
+    status_code: int
+    message: Optional[str]
+    headers: Dict[str, str] | MutableMapping[str, str] | Any
+    body: str
 
-    def __init__(self, error, url, status_code, message, headers: Any, body):
+    def __init__(self,
+                 error: str,
+                 url: str,
+                 status_code: int,
+                 message: Optional[str],
+                 headers: Dict[str, str] | MutableMapping[str, str] | Any,
+                 body: str) -> None:
         super(PyngrokNgrokHTTPError, self).__init__(error)
 
         self.url = url
@@ -81,13 +93,14 @@ class PyngrokNgrokURLError(PyngrokNgrokError):
     """
     Raised when an error occurs when trying to initiate an API request.
 
-    :var error: A description of the error being thrown.
-    :vartype error: str
     :var reason: The reason for the URL error.
-    :vartype reason: str
+    :vartype reason: str | BaseException
     """
+    reason: str | BaseException
 
-    def __init__(self, error, reason):
+    def __init__(self,
+                 error: str,
+                 reason: str | BaseException) -> None:
         super(PyngrokNgrokURLError, self).__init__(error)
 
         self.reason = reason

@@ -5,21 +5,21 @@ import socket
 import sys
 import uuid
 from http import HTTPStatus
-from typing import Optional, Any, Iterable, List, Dict
+from typing import Optional, Any, Dict, List, Tuple
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import urlopen, Request
 
-from pyngrok.conf import PyngrokConfig
+from pyngrok.process import NgrokProcess
 
 from pyngrok import process, conf, installer
+from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
+from pyngrok.installer import get_default_config
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
 __version__ = "6.1.1"
-
-from pyngrok.installer import get_default_config
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ class NgrokTunnel:
     An object containing information about a ``ngrok`` tunnel.
 
     :var data: The original tunnel data.
-    :vartype data: dict[str, Any]
+    :vartype data: dict[str, typing.Any]
     :var id: The ID of the tunnel.
     :vartype id: str
     :var name: The name of the tunnel.
@@ -41,16 +41,19 @@ class NgrokTunnel:
     :var public_url: The public ``ngrok`` URL.
     :vartype public_url: str
     :var config: The config for the tunnel.
-    :vartype config: dict[dict, Any]
+    :vartype config: dict[dict, typing.Any]
     :var metrics: Metrics for `the tunnel <https://ngrok.com/docs/ngrok-agent/api#list-tunnels>`_.
-    :vartype metrics: dict[dict, Any]
+    :vartype metrics: dict[dict, typing.Any]
     :var pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok``.
     :vartype pyngrok_config: PyngrokConfig
     :var api_url: The API URL for the ``ngrok`` web interface.
     :vartype api_url: str
     """
 
-    def __init__(self, data: Dict[str, Any], pyngrok_config: PyngrokConfig, api_url: str) -> None:
+    def __init__(self,
+                 data: Dict[str, Any],
+                 pyngrok_config: PyngrokConfig,
+                 api_url: str) -> None:
         self.data = data
 
         self.id = data.get("ID", None)
@@ -117,7 +120,8 @@ def install_ngrok(pyngrok_config: Optional[PyngrokConfig] = None):
         installer.install_default_config(conf.DEFAULT_NGROK_CONFIG_PATH, ngrok_version=pyngrok_config.ngrok_version)
 
 
-def set_auth_token(token, pyngrok_config=None):
+def set_auth_token(token: str,
+                   pyngrok_config: Optional[PyngrokConfig] = None):
     """
     Set the ``ngrok`` auth token in the config file, enabling authenticated features (for instance,
     more concurrent tunnels, custom subdomains, etc.).
@@ -126,10 +130,8 @@ def set_auth_token(token, pyngrok_config=None):
     will first download and install ``ngrok``.
 
     :param token: The auth token to set.
-    :type token: str
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
-    :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
@@ -139,7 +141,7 @@ def set_auth_token(token, pyngrok_config=None):
     process.set_auth_token(pyngrok_config, token)
 
 
-def get_ngrok_process(pyngrok_config=None):
+def get_ngrok_process(pyngrok_config: Optional[PyngrokConfig] = None) -> NgrokProcess:
     """
     Get the current ``ngrok`` process for the given config's ``ngrok_path``.
 
@@ -154,9 +156,7 @@ def get_ngrok_process(pyngrok_config=None):
 
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
-    :type pyngrok_config: PyngrokConfig, optional
     :return: The ``ngrok`` process.
-    :rtype: NgrokProcess
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
@@ -196,7 +196,11 @@ def _apply_cloud_edge_to_tunnel(tunnel, pyngrok_config):
         tunnel.proto = edges_prefix
 
 
-def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
+def connect(addr: Optional[str|int] = None,
+            proto: Optional[str] = None,
+            name: Optional[str] = None,
+            pyngrok_config: Optional[PyngrokConfig] = None,
+            **options: Any) -> NgrokTunnel:
     """
     Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning an object representing
     the connected tunnel.
@@ -224,21 +228,15 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
 
     :param addr: The local port to which the tunnel will forward traffic, or a
         `local directory or network address <https://ngrok.com/docs/secure-tunnels/tunnels/http-tunnels#file-url>`_, defaults to "80".
-    :type addr: str, optional
     :param proto: A valid `tunnel protocol
         <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_, defaults to "http".
-    :type proto: str, optional
     :param name: A friendly name for the tunnel, or the name of a `ngrok tunnel definition <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_
         to be used.
-    :type name: str, optional
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
-    :type pyngrok_config: PyngrokConfig, optional
     :param options: Remaining ``kwargs`` are passed as `configuration for the ngrok
         tunnel <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_.
-    :type options: dict, optional
     :return: The created ``ngrok`` tunnel.
-    :rtype: NgrokTunnel
     """
     if "labels" in options:
         raise PyngrokError("\"labels\" cannot be passed to connect(), define a tunnel definition in the config file.")
@@ -339,15 +337,14 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     return tunnel
 
 
-def disconnect(public_url, pyngrok_config=None):
+def disconnect(public_url: str,
+               pyngrok_config: Optional[PyngrokConfig] = None):
     """
     Disconnect the ``ngrok`` tunnel for the given URL, if open.
 
     :param public_url: The public URL of the tunnel to disconnect.
-    :type public_url: str
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
-    :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
@@ -375,7 +372,7 @@ def disconnect(public_url, pyngrok_config=None):
     _current_tunnels.pop(public_url, None)
 
 
-def get_tunnels(pyngrok_config=None):
+def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTunnel]:
     """
     Get a list of active ``ngrok`` tunnels for the given config's ``ngrok_path``.
 
@@ -387,9 +384,7 @@ def get_tunnels(pyngrok_config=None):
 
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
-    :type pyngrok_config: PyngrokConfig, optional
     :return: The active ``ngrok`` tunnels.
-    :rtype: list[NgrokTunnel]
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
@@ -406,14 +401,13 @@ def get_tunnels(pyngrok_config=None):
     return list(_current_tunnels.values())
 
 
-def kill(pyngrok_config=None):
+def kill(pyngrok_config: Optional[PyngrokConfig] = None):
     """
     Terminate the ``ngrok`` processes, if running, for the given config's ``ngrok_path``. This method will not
     block, it will just issue a kill request.
 
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
-    :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
@@ -423,15 +417,13 @@ def kill(pyngrok_config=None):
     _current_tunnels.clear()
 
 
-def get_version(pyngrok_config=None):
+def get_version(pyngrok_config: Optional[PyngrokConfig] = None) -> Tuple[str, str]:
     """
     Get a tuple with the ``ngrok`` and ``pyngrok`` versions.
 
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
-    :type pyngrok_config: PyngrokConfig, optional
     :return: A tuple of ``(ngrok_version, pyngrok_version)``.
-    :rtype: tuple
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
@@ -441,15 +433,13 @@ def get_version(pyngrok_config=None):
     return ngrok_version, __version__
 
 
-def update(pyngrok_config=None):
+def update(pyngrok_config: Optional[PyngrokConfig] = None) -> str:
     """
     Update ``ngrok`` for the given config's ``ngrok_path``, if an update is available.
 
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
-    :type pyngrok_config: PyngrokConfig, optional
     :return: The result from the ``ngrok`` update.
-    :rtype: str
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
@@ -542,7 +532,8 @@ def api_request(url: str,
         raise PyngrokNgrokURLError("ngrok client exception, URLError: {}".format(e.reason), e.reason)
 
 
-def run(args=None, pyngrok_config=None):
+def run(args: Optional[List[str]] = None,
+        pyngrok_config: Optional[PyngrokConfig] = None):
     """
     Ensure ``ngrok`` is installed at the default path, then call :func:`~pyngrok.process.run_process`.
 
@@ -551,10 +542,8 @@ def run(args=None, pyngrok_config=None):
     :func:`~pyngrok.ngrok.connect`), or use :func:`~pyngrok.process.get_process`.
 
     :param args: Arguments to be passed to the ``ngrok`` process.
-    :type args: list[str], optional
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
-    :type pyngrok_config: PyngrokConfig, optional
     """
     if args is None:
         args = []
