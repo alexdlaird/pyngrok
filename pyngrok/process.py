@@ -242,9 +242,9 @@ def set_auth_token(pyngrok_config: PyngrokConfig,
         logger.info(
             "Updating authtoken for default \"config_path\" of \"ngrok_path\": {}".format(pyngrok_config.ngrok_path))
 
-    result = subprocess.check_output(start)
+    result = str(subprocess.check_output(start))
 
-    if "Authtoken saved" not in str(result):
+    if "Authtoken saved" not in result:
         raise PyngrokNgrokError("An error occurred when saving the auth token: {}".format(result))
 
 

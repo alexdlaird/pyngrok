@@ -53,10 +53,10 @@ class PyngrokConfig:
                  ngrok_version: str = "v3",
                  api_key: Optional[str] = None) -> None:
         #: The path to the ``ngrok`` binary, defaults to the value in `conf.DEFAULT_NGROK_PATH
-        #: <index.html#config-file>`_
+        #: <index.html#config-file>`_.
         self.ngrok_path: str = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
         #: The path to the ``ngrok`` config, defaults to ``None`` and ``ngrok`` manages it.
-        self.config_path: str = DEFAULT_CONFIG_PATH if config_path is None else config_path
+        self.config_path: Optional[str] = DEFAULT_CONFIG_PATH if config_path is None else config_path
         #: A ``ngrok`` authtoken to pass to commands (overrides what is in the config).
         self.auth_token: Optional[str] = auth_token
         #: The region in which ``ngrok`` should start.
@@ -73,7 +73,7 @@ class PyngrokConfig:
         self.max_logs: int = max_logs
         #: The max timeout when making requests to ``ngrok``'s API.
         self.request_timeout: float = request_timeout
-        #: Passed to :py:class:`subprocess.Popen` when launching ``ngrok``. (Python 3 and POSIX only)
+        #: Passed to :py:class:`subprocess.Popen` when launching ``ngrok``. (Python 3 and POSIX only).
         self.start_new_session: bool = start_new_session
         #: The major version of ``ngrok`` installed.
         self.ngrok_version: str = ngrok_version

@@ -29,15 +29,15 @@ class NgrokTunnel:
     """
 
     def __init__(self,
-                 data: Dict[str, Any],
+                 data: Dict[str, str],
                  pyngrok_config: PyngrokConfig,
-                 api_url: str) -> None:
+                 api_url: Optional[str]) -> None:
         #: The original tunnel data.
         self.data: Dict[str, Any] = data
         #: The ``pyngrok`` configuration to use when interacting with the ``ngrok``.
         self.pyngrok_config: PyngrokConfig = pyngrok_config
         #: The API URL for the ``ngrok`` web interface.
-        self.api_url: str = api_url
+        self.api_url: Optional[str] = api_url
 
         #: The ID of the tunnel.
         self.id: Optional[str] = data.get("ID", None)
@@ -439,7 +439,7 @@ def api_request(url: str,
                 data: Optional[Dict[str, Any]] = None,
                 params: Optional[Dict[str, Any]] = None,
                 timeout: float = 4,
-                auth: Optional[str] = None) -> Optional[Dict[str, Any]]:
+                auth: Optional[str] = None) -> Dict[str, Any]:
     """
     Invoke an API request to the given URL, returning JSON data from the response.
 
@@ -501,7 +501,7 @@ def api_request(url: str,
             raise PyngrokNgrokHTTPError("ngrok client API returned {}: {}".format(status_code, response_data), url,
                                         status_code, None, request.headers, response_data)
         elif status_code == HTTPStatus.NO_CONTENT:
-            return None
+            return {}
 
         return json.loads(response_data)
     except socket.timeout:
