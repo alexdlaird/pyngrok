@@ -81,7 +81,7 @@ class PyngrokConfig:
         self.api_key: Optional[str] = api_key
 
 
-_default_pyngrok_config: Optional[PyngrokConfig] = None
+_default_pyngrok_config: PyngrokConfig = PyngrokConfig()
 
 
 def get_default() -> PyngrokConfig:

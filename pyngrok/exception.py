@@ -75,10 +75,11 @@ class PyngrokNgrokURLError(PyngrokNgrokError):
     Raised when an error occurs when trying to initiate an API request.
     """
 
+    # When Python <3.9 support is dropped, reason type can be changed to str|BaseException
     def __init__(self,
                  error: str,
-                 reason: str) -> None:
+                 reason: Any) -> None:
         super(PyngrokNgrokURLError, self).__init__(error)
 
         #: The reason for the URL error.
-        self.reason: str = reason
+        self.reason: Any = reason

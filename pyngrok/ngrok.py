@@ -29,7 +29,7 @@ class NgrokTunnel:
     """
 
     def __init__(self,
-                 data: Dict[str, str],
+                 data: Dict[str, Any],
                  pyngrok_config: PyngrokConfig,
                  api_url: Optional[str]) -> None:
         #: The original tunnel data.
@@ -183,6 +183,7 @@ def _apply_cloud_edge_to_tunnel(tunnel, pyngrok_config):
         tunnel.proto = edges_prefix
 
 
+# When Python <3.9 support is dropped, addr type can be changed to Optional[str|int]
 def connect(addr: Optional[str] = None,
             proto: Optional[str] = None,
             name: Optional[str] = None,
