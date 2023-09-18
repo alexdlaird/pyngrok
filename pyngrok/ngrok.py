@@ -521,7 +521,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4, auth=None)
             raise PyngrokNgrokHTTPError("ngrok client API returned {}: {}".format(status_code, response_data), url,
                                         status_code, None, request.headers, response_data)
         elif status_code == HTTPStatus.NO_CONTENT:
-            return None
+            return {}
 
         return json.loads(response_data)
     except socket.timeout:
