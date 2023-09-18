@@ -2,6 +2,8 @@ __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
 __version__ = "5.2.2"
 
+from typing import Mapping, Any
+
 
 class PyngrokError(Exception):
     """
@@ -65,7 +67,7 @@ class PyngrokNgrokHTTPError(PyngrokNgrokError):
     :vartype body: str
     """
 
-    def __init__(self, error, url, status_code, message, headers, body):
+    def __init__(self, error, url, status_code, message, headers: Any, body):
         super(PyngrokNgrokHTTPError, self).__init__(error)
 
         self.url = url

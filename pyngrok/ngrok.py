@@ -5,7 +5,7 @@ import socket
 import sys
 import uuid
 from http import HTTPStatus
-from typing import Optional
+from typing import Optional, Any, Iterable, List
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import urlopen, Request
@@ -29,7 +29,7 @@ class NgrokTunnel:
     An object containing information about a ``ngrok`` tunnel.
 
     :var data: The original tunnel data.
-    :vartype data: dict
+    :vartype data: dict[str, Any]
     :var id: The ID of the tunnel.
     :vartype id: str
     :var name: The name of the tunnel.
@@ -41,16 +41,16 @@ class NgrokTunnel:
     :var public_url: The public ``ngrok`` URL.
     :vartype public_url: str
     :var config: The config for the tunnel.
-    :vartype config: dict
+    :vartype config: dict[dict, Any]
     :var metrics: Metrics for `the tunnel <https://ngrok.com/docs/ngrok-agent/api#list-tunnels>`_.
-    :vartype metrics: dict
+    :vartype metrics: dict[dict, Any]
     :var pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok``.
     :vartype pyngrok_config: PyngrokConfig
     :var api_url: The API URL for the ``ngrok`` web interface.
     :vartype api_url: str
     """
 
-    def __init__(self, data: dict, pyngrok_config: PyngrokConfig, api_url: str) -> None:
+    def __init__(self, data: dict[str, Any], pyngrok_config: PyngrokConfig, api_url: str) -> None:
         self.data = data
 
         self.id = data.get("ID", None)
@@ -457,7 +457,12 @@ def update(pyngrok_config=None):
     return process.capture_run_process(pyngrok_config.ngrok_path, ["update"])
 
 
-def api_request(url, method="GET", data=None, params=None, timeout=4, auth=None):
+def api_request(url: str,
+                method: str = "GET",
+                data: Optional[dict[str, Any]] = None,
+                params: Optional[dict[str, Any]] = None,
+                timeout: float = 4,
+                auth: Optional[str] = None) -> Optional[dict[str, Any]]:
     """
     Invoke an API request to the given URL, returning JSON data from the response.
 
@@ -482,27 +487,20 @@ def api_request(url, method="GET", data=None, params=None, timeout=4, auth=None)
                                      params={"tunnel_name": "foo"})
 
     :param url: The request URL.
-    :type url: str
     :param method: The HTTP method.
-    :type method: str, optional
     :param data: The request body.
-    :type data: dict, optional
     :param params: The URL parameters.
-    :type params: dict, optional
     :param timeout: The request timeout, in seconds.
-    :type timeout: float, optional
     :param auth: Set as Bearer for an Authorization header.
-    :type auth: str, optional
     :return: The response from the request.
-    :rtype: dict
     """
     if params is None:
-        params = []
+        params = {}
 
     if not url.lower().startswith("http"):
         raise PyngrokSecurityError("URL must start with \"http\": {}".format(url))
 
-    data = json.dumps(data).encode("utf-8") if data else None
+    encoded_data = json.dumps(data).encode("utf-8") if data else None
 
     if params:
         url += "?{}".format(urlencode([(x, params[x]) for x in params]))
@@ -513,10 +511,10 @@ def api_request(url, method="GET", data=None, params=None, timeout=4, auth=None)
         request.add_header("Ngrok-Version", "2")
         request.add_header("Authorization", "Bearer {}".format(auth))
 
-    logger.debug("Making {} request to {} with data: {}".format(method, url, data))
+    logger.debug("Making {} request to {} with data: {!r}".format(method, url, encoded_data))
 
     try:
-        response = urlopen(request, data, timeout)
+        response = urlopen(request, encoded_data, timeout)
         response_data = response.read().decode("utf-8")
 
         status_code = response.getcode()
@@ -539,7 +537,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4, auth=None)
 
         raise PyngrokNgrokHTTPError("ngrok client exception, API returned {}: {}".format(status_code, response_data),
                                     e.url,
-                                    status_code, e.msg, e.hdrs, response_data)
+                                    status_code, e.reason, e.headers, response_data)
     except URLError as e:
         raise PyngrokNgrokURLError("ngrok client exception, URLError: {}".format(e.reason), e.reason)
 

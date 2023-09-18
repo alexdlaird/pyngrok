@@ -8,6 +8,7 @@ import tempfile
 import time
 import zipfile
 from http import HTTPStatus
+from typing import Any
 from urllib.request import urlopen
 
 import yaml
@@ -52,7 +53,7 @@ SUPPORTED_NGROK_VERSIONS = ["v2", "v3"]
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
 
-_config_cache: dict[str, dict] = {}
+_config_cache: dict[str, dict[str, Any]] = {}
 _print_progress_enabled = True
 
 
