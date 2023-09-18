@@ -385,7 +385,7 @@ server. We can use ``pyngrok`` to expose it to the web via a tunnel, as show in 
     from http.server import HTTPServer, BaseHTTPRequestHandler
     from pyngrok import ngrok
 
-    port = os.environ.get("PORT", 80)
+    port = os.environ.get("PORT", "80")
 
     server_address = ("", port)
     httpd = HTTPServer(server_address, BaseHTTPRequestHandler)

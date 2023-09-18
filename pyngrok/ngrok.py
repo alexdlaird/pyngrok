@@ -500,7 +500,7 @@ def api_request(url: str,
         request.add_header("Ngrok-Version", "2")
         request.add_header("Authorization", "Bearer {}".format(auth))
 
-    logger.debug("Making {} request to {} with data: {!r}".format(method, url, encoded_data))
+    logger.debug("Making {} request to {} with data: {}".format(method, url, data))
 
     try:
         response = urlopen(request, encoded_data, timeout)
