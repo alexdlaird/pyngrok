@@ -162,7 +162,7 @@ def get_ngrok_config(config_path: str,
     return _config_cache[config_path]
 
 
-def get_default_config(ngrok_version: Optional[str]) -> dict[str, Any]:
+def get_default_config(ngrok_version: Optional[str]) -> Dict[str, Any]:
     """
     Get the default config params for the given major version of ``ngrok``.
 
@@ -213,7 +213,7 @@ def install_default_config(config_path: str,
         yaml.dump(config, config_file)
 
 
-def validate_config(data: dict[str, Any]):
+def validate_config(data: Dict[str, Any]):
     """
     Validate that the given dict of config items are valid for ``ngrok`` and ``pyngrok``.
 
