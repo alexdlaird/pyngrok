@@ -120,6 +120,8 @@ html_sidebars = {
     ],
 }
 
+toc_object_entries = False
+
 # If true, links to the reST sources are added to the pages.
 html_show_sourcelink = False
 
