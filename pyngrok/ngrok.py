@@ -5,7 +5,7 @@ import socket
 import sys
 import uuid
 from http import HTTPStatus
-from typing import Optional, Any, Iterable, List
+from typing import Optional, Any, Iterable, List, Dict
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import urlopen, Request
@@ -50,7 +50,7 @@ class NgrokTunnel:
     :vartype api_url: str
     """
 
-    def __init__(self, data: dict[str, Any], pyngrok_config: PyngrokConfig, api_url: str) -> None:
+    def __init__(self, data: Dict[str, Any], pyngrok_config: PyngrokConfig, api_url: str) -> None:
         self.data = data
 
         self.id = data.get("ID", None)
@@ -88,7 +88,7 @@ class NgrokTunnel:
         self.metrics = self.data["metrics"]
 
 
-_current_tunnels: dict[str, NgrokTunnel] = {}
+_current_tunnels: Dict[str, NgrokTunnel] = {}
 
 
 def install_ngrok(pyngrok_config: Optional[PyngrokConfig] = None):
@@ -459,10 +459,10 @@ def update(pyngrok_config=None):
 
 def api_request(url: str,
                 method: str = "GET",
-                data: Optional[dict[str, Any]] = None,
-                params: Optional[dict[str, Any]] = None,
+                data: Optional[Dict[str, Any]] = None,
+                params: Optional[Dict[str, Any]] = None,
                 timeout: float = 4,
-                auth: Optional[str] = None) -> Optional[dict[str, Any]]:
+                auth: Optional[str] = None) -> Optional[Dict[str, Any]]:
     """
     Invoke an API request to the given URL, returning JSON data from the response.
 
