@@ -23,8 +23,6 @@ from pyngrok.installer import get_default_config
 
 logger = logging.getLogger(__name__)
 
-_current_tunnels = {}
-
 
 class NgrokTunnel:
     """
@@ -51,6 +49,7 @@ class NgrokTunnel:
     :var api_url: The API URL for the ``ngrok`` web interface.
     :vartype api_url: str
     """
+
     def __init__(self, data: dict, pyngrok_config: PyngrokConfig, api_url: str) -> None:
         self.data = data
 
@@ -87,6 +86,9 @@ class NgrokTunnel:
 
         self.data["metrics"] = data["metrics"]
         self.metrics = self.data["metrics"]
+
+
+_current_tunnels: dict[str, NgrokTunnel] = {}
 
 
 def install_ngrok(pyngrok_config: Optional[PyngrokConfig] = None):

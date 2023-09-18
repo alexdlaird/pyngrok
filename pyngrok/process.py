@@ -22,8 +22,6 @@ from pyngrok.installer import SUPPORTED_NGROK_VERSIONS
 logger = logging.getLogger(__name__)
 ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))
 
-_current_processes = {}
-
 
 class NgrokProcess:
     """
@@ -473,3 +471,6 @@ def _start_process(pyngrok_config):
             raise PyngrokNgrokError("The ngrok process was unable to start.", ngrok_process.logs)
 
     return ngrok_process
+
+
+_current_processes: dict[str, NgrokProcess] = {}

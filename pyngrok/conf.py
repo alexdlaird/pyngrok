@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from pyngrok.installer import get_ngrok_bin
 
@@ -8,11 +9,9 @@ __version__ = "6.1.1"
 
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
-DEFAULT_CONFIG_PATH = None
+DEFAULT_CONFIG_PATH: Optional[str] = None
 
 DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ngrok.yml")
-
-_default_pyngrok_config = None
 
 
 class PyngrokConfig:
@@ -94,6 +93,9 @@ class PyngrokConfig:
         self.start_new_session = start_new_session
         self.ngrok_version = ngrok_version
         self.api_key = api_key
+
+
+_default_pyngrok_config: Optional[PyngrokConfig] = None
 
 
 def get_default():

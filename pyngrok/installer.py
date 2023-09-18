@@ -16,7 +16,7 @@ from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, Py
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "5.2.2"
+__version__ = "6.1.1"
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +52,7 @@ SUPPORTED_NGROK_VERSIONS = ["v2", "v3"]
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
 
-_config_cache = {}
+_config_cache: dict[str, dict] = {}
 _print_progress_enabled = True
 
 
