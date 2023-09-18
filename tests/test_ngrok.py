@@ -307,7 +307,7 @@ class TestNgrok(NgrokTestCase):
                                      "DELETE")
 
         # THEN
-        self.assertIsNone(response)
+        self.assertEqual(response, {})
         tunnels = ngrok.get_tunnels(self.pyngrok_config_v3)
         self.assertEqual(len(tunnels), 0)
 
