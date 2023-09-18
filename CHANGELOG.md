@@ -6,11 +6,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/6.1.0...HEAD)
 
 ## [6.1.1](https://github.com/alexdlaird/pyngrok/compare/6.1.0...6.1.1) - 2023-09-18
-### Fixed
-- Minor bugs.
-
 ### Added
 - Documentation improvements.
+
+### Fixed
+- Minor bugs.
 
 ## [6.1.0](https://github.com/alexdlaird/pyngrok/compare/6.0.0...6.1.0) - 2023-09-12
 ### Added
