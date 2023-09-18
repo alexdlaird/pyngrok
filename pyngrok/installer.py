@@ -142,7 +142,7 @@ def _install_ngrok_zip(ngrok_path: str,
 
 def get_ngrok_config(config_path: str,
                      use_cache: bool = True,
-                     ngrok_version: Optional[str] = "v2") -> dict[str, Any]:
+                     ngrok_version: Optional[str] = "v2") -> Dict[str, Any]:
     """
     Get the ``ngrok`` config from the given path.
 
