@@ -26,45 +26,33 @@ logger = logging.getLogger(__name__)
 class NgrokTunnel:
     """
     An object containing information about a ``ngrok`` tunnel.
-
-    :var data: The original tunnel data.
-    :vartype data: dict[str, typing.Any]
-    :var id: The ID of the tunnel.
-    :vartype id: str
-    :var name: The name of the tunnel.
-    :vartype name: str
-    :var proto: The protocol of the tunnel.
-    :vartype proto: str
-    :var uri: The tunnel URI, a relative path that can be used to make requests to the ``ngrok`` web interface.
-    :vartype uri: str
-    :var public_url: The public ``ngrok`` URL.
-    :vartype public_url: str
-    :var config: The config for the tunnel.
-    :vartype config: dict[dict, typing.Any]
-    :var metrics: Metrics for `the tunnel <https://ngrok.com/docs/ngrok-agent/api#list-tunnels>`_.
-    :vartype metrics: dict[dict, typing.Any]
-    :var pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok``.
-    :vartype pyngrok_config: PyngrokConfig
-    :var api_url: The API URL for the ``ngrok`` web interface.
-    :vartype api_url: str
     """
 
     def __init__(self,
                  data: Dict[str, Any],
                  pyngrok_config: PyngrokConfig,
                  api_url: str) -> None:
-        self.data = data
+        #: The original tunnel data.
+        self.data: Dict[str, Any] = data
+        #: The ``pyngrok`` configuration to use when interacting with the ``ngrok``.
+        self.pyngrok_config: PyngrokConfig = pyngrok_config
+        #: The API URL for the ``ngrok`` web interface.
+        self.api_url: str = api_url
 
-        self.id = data.get("ID", None)
-        self.name = data.get("name")
-        self.proto = data.get("proto")
-        self.uri = data.get("uri")
-        self.public_url = data.get("public_url")
-        self.config = data.get("config", {})
-        self.metrics = data.get("metrics", {})
-
-        self.pyngrok_config = pyngrok_config
-        self.api_url = api_url
+        #: The ID of the tunnel.
+        self.id: Optional[str] = data.get("ID", None)
+        #: The name of the tunnel.
+        self.name: str = data.get("name")
+        #: The protocol of the tunnel.
+        self.proto: str = data.get("proto")
+        #: The tunnel URI, a relative path that can be used to make requests to the ``ngrok`` web interface.
+        self.uri: str = data.get("uri")
+        #: The public ``ngrok`` URL.
+        self.public_url: str = data.get("public_url")
+        #: The config for the tunnel.
+        self.config: Dict[str, Any] = data.get("config", {})
+        #: Metrics for `the tunnel <https://ngrok.com/docs/ngrok-agent/api#list-tunnels>`_.
+        self.metrics: Dict[str, Any] = data.get("metrics", {})
 
     def __repr__(self):
         return "<NgrokTunnel: \"{}\" -> \"{}\">".format(self.public_url, self.config["addr"]) if self.config.get(

@@ -27,35 +27,23 @@ ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))
 class NgrokLog:
     """
     An object containing a parsed log from the ``ngrok`` process.
-
-    :var line: The raw, unparsed log line.
-    :vartype line: str
-    :var t: The log's ISO 8601 timestamp.
-    :vartype t: str
-    :var lvl: The log's level.
-    :vartype lvl: str
-    :var msg: The log's message.
-    :vartype msg: str
-    :var err: The log's error, if applicable.
-    :vartype err: str
-    :var addr: The URL, if ``obj`` is "web".
-    :vartype addr: str
     """
-    line: str
-    t: Optional[str]
-    lvl: str
-    msg: Optional[str]
-    err: Optional[str]
-    addr: Optional[str]
 
     def __init__(self,
                  line: str) -> None:
-        self.line = line.strip()
-        self.t = None
-        self.lvl = "NOTSET"
-        self.msg = None
-        self.err = None
-        self.addr = None
+        #: The raw, unparsed log line.
+        self.line: str = line.strip()
+
+        #: The log's ISO 8601 timestamp.
+        self.t: Optional[str] = None
+        #: The log's level.
+        self.lvl: str = "NOTSET"
+        #: The log's message.
+        self.msg: Optional[str] = None
+        #: The log's error, if applicable.
+        self.err: Optional[str] = None
+        #: The URL, if ``obj`` is "web".
+        self.addr: Optional[str] = None
 
         for i in shlex.split(self.line):
             if "=" not in i:
@@ -93,33 +81,22 @@ class NgrokLog:
 class NgrokProcess:
     """
     An object containing information about the ``ngrok`` process.
-
-    :var proc: The child process that is running ``ngrok``.
-    :vartype proc: subprocess.Popen
-    :var pyngrok_config: The ``pyngrok`` configuration to use with ``ngrok``.
-    :vartype pyngrok_config: PyngrokConfig
-    :var api_url: The API URL for the ``ngrok`` web interface.
-    :vartype api_url: str
-    :var logs: A list of the most recent logs from ``ngrok``, limited in size to ``max_logs``.
-    :vartype logs: list[typing.Any]
-    :var startup_error: If ``ngrok`` startup fails, this will be the log of the failure.
-    :vartype startup_error: str
     """
-    proc: subprocess.Popen
-    pyngrok_config: PyngrokConfig
-    api_url: Optional[str]
-    logs: List[Any]
-    startup_error: Optional[str]
 
     def __init__(self,
                  proc: subprocess.Popen,
                  pyngrok_config: PyngrokConfig) -> None:
-        self.proc = proc
-        self.pyngrok_config = pyngrok_config
+        #: The child process that is running ``ngrok``.
+        self.proc: subprocess.Popen = proc
+        #: The ``pyngrok`` configuration to use with ``ngrok``.
+        self.pyngrok_config: PyngrokConfig = pyngrok_config
 
-        self.api_url = None
-        self.logs = []
-        self.startup_error = None
+        #: The API URL for the ``ngrok`` web interface.
+        self.api_url: Optional[str] = None
+        #: A list of the most recent logs from ``ngrok``, limited in size to ``max_logs``.
+        self.logs: List[Any] = []
+        #: If ``ngrok`` startup fails, this will be the log of the failure.
+        self.startup_error: Optional[str] = None
 
         self._tunnel_started = False
         self._client_connected = False

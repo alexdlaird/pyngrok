@@ -37,48 +37,7 @@ class PyngrokConfig:
         # Here we leave the default config as-is and pass an override
         pyngrok_config = conf.PyngrokConfig(ngrok_path="/usr/local/bin/ngrok")
         ngrok.connect(pyngrok_config=pyngrok_config)
-
-    :var ngrok_path: The path to the ``ngrok`` binary, defaults to the value in
-        `conf.DEFAULT_NGROK_PATH <index.html#config-file>`_
-    :vartype ngrok_path: str
-    :var config_path: The path to the ``ngrok`` config, defaults to ``None`` and ``ngrok`` manages it.
-    :vartype config_path: str
-    :var auth_token: A ``ngrok`` authtoken to pass to commands (overrides what is in the config).
-    :vartype auth_token: str
-    :var region: The region in which ``ngrok`` should start.
-    :vartype region: str
-    :var monitor_thread: Whether ``ngrok`` should continue to be monitored (for logs, etc.) after startup
-        is complete.
-    :vartype monitor_thread: bool
-    :var log_event_callback: A callback that will be invoked each time ``ngrok`` emits a log. The function should take
-        one argument of type :py:class:`str`. ``monitor_thread`` must be set to ``True`` or the function will stop being called
-        after ``ngrok`` finishes starting.
-    :vartype log_event_callback: typing.Callable
-    :var startup_timeout: The max number of seconds to wait for ``ngrok`` to start before timing out.
-    :vartype startup_timeout: int
-    :var max_logs: The max number of logs to store in :class:`~pyngrok.process.NgrokProcess`'s ``logs`` variable.
-    :vartype max_logs: int
-    :var request_timeout: The max timeout when making requests to ``ngrok``'s API.
-    :vartype request_timeout: float
-    :var start_new_session: Passed to :py:class:`subprocess.Popen` when launching ``ngrok``. (Python 3 and POSIX only)
-    :vartype start_new_session: bool
-    :var ngrok_version: The major version of ``ngrok`` installed.
-    :vartype ngrok_version: str
-    :var api_key: A ``ngrok`` API key.
-    :vartype api_key: str
     """
-    ngrok_path: Optional[str]
-    config_path: Optional[str]
-    auth_token: Optional[str]
-    region: Optional[str]
-    monitor_thread: bool
-    log_event_callback: Optional[Callable]
-    startup_timeout: int
-    max_logs: int
-    request_timeout: float
-    start_new_session: bool
-    ngrok_version: str
-    api_key: Optional[str]
 
     def __init__(self,
                  ngrok_path: Optional[str] = None,
@@ -93,18 +52,33 @@ class PyngrokConfig:
                  start_new_session: bool = False,
                  ngrok_version: str = "v3",
                  api_key: Optional[str] = None) -> None:
-        self.ngrok_path = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
-        self.config_path = DEFAULT_CONFIG_PATH if config_path is None else config_path
-        self.auth_token = auth_token
-        self.region = region
-        self.monitor_thread = monitor_thread
-        self.log_event_callback = log_event_callback
-        self.startup_timeout = startup_timeout
-        self.max_logs = max_logs
-        self.request_timeout = request_timeout
-        self.start_new_session = start_new_session
-        self.ngrok_version = ngrok_version
-        self.api_key = api_key
+        #: The path to the ``ngrok`` binary, defaults to the value in `conf.DEFAULT_NGROK_PATH
+        #: <index.html#config-file>`_
+        self.ngrok_path: str = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
+        #: The path to the ``ngrok`` config, defaults to ``None`` and ``ngrok`` manages it.
+        self.config_path: str = DEFAULT_CONFIG_PATH if config_path is None else config_path
+        #: A ``ngrok`` authtoken to pass to commands (overrides what is in the config).
+        self.auth_token: Optional[str] = auth_token
+        #: The region in which ``ngrok`` should start.
+        self.region: Optional[str] = region
+        #: Whether ``ngrok`` should continue to be monitored (for logs, etc.) after startup is complete.
+        self.monitor_thread: bool = monitor_thread
+        #: A callback that will be invoked each time ``ngrok`` emits a log. The function should take
+        #: one argument of type :py:class:`str`. ``monitor_thread`` must be set to ``True`` or the function will
+        #  stop being called after ``ngrok`` finishes starting.
+        self.log_event_callback: Optional[Callable] = log_event_callback
+        #: The max number of seconds to wait for ``ngrok`` to start before timing out.
+        self.startup_timeout: int = startup_timeout
+        #: The max number of logs to store in :class:`~pyngrok.process.NgrokProcess`'s ``logs`` variable.
+        self.max_logs: int = max_logs
+        #: The max timeout when making requests to ``ngrok``'s API.
+        self.request_timeout: float = request_timeout
+        #: Passed to :py:class:`subprocess.Popen` when launching ``ngrok``. (Python 3 and POSIX only)
+        self.start_new_session: bool = start_new_session
+        #: The major version of ``ngrok`` installed.
+        self.ngrok_version: str = ngrok_version
+        #: A ``ngrok`` API key.
+        self.api_key: Optional[str] = api_key
 
 
 _default_pyngrok_config: Optional[PyngrokConfig] = None
