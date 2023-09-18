@@ -5,9 +5,12 @@ import socket
 import sys
 import uuid
 from http import HTTPStatus
+from typing import Optional
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import urlopen, Request
+
+from pyngrok.conf import PyngrokConfig
 
 from pyngrok import process, conf, installer
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
@@ -29,6 +32,8 @@ class NgrokTunnel:
 
     :var data: The original tunnel data.
     :vartype data: dict
+    :var id: The ID of the tunnel.
+    :vartype id: str
     :var name: The name of the tunnel.
     :vartype name: str
     :var proto: The protocol of the tunnel.
@@ -46,8 +51,7 @@ class NgrokTunnel:
     :var api_url: The API URL for the ``ngrok`` web interface.
     :vartype api_url: str
     """
-
-    def __init__(self, data, pyngrok_config, api_url):
+    def __init__(self, data: dict, pyngrok_config: PyngrokConfig, api_url: str) -> None:
         self.data = data
 
         self.id = data.get("ID", None)
@@ -85,14 +89,13 @@ class NgrokTunnel:
         self.metrics = self.data["metrics"]
 
 
-def install_ngrok(pyngrok_config=None):
+def install_ngrok(pyngrok_config: Optional[PyngrokConfig] = None):
     """
     Download, install, and initialize ``ngrok`` for the given config. If ``ngrok`` and its default
     config is already installed, calling this method will do nothing.
 
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
-    :type pyngrok_config: PyngrokConfig, optional
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
