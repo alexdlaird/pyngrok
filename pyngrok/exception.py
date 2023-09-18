@@ -49,6 +49,7 @@ class PyngrokNgrokHTTPError(PyngrokNgrokError):
     contains the error response received from ``ngrok``.
     """
 
+    # When Python <3.9 support is dropped, headers type can be changed to Dict[str, str]|MutableMapping[str, str]|Any
     def __init__(self,
                  error: str,
                  url: str,
