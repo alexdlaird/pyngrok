@@ -6,6 +6,7 @@ import subprocess
 import threading
 import time
 from http import HTTPStatus
+from typing import Dict
 from urllib.request import Request, urlopen
 
 import yaml
@@ -473,4 +474,4 @@ def _start_process(pyngrok_config):
     return ngrok_process
 
 
-_current_processes: dict[str, NgrokProcess] = {}
+_current_processes: Dict[str, NgrokProcess] = {}

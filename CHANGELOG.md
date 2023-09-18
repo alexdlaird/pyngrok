@@ -12,7 +12,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Minor bugs.
 
 ### Removed
-- Support for Python 3.5, 3.6, and 3.7.
+- Support for Python 3.5.
 
 ## [6.1.0](https://github.com/alexdlaird/pyngrok/compare/6.0.0...6.1.0) - 2023-09-12
 ### Added
