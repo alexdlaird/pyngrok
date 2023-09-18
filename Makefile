@@ -34,7 +34,8 @@ docs: install
 	@( \
 		source venv/bin/activate; \
 		python -m pip install -r docs/requirements.txt; \
-		sphinx-build -M html docs _build/docs; \
+		mypy pyngrok; \
+		sphinx-build -M html docs _build/docs -n; \
 	)
 
 local:

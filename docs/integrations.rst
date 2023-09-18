@@ -39,7 +39,7 @@ same place.
 
             # Get the dev server port (defaults to 5000 for Flask, can be overridden with `--port`
             # when starting the server
-            port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else 5000
+            port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else "5000"
 
             # Open a ngrok tunnel to the dev server
             public_url = ngrok.connect(port).public_url
@@ -104,7 +104,7 @@ to do this is one of our ``apps.py`` by `extending AppConfig <https://docs.djang
                 # Get the dev server port (defaults to 8000 for Django, can be overridden with the
                 # last arg when calling `runserver`)
                 addrport = urlparse("http://{}".format(sys.argv[-1]))
-                port = addrport.port if addrport.netloc and addrport.port else 8000
+                port = addrport.port if addrport.netloc and addrport.port else "8000"
 
                 # Open a ngrok tunnel to the dev server
                 public_url = ngrok.connect(port).public_url
@@ -166,7 +166,7 @@ we should add a variable that let's us configure from an environment variable wh
 
         # Get the dev server port (defaults to 8000 for Uvicorn, can be overridden with `--port`
         # when starting the server
-        port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else 8000
+        port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else "8000"
 
         # Open a ngrok tunnel to the dev server
         public_url = ngrok.connect(port).public_url
@@ -216,7 +216,7 @@ that uses ``pyngrok`` to open a tunnel to that server.
     conf.get_default().auth_token = getpass.getpass()
 
     # Open a TCP ngrok tunnel to the SSH server
-    connection_string = ngrok.connect(22, "tcp").public_url
+    connection_string = ngrok.connect("22", "tcp").public_url
 
     ssh_url, port = connection_string.strip("tcp://").split(":")
     print(f" * ngrok tunnel available, access with `ssh root@{ssh_url} -p{port}`")
@@ -240,7 +240,7 @@ assumes we have also added ``!pip install flask`` to our dependency code block.
     from pyngrok import ngrok
 
     app = Flask(__name__)
-    port = 5000
+    port = "5000"
 
     # Open a ngrok tunnel to the HTTP server
     public_url = ngrok.connect(port).public_url
@@ -287,7 +287,7 @@ and ``PORT`` was changed.
 
     class PyngrokTestCase(unittest.TestCase):
         # Default Flask port
-        PORT = 5000
+        PORT = "5000"
 
         @classmethod
         def start_dev_server(cls):
@@ -385,7 +385,7 @@ server. We can use ``pyngrok`` to expose it to the web via a tunnel, as show in 
     from http.server import HTTPServer, BaseHTTPRequestHandler
     from pyngrok import ngrok
 
-    port = os.environ.get("PORT", 80)
+    port = os.environ.get("PORT", "80")
 
     server_address = ("", port)
     httpd = HTTPServer(server_address, BaseHTTPRequestHandler)
