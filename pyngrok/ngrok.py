@@ -492,12 +492,12 @@ def api_request(url, method="GET", data=None, params=None, timeout=4, auth=None)
     :rtype: dict
     """
     if params is None:
-        params = []
+        params = {}
 
     if not url.lower().startswith("http"):
         raise PyngrokSecurityError("URL must start with \"http\": {}".format(url))
 
-    data = json.dumps(data).encode("utf-8") if data else None
+    encoded_data = json.dumps(data).encode("utf-8") if data else None
 
     if params:
         url += "?{}".format(urlencode([(x, params[x]) for x in params]))
@@ -508,10 +508,10 @@ def api_request(url, method="GET", data=None, params=None, timeout=4, auth=None)
         request.add_header("Ngrok-Version", "2")
         request.add_header("Authorization", "Bearer {}".format(auth))
 
-    logger.debug("Making {} request to {} with data: {}".format(method, url, data))
+    logger.debug("Making {} request to {} with data: {}".format(method, url, encoded_data))
 
     try:
-        response = urlopen(request, data, timeout)
+        response = urlopen(request, encoded_data, timeout)
         response_data = response.read().decode("utf-8")
 
         status_code = response.getcode()
@@ -534,7 +534,7 @@ def api_request(url, method="GET", data=None, params=None, timeout=4, auth=None)
 
         raise PyngrokNgrokHTTPError("ngrok client exception, API returned {}: {}".format(status_code, response_data),
                                     e.url,
-                                    status_code, e.msg, e.hdrs, response_data)
+                                    status_code, e.reason, e.headers, response_data)
     except URLError as e:
         raise PyngrokNgrokURLError("ngrok client exception, URLError: {}".format(e.reason), e.reason)
 
