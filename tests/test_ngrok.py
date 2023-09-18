@@ -45,7 +45,7 @@ class TestNgrok(NgrokTestCase):
         ngrok.set_auth_token(os.environ["NGROK_AUTHTOKEN"], self.pyngrok_config_v2)
 
         # WHEN
-        ngrok_tunnel = ngrok.connect(5000, pyngrok_config=self.pyngrok_config_v2)
+        ngrok_tunnel = ngrok.connect("5000", pyngrok_config=self.pyngrok_config_v2)
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v2)
 
         # THEN
@@ -75,7 +75,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
 
         # WHEN
-        ngrok_tunnel = ngrok.connect(5000, pyngrok_config=self.pyngrok_config_v3)
+        ngrok_tunnel = ngrok.connect("5000", pyngrok_config=self.pyngrok_config_v3)
         current_process = ngrok.get_ngrok_process(self.pyngrok_config_v3)
 
         # THEN
@@ -241,7 +241,7 @@ class TestNgrok(NgrokTestCase):
 
     def test_kill(self):
         # GIVEN
-        ngrok.connect(5000, pyngrok_config=self.pyngrok_config_v3)
+        ngrok.connect("5000", pyngrok_config=self.pyngrok_config_v3)
         time.sleep(1)
         ngrok_process = process.get_process(self.pyngrok_config_v3)
         monitor_thread = ngrok_process._monitor_thread
@@ -352,7 +352,7 @@ class TestNgrok(NgrokTestCase):
                                                 region="au")
 
         # WHEN
-        ngrok_tunnel = ngrok.connect(5000, "tcp", subdomain=subdomain, pyngrok_config=pyngrok_config)
+        ngrok_tunnel = ngrok.connect("5000", "tcp", subdomain=subdomain, pyngrok_config=pyngrok_config)
         current_process = ngrok.get_ngrok_process(pyngrok_config)
 
         # THEN
@@ -373,7 +373,7 @@ class TestNgrok(NgrokTestCase):
                                                 region="au")
 
         # WHEN
-        ngrok_tunnel = ngrok.connect(5000, "tcp", pyngrok_config=pyngrok_config)
+        ngrok_tunnel = ngrok.connect("5000", "tcp", pyngrok_config=pyngrok_config)
         current_process = ngrok.get_ngrok_process(pyngrok_config)
 
         # THEN
@@ -393,7 +393,7 @@ class TestNgrok(NgrokTestCase):
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2, auth_token=os.environ["NGROK_AUTHTOKEN"])
 
         # WHEN
-        ngrok_tunnel = ngrok.connect(5000, auth="username:password", pyngrok_config=pyngrok_config)
+        ngrok_tunnel = ngrok.connect("5000", auth="username:password", pyngrok_config=pyngrok_config)
         current_process = ngrok.get_ngrok_process(pyngrok_config)
 
         # THEN
@@ -410,8 +410,8 @@ class TestNgrok(NgrokTestCase):
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, auth_token=os.environ["NGROK_AUTHTOKEN"])
 
         # WHEN
-        ngrok_tunnel1 = ngrok.connect(5000, auth="username:password", pyngrok_config=pyngrok_config)
-        ngrok_tunnel2 = ngrok.connect(5000, basic_auth=["username:password"], pyngrok_config=pyngrok_config)
+        ngrok_tunnel1 = ngrok.connect("5000", auth="username:password", pyngrok_config=pyngrok_config)
+        ngrok_tunnel2 = ngrok.connect("5000", basic_auth=["username:password"], pyngrok_config=pyngrok_config)
         current_process = ngrok.get_ngrok_process(pyngrok_config)
 
         # THEN
@@ -431,7 +431,7 @@ class TestNgrok(NgrokTestCase):
                                                 region="au")
 
         # WHEN
-        url = ngrok.connect(5000, subdomain=subdomain, pyngrok_config=pyngrok_config).public_url
+        url = ngrok.connect("5000", subdomain=subdomain, pyngrok_config=pyngrok_config).public_url
         current_process = ngrok.get_ngrok_process(pyngrok_config)
 
         # THEN
@@ -744,7 +744,7 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         ngrok_tunnel1 = ngrok.connect(pyngrok_config=pyngrok_config)
-        ngrok_tunnel2 = ngrok.connect(5000, subdomain=subdomain, pyngrok_config=pyngrok_config)
+        ngrok_tunnel2 = ngrok.connect("5000", subdomain=subdomain, pyngrok_config=pyngrok_config)
 
         # THEN
         self.assertEqual(ngrok_tunnel1.name, "pyngrok-default")

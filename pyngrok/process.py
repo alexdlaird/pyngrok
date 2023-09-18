@@ -268,7 +268,7 @@ def set_auth_token(pyngrok_config: PyngrokConfig,
     result = subprocess.check_output(start)
 
     if "Authtoken saved" not in str(result):
-        raise PyngrokNgrokError("An error occurred when saving the auth token: {}".format(result))
+        raise PyngrokNgrokError("An error occurred when saving the auth token: {!r}".format(result))
 
 
 def is_process_running(ngrok_path: str) -> bool:

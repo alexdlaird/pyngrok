@@ -70,7 +70,7 @@ ensure you have a handler streaming logs and your level is set to ``DEBUG``. Her
     logger.addHandler(handler)
 
     # Then call the pyngrok method throwing the error, for example
-    ngrok.connect(5000)
+    ngrok.connect("5000")
 
 
 Programmatically Inspect the Logs

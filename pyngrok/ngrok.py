@@ -195,7 +195,7 @@ def _apply_cloud_edge_to_tunnel(tunnel, pyngrok_config):
         tunnel.proto = edges_prefix
 
 
-def connect(addr: Optional[str|int] = None,
+def connect(addr: Optional[str] = None,
             proto: Optional[str] = None,
             name: Optional[str] = None,
             pyngrok_config: Optional[PyngrokConfig] = None,
