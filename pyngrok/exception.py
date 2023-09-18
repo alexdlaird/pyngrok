@@ -2,7 +2,7 @@ from typing import Any, Optional, List
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "6.1.1"
+__version__ = "7.0.0"
 
 
 class PyngrokError(Exception):
