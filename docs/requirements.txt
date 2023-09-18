@@ -2,3 +2,4 @@ Sphinx
 sphinx-notfound-page
 sphinx-autodoc-typehints
 mypy
+types-PyYAML
