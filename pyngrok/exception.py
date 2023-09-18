@@ -1,4 +1,4 @@
-from typing import Any, Optional, Dict, List, MutableMapping
+from typing import Any, Optional, List
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
@@ -70,7 +70,7 @@ class PyngrokNgrokHTTPError(PyngrokNgrokError):
     ur: str
     status_code: int
     message: Optional[str]
-    headers: Dict[str, str] | MutableMapping[str, str] | Any
+    headers: Any
     body: str
 
     def __init__(self,
@@ -78,7 +78,7 @@ class PyngrokNgrokHTTPError(PyngrokNgrokError):
                  url: str,
                  status_code: int,
                  message: Optional[str],
-                 headers: Dict[str, str] | MutableMapping[str, str] | Any,
+                 headers: Any,
                  body: str) -> None:
         super(PyngrokNgrokHTTPError, self).__init__(error)
 
@@ -94,13 +94,13 @@ class PyngrokNgrokURLError(PyngrokNgrokError):
     Raised when an error occurs when trying to initiate an API request.
 
     :var reason: The reason for the URL error.
-    :vartype reason: str | BaseException
+    :vartype reason: str
     """
-    reason: str | BaseException
+    reason: str
 
     def __init__(self,
                  error: str,
-                 reason: str | BaseException) -> None:
+                 reason: str) -> None:
         super(PyngrokNgrokURLError, self).__init__(error)
 
         self.reason = reason

@@ -10,12 +10,11 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import urlopen, Request
 
-from pyngrok.process import NgrokProcess
-
 from pyngrok import process, conf, installer
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
 from pyngrok.installer import get_default_config
+from pyngrok.process import NgrokProcess
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
