@@ -73,7 +73,7 @@ def get_ngrok_bin() -> str:
 
 
 def install_ngrok(ngrok_path: str,
-                  ngrok_version: Optional[str] = "v2",
+                  ngrok_version: Optional[str] = "v3",
                   **kwargs: Any):
     """
     Download and install the latest ``ngrok`` for the current system, overwriting any existing contents
@@ -142,7 +142,7 @@ def _install_ngrok_zip(ngrok_path: str,
 
 def get_ngrok_config(config_path: str,
                      use_cache: bool = True,
-                     ngrok_version: Optional[str] = "v2") -> Dict[str, Any]:
+                     ngrok_version: Optional[str] = "v3") -> Dict[str, Any]:
     """
     Get the ``ngrok`` config from the given path.
 
@@ -179,7 +179,7 @@ def get_default_config(ngrok_version: Optional[str]) -> Dict[str, Any]:
 
 def install_default_config(config_path: str,
                            data: Optional[Dict[str, Any]] = None,
-                           ngrok_version: Optional[str] = "v2"):
+                           ngrok_version: Optional[str] = "v3"):
     """
     Install the given data to the ``ngrok`` config. If a config is not already present for the given path, create one.
     Before saving new data to the default config, validate that they are compatible with ``pyngrok``.

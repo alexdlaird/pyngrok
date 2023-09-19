@@ -72,13 +72,7 @@ For more advanced usage, `pyngrok`'s official documentation is available at [htt
 ### `ngrok` Version Compatibility
 
 `pyngrok` is compatible with `ngrok` v2 and v3, but by default it will install v3. To install v2 instead,
-set `ngrok_version` in [`PyngrokConfig`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.conf.PyngrokConfig):
-
-```python
-from pyngrok import conf
-
-conf.get_default().ngrok_version = "v2"
-```
+[set `ngrok_version` in `PyngrokConfig`](https://pyngrok.readthedocs.io/en/latest/index.html#ngrok-version-compatibility).
 
 ### Python 2.7
 
