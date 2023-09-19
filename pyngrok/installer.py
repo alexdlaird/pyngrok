@@ -201,7 +201,7 @@ def install_default_config(config_path: str,
     if not os.path.exists(config_path):
         open(config_path, "w").close()
 
-    config = get_ngrok_config(config_path, ngrok_version=ngrok_version, use_cache=False)
+    config = get_ngrok_config(config_path, use_cache=False, ngrok_version=ngrok_version)
 
     config.update(data)
 
