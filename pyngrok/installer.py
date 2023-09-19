@@ -72,7 +72,7 @@ def get_ngrok_bin():
         raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
 
 
-def install_ngrok(ngrok_path, ngrok_version="v2", **kwargs):
+def install_ngrok(ngrok_path, ngrok_version="v3", **kwargs):
     """
     Download and install the latest ``ngrok`` for the current system, overwriting any existing contents
     at the given path.
@@ -141,7 +141,7 @@ def _install_ngrok_zip(ngrok_path, zip_path):
     _clear_progress()
 
 
-def get_ngrok_config(config_path, use_cache=True, ngrok_version="v2"):
+def get_ngrok_config(config_path, use_cache=True, ngrok_version="v3"):
     """
     Get the ``ngrok`` config from the given path.
 
@@ -182,7 +182,7 @@ def get_default_config(ngrok_version):
         raise PyngrokError("\"ngrok_version\" must be a supported version: {}".format(SUPPORTED_NGROK_VERSIONS))
 
 
-def install_default_config(config_path, data=None, ngrok_version="v2"):
+def install_default_config(config_path, data=None, ngrok_version="v3"):
     """
     Install the given data to the ``ngrok`` config. If a config is not already present for the given path, create one.
     Before saving new data to the default config, validate that they are compatible with ``pyngrok``.
