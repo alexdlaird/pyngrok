@@ -97,7 +97,7 @@ def install_ngrok(pyngrok_config=None):
         pyngrok_config = conf.get_default()
 
     if not os.path.exists(pyngrok_config.ngrok_path):
-        installer.install_ngrok(pyngrok_config.ngrok_path, pyngrok_config.ngrok_version)
+        installer.install_ngrok(pyngrok_config.ngrok_path, ngrok_version=pyngrok_config.ngrok_version)
 
     config_path = conf.get_config_path(pyngrok_config)
 
@@ -243,7 +243,7 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     config_path = conf.get_config_path(pyngrok_config)
 
     if os.path.exists(config_path):
-        config = installer.get_ngrok_config(config_path)
+        config = installer.get_ngrok_config(config_path, ngrok_version=pyngrok_config.ngrok_version)
     else:
         config = get_default_config(pyngrok_config.ngrok_version)
 

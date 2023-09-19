@@ -16,7 +16,7 @@ from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, Py
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "5.2.2"
+__version__ = "6.1.2"
 
 logger = logging.getLogger(__name__)
 
@@ -207,7 +207,7 @@ def install_default_config(config_path, data=None, ngrok_version="v3"):
     if not os.path.exists(config_path):
         open(config_path, "w").close()
 
-    config = get_ngrok_config(config_path, ngrok_version=ngrok_version, use_cache=False)
+    config = get_ngrok_config(config_path, use_cache=False, ngrok_version=ngrok_version)
 
     config.update(data)
 
