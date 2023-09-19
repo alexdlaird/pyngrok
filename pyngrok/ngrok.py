@@ -11,12 +11,11 @@ from urllib.request import urlopen, Request
 
 from pyngrok import process, conf, installer
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
+from pyngrok.installer import get_default_config
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
 __version__ = "6.1.2"
-
-from pyngrok.installer import get_default_config
 
 logger = logging.getLogger(__name__)
 

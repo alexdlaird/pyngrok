@@ -12,12 +12,11 @@ import yaml
 
 from pyngrok import conf, installer
 from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError, PyngrokError
+from pyngrok.installer import SUPPORTED_NGROK_VERSIONS
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "6.1.1"
-
-from pyngrok.installer import SUPPORTED_NGROK_VERSIONS
+__version__ = "6.1.2"
 
 logger = logging.getLogger(__name__)
 ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))
