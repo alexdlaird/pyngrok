@@ -206,7 +206,7 @@ def connect(addr=None, proto=None, name=None, pyngrok_config=None, **options):
     will first download and install ``ngrok``.
 
     ``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install v3. To install v2 instead,
-    set ``ngrok_version`` in :class:`~pyngrok.conf.PyngrokConfig`:
+    set ``ngrok_version`` to "v2" in :class:`~pyngrok.conf.PyngrokConfig`:
 
     If ``ngrok`` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
