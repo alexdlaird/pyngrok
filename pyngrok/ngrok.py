@@ -54,15 +54,15 @@ class NgrokTunnel:
         #: Metrics for `the tunnel <https://ngrok.com/docs/ngrok-agent/api#list-tunnels>`_.
         self.metrics: Dict[str, Any] = data.get("metrics", {})
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<NgrokTunnel: \"{}\" -> \"{}\">".format(self.public_url, self.config["addr"]) if self.config.get(
             "addr", None) else "<pending Tunnel>"
 
-    def __str__(self):  # pragma: no cover
+    def __str__(self) -> str:  # pragma: no cover
         return "NgrokTunnel: \"{}\" -> \"{}\"".format(self.public_url, self.config["addr"]) if self.config.get(
             "addr", None) else "<pending Tunnel>"
 
-    def refresh_metrics(self):
+    def refresh_metrics(self) -> None:
         """
         Get the latest metrics for the tunnel and update the ``metrics`` variable.
         """
@@ -81,7 +81,7 @@ class NgrokTunnel:
 _current_tunnels: Dict[str, NgrokTunnel] = {}
 
 
-def install_ngrok(pyngrok_config: Optional[PyngrokConfig] = None):
+def install_ngrok(pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     """
     Download, install, and initialize ``ngrok`` for the given config. If ``ngrok`` and its default
     config is already installed, calling this method will do nothing.
@@ -108,7 +108,7 @@ def install_ngrok(pyngrok_config: Optional[PyngrokConfig] = None):
 
 
 def set_auth_token(token: str,
-                   pyngrok_config: Optional[PyngrokConfig] = None):
+                   pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     """
     Set the ``ngrok`` auth token in the config file, enabling authenticated features (for instance,
     more concurrent tunnels, custom subdomains, etc.).
@@ -153,7 +153,8 @@ def get_ngrok_process(pyngrok_config: Optional[PyngrokConfig] = None) -> NgrokPr
     return process.get_process(pyngrok_config)
 
 
-def _apply_cloud_edge_to_tunnel(tunnel, pyngrok_config):
+def _apply_cloud_edge_to_tunnel(tunnel: NgrokTunnel,
+                                pyngrok_config: PyngrokConfig) -> None:
     if not tunnel.public_url and pyngrok_config.api_key and tunnel.id:
         tunnel_response = api_request("https://api.ngrok.com/tunnels/{}".format(tunnel.id), method="GET",
                                       auth=pyngrok_config.api_key)
@@ -331,7 +332,7 @@ def connect(addr: Optional[str] = None,
 
 
 def disconnect(public_url: str,
-               pyngrok_config: Optional[PyngrokConfig] = None):
+               pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     """
     Disconnect the ``ngrok`` tunnel for the given URL, if open.
 
@@ -400,7 +401,7 @@ def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTun
     return list(_current_tunnels.values())
 
 
-def kill(pyngrok_config: Optional[PyngrokConfig] = None):
+def kill(pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     """
     Terminate the ``ngrok`` processes, if running, for the given config's ``ngrok_path``. This method will not
     block, it will just issue a kill request.
@@ -532,7 +533,7 @@ def api_request(url: str,
 
 
 def run(args: Optional[List[str]] = None,
-        pyngrok_config: Optional[PyngrokConfig] = None):
+        pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     """
     Ensure ``ngrok`` is installed at the default path, then call :func:`~pyngrok.process.run_process`.
 
@@ -554,7 +555,7 @@ def run(args: Optional[List[str]] = None,
     process.run_process(pyngrok_config.ngrok_path, args)
 
 
-def main():
+def main() -> None:
     """
     Entry point for the package's ``console_scripts``. This initializes a call from the command
     line and invokes :func:`~pyngrok.ngrok.run`.

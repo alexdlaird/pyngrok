@@ -10,6 +10,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Support for [Python type hints](https://docs.python.org/3/library/typing.html).
 - Documentation improvements.
 
+### Changed
+- Moved `NgrokLog` from `process.py` to `ngrok_log`.py.
+
 ### Removed
 - Support for Python 3.5.
 

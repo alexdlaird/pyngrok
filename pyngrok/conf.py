@@ -2,6 +2,7 @@ import os
 from typing import Optional, Callable
 
 from pyngrok.installer import get_ngrok_bin
+from pyngrok.ngrok_log import NgrokLog
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
@@ -45,7 +46,7 @@ class PyngrokConfig:
                  auth_token: Optional[str] = None,
                  region: Optional[str] = None,
                  monitor_thread: bool = True,
-                 log_event_callback: Optional[Callable] = None,
+                 log_event_callback: Optional[Callable[[NgrokLog], None]] = None,
                  startup_timeout: int = 15,
                  max_logs: int = 100,
                  request_timeout: float = 4,
@@ -66,7 +67,7 @@ class PyngrokConfig:
         #: A callback that will be invoked each time ``ngrok`` emits a log. The function should take
         #: one argument of type :py:class:`str`. ``monitor_thread`` must be set to ``True`` or the function will
         #  stop being called after ``ngrok`` finishes starting.
-        self.log_event_callback: Optional[Callable] = log_event_callback
+        self.log_event_callback: Optional[Callable[[NgrokLog], None]] = log_event_callback
         #: The max number of seconds to wait for ``ngrok`` to start before timing out.
         self.startup_timeout: int = startup_timeout
         #: The max number of logs to store in :class:`~pyngrok.process.NgrokProcess`'s ``logs`` variable.
@@ -98,7 +99,7 @@ def get_default() -> PyngrokConfig:
     return _default_pyngrok_config
 
 
-def set_default(pyngrok_config: PyngrokConfig):
+def set_default(pyngrok_config: PyngrokConfig) -> None:
     """
     Set a new default config to be used with methods in the :mod:`~pyngrok.ngrok` module. To override the
     default individually, the ``pyngrok_config`` keyword arg can also be passed to most of these methods.

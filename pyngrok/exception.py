@@ -1,5 +1,7 @@
 from typing import Any, Optional, List
 
+from pyngrok.ngrok_log import NgrokLog
+
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
 __version__ = "7.0.0"
@@ -33,12 +35,12 @@ class PyngrokNgrokError(PyngrokError):
 
     def __init__(self,
                  error: str,
-                 ngrok_logs: Optional[List[Any]] = None,
+                 ngrok_logs: Optional[List[NgrokLog]] = None,
                  ngrok_error: Optional[str] = None) -> None:
         super(PyngrokNgrokError, self).__init__(error)
 
         #: The ``ngrok`` logs, which may be useful for debugging the error.
-        self.ngrok_logs: List[Any] = ngrok_logs if ngrok_logs else []
+        self.ngrok_logs: List[NgrokLog] = ngrok_logs if ngrok_logs else []
         #: The error that caused the ``ngrok`` process to fail.
         self.ngrok_error: Optional[str] = ngrok_error
 

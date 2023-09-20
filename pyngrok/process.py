@@ -1,7 +1,6 @@
 import atexit
 import logging
 import os
-import shlex
 import subprocess
 import threading
 import time
@@ -15,6 +14,7 @@ from pyngrok import conf, installer
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError, PyngrokError
 from pyngrok.installer import SUPPORTED_NGROK_VERSIONS
+from pyngrok.ngrok_log import NgrokLog
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
@@ -22,60 +22,6 @@ __version__ = "7.0.0"
 
 logger = logging.getLogger(__name__)
 ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))
-
-
-class NgrokLog:
-    """
-    An object containing a parsed log from the ``ngrok`` process.
-    """
-
-    def __init__(self,
-                 line: str) -> None:
-        #: The raw, unparsed log line.
-        self.line: str = line.strip()
-
-        #: The log's ISO 8601 timestamp.
-        self.t: Optional[str] = None
-        #: The log's level.
-        self.lvl: str = "NOTSET"
-        #: The log's message.
-        self.msg: Optional[str] = None
-        #: The log's error, if applicable.
-        self.err: Optional[str] = None
-        #: The URL, if ``obj`` is "web".
-        self.addr: Optional[str] = None
-
-        for i in shlex.split(self.line):
-            if "=" not in i:
-                continue
-
-            key, value = i.split("=", 1)
-
-            if key == "lvl":
-                if not value:
-                    value = self.lvl
-
-                value = value.upper()
-                if value == "CRIT":
-                    value = "CRITICAL"
-                elif value in ["ERR", "EROR"]:
-                    value = "ERROR"
-                elif value == "WARN":
-                    value = "WARNING"
-
-                if not hasattr(logging, value):
-                    value = self.lvl
-
-            setattr(self, key, value)
-
-    def __repr__(self):
-        return "<NgrokLog: t={} lvl={} msg=\"{}\">".format(self.t, self.lvl, self.msg)
-
-    def __str__(self):  # pragma: no cover
-        attrs = [attr for attr in dir(self) if not attr.startswith("_") and getattr(self, attr) is not None]
-        attrs.remove("line")
-
-        return " ".join("{}=\"{}\"".format(attr, getattr(self, attr)) for attr in attrs)
 
 
 class NgrokProcess:
@@ -94,22 +40,22 @@ class NgrokProcess:
         #: The API URL for the ``ngrok`` web interface.
         self.api_url: Optional[str] = None
         #: A list of the most recent logs from ``ngrok``, limited in size to ``max_logs``.
-        self.logs: List[Any] = []
+        self.logs: List[NgrokLog] = []
         #: If ``ngrok`` startup fails, this will be the log of the failure.
         self.startup_error: Optional[str] = None
 
         self._tunnel_started = False
         self._client_connected = False
-        self._monitor_thread = None
+        self._monitor_thread: Optional[threading.Thread] = None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<NgrokProcess: \"{}\">".format(self.api_url)
 
-    def __str__(self):  # pragma: no cover
+    def __str__(self) -> str:  # pragma: no cover
         return "NgrokProcess: \"{}\"".format(self.api_url)
 
     @staticmethod
-    def _line_has_error(log):
+    def _line_has_error(log: NgrokLog) -> bool:
         return log.lvl in ["ERROR", "CRITICAL"]
 
     def _log_startup_line(self, line: str) -> Optional[NgrokLog]:
@@ -182,16 +128,20 @@ class NgrokProcess:
 
         return self.proc.poll() is None
 
-    def _monitor_process(self):
+    def _monitor_process(self) -> None:
         thread = threading.current_thread()
 
         thread.alive = True
         while thread.alive and self.proc.poll() is None:
+            if self.proc.stdout:
+                logger.debug("No stdout when monitoring the process, this may or may not be an issue")
+                continue
+
             self._log_line(self.proc.stdout.readline())
 
         self._monitor_thread = None
 
-    def start_monitor_thread(self):
+    def start_monitor_thread(self) -> None:
         """
         Start a thread that will monitor the ``ngrok`` process and its logs until it completes.
 
@@ -204,7 +154,7 @@ class NgrokProcess:
             self._monitor_thread.daemon = True
             self._monitor_thread.start()
 
-    def stop_monitor_thread(self):
+    def stop_monitor_thread(self) -> None:
         """
         Set the monitor thread to stop monitoring the ``ngrok`` process after the next log event. This will not
         necessarily terminate the thread immediately, as the thread may currently be idle, rather it sets a flag
@@ -220,7 +170,7 @@ class NgrokProcess:
 
 
 def set_auth_token(pyngrok_config: PyngrokConfig,
-                   token: str):
+                   token: str) -> None:
     """
     Set the ``ngrok`` auth token in the config file, enabling authenticated features (for instance,
     more concurrent tunnels, custom subdomains, etc.).
@@ -284,7 +234,7 @@ def get_process(pyngrok_config: PyngrokConfig) -> NgrokProcess:
     return _start_process(pyngrok_config)
 
 
-def kill_process(ngrok_path: str):
+def kill_process(ngrok_path: str) -> None:
     """
     Terminate the ``ngrok`` processes, if running, for the given path. This method will not block, it will just
     issue a kill request.
@@ -309,7 +259,7 @@ def kill_process(ngrok_path: str):
         logger.debug("\"ngrok_path\" {} is not running a process".format(ngrok_path))
 
 
-def run_process(ngrok_path: str, args: List[str]):
+def run_process(ngrok_path: str, args: List[str]) -> None:
     """
     Start a blocking ``ngrok`` process with the binary at the given path and the passed args.
 
@@ -345,7 +295,7 @@ def capture_run_process(ngrok_path: str, args: List[str]) -> str:
     return output.decode("utf-8").strip()
 
 
-def _validate_path(ngrok_path: str):
+def _validate_path(ngrok_path: str) -> None:
     """
     Validate the given path exists, is a ``ngrok`` binary, and is ready to be started, otherwise raise a
     relevant exception.
@@ -361,7 +311,7 @@ def _validate_path(ngrok_path: str):
         raise PyngrokNgrokError("ngrok is already running for the \"ngrok_path\": {}".format(ngrok_path))
 
 
-def _validate_config(config_path):
+def _validate_config(config_path: str) -> None:
     with open(config_path, "r") as config_file:
         config = yaml.safe_load(config_file)
 
@@ -369,7 +319,7 @@ def _validate_config(config_path):
         installer.validate_config(config)
 
 
-def _terminate_process(process):
+def _terminate_process(process: subprocess.Popen) -> None:
     if process is None:
         return
 
@@ -419,7 +369,7 @@ def _start_process(pyngrok_config: PyngrokConfig) -> NgrokProcess:
     timeout = time.time() + pyngrok_config.startup_timeout
     while time.time() < timeout:
         if proc.stdout is None:
-            logger.debug("No stdout when starting ngrok process, but pyngrok needs this to function")
+            logger.debug("No stdout when starting the process, this may or may not be an issue")
             break
 
         line = proc.stdout.readline()

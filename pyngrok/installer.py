@@ -74,7 +74,7 @@ def get_ngrok_bin() -> str:
 
 def install_ngrok(ngrok_path: str,
                   ngrok_version: Optional[str] = "v3",
-                  **kwargs: Any):
+                  **kwargs: Any) -> None:
     """
     Download and install the latest ``ngrok`` for the current system, overwriting any existing contents
     at the given path.
@@ -122,7 +122,7 @@ def install_ngrok(ngrok_path: str,
 
 
 def _install_ngrok_zip(ngrok_path: str,
-                       zip_path: str):
+                       zip_path: str) -> None:
     """
     Extract the ``ngrok`` zip file to the given path.
 
@@ -179,7 +179,7 @@ def get_default_config(ngrok_version: Optional[str]) -> Dict[str, Any]:
 
 def install_default_config(config_path: str,
                            data: Optional[Dict[str, Any]] = None,
-                           ngrok_version: Optional[str] = "v3"):
+                           ngrok_version: Optional[str] = "v3") -> None:
     """
     Install the given data to the ``ngrok`` config. If a config is not already present for the given path, create one.
     Before saving new data to the default config, validate that they are compatible with ``pyngrok``.
@@ -213,7 +213,7 @@ def install_default_config(config_path: str,
         yaml.dump(config, config_file)
 
 
-def validate_config(data: Dict[str, Any]):
+def validate_config(data: Dict[str, Any]) -> None:
     """
     Validate that the given dict of config items are valid for ``ngrok`` and ``pyngrok``.
 
@@ -294,13 +294,13 @@ def _download_file(url: str,
             raise e
 
 
-def _print_progress(line):
+def _print_progress(line: str) -> None:
     if _print_progress_enabled:
         sys.stdout.write("{}\r".format(line))
         sys.stdout.flush()
 
 
-def _clear_progress(spaces=100):
+def _clear_progress(spaces: int = 100) -> None:
     if _print_progress_enabled:
         sys.stdout.write((" " * spaces) + "\r")
         sys.stdout.flush()
