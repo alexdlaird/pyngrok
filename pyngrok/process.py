@@ -133,7 +133,7 @@ class NgrokProcess:
 
         thread.alive = True
         while thread.alive and self.proc.poll() is None:
-            if self.proc.stdout:
+            if self.proc.stdout is None:
                 logger.debug("No stdout when monitoring the process, this may or may not be an issue")
                 continue
 
