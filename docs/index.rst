@@ -173,7 +173,7 @@ Event Logs
 
 When ``ngrok`` emits logs, ``pyngrok`` can surface them to a callback function. To register this
 callback, use :class:`~pyngrok.conf.PyngrokConfig` and pass the function as ``log_event_callback``. Each time a
-log is processed, this function will be called, passing a :class:`~pyngrok.process.NgrokLog` as its only parameter.
+log is processed, this function will be called, passing a :class:`~pyngrok.log.NgrokLog` as its only parameter.
 
 .. code-block:: python
 

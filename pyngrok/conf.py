@@ -2,7 +2,7 @@ import os
 from typing import Optional, Callable
 
 from pyngrok.installer import get_ngrok_bin
-from pyngrok.ngrok_log import NgrokLog
+from pyngrok.log import NgrokLog
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"

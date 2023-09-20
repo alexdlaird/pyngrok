@@ -5,16 +5,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.0.0...HEAD)
 
-## [7.0.0](https://github.com/alexdlaird/pyngrok/compare/6.1.1...7.0.0) - TBD
+## [7.0.0](https://github.com/alexdlaird/pyngrok/compare/6.1.1...7.0.0) - 2023-09-20
 ### Added
 - Support for [Python type hints](https://docs.python.org/3/library/typing.html).
 - Documentation improvements.
 
 ### Changed
-- Moved `NgrokLog` from `process.py` to `ngrok_log`.py.
+- Moved [`NgrokLog`](https://pyngrok.readthedocs.io/en/7.0.0/api.html#pyngrok.log.NgrokLog) from `pyngrok.process` to `pyngrok.log`.
 
 ### Removed
-- Support for Python 3.5.
+- Support for Python 3.5. To use `pyngrok` with Python 3.5, pin `pyngrok<7`.
+
+### Fixed
+- Minor bugs.
 
 ## [6.1.2](https://github.com/alexdlaird/pyngrok/compare/6.1.0...6.1.2) - 2023-09-19
 ### Added

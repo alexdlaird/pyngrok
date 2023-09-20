@@ -14,7 +14,7 @@ from pyngrok import conf, installer
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError, PyngrokError
 from pyngrok.installer import SUPPORTED_NGROK_VERSIONS
-from pyngrok.ngrok_log import NgrokLog
+from pyngrok.log import NgrokLog
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"

@@ -36,6 +36,14 @@ Configuration
     :private-members:
     :show-inheritance:
 
+Logging
+-------
+
+.. automodule:: pyngrok.log
+    :members:
+    :private-members:
+    :show-inheritance:
+
 Exceptions
 ----------
 
