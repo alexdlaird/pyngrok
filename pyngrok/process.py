@@ -403,7 +403,7 @@ def _start_process(pyngrok_config: PyngrokConfig) -> NgrokProcess:
         logger.info("Starting ngrok in region: {}".format(pyngrok_config.region))
         start.append("--region={}".format(pyngrok_config.region))
 
-    popen_kwargs = {"stdout": subprocess.PIPE, "universal_newlines": True}
+    popen_kwargs: Dict[str, Any] = {"stdout": subprocess.PIPE, "universal_newlines": True}
     if os.name == "posix":
         popen_kwargs.update(start_new_session=pyngrok_config.start_new_session)
     elif pyngrok_config.start_new_session:
@@ -418,6 +418,10 @@ def _start_process(pyngrok_config: PyngrokConfig) -> NgrokProcess:
 
     timeout = time.time() + pyngrok_config.startup_timeout
     while time.time() < timeout:
+        if proc.stdout is None:
+            logger.debug("No stdout when starting ngrok process, but pyngrok needs this to function")
+            break
+
         line = proc.stdout.readline()
         ngrok_process._log_startup_line(line)
 
