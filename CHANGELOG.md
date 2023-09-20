@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.0.0...HEAD)
 
-## [7.0.0](https://github.com/alexdlaird/pyngrok/compare/6.1.1...7.0.0) - 2023-09-20
+## [7.0.0](https://github.com/alexdlaird/pyngrok/compare/6.1.2...7.0.0) - 2023-09-20
 ### Added
 - Support for [Python type hints](https://docs.python.org/3/library/typing.html).
 - Documentation improvements.
