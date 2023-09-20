@@ -42,13 +42,13 @@ class NgrokTunnel:
         #: The ID of the tunnel.
         self.id: Optional[str] = data.get("ID", None)
         #: The name of the tunnel.
-        self.name: str = data.get("name")
+        self.name: Optional[str] = data.get("name")
         #: The protocol of the tunnel.
-        self.proto: str = data.get("proto")
+        self.proto: Optional[str] = data.get("proto")
         #: The tunnel URI, a relative path that can be used to make requests to the ``ngrok`` web interface.
-        self.uri: str = data.get("uri")
+        self.uri: Optional[str] = data.get("uri")
         #: The public ``ngrok`` URL.
-        self.public_url: str = data.get("public_url")
+        self.public_url: Optional[str] = data.get("public_url")
         #: The config for the tunnel.
         self.config: Dict[str, Any] = data.get("config", {})
         #: Metrics for `the tunnel <https://ngrok.com/docs/ngrok-agent/api#list-tunnels>`_.
@@ -320,6 +320,11 @@ def connect(addr: Optional[str] = None,
 
     _apply_cloud_edge_to_tunnel(tunnel, pyngrok_config)
 
+    if tunnel.public_url is None:
+        raise PyngrokError(
+            "\"public_url\" was not populated for tunnel {}, but is required for pyngrok to function.".format(
+                tunnel))
+
     _current_tunnels[tunnel.public_url] = tunnel
 
     return tunnel
@@ -384,6 +389,12 @@ def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTun
                               timeout=pyngrok_config.request_timeout)["tunnels"]:
         ngrok_tunnel = NgrokTunnel(tunnel, pyngrok_config, api_url)
         _apply_cloud_edge_to_tunnel(ngrok_tunnel, pyngrok_config)
+
+        if ngrok_tunnel.public_url is None:
+            raise PyngrokError(
+                "\"public_url\" was not populated for tunnel {}, but is required for pyngrok to function.".format(
+                    ngrok_tunnel))
+
         _current_tunnels[ngrok_tunnel.public_url] = ngrok_tunnel
 
     return list(_current_tunnels.values())

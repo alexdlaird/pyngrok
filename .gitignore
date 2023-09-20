@@ -13,3 +13,4 @@ _build
 
 pyngrok/bin
 tests/.ngrok2
+.dmypy.json
