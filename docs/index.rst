@@ -12,7 +12,7 @@ pyngrok - a Python wrapper for ngrok
    :target: https://badge.fury.io/py/pyngrok
 .. image:: https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml/badge.svg
    :target: https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml
-.. image:: https://codecov.io/gh/alexdlaird/pyngrok/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/alexdlaird/pyngrok/branch/main/graph/badge.svg
    :target: https://codecov.io/gh/alexdlaird/pyngrok
 .. image:: https://readthedocs.org/projects/pyngrok/badge/?version=latest
    :target: https://pyngrok.readthedocs.io/en/latest/?badge=latest
