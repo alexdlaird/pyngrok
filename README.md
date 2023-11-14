@@ -83,5 +83,5 @@ to use `pyngrok` with this version of Python. Its legacy documentation can be fo
 
 If you would like to get involved, be sure to review the [Contribution Guide](https://github.com/alexdlaird/pyngrok/blob/main/CONTRIBUTING.rst).
 
-Want to contribute financially? If you've found `pyngrok` useful, [a donation](https://www.paypal.me/alexdlaird) would
+Want to contribute financially? If you've found `pyngrok` useful, [sponsorship](https://github.com/sponsors/alexdlaird) would
 also be greatly appreciated!

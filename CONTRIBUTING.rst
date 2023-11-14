@@ -14,5 +14,5 @@ If you would like to contribute to the code, the process is pretty simple:
 Also be sure to review the `Code of Conduct <https://github.com/alexdlaird/pyngrok/blob/main/CODE_OF_CONDUCT.md>`_ before
 submitting issues or pull requests.
 
-Want to contribute financially? If you've found ``pyngrok`` useful, `a donation <https://www.paypal.me/alexdlaird>`_
+Want to contribute financially? If you've found ``pyngrok`` useful, `sponsorship <https://github.com/sponsors/alexdlaird>`_
 would also be greatly appreciated!

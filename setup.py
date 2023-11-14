@@ -35,7 +35,7 @@ setup(
     project_urls={
         "Documentation": "https://pyngrok.readthedocs.io",
         "Changelog": "https://github.com/alexdlaird/pyngrok/blob/main/CHANGELOG.md",
-        "Sponsor": "https://www.paypal.me/alexdlaird"
+        "Sponsor": "https://github.com/sponsors/alexdlaird"
     },
     keywords=["ngrok", "tunnel", "tunneling", "webhook", "localhost", "reverse-proxy", "localtunnel"],
     license="MIT",
