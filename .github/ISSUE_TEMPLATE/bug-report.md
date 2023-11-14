@@ -9,6 +9,8 @@ assignees: ''
 
 While we'd love to be able to support every person on their projects, that would simply be infeasible. Luckily, that's what the helpful developer community over at Stack Overflow is for! Please [create a question there with the "pyngrok" tag](https://stackoverflow.com/questions/ask?tags=python+pyngrok+ngrok) if what you're looking for is a programming question or you need help with an integration. You can refer to [`pyngrok's` own documentation](https://pyngrok.readthedocs.io/en/latest/) to help you write the best possible question.
 
+Also, consider [supporting the project](https://github.com/sponsors/alexdlaird) to have your request prioritized.
+
 **Describe the Bug**
 A clear and concise description of what the bug is, including exceptions thrown.
 
