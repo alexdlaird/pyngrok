@@ -1,5 +1,7 @@
 name: "CD"
 
+run-name: "Release ${{ github.ref_name }}"
+
 on:
   release:
     types: [ created ]
