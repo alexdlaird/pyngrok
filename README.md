@@ -1,7 +1,7 @@
 <p align="center"><img alt="pyngrok - a Python wrapper for ngrok" src="https://pyngrok.readthedocs.io/en/latest/_images/logo.png" /></p>
 
 [![PyPI Version](https://badge.fury.io/py/pyngrok.svg)](https://badge.fury.io/py/pyngrok)
-[![CI Tests](https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml/badge.svg)](https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml)
+[![Build](https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml/badge.svg)](https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml)
 [![Codecov](https://codecov.io/gh/alexdlaird/pyngrok/branch/main/graph/badge.svg)](https://codecov.io/gh/alexdlaird/pyngrok)
 [![Docs](https://readthedocs.org/projects/pyngrok/badge/?version=latest)](https://pyngrok.readthedocs.io/en/latest/?badge=latest)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pyngrok.svg)](https://pypi.org/project/pyngrok/)

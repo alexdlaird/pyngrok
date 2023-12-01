@@ -1,4 +1,6 @@
-name: "CI Tests"
+name: "Build"
+
+run-name: "Build ${{ github.ref_name }}"
 
 on:
   workflow_dispatch:
