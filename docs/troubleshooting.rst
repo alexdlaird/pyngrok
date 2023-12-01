@@ -105,9 +105,8 @@ enabling logging (as illustrated in the section above) so you can see where thin
     2023-09-14 08:33:24,465 - pyngrok.ngrok - INFO - Opening tunnel named: http-80-7ce9805f-b438-48d0-92ab-ac305ba14869
     2023-09-14 08:33:24,480 - pyngrok.process - DEBUG - ngrok process starting with PID: 93822
     2023-09-14 08:33:25,165 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="no configuration paths supplied"
-    2023-09-14 08:33:25,165 - pyngrok.process.ngrok - WARNING - t=2023-09-14T08:33:25-0500 lvl=warn msg="ngrok config file found at legacy location, move to XDG location" xdg_path="/Users/alexdlaird/Library/Application Support/ngrok/ngrok.yml" legacy_path=/Users/alexdlaird/.ngrok2/ngrok.yml
-    2023-09-14 08:33:25,165 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="using configuration at default config path" path=/Users/alexdlaird/.ngrok2/ngrok.yml
-    2023-09-14 08:33:25,165 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="open config file" path=/Users/alexdlaird/.ngrok2/ngrok.yml err=nil
+    2023-09-14 08:33:25,165 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="using configuration at default config path" path=/Users/alexdlaird/Library/Application Support/ngrok/ngrok.yml
+    2023-09-14 08:33:25,165 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="open config file" path=/Users/alexdlaird/Library/Application Support/ngrok/ngrok.yml err=nil
     2023-09-14 08:33:25,166 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="starting web service" obj=web addr=127.0.0.1:4040 allow_hosts=[]
     2023-09-14 08:33:25,516 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="client session established" obj=tunnels.session obj=csess id=4b243123afe2
     2023-09-14 08:33:25,517 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="tunnel session started" obj=tunnels.session

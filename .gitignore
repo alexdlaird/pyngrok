@@ -12,5 +12,5 @@ MANIFEST
 _build
 
 pyngrok/bin
-tests/.ngrok2
+tests/.ngrok
 .dmypy.json

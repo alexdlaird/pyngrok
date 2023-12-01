@@ -359,8 +359,8 @@ Here is an example starting ``ngrok`` in Australia, then opening a tunnel with s
 Config File
 -----------
 
-By default, `ngrok will look for its config file <https://ngrok.com/docs/ngrok-agent/config>`_ in the home directory's ``.ngrok2``
-folder. We can override this behavior by updating our default :class:`~pyngrok.conf.PyngrokConfig`.
+By default, ngrok will look for its config file in `the default location <https://ngrok.com/docs/ngrok-agent/config>`_.
+We can override this behavior by updating our default :class:`~pyngrok.conf.PyngrokConfig`.
 
 .. code-block:: python
 

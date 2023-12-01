@@ -26,7 +26,7 @@ ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))
 
 class NgrokTestCase(unittest.TestCase):
     def setUp(self):
-        self.config_dir = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".ngrok2"))
+        self.config_dir = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".ngrok"))
         if not os.path.exists(self.config_dir):
             os.makedirs(self.config_dir)
         config_v2_path = os.path.join(self.config_dir, "config_v2.yml")

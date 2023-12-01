@@ -1,4 +1,5 @@
 import os
+import platform
 from typing import Optional, Callable
 
 from pyngrok.installer import get_ngrok_bin
@@ -6,13 +7,20 @@ from pyngrok.log import NgrokLog
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "7.0.0"
+__version__ = "7.0.2"
 
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
 DEFAULT_CONFIG_PATH: Optional[str] = None
 
-DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".ngrok2", "ngrok.yml")
+system = platform.system().lower()
+if system == "darwin":
+    _config_rel_path = os.path.join("Library", "Application Support", "ngrok")
+elif system in ["windows", "cygwin"]:
+    _config_rel_path = os.path.join("AppData", "Local", "ngrok")
+else:
+    _config_rel_path = os.path.join(".config", "ngrok")
+DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), _config_rel_path, "ngrok.yml")
 
 
 class PyngrokConfig:
