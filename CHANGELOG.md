@@ -3,7 +3,14 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.0.1...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.0.2...HEAD)
+
+## [7.0.2](https://github.com/alexdlaird/pyngrok/compare/7.0.1...7.0.2) - 2023-12-01
+### Changed
+- `pyngrok` to no longer install the config file in a legacy location, now respects, [`ngrok`'s default locations](https://ngrok.com/docs/agent/config/#default-locations). 
+
+### Fixed
+- Build improvements.
 
 ## [7.0.1](https://github.com/alexdlaird/pyngrok/compare/7.0.0...7.0.1) - 2023-11-14
 ### Added
