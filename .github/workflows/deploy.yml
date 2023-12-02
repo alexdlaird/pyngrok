@@ -44,9 +44,12 @@ jobs:
         run: |
           make docs
           make local
+      - name: Test Downstream Dependency
+        run:
+          make test-downstream-dependency
       - name: Publish
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run:
-          twine upload dist/*
+          make upload

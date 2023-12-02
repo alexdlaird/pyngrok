@@ -1,4 +1,4 @@
-.PHONY: all virtualenv install nopyc clean test docs local validate-release upload
+.PHONY: all virtualenv install nopyc clean test docs local validate-release test-downstream-dependency upload
 
 SHELL := /usr/bin/env bash
 PYTHON_BIN ?= python
@@ -22,7 +22,7 @@ nopyc:
 	find . -name __pycache__ | xargs rm -rf || true
 
 clean: nopyc
-	rm -rf _build dist *.egg-info venv
+	rm -rf _build dist *.egg-info venv pyngrok-example-django
 
 test: install
 	@( \
@@ -51,11 +51,21 @@ validate-release:
 	@if [[ $$(grep "__version__ = \"${VERSION}\"" setup.py) == "" ]] ; then echo "Version not bumped in setup.py" & exit 1 ; fi
 	@if [[ $$(grep "__version__ = \"${VERSION}\"" pyngrok/ngrok.py) == "" ]] ; then echo "Version not bumped in pyngrok/ngrok.py" & exit 1 ; fi
 
+test-downstream-dependency:
+	@( \
+		git clone https://github.com/alexdlaird/pyngrok-example-django.git; \
+		make -C pyngrok-example-django install; \
+		source pyngrok-example-django/venv/bin/activate; \
+		make local; \
+		make -C pyngrok-example-django test-no-install; \
+		rm -rf pyngrok-example-django; \
+	)
+
 upload:
 	@rm -rf *.egg-info dist
 	@( \
 		source venv/bin/activate; \
-		python -m pip install twine
+		python -m pip install twine; \
 		python setup.py sdist; \
 		python -m twine upload dist/*; \
 	)
