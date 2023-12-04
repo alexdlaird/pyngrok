@@ -41,7 +41,9 @@ docs: install
 local:
 	@rm -rf *.egg-info dist
 	@( \
-		$(PYTHON_BIN) setup.py sdist; \
+		$(PYTHON_BIN) -m pip install --upgrade pip; \
+        $(PYTHON_BIN) -m pip install --upgrade build; \
+		$(PYTHON_BIN) -m build; \
 		$(PYTHON_BIN) -m pip install dist/*.tar.gz; \
 	)
 
@@ -61,11 +63,9 @@ test-downstream-dependency:
 		rm -rf pyngrok-example-django; \
 	)
 
-upload:
-	@rm -rf *.egg-info dist
+upload: local
 	@( \
-		source venv/bin/activate; \
-		python -m pip install twine; \
-		python setup.py sdist; \
-		python -m twine upload dist/*; \
+        $(PYTHON_BIN) -m pip install --upgrade twine; \
+		$(PYTHON_BIN) -m build; \
+		$(PYTHON_BIN) -m twine upload dist/*; \
 	)
