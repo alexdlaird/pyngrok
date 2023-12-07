@@ -3,7 +3,6 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "wednesday"
-      time: "13:00"
-    open-pull-requests-limit: 10
+      interval: "daily"
+      time: "05:00"
+      timezone: "America/Chicago"
