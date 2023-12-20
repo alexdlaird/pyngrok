@@ -51,7 +51,7 @@ class PyngrokConfig:
     def __init__(self,
                  ngrok_path: Optional[str] = None,
                  config_path: Optional[str] = None,
-                 auth_token: Optional[str] = None,
+                 auth_token: Optional[str] = os.environ.get("NGROK_AUTH_TOKEN"),
                  region: Optional[str] = None,
                  monitor_thread: bool = True,
                  log_event_callback: Optional[Callable[[NgrokLog], None]] = None,
