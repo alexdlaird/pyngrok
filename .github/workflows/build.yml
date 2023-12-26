@@ -5,8 +5,7 @@ run-name: "Build ${{ github.ref_name }}"
 on:
   workflow_dispatch:
   push:
-    branches:
-      - "**"
+    branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
   schedule:
