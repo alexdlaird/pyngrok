@@ -302,7 +302,7 @@ config file.
 
     # Setting an auth token allows us to open multiple
     # tunnels at the same time
-    ngrok.set_auth_token("<NGROK_AUTH_TOKEN>")
+    ngrok.set_auth_token("<NGROK_AUTHTOKEN>")
 
     # <NgrokTunnel: "https://<public_sub1>.ngrok.io" -> "http://localhost:80">
     ngrok_tunnel1 = ngrok.connect()
@@ -315,7 +315,7 @@ We can also override ``ngrok``'s installed auth token using :class:`~pyngrok.con
 
     from pyngrok import conf, ngrok
 
-    conf.get_default().auth_token = "<NGROK_AUTH_TOKEN>"
+    conf.get_default().auth_token = "<NGROK_AUTHTOKEN>"
 
     # <NgrokTunnel: "https://<public_sub>.ngrok.io" -> "http://localhost:80">
     ngrok_tunnel = ngrok.connect()
