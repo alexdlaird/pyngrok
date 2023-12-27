@@ -7,7 +7,7 @@ anything. Below are some common usage examples.
 
 Flask
 -----
-.. image:: https://img.shields.io/badge/Clone_on-GitHub-white
+.. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
    :target: https://github.com/alexdlaird/pyngrok-example-flask
 
 In ``server.py``, `where our Flask app is initialized <https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/#the-application-factory>`_,
@@ -63,7 +63,7 @@ Now Flask can be started in development by the usual means, setting ``USE_NGROK`
 
 Django
 ------
-.. image:: https://img.shields.io/badge/Clone_on-GitHub-white
+.. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
    :target: https://github.com/alexdlaird/pyngrok-example-django
 
 In `settings.py <https://docs.djangoproject.com/en/3.0/topics/settings/>`_ of
@@ -131,7 +131,7 @@ Now the Django dev server can be started by the usual means, setting ``USE_NGROK
 
 FastAPI
 -------
-.. image:: https://img.shields.io/badge/Clone_on-GitHub-white
+.. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
    :target: https://github.com/alexdlaird/pyngrok-example-fastapi
 
 In ``server.py``, `where our FastAPI app is initialized <https://fastapi.tiangolo.com/tutorial/first-steps/>`_,
