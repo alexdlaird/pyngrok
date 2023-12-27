@@ -55,12 +55,7 @@ jobs:
       - name: Install dependencies
         run: make install
       - name: Test
-        run: |
-          if [ "$RUNNER_OS" == "Windows" ]; then
-            coverage run -m unittest discover -b;
-          else
-            make test
-          fi
+        run: make test
         shell: bash
       - name: Build docs
         run: make docs
