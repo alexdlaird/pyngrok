@@ -66,8 +66,8 @@ class PyngrokConfig:
         self.ngrok_path: str = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
         #: The path to the ``ngrok`` config, defaults to ``None`` and ``ngrok`` manages it.
         self.config_path: Optional[str] = DEFAULT_CONFIG_PATH if config_path is None else config_path
-        #: A ``ngrok`` authtoken to pass to commands (overrides what is in the config). If not set here, will attempt
-        #: to use the environment variable ``NGROK_AUTHTOKEN`` if it is set.
+        #: A ``ngrok`` authtoken to pass to commands (overrides what is in the config). If a value is not passed, will
+        #: attempt to use the environment variable ``NGROK_AUTHTOKEN`` if it is set.
         self.auth_token: Optional[str] = auth_token
         #: The region in which ``ngrok`` should start.
         self.region: Optional[str] = region
