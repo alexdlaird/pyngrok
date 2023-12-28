@@ -18,7 +18,7 @@ from pyngrok.process import NgrokProcess
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "7.0.3"
+__version__ = "7.0.4"
 
 logger = logging.getLogger(__name__)
 

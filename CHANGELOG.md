@@ -3,9 +3,13 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.0.3...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.0.4...HEAD)
+
+## [7.0.4](https://github.com/alexdlaird/pyngrok/compare/7.0.3...7.0.4) - 2023-12-27
 ### Added
+- If a value for `PyngrokConfig.authToken`, it will attempt to use the environment variable `NGROK_AUTHTOKEN` if it is set.
 - Documentation improvements.
+- Build improvements.
 
 ## [7.0.3](https://github.com/alexdlaird/pyngrok/compare/7.0.2...7.0.3) - 2023-12-04
 ### Added

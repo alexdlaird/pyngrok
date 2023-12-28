@@ -7,7 +7,7 @@ from pyngrok.log import NgrokLog
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "7.0.2"
+__version__ = "7.0.4"
 
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
@@ -51,7 +51,7 @@ class PyngrokConfig:
     def __init__(self,
                  ngrok_path: Optional[str] = None,
                  config_path: Optional[str] = None,
-                 auth_token: Optional[str] = os.environ.get("NGROK_AUTH_TOKEN"),
+                 auth_token: Optional[str] = os.environ.get("NGROK_AUTHTOKEN"),
                  region: Optional[str] = None,
                  monitor_thread: bool = True,
                  log_event_callback: Optional[Callable[[NgrokLog], None]] = None,
