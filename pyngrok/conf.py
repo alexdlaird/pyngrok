@@ -66,7 +66,8 @@ class PyngrokConfig:
         self.ngrok_path: str = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
         #: The path to the ``ngrok`` config, defaults to ``None`` and ``ngrok`` manages it.
         self.config_path: Optional[str] = DEFAULT_CONFIG_PATH if config_path is None else config_path
-        #: A ``ngrok`` authtoken to pass to commands (overrides what is in the config).
+        #: A ``ngrok`` authtoken to pass to commands (overrides what is in the config). If not set here, will attempt
+        #: to use the environment variable ``NGROK_AUTHTOKEN`` if it is set.
         self.auth_token: Optional[str] = auth_token
         #: The region in which ``ngrok`` should start.
         self.region: Optional[str] = region
@@ -74,7 +75,7 @@ class PyngrokConfig:
         self.monitor_thread: bool = monitor_thread
         #: A callback that will be invoked each time ``ngrok`` emits a log. The function should take
         #: one argument of type :py:class:`str`. ``monitor_thread`` must be set to ``True`` or the function will
-        #  stop being called after ``ngrok`` finishes starting.
+        #: stop being called after ``ngrok`` finishes starting.
         self.log_event_callback: Optional[Callable[[NgrokLog], None]] = log_event_callback
         #: The max number of seconds to wait for ``ngrok`` to start before timing out.
         self.startup_timeout: int = startup_timeout
