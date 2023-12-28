@@ -6,10 +6,10 @@ from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "7.0.4"
+__version__ = "7.0.5"
 
 
-class TestNgrok(NgrokTestCase):
+class TestConf(NgrokTestCase):
     @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_auth_token_set_from_env(self):
         # GIVEN

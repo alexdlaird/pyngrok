@@ -17,7 +17,7 @@ from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "6.1.0"
+__version__ = "7.0.5"
 
 
 class TestNgrok(NgrokTestCase):
@@ -69,6 +69,7 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertTrue(ngrok_version.startswith("2"))
 
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_connect_v3(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -221,6 +222,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
         self.assertEqual(len(tunnels), 1)
 
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_disconnect_v3(self):
         # GIVEN
         url = ngrok.connect(pyngrok_config=self.pyngrok_config_v3).public_url

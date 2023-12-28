@@ -10,7 +10,7 @@ from tests.testcase import NgrokTestCase
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "6.1.0"
+__version__ = "7.0.5"
 
 
 class TestInstaller(NgrokTestCase):
@@ -28,6 +28,7 @@ class TestInstaller(NgrokTestCase):
         self.assertTrue(os.path.exists(self.pyngrok_config_v2.ngrok_path))
         self.assertTrue(ngrok_version.startswith("2"))
 
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_installer_v3(self):
         # GIVEN
         self.given_file_doesnt_exist(self.pyngrok_config_v3.ngrok_path)

@@ -74,6 +74,7 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assertNoZombies()
 
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_start_process_port_in_use_v3(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v3)
