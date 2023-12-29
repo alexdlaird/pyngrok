@@ -21,6 +21,8 @@ class TestInstaller(NgrokTestCase):
         self.assertFalse(os.path.exists(self.pyngrok_config_v2.ngrok_path))
 
         # WHEN
+        ngrok.connect(pyngrok_config=self.pyngrok_config_v2)
+        ngrok.kill(pyngrok_config=self.pyngrok_config_v2)
         ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=self.pyngrok_config_v2)
 
         # THEN
