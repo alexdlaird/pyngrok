@@ -21,7 +21,6 @@ class TestInstaller(NgrokTestCase):
         self.assertFalse(os.path.exists(self.pyngrok_config_v2.ngrok_path))
 
         # WHEN
-        ngrok.set_auth_token(os.environ["NGROK_AUTHTOKEN"], self.pyngrok_config_v2)
         ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=self.pyngrok_config_v2)
 
         # THEN
@@ -43,6 +42,7 @@ class TestInstaller(NgrokTestCase):
         self.assertTrue(os.path.exists(self.pyngrok_config_v3.ngrok_path))
         self.assertTrue(ngrok_version.startswith("3"))
 
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_installer_default(self):
         # GIVEN
         ngrok_path = os.path.join(conf.BIN_DIR, "default", installer.get_ngrok_bin())
@@ -63,6 +63,7 @@ class TestInstaller(NgrokTestCase):
         self.assertTrue(os.path.exists(pyngrok_config.ngrok_path))
         self.assertTrue(ngrok_version.startswith("3"))
 
+    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_config_provisioned(self):
         # GIVEN
         self.given_file_doesnt_exist(self.pyngrok_config_v3.config_path)
