@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.0.5...HEAD)
 
-## [7.0.5](https://github.com/alexdlaird/pyngrok/compare/7.0.4...7.0.5) - TBD
+## [7.0.5](https://github.com/alexdlaird/pyngrok/compare/7.0.4...7.0.5) - 2023-12-30
 ### Fixed
 - Test improvements, suite now respects `NGROK_AUTHTOKEN` for all necessary tests (skipped if not set, rather than tests failing).
 
