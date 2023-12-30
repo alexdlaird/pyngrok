@@ -14,37 +14,32 @@ __version__ = "7.0.5"
 
 
 class TestInstaller(NgrokTestCase):
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_installer_v2(self):
         # GIVEN
         self.given_file_doesnt_exist(self.pyngrok_config_v2.ngrok_path)
         self.assertFalse(os.path.exists(self.pyngrok_config_v2.ngrok_path))
 
         # WHEN
-        ngrok.connect(pyngrok_config=self.pyngrok_config_v2)
-        ngrok.kill(pyngrok_config=self.pyngrok_config_v2)
+        installer.install_ngrok(self.pyngrok_config_v2.ngrok_path, self.pyngrok_config_v2.ngrok_version)
         ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=self.pyngrok_config_v2)
 
         # THEN
         self.assertTrue(os.path.exists(self.pyngrok_config_v2.ngrok_path))
         self.assertTrue(ngrok_version.startswith("2"))
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_installer_v3(self):
         # GIVEN
         self.given_file_doesnt_exist(self.pyngrok_config_v3.ngrok_path)
         self.assertFalse(os.path.exists(self.pyngrok_config_v3.ngrok_path))
 
         # WHEN
-        ngrok.connect(pyngrok_config=self.pyngrok_config_v3)
-        ngrok.kill(pyngrok_config=self.pyngrok_config_v3)
+        installer.install_ngrok(self.pyngrok_config_v3.ngrok_path, self.pyngrok_config_v3.ngrok_version)
         ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=self.pyngrok_config_v3)
 
         # THEN
         self.assertTrue(os.path.exists(self.pyngrok_config_v3.ngrok_path))
         self.assertTrue(ngrok_version.startswith("3"))
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_installer_default(self):
         # GIVEN
         ngrok_path = os.path.join(conf.BIN_DIR, "default", installer.get_ngrok_bin())
@@ -57,22 +52,20 @@ class TestInstaller(NgrokTestCase):
         self.assertFalse(os.path.exists(pyngrok_config.ngrok_path))
 
         # WHEN
-        ngrok.connect(pyngrok_config=pyngrok_config)
-        ngrok.kill(pyngrok_config)
+        installer.install_ngrok(pyngrok_config.ngrok_path, pyngrok_config.ngrok_version)
         ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=pyngrok_config)
 
         # THEN
         self.assertTrue(os.path.exists(pyngrok_config.ngrok_path))
         self.assertTrue(ngrok_version.startswith("3"))
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
     def test_config_provisioned(self):
         # GIVEN
         self.given_file_doesnt_exist(self.pyngrok_config_v3.config_path)
         self.assertFalse(os.path.exists(self.pyngrok_config_v3.config_path))
 
         # WHEN
-        ngrok.connect(pyngrok_config=self.pyngrok_config_v3)
+        installer.install_default_config(self.pyngrok_config_v3.config_path, {}, self.pyngrok_config_v3.ngrok_version)
 
         # THEN
         self.assertTrue(os.path.exists(self.pyngrok_config_v3.config_path))
