@@ -18,7 +18,7 @@ __version__ = "7.0.5"
 
 
 class TestProcess(NgrokTestCase):
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_terminate_process(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v3)
@@ -34,7 +34,7 @@ class TestProcess(NgrokTestCase):
         self.assertIsNotNone(ngrok_process.proc.poll())
         self.assertFalse(monitor_thread.is_alive())
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_start_process_port_in_use_v2(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v2)
@@ -74,7 +74,7 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assertNoZombies()
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_start_process_port_in_use_v3(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v3)
@@ -114,7 +114,7 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assertNoZombies()
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_process_external_kill(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v3)
@@ -138,7 +138,7 @@ class TestProcess(NgrokTestCase):
         self.assertFalse(monitor_thread.is_alive())
         self.assertNoZombies()
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_process_external_kill_get_process_restart(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v3)
@@ -167,7 +167,7 @@ class TestProcess(NgrokTestCase):
             self.assertTrue(mock_atexit.called)
             self.assertNoZombies()
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_multiple_processes_different_binaries_v2(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -225,7 +225,7 @@ class TestProcess(NgrokTestCase):
         self.assertTrue(ngrok_process4._monitor_thread.is_alive())
         self.assertTrue(urlparse(ngrok_process4.api_url).port, "4043")
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_multiple_processes_same_binary_fails_v2(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v2)
@@ -243,7 +243,7 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(ngrok_process1, process.get_process(self.pyngrok_config_v2))
         self.assertEqual(len(process._current_processes.keys()), 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_multiple_processes_same_binary_fails_v3(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v3)
@@ -261,7 +261,7 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(ngrok_process1, process.get_process(self.pyngrok_config_v3))
         self.assertEqual(len(process._current_processes.keys()), 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_process_logs(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v3)
@@ -296,7 +296,7 @@ class TestProcess(NgrokTestCase):
         else:
             self.assertNotIn("start_new_session", mock_popen.call_args[1])
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_log_event_callback_and_max_logs(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v3)
@@ -313,7 +313,7 @@ class TestProcess(NgrokTestCase):
         self.assertGreater(log_event_callback_mock.call_count, len(ngrok_process.logs))
         self.assertEqual(len(ngrok_process.logs), 5)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_no_monitor_thread(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v3)
@@ -326,7 +326,7 @@ class TestProcess(NgrokTestCase):
         # THEN
         self.assertIsNone(ngrok_process._monitor_thread)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_stop_monitor_thread(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v3)

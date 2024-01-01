@@ -37,7 +37,7 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertTrue(mock_call.called)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_connect_v2(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -68,7 +68,7 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertTrue(ngrok_version.startswith("2"))
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_connect_v3(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -99,7 +99,7 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertTrue(ngrok_version.startswith("3"))
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_connect_name(self):
         # WHEN
         ngrok_tunnel = ngrok.connect(name="my-tunnel", pyngrok_config=self.pyngrok_config_v3)
@@ -109,7 +109,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual("https", ngrok_tunnel.proto)
         self.assertEqual("http://localhost:80", ngrok_tunnel.config["addr"])
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_get_tunnels(self):
         # GIVEN
         url = ngrok.connect(pyngrok_config=self.pyngrok_config_v3).public_url
@@ -126,7 +126,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(tunnels[0].public_url, url)
         self.assertEqual(tunnels[0].config["addr"], "http://localhost:80")
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_bind_tls_both_v2(self):
         # WHEN
         url = ngrok.connect(bind_tls="both", pyngrok_config=self.pyngrok_config_v2).public_url
@@ -136,7 +136,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(url.startswith("http"))
         self.assertEqual(num_tunnels, 2)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_bind_tls_https_only_v2(self):
         # WHEN
         url = ngrok.connect(bind_tls=True, pyngrok_config=self.pyngrok_config_v2).public_url
@@ -146,7 +146,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(url.startswith("https"))
         self.assertEqual(num_tunnels, 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_bind_tls_http_only_v2(self):
         # WHEN
         url = ngrok.connect(bind_tls=False, pyngrok_config=self.pyngrok_config_v2).public_url
@@ -156,7 +156,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(url.startswith("http"))
         self.assertEqual(num_tunnels, 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_schemes_http_v3(self):
         # WHEN
         url = ngrok.connect(schemes=["http"], pyngrok_config=self.pyngrok_config_v3).public_url
@@ -166,7 +166,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(url.startswith("http"))
         self.assertEqual(num_tunnels, 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_schemes_https_v3(self):
         # WHEN
         url = ngrok.connect(schemes=["https"], pyngrok_config=self.pyngrok_config_v3).public_url
@@ -176,7 +176,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(url.startswith("https"))
         self.assertEqual(num_tunnels, 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_schemes_http_https_v3(self):
         # WHEN
         url = ngrok.connect(schemes=["http", "https"], pyngrok_config=self.pyngrok_config_v3).public_url
@@ -186,7 +186,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(url.startswith("https"))
         self.assertEqual(num_tunnels, 2)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_bind_tls_upgraded_to_schemes_v3(self):
         # WHEN
         url = ngrok.connect(bind_tls="both", pyngrok_config=self.pyngrok_config_v3).public_url
@@ -196,7 +196,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(url.startswith("https"))
         self.assertEqual(num_tunnels, 2)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_disconnect_v2(self):
         # GIVEN
         url = ngrok.connect(pyngrok_config=self.pyngrok_config_v2).public_url
@@ -217,7 +217,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
         self.assertEqual(len(tunnels), 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_disconnect_v3(self):
         # GIVEN
         url = ngrok.connect(pyngrok_config=self.pyngrok_config_v3).public_url
@@ -236,7 +236,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
         self.assertEqual(len(tunnels), 0)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_kill(self):
         # GIVEN
         ngrok.connect("5000", pyngrok_config=self.pyngrok_config_v3)
@@ -256,7 +256,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 0)
         self.assertNoZombies()
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_api_get_request_success(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v3)
@@ -270,7 +270,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(ngrok_tunnel.name, response["name"])
         self.assertTrue(ngrok_tunnel.public_url.startswith("http"))
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_api_request_query_params(self):
         # GIVEN
         tunnel_name = "tunnel (1)"
@@ -294,7 +294,7 @@ class TestNgrok(NgrokTestCase):
         self.assertGreater(len(response2["requests"]), 0)
         self.assertEqual(0, len(response3["requests"]))
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_api_request_delete_data_updated(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v3)
@@ -312,7 +312,7 @@ class TestNgrok(NgrokTestCase):
         tunnels = ngrok.get_tunnels(self.pyngrok_config_v3)
         self.assertEqual(len(tunnels), 0)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_api_request_fails(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v3)
@@ -331,7 +331,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIn("invalid tunnel configuration", str(cm.exception))
         self.assertIn("protocol name", str(cm.exception))
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_api_request_timeout(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v3)
@@ -346,7 +346,7 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertIn("timed out", cm.exception.reason)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_regional_tcp_v2(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -368,7 +368,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIn(".au.", ngrok_tunnel.public_url)
         self.assertEqual(len(process._current_processes.keys()), 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_regional_tcp_v3(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -389,7 +389,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIn(".au.", ngrok_tunnel.public_url)
         self.assertEqual(len(process._current_processes.keys()), 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_auth_v2(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -406,7 +406,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNotNone(process.get_process(pyngrok_config))
         self.assertEqual(len(process._current_processes.keys()), 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_auth_v3(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -425,7 +425,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNotNone(process.get_process(pyngrok_config))
         self.assertEqual(len(process._current_processes.keys()), 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_regional_subdomain(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -447,7 +447,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIn(subdomain, url)
         self.assertEqual(len(process._current_processes.keys()), 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_connect_fileserver(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -471,7 +471,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIn('https://', ngrok_tunnel.public_url)
         self.assertEqual(len(process._current_processes.keys()), 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_disconnect_fileserver_v2(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -488,7 +488,7 @@ class TestNgrok(NgrokTestCase):
         # There is still one tunnel left, as we only disconnected the http tunnel
         self.assertEqual(len(tunnels), 1)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_get_tunnel_fileserver(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
@@ -504,7 +504,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(ngrok_tunnel.name, response["name"])
         self.assertTrue(ngrok_tunnel.name.startswith("http-file-"))
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_ngrok_tunnel_refresh_metrics(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v3)
@@ -524,7 +524,7 @@ class TestNgrok(NgrokTestCase):
         self.assertGreater(ngrok_tunnel.metrics.get("http").get("count"), 0)
         self.assertGreater(ngrok_tunnel.data["metrics"].get("http").get("count"), 0)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_v2(self):
         subdomain = self.create_unique_subdomain()
 
@@ -564,7 +564,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(ssh_tunnel.proto, config["tunnels"]["tcp-tunnel"]["proto"])
         self.assertTrue(ssh_tunnel.public_url.startswith("tcp://"))
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_v3(self):
         subdomain = self.create_unique_subdomain()
 
@@ -614,7 +614,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(ssh_tunnel.proto, config["tunnels"]["tcp-tunnel"]["proto"])
         self.assertTrue(ssh_tunnel.public_url.startswith("tcp://"))
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf("NGROK_HTTP_EDGE" not in os.environ, "NGROK_HTTP_EDGE environment variable not set")
     @unittest.skipIf("NGROK_TCP_EDGE" not in os.environ, "NGROK_TCP_EDGE environment variable not set")
     @unittest.skipIf("NGROK_API_KEY" not in os.environ, "NGROK_API_KEY environment variable not set")
@@ -678,7 +678,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(tunnels[1].proto, "tcp")
         self.assertTrue(tunnels[1].public_url, os.environ["NGROK_TCP_EDGE_ENDPOINT"])
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf("NGROK_HTTP_EDGE" not in os.environ, "NGROK_HTTP_EDGE environment variable not set")
     @unittest.skipIf("NGROK_API_KEY" not in os.environ, "NGROK_API_KEY environment variable not set")
     def test_bind_tls_and_labels_not_allowed(self):
@@ -703,7 +703,7 @@ class TestNgrok(NgrokTestCase):
         with self.assertRaises(PyngrokError):
             ngrok.connect(name="edge-tunnel", bind_tls=True, pyngrok_config=pyngrok_config)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf("NGROK_HTTP_EDGE" not in os.environ, "NGROK_HTTP_EDGE environment variable not set")
     def test_labels_no_api_key_fails(self):
         # GIVEN
@@ -726,7 +726,7 @@ class TestNgrok(NgrokTestCase):
         with self.assertRaises(PyngrokError):
             ngrok.connect(name="edge-tunnel", pyngrok_config=pyngrok_config)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_pyngrok_default_with_overrides(self):
         subdomain = self.create_unique_subdomain()
 
@@ -762,7 +762,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual("http", config["tunnels"]["pyngrok-default"]["proto"])
         self.assertIn(subdomain, ngrok_tunnel2.public_url)
 
-    @unittest.skipIf("NGROK_AUTHTOKEN" not in os.environ, "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_upgrade_ngrok_config_file_v2_to_v3(self):
         # GIVEN
         config_path = os.path.join(self.config_dir, "legacy_config.yml")
