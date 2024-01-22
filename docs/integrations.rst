@@ -35,7 +35,7 @@ same place.
             USE_NGROK=os.environ.get("USE_NGROK", "False") == "True" and os.environ.get("WERKZEUG_RUN_MAIN") != "true"
         )
 
-        if app.config["USE_NGROK"]:
+        if app.config["USE_NGROK"] and os.environ.get("NGROK_AUTHTOKEN"):
             # pyngrok will only be installed, and should only ever be initialized, in a dev environment
             from pyngrok import ngrok
 
@@ -59,7 +59,7 @@ Now Flask can be started in development by the usual means, setting ``USE_NGROK`
 
 .. code-block:: sh
 
-    USE_NGROK=True FLASK_APP=server.py flask run
+    USE_NGROK=True NGROK_AUTHTOKEN=<AUTHTOKEN> FLASK_APP=server.py flask run
 
 Django
 ------
@@ -101,7 +101,7 @@ to do this is one of our ``apps.py`` by `extending AppConfig <https://docs.djang
         verbose_name = "Common"
 
         def ready(self):
-            if settings.DEV_SERVER and settings.USE_NGROK:
+            if settings.DEV_SERVER and settings.USE_NGROK and os.environ.get("NGROK_AUTHTOKEN"):
                 # pyngrok will only be installed, and should only ever be initialized, in a dev environment
                 from pyngrok import ngrok
 
@@ -127,7 +127,7 @@ Now the Django dev server can be started by the usual means, setting ``USE_NGROK
 
 .. code-block:: sh
 
-    USE_NGROK=True python manage.py runserver
+    USE_NGROK=True NGROK_AUTHTOKEN=<AUTHTOKEN> python manage.py runserver
 
 FastAPI
 -------
@@ -166,7 +166,7 @@ we should add a variable that let's us configure from an environment variable wh
     # Initialize the FastAPI app for a simple web server
     app = FastAPI()
 
-    if settings.USE_NGROK:
+    if settings.USE_NGROK and os.environ.get("NGROK_AUTHTOKEN"):
         # pyngrok should only ever be installed or initialized in a dev environment when this flag is set
         from pyngrok import ngrok
 
@@ -189,7 +189,7 @@ Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicor
 
 .. code-block:: sh
 
-    USE_NGROK=True uvicorn server:app
+    USE_NGROK=True NGROK_AUTHTOKEN=<AUTHTOKEN> uvicorn server:app
 
 Google Colaboratory
 -------------------
@@ -411,7 +411,7 @@ We can then run this script to start the server.
 
 .. code-block:: sh
 
-    python server.py
+    NGROK_AUTHTOKEN=<AUTHTOKEN> python server.py
 
 Python TCP Server and Client
 ----------------------------
@@ -480,7 +480,7 @@ In a terminal window, we can now start our socket server:
 
 .. code-block:: sh
 
-    HOST="1.tcp.ngrok.io" PORT=12345 python server.py
+    NGROK_AUTHTOKEN=<AUTHTOKEN> HOST="1.tcp.ngrok.io" PORT=12345 python server.py
 
 It's now waiting for incoming connections, so let's write a client to connect to it and send it something.
 
