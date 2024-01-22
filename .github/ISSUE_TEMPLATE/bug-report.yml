@@ -1,0 +1,72 @@
+name: 🐛 Bug Report
+description: Found a bug? Help us squash it.
+labels: ["bug"]
+
+body:
+
+- type: markdown
+  attributes:
+    value: |
+      While we'd love to be able to support every person on their projects, that would simply be infeasible. Luckily, that's what the helpful developer community over at Stack Overflow is for! Please [create a question there with the "pyngrok" tag](https://stackoverflow.com/questions/ask?tags=python+pyngrok+ngrok) if what you're looking for is a programming question or you need help with an integration. You can refer to [`pyngrok`'s own documentation](https://pyngrok.readthedocs.io/en/latest/) to help you write the best possible question.
+
+      Also, consider [supporting the project](https://github.com/sponsors/alexdlaird) to have your request prioritized.
+
+- type: checkboxes
+  id: ack
+  attributes:
+    label: Acknowledgements
+    options:
+    - label: I have written a descriptive issue title
+      required: true
+    - label: I have searched [`pyngrok`'s documentation](https://pyngrok.readthedocs.io/en/latest/) for an answer
+      required: true
+    - label: I have searched [Issues](issues?q=is%3Aissue) to see if the bug has already been reported
+      required: true
+    - label: I have searched [Stack Overflow](https://stackoverflow.com/questions/tagged/pyngrok) to ensure the issue I'm experiencing has not already been discussed
+      required: true
+
+- type: input
+  id: os-version
+  attributes:
+    label: Operating System
+    placeholder: macOS 10.14.5
+  validations:
+    required: true
+
+- type: input
+  id: python-version
+  attributes:
+    label: Python Version
+    placeholder: 3.9.2
+  validations:
+    required: true
+
+- type: input
+  id: library-version
+  attributes:
+    label: pyngrok Version
+    placeholder: 1.0.3
+  validations:
+    required: true
+
+- type: textarea
+  id: describe-the-bug
+  attributes:
+    label: Describe the Bug
+    description: A clear and concise description of what the bug is, including exceptions thrown.
+  validations:
+    required: true
+
+- type: textarea
+  id: steps-to-reproduce
+  attributes:
+    label: Steps to Reproduce
+    description: A snippet of the code used to reproduce the behavior.
+  validations:
+    required: true
+
+- type: textarea
+  id: expected-behavior
+  attributes:
+    label: Expected Behavior
+    description: A brief description of what you expected to happen.

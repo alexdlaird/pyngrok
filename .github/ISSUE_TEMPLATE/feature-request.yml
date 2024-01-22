@@ -1,0 +1,34 @@
+name: 🚀 Feature Request
+description: Want something? Let us know.
+labels: ["enhancement"]
+
+body:
+
+- type: markdown
+  attributes:
+    value: |
+      Consider [supporting the project](https://github.com/sponsors/alexdlaird) to have your request prioritized.
+
+- type: checkboxes
+  id: ack
+  attributes:
+    label: Acknowledgements
+    options:
+    - label: I have written a descriptive issue title
+      required: true
+    - label: I have searched [Issues](issues?q=is%3Aissue) to see if the feature has already been requested
+      required: true
+
+- type: textarea
+  id: describe-the-feature
+  attributes:
+    label: Describe the Feature
+    description: A clear and concise description of the how and why of the feature you'd like to see. If possible, include possible code snippets of interfaces you'd like to see and how you might interact with them.
+  validations:
+    required: true
+
+- type: textarea
+  id: describe-workarounds
+  attributes:
+    label: Describe Alternative Solutions/Workarounds
+    description: A clear and concise description of any alternative solutions or features you've considered. If applicable, please provide snippets of any current workarounds you use.
