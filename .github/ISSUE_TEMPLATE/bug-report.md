@@ -1,9 +1,7 @@
 ---
-name: Bug Report
+name: 🐛 Bug Report
 about: Found a bug? Help us squash it.
-title: ''
-labels: bug
-assignees: ''
+labels: ["bug"]
 
 ---
 

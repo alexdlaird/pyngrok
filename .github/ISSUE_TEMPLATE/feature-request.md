@@ -1,9 +1,7 @@
 ---
-name: Feature Request
-about: Need something? Let us know.
-title: ''
-labels: enhancement
-assignees: ''
+name: 🚀 Feature Request
+about: Want something? Let us know.
+labels: ["enhancement"]
 
 ---
 
