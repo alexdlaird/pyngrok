@@ -78,5 +78,5 @@ jobs:
     steps:
       - uses: fastify/github-action-merge-dependabot@v3
         with:
-          target: minor
+          target: major
           use-github-auto-merge: true
