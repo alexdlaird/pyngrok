@@ -3,8 +3,8 @@ import os
 from setuptools import setup
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "7.0.5"
+__copyright__ = "Copyright 2024, Alex Laird"
+__version__ = "7.1.0"
 
 name = "pyngrok" if os.environ.get("BUILD_PACKAGE_AS_NGROK", "False") != "True" else "ngrok"
 
@@ -15,7 +15,7 @@ setup(
     name=name,
     version=__version__,
     packages=["pyngrok"],
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     install_requires=[
         "PyYAML"
     ],
@@ -55,8 +55,6 @@ setup(
         "Operating System :: POSIX :: Linux",
         "Operating System :: Unix",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
