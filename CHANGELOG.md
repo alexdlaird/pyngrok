@@ -11,7 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Test improvements.
 
 ### Removed
-- Support for 3.6 and 3.7.
+- Support for 3.6 and 3.7. To use `pyngrok` with Python 3.7 or lower, pin `pyngrok<7.1`.
 
 ## [7.0.5](https://github.com/alexdlaird/pyngrok/compare/7.0.4...7.0.5) - 2023-12-30
 ### Fixed
