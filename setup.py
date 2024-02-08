@@ -29,11 +29,11 @@ setup(
     long_description_content_type="text/markdown",
     author="Alex Laird",
     author_email="contact@alexlaird.com",
-    url="https://github.com/alexdlaird/pyngrok",
     project_urls={
-        "Documentation": "https://pyngrok.readthedocs.io",
         "Changelog": "https://github.com/alexdlaird/pyngrok/blob/main/CHANGELOG.md",
-        "Sponsor": "https://github.com/sponsors/alexdlaird"
+        "Documentation": "https://pyngrok.readthedocs.io",
+        "Sponsor": "https://github.com/sponsors/alexdlaird",
+        "Source Code": "https://github.com/alexdlaird/pyngrok"
     },
     license="MIT",
     classifiers=[
