@@ -1,10 +1,10 @@
 import os
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2024, Alex Laird"
-__version__ = "7.1.0"
+__version__ = "7.1.1"
 
 name = "pyngrok" if os.environ.get("BUILD_PACKAGE_AS_NGROK", "False") != "True" else "ngrok"
 
@@ -14,7 +14,7 @@ with open("README.md", "r") as f:
 setup(
     name=name,
     version=__version__,
-    packages=["pyngrok"],
+    packages=find_packages(),
     python_requires=">=3.8",
     install_requires=[
         "PyYAML"
@@ -24,14 +24,12 @@ setup(
         ngrok=pyngrok.ngrok:main
         pyngrok=pyngrok.ngrok:main
     """,
-    include_package_data=True,
     description="A Python wrapper for ngrok.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Alex Laird",
     author_email="contact@alexlaird.com",
     url="https://github.com/alexdlaird/pyngrok",
-    download_url="https://github.com/alexdlaird/pyngrok/archive/{}.tar.gz".format(__version__),
     project_urls={
         "Documentation": "https://pyngrok.readthedocs.io",
         "Changelog": "https://github.com/alexdlaird/pyngrok/blob/main/CHANGELOG.md",
