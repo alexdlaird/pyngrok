@@ -28,7 +28,12 @@ class NgrokLog:
         #: The URL, if ``obj`` is "web".
         self.addr: Optional[str] = None
 
-        for i in shlex.split(self.line):
+        try:
+            split = shlex.split(self.line)
+        except ValueError:
+            split = []
+
+        for i in split:
             if "=" not in i:
                 continue
 
