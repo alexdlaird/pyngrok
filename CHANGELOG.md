@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.1.1...HEAD)
 
-## [7.1.1](https://github.com/alexdlaird/pyngrok/compare/7.1.0...7.1.1) - TBD
+## [7.1.1](https://github.com/alexdlaird/pyngrok/compare/7.1.0...7.1.1) - 2024-02-09
 ### Added
 - Migrated to `pyproject.toml`.
 - Build instability from an `ngrok` binary change.
