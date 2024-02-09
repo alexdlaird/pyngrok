@@ -771,6 +771,12 @@ class TestNgrok(NgrokTestCase):
                                                    config_path=config_path,
                                                    ngrok_version="v3")
         self.given_ngrok_installed(self.pyngrok_config_v3)
+
+        # WHEN
+        with self.assertRaises(PyngrokError):
+            ngrok.connect(pyngrok_config=pyngrok_config_v3)
+
+        # GIVEN
         process.capture_run_process(pyngrok_config_v3.ngrok_path,
                                     ["config", "upgrade", "--config", pyngrok_config_v3.config_path])
 
