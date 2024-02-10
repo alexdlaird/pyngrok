@@ -46,8 +46,8 @@ dev = [
 ]
 docs = [
     "Sphinx",
-    "sphinx_rtd_theme",
     "sphinx-notfound-page",
+    "sphinx_autodoc_typehints",
     "mypy",
     "types-PyYAML"
 ]
