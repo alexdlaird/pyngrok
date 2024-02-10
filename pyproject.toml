@@ -7,7 +7,7 @@ license = { file = "LICENSE" }
 maintainers = [{ name = "Alex Laird", email = "contact@alexlaird.com" }]
 requires-python = ">=3.8"
 dependencies = [
-    "PyYAML"
+    "PyYAML>=5.1"
 ]
 classifiers = [
     "Development Status :: 6 - Mature",
@@ -37,6 +37,19 @@ classifiers = [
     "Topic :: Software Development :: Build Tools",
     "Topic :: Software Development :: Testing",
     "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.optional-dependencies]
+dev = [
+    "coverage[toml]",
+    "psutil"
+]
+docs = [
+    "Sphinx",
+    "sphinx_rtd_theme",
+    "sphinx-notfound-page",
+    "mypy",
+    "types-PyYAML"
 ]
 
 [project.scripts]
@@ -69,8 +82,8 @@ exclude_lines = [
 ]
 
 [tool.coverage.xml]
-output = "_build/coverage/coverage.xml"
+output = "build/coverage/coverage.xml"
 
 [tool.coverage.html]
 title = "Coverage Report"
-directory = "_build/coverage"
+directory = "build/coverage"

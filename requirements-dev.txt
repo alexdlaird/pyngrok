@@ -1,3 +1,0 @@
-psutil
-coverage
-coverage[toml]

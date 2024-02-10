@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.1.1...HEAD)
+### Added
+- Relative dependency pinning in `pyproject.toml`.
+- Build improvements.
+
+### Removed
+- `requirements.txt` files to streamline in to `pyproject.toml`.
 
 ## [7.1.1](https://github.com/alexdlaird/pyngrok/compare/7.1.0...7.1.1) - 2024-02-09
 ### Added

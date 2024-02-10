@@ -14,7 +14,7 @@ virtualenv:
 install: virtualenv
 	@( \
 		source venv/bin/activate; \
-		python -m pip install -r requirements.txt -r requirements-dev.txt; \
+		python -m pip install .; \
 	)
 
 nopyc:
@@ -22,20 +22,21 @@ nopyc:
 	find . -name __pycache__ | xargs rm -rf || true
 
 clean: nopyc
-	rm -rf _build dist *.egg-info venv pyngrok-example-django
+	rm -rf build dist *.egg-info venv pyngrok-example-django
 
-test: install
+test: virtualenv
 	@( \
 		source venv/bin/activate; \
+		python -m pip install ".[dev]"; \
 		python -m coverage run -m unittest discover -v -b && python -m coverage xml && python -m coverage html && python -m coverage report; \
 	)
 
-docs: install
+docs: virtualenv
 	@( \
 		source venv/bin/activate; \
-		python -m pip install -r docs/requirements.txt; \
+		python -m pip install ".[docs]"; \
 		mypy --strict pyngrok; \
-		sphinx-build -M html docs _build/docs -n; \
+		sphinx-build -M html docs build/docs -n; \
 	)
 
 local:

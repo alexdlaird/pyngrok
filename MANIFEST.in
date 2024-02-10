@@ -2,4 +2,4 @@
 include LICENSE README.md CHANGELOG.md
 
 # Exclude build
-prune _build
+prune build

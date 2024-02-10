@@ -64,7 +64,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
         uses: codecov/codecov-action@v3
         with:
-          directory: ./_build/coverage
+          directory: ./build/coverage
 
   automerge:
     name: "Auto Approve"

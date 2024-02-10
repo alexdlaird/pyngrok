@@ -9,7 +9,7 @@ venv
 dist/
 MANIFEST
 *.egg-info
-_build
+build
 
 pyngrok/bin
 tests/.ngrok
