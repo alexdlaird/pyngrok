@@ -45,7 +45,7 @@ same place.
 
             # Open a ngrok tunnel to the dev server
             public_url = ngrok.connect(port).public_url
-            print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, port))
+            print(f" * ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\"")
 
             # Update any base URLs or webhooks to use the public ngrok URL
             app.config["BASE_URL"] = public_url
@@ -107,12 +107,12 @@ to do this is one of our ``apps.py`` by `extending AppConfig <https://docs.djang
 
                 # Get the dev server port (defaults to 8000 for Django, can be overridden with the
                 # last arg when calling `runserver`)
-                addrport = urlparse("http://{}".format(sys.argv[-1]))
+                addrport = urlparse(f"http://{sys.argv[-1]}")
                 port = addrport.port if addrport.netloc and addrport.port else "8000"
 
                 # Open a ngrok tunnel to the dev server
                 public_url = ngrok.connect(port).public_url
-                print("ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, port))
+                print(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\")
 
                 # Update any base URLs or webhooks to use the public ngrok URL
                 settings.BASE_URL = public_url
@@ -176,7 +176,7 @@ we should add a variable that let's us configure from an environment variable wh
 
         # Open a ngrok tunnel to the dev server
         public_url = ngrok.connect(port).public_url
-        logger.info("ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, port))
+        logger.info(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\")
 
         # Update any base URLs or webhooks to use the public ngrok URL
         settings.BASE_URL = public_url
@@ -250,7 +250,7 @@ assumes we have also added ``!pip install flask`` to our dependency code block.
 
     # Open a ngrok tunnel to the HTTP server
     public_url = ngrok.connect(port).public_url
-    print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, port))
+    print(f" * ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\")
 
     # Update any base URLs to use the public ngrok URL
     app.config["BASE_URL"] = public_url
@@ -316,7 +316,7 @@ and ``PORT`` was changed.
 
         @classmethod
         def init_webhooks(cls, base_url):
-            webhook_url = "{}/foo".format(base_url)
+            webhook_url = f"{base_url}/foo"
 
             # ... Update inbound traffic via APIs to use the public-facing ngrok URL
 
@@ -397,7 +397,7 @@ server. We can use ``pyngrok`` to expose it to the web via a tunnel, as show in 
     httpd = HTTPServer(server_address, BaseHTTPRequestHandler)
 
     public_url = ngrok.connect(port).public_url
-    print("ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}\"".format(public_url, port))
+    print(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\")
 
     try:
         # Block until CTRL-C or some other terminating event
@@ -444,8 +444,8 @@ Now create ``server.py`` with the following code:
     sock.listen(1)
 
     # Open a ngrok tunnel to the socket
-    public_url = ngrok.connect(port, "tcp", remote_addr="{}:{}".format(host, port)).public_url
-    print("ngrok tunnel \"{}\" -> \"tcp://127.0.0.1:{}\"".format(public_url, port))
+    public_url = ngrok.connect(port, "tcp", remote_addr=f"{host}:{port}").public_url
+    print(f"ngrok tunnel \"{public_url}\" -> \"tcp://127.0.0.1:{port}\")
 
     while True:
         connection = None
@@ -454,16 +454,16 @@ Now create ``server.py`` with the following code:
             print("\nWaiting for a connection ...")
             connection, client_address = sock.accept()
 
-            print("... connection established from {}".format(client_address))
+            print(f"... connection established from {client_address}")
 
             # Receive the message, send a response
             while True:
                 data = connection.recv(1024)
                 if data:
-                    print("Received: {}".format(data.decode("utf-8")))
+                    print("Received: {data}".format(data=data.decode("utf-8")))
 
                     message = "pong"
-                    print("Sending: {}".format(message))
+                    print(f"Sending: {message}")
                     connection.sendall(message.encode("utf-8"))
                 else:
                     break
@@ -500,11 +500,11 @@ Create ``client.py`` with the following code:
     # Connect to the server with the socket via our ngrok tunnel
     server_address = (host, port)
     sock.connect(server_address)
-    print("Connected to {}:{}".format(host, port))
+    print(f"Connected to {host}:{port}")
 
     # Send the message
     message = "ping"
-    print("Sending: {}".format(message))
+    print(f"Sending: {message}")
     sock.sendall(message.encode("utf-8"))
 
     # Await a response
@@ -514,7 +514,7 @@ Create ``client.py`` with the following code:
     while data_received < data_expected:
         data = sock.recv(1024)
         data_received += len(data)
-        print("Received: {}".format(data.decode("utf-8")))
+        print("Received: {data}".format(data=data.decode("utf-8")))
 
     sock.close()
 

@@ -264,7 +264,7 @@ class TestNgrok(NgrokTestCase):
         time.sleep(1)
 
         # WHEN
-        response = ngrok.api_request("{}{}".format(current_process.api_url, ngrok_tunnel.uri), "GET")
+        response = ngrok.api_request(f"{current_process.api_url}{ngrok_tunnel.uri}", "GET")
 
         # THEN
         self.assertEqual(ngrok_tunnel.name, response["name"])
@@ -279,15 +279,15 @@ class TestNgrok(NgrokTestCase):
                                    bind_tls=True, pyngrok_config=self.pyngrok_config_v3).public_url
         time.sleep(1)
 
-        urlopen("{}/status".format(public_url)).read()
+        urlopen(f"{public_url}/status").read()
         time.sleep(3)
 
         # WHEN
-        response1 = ngrok.api_request("{}/api/requests/http".format(current_process.api_url), "GET")
-        response2 = ngrok.api_request("{}/api/requests/http".format(current_process.api_url), "GET",
-                                      params={"tunnel_name": "{}".format(tunnel_name)})
-        response3 = ngrok.api_request("{}/api/requests/http".format(current_process.api_url), "GET",
-                                      params={"tunnel_name": "{} (http)".format(tunnel_name)})
+        response1 = ngrok.api_request(f"{current_process.api_url}/api/requests/http", "GET")
+        response2 = ngrok.api_request(f"{current_process.api_url}/api/requests/http", "GET",
+                                      params={"tunnel_name": f"{tunnel_name}"})
+        response3 = ngrok.api_request(f"{current_process.api_url}/api/requests/http", "GET",
+                                      params={"tunnel_name": f"{tunnel_name} (http)"})
 
         # THEN
         self.assertGreater(len(response1["requests"]), 0)
@@ -304,7 +304,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(tunnels), 1)
 
         # WHEN
-        response = ngrok.api_request("{}{}".format(current_process.api_url, tunnels[0].uri),
+        response = ngrok.api_request(f"{current_process.api_url}{tunnels[0].uri}",
                                      "DELETE")
 
         # THEN
@@ -324,7 +324,7 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         with self.assertRaises(PyngrokNgrokHTTPError) as cm:
-            ngrok.api_request("{}/api/tunnels".format(current_process.api_url), "POST", data=bad_data)
+            ngrok.api_request(f"{current_process.api_url}/api/tunnels", "POST", data=bad_data)
 
         # THEN
         self.assertEqual(HTTPStatus.BAD_REQUEST, cm.exception.status_code)
@@ -340,7 +340,7 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         with self.assertRaises(PyngrokNgrokURLError) as cm:
-            ngrok.api_request("{}{}".format(current_process.api_url, ngrok_tunnel.uri), "DELETE",
+            ngrok.api_request(f"{current_process.api_url}{ngrok_tunnel.uri}", "DELETE",
                               timeout=0.0001)
 
         # THEN
@@ -498,7 +498,7 @@ class TestNgrok(NgrokTestCase):
         api_url = ngrok.get_ngrok_process(pyngrok_config).api_url
 
         # WHEN
-        response = ngrok.api_request("{}{}".format(api_url, ngrok_tunnel.uri), "GET")
+        response = ngrok.api_request(f"{api_url}{ngrok_tunnel.uri}", "GET")
 
         # THEN
         self.assertEqual(ngrok_tunnel.name, response["name"])
@@ -514,7 +514,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(0, ngrok_tunnel.metrics.get("http").get("count"))
         self.assertEqual(ngrok_tunnel.data["metrics"].get("http").get("count"), 0)
 
-        urlopen("{}/status".format(ngrok_tunnel.public_url)).read()
+        urlopen(f"{ngrok_tunnel.public_url}/status").read()
         time.sleep(3)
 
         # WHEN
@@ -554,13 +554,13 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertEqual(http_tunnel.name, "http-tunnel (http)")
         self.assertEqual(http_tunnel.config["addr"],
-                         "http://localhost:{}".format(config["tunnels"]["http-tunnel"]["addr"]))
+                         f"http://localhost:{config['tunnels']['http-tunnel']['addr']}")
         self.assertEqual(http_tunnel.proto, config["tunnels"]["http-tunnel"]["proto"])
         self.assertEqual(http_tunnel.public_url,
-                         "http://{}.ngrok.io".format(config["tunnels"]["http-tunnel"]["subdomain"]))
+                         f"http://{config['tunnels']['http-tunnel']['subdomain']}.ngrok.io")
         self.assertEqual(ssh_tunnel.name, "tcp-tunnel")
         self.assertEqual(ssh_tunnel.config["addr"],
-                         "localhost:{}".format(config["tunnels"]["tcp-tunnel"]["addr"]))
+                         f"localhost:{config['tunnels']['tcp-tunnel']['addr']}")
         self.assertEqual(ssh_tunnel.proto, config["tunnels"]["tcp-tunnel"]["proto"])
         self.assertTrue(ssh_tunnel.public_url.startswith("tcp://"))
 
@@ -603,14 +603,14 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertEqual(http_tunnel.name, "http-tunnel")
         self.assertEqual(http_tunnel.config["addr"],
-                         "http://localhost:{}".format(config["tunnels"]["http-tunnel"]["addr"]))
+                         f"http://localhost:{config['tunnels']['http-tunnel']['addr']}")
         self.assertTrue(http_tunnel.config["addr"].startswith("http://"))
         self.assertEqual(http_tunnel.public_url,
-                         "https://{}.ngrok.io".format(config["tunnels"]["http-tunnel"]["subdomain"]))
+                         f"https://{config['tunnels']['http-tunnel']['subdomain']}.ngrok.io")
         self.assertIn("Sign in - Google Accounts", response.read().decode())
         self.assertEqual(ssh_tunnel.name, "tcp-tunnel")
         self.assertEqual(ssh_tunnel.config["addr"],
-                         "localhost:{}".format(config["tunnels"]["tcp-tunnel"]["addr"]))
+                         f"localhost:{config['tunnels']['tcp-tunnel']['addr']}")
         self.assertEqual(ssh_tunnel.proto, config["tunnels"]["tcp-tunnel"]["proto"])
         self.assertTrue(ssh_tunnel.public_url.startswith("tcp://"))
 
@@ -629,13 +629,13 @@ class TestNgrok(NgrokTestCase):
                 "edge-http-tunnel": {
                     "addr": "80",
                     "labels": [
-                        "edge={}".format(os.environ["NGROK_HTTP_EDGE"]),
+                        f"edge={os.environ['NGROK_HTTP_EDGE']}",
                     ]
                 },
                 "edge-tcp-tunnel": {
                     "addr": "22",
                     "labels": [
-                        "edge={}".format(os.environ["NGROK_TCP_EDGE"]),
+                        f"edge={os.environ['NGROK_TCP_EDGE']}",
                     ]
                 }
             }
@@ -654,26 +654,26 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertEqual(edge_http_tunnel.name, "edge-http-tunnel")
         self.assertEqual(edge_http_tunnel.config["addr"],
-                         "http://localhost:{}".format(config["tunnels"]["edge-http-tunnel"]["addr"]))
+                         f"http://localhost:{config['tunnels']['edge-http-tunnel']['addr']}")
         self.assertTrue(edge_http_tunnel.config["addr"].startswith("http://"))
         self.assertEqual(edge_http_tunnel.proto, "https")
         self.assertEqual(edge_http_tunnel.public_url, os.environ["NGROK_HTTP_EDGE_ENDPOINT"])
         self.assertEqual(edge_tcp_tunnel.name, "edge-tcp-tunnel")
         self.assertEqual(edge_tcp_tunnel.config["addr"],
-                         "tcp://localhost:{}".format(config["tunnels"]["edge-tcp-tunnel"]["addr"]))
+                         f"tcp://localhost:{config['tunnels']['edge-tcp-tunnel']['addr']}")
         self.assertTrue(edge_tcp_tunnel.config["addr"].startswith("tcp://"))
         self.assertEqual(edge_tcp_tunnel.proto, "tcp")
         self.assertEqual(edge_tcp_tunnel.public_url, os.environ["NGROK_TCP_EDGE_ENDPOINT"])
         self.assertEqual(len(tunnels), 2)
         self.assertEqual(tunnels[0].name, "edge-http-tunnel")
         self.assertEqual(tunnels[0].config["addr"],
-                         "http://localhost:{}".format(config["tunnels"]["edge-http-tunnel"]["addr"]))
+                         f"http://localhost:{config['tunnels']['edge-http-tunnel']['addr']}")
         self.assertTrue(tunnels[0].config["addr"].startswith("http://"))
         self.assertEqual(tunnels[0].proto, "https")
         self.assertEqual(tunnels[0].public_url, os.environ["NGROK_HTTP_EDGE_ENDPOINT"])
         self.assertEqual(tunnels[1].name, "edge-tcp-tunnel")
         self.assertEqual(tunnels[1].config["addr"],
-                         "tcp://localhost:{}".format(config["tunnels"]["edge-tcp-tunnel"]["addr"]))
+                         f"tcp://localhost:{config['tunnels']['edge-tcp-tunnel']['addr']}")
         self.assertTrue(tunnels[1].config["addr"].startswith("tcp://"))
         self.assertEqual(tunnels[1].proto, "tcp")
         self.assertTrue(tunnels[1].public_url, os.environ["NGROK_TCP_EDGE_ENDPOINT"])
@@ -688,7 +688,7 @@ class TestNgrok(NgrokTestCase):
                 "edge-tunnel": {
                     "addr": "80",
                     "labels": [
-                        "edge={}".format(os.environ["NGROK_HTTP_EDGE"]),
+                        f"edge={os.environ['NGROK_HTTP_EDGE']}",
                     ]
                 }
             }
@@ -712,7 +712,7 @@ class TestNgrok(NgrokTestCase):
                 "edge-tunnel": {
                     "addr": "80",
                     "labels": [
-                        "edge={}".format(os.environ["NGROK_HTTP_EDGE"]),
+                        f"edge={os.environ['NGROK_HTTP_EDGE']}",
                     ]
                 }
             }
@@ -753,10 +753,10 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertEqual(ngrok_tunnel1.name, "pyngrok-default")
         self.assertEqual(ngrok_tunnel1.config["addr"],
-                         "http://localhost:{}".format(config["tunnels"]["pyngrok-default"]["addr"]))
+                         f"http://localhost:{config['tunnels']['pyngrok-default']['addr']}")
         self.assertEqual("http", config["tunnels"]["pyngrok-default"]["proto"])
         self.assertEqual(ngrok_tunnel1.public_url,
-                         "https://{}.ngrok.io".format(config["tunnels"]["pyngrok-default"]["subdomain"]))
+                         f"https://{config['tunnels']['pyngrok-default']['subdomain']}.ngrok.io")
         self.assertEqual(ngrok_tunnel2.name, "pyngrok-default")
         self.assertEqual(ngrok_tunnel2.config["addr"], "http://localhost:5000")
         self.assertEqual("http", config["tunnels"]["pyngrok-default"]["proto"])
@@ -823,7 +823,7 @@ class TestNgrok(NgrokTestCase):
     def test_api_request_security_error(self):
         # WHEN
         with self.assertRaises(PyngrokSecurityError):
-            ngrok.api_request("file:{}".format(__file__))
+            ngrok.api_request(f"file:{__file__}")
 
     @mock.patch("pyngrok.process.capture_run_process")
     def test_update(self, mock_capture_run_process):
@@ -868,4 +868,4 @@ class TestNgrok(NgrokTestCase):
             ngrok.set_auth_token("807ad30a-73be-48d8", pyngrok_config=self.pyngrok_config_v3)
 
         # THEN
-        self.assertIn(": {}".format(error_msg), str(cm.exception))
+        self.assertIn(f": {error_msg}", str(cm.exception))

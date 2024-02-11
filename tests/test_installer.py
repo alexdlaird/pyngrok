@@ -110,7 +110,7 @@ class TestInstaller(NgrokTestCase):
     def test_download_file_security_error(self):
         # WHEN
         with self.assertRaises(PyngrokSecurityError):
-            installer._download_file("file:{}".format(__file__), retries=10)
+            installer._download_file(f"file:{__file__}", retries=10)
 
     def test_web_addr_false_not_allowed(self):
         # WHEN

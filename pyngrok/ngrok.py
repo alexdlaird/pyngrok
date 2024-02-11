@@ -57,20 +57,20 @@ class NgrokTunnel:
         self.metrics: Dict[str, Any] = data.get("metrics", {})
 
     def __repr__(self) -> str:
-        return "<NgrokTunnel: \"{}\" -> \"{}\">".format(self.public_url, self.config["addr"]) if self.config.get(
+        return f"<NgrokTunnel: \"{self.public_url}\" -> \"{self.config['addr']}\">" if self.config.get(
             "addr", None) else "<pending Tunnel>"
 
     def __str__(self) -> str:  # pragma: no cover
-        return "NgrokTunnel: \"{}\" -> \"{}\"".format(self.public_url, self.config["addr"]) if self.config.get(
+        return f"NgrokTunnel: \"{self.public_url}\" -> \"{self.config['addr']}\"" if self.config.get(
             "addr", None) else "<pending Tunnel>"
 
     def refresh_metrics(self) -> None:
         """
         Get the latest metrics for the tunnel and update the ``metrics`` variable.
         """
-        logger.info("Refreshing metrics for tunnel: {}".format(self.public_url))
+        logger.info(f"Refreshing metrics for tunnel: {self.public_url}")
 
-        data = api_request("{}{}".format(self.api_url, self.uri), method="GET",
+        data = api_request(f"{self.api_url}{self.uri}", method="GET",
                            timeout=self.pyngrok_config.request_timeout)
 
         if "metrics" not in data:
@@ -158,11 +158,11 @@ def get_ngrok_process(pyngrok_config: Optional[PyngrokConfig] = None) -> NgrokPr
 def _apply_cloud_edge_to_tunnel(tunnel: NgrokTunnel,
                                 pyngrok_config: PyngrokConfig) -> None:
     if not tunnel.public_url and pyngrok_config.api_key and tunnel.id:
-        tunnel_response = api_request("https://api.ngrok.com/tunnels/{}".format(tunnel.id), method="GET",
+        tunnel_response = api_request(f"https://api.ngrok.com/tunnels/{tunnel.id}", method="GET",
                                       auth=pyngrok_config.api_key)
         if "labels" not in tunnel_response or "edge" not in tunnel_response["labels"]:
             raise PyngrokError(
-                "Tunnel {} does not have \"labels\", use a Tunnel configured on Cloud Edge.".format(tunnel.data["ID"]))
+                f"Tunnel {tunnel.data['ID']} does not have \"labels\", use a Tunnel configured on Cloud Edge.")
 
         edge = tunnel_response["labels"]["edge"]
         if edge.startswith("edghts_"):
@@ -172,17 +172,16 @@ def _apply_cloud_edge_to_tunnel(tunnel: NgrokTunnel,
         elif edge.startswith("edgtls"):
             edges_prefix = "tls"
         else:
-            raise PyngrokError("Unknown Edge prefix: {}.".format(edge))
+            raise PyngrokError(f"Unknown Edge prefix: {edge}.")
 
-        edge_response = api_request("https://api.ngrok.com/edges/{}/{}".format(edges_prefix, edge), method="GET",
+        edge_response = api_request(f"https://api.ngrok.com/edges/{edges_prefix}/{edge}", method="GET",
                                     auth=pyngrok_config.api_key)
 
         if "hostports" not in edge_response or len(edge_response["hostports"]) < 1:
             raise PyngrokError(
-                "No Endpoint is attached to your Cloud Edge {}, login to the ngrok dashboard to attach an Endpoint to your Edge first.".format(
-                    edge))
+                f"No Endpoint is attached to your Cloud Edge {edge}, login to the ngrok dashboard to attach an Endpoint to your Edge first.")
 
-        tunnel.public_url = "{}://{}".format(edges_prefix, edge_response["hostports"][0])
+        tunnel.public_url = f"{edges_prefix}://{edge_response['hostports'][0]}"
         tunnel.proto = edges_prefix
 
 
@@ -271,11 +270,11 @@ def connect(addr: Optional[str] = None,
 
     if not name:
         if not addr.startswith("file://"):
-            name = "{}-{}-{}".format(proto, addr, uuid.uuid4())
+            name = f"{proto}-{addr}-{uuid.uuid4()}"
         else:
-            name = "{}-file-{}".format(proto, uuid.uuid4())
+            name = f"{proto}-file-{uuid.uuid4()}"
 
-    logger.info("Opening tunnel named: {}".format(name))
+    logger.info(f"Opening tunnel named: {name}")
 
     config = {
         "name": name,
@@ -310,14 +309,14 @@ def connect(addr: Optional[str] = None,
 
     api_url = get_ngrok_process(pyngrok_config).api_url
 
-    logger.debug("Creating tunnel with options: {}".format(options))
+    logger.debug(f"Creating tunnel with options: {options}")
 
-    tunnel = NgrokTunnel(api_request("{}/api/tunnels".format(api_url), method="POST", data=options,
+    tunnel = NgrokTunnel(api_request(f"{api_url}/api/tunnels", method="POST", data=options,
                                      timeout=pyngrok_config.request_timeout),
                          pyngrok_config, api_url)
 
     if pyngrok_config.ngrok_version == "v2" and proto == "http" and options.get("bind_tls", "both") == "both":
-        tunnel = NgrokTunnel(api_request("{}{}%20%28http%29".format(api_url, tunnel.uri), method="GET",
+        tunnel = NgrokTunnel(api_request(f"{api_url}{tunnel.uri}%20%28http%29", method="GET",
                                          timeout=pyngrok_config.request_timeout),
                              pyngrok_config, api_url)
 
@@ -325,8 +324,7 @@ def connect(addr: Optional[str] = None,
 
     if tunnel.public_url is None:
         raise PyngrokError(
-            "\"public_url\" was not populated for tunnel {}, but is required for pyngrok to function.".format(
-                tunnel))
+            f"\"public_url\" was not populated for tunnel {tunnel}, but is required for pyngrok to function.")
 
     _current_tunnels[tunnel.public_url] = tunnel
 
@@ -360,9 +358,9 @@ def disconnect(public_url: str,
 
     tunnel = _current_tunnels[public_url]
 
-    logger.info("Disconnecting tunnel: {}".format(tunnel.public_url))
+    logger.info(f"Disconnecting tunnel: {tunnel.public_url}")
 
-    api_request("{}{}".format(api_url, tunnel.uri), method="DELETE",
+    api_request(f"{api_url}{tunnel.uri}", method="DELETE",
                 timeout=pyngrok_config.request_timeout)
 
     _current_tunnels.pop(public_url, None)
@@ -388,15 +386,14 @@ def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTun
     api_url = get_ngrok_process(pyngrok_config).api_url
 
     _current_tunnels.clear()
-    for tunnel in api_request("{}/api/tunnels".format(api_url), method="GET",
+    for tunnel in api_request(f"{api_url}/api/tunnels", method="GET",
                               timeout=pyngrok_config.request_timeout)["tunnels"]:
         ngrok_tunnel = NgrokTunnel(tunnel, pyngrok_config, api_url)
         _apply_cloud_edge_to_tunnel(ngrok_tunnel, pyngrok_config)
 
         if ngrok_tunnel.public_url is None:
             raise PyngrokError(
-                "\"public_url\" was not populated for tunnel {}, but is required for pyngrok to function.".format(
-                    ngrok_tunnel))
+                f"\"public_url\" was not populated for tunnel {ngrok_tunnel}, but is required for pyngrok to function.")
 
         _current_tunnels[ngrok_tunnel.public_url] = ngrok_tunnel
 
@@ -465,7 +462,7 @@ def api_request(url: str,
         from pyngrok import ngrok
 
         public_url = ngrok.connect()
-        response = ngrok.api_request("{}/some-route".format(public_url),
+        response = ngrok.api_request(f"{public_url}/some-route",
                                      method="POST", data={"foo": "bar"})
 
     Another is making requests to the ``ngrok`` API itself:
@@ -475,7 +472,7 @@ def api_request(url: str,
         from pyngrok import ngrok
 
         api_url = ngrok.get_ngrok_process().api_url
-        response = ngrok.api_request("{}/api/requests/http".format(api_url),
+        response = ngrok.api_request(f"{api_url}/api/requests/http",
                                      params={"tunnel_name": "foo"})
 
     :param url: The request URL.
@@ -490,30 +487,30 @@ def api_request(url: str,
         params = {}
 
     if not url.lower().startswith("http"):
-        raise PyngrokSecurityError("URL must start with \"http\": {}".format(url))
+        raise PyngrokSecurityError(f"URL must start with \"http\": {url}")
 
     encoded_data = json.dumps(data).encode("utf-8") if data else None
 
     if params:
-        url += "?{}".format(urlencode([(x, params[x]) for x in params]))
+        url += f"?{urlencode([(x, params[x]) for x in params])}"
 
     request = Request(url, method=method.upper())
     request.add_header("Content-Type", "application/json")
     if auth:
         request.add_header("Ngrok-Version", "2")
-        request.add_header("Authorization", "Bearer {}".format(auth))
+        request.add_header("Authorization", f"Bearer {auth}")
 
-    logger.debug("Making {} request to {} with data: {}".format(method, url, data))
+    logger.debug(f"Making {method} request to {url} with data: {data}")
 
     try:
         response = urlopen(request, encoded_data, timeout)
         response_data = response.read().decode("utf-8")
 
         status_code = response.getcode()
-        logger.debug("Response {}: {}".format(status_code, response_data.strip()))
+        logger.debug(f"Response {status_code}: {response_data.strip()}")
 
         if str(status_code)[0] != "2":
-            raise PyngrokNgrokHTTPError("ngrok client API returned {}: {}".format(status_code, response_data), url,
+            raise PyngrokNgrokHTTPError(f"ngrok client API returned {status_code}: {response_data}", url,
                                         status_code, None, request.headers, response_data)
         elif status_code == HTTPStatus.NO_CONTENT:
             return {}
@@ -525,13 +522,13 @@ def api_request(url: str,
         response_data = e.read().decode("utf-8")
 
         status_code = e.getcode()
-        logger.debug("Response {}: {}".format(status_code, response_data.strip()))
+        logger.debug(f"Response {status_code}: {response_data.strip()}")
 
-        raise PyngrokNgrokHTTPError("ngrok client exception, API returned {}: {}".format(status_code, response_data),
+        raise PyngrokNgrokHTTPError(f"ngrok client exception, API returned {status_code}: {response_data}",
                                     e.url,
                                     status_code, e.reason, e.headers, response_data)
     except URLError as e:
-        raise PyngrokNgrokURLError("ngrok client exception, URLError: {}".format(e.reason), e.reason)
+        raise PyngrokNgrokURLError(f"ngrok client exception, URLError: {e.reason}", e.reason)
 
 
 def run(args: Optional[List[str]] = None,
@@ -569,9 +566,9 @@ def main() -> None:
     run(sys.argv[1:])
 
     if len(sys.argv) == 1 or len(sys.argv) == 2 and sys.argv[1].lstrip("-").lstrip("-") == "help":
-        print("\nPYNGROK VERSION:\n   {}".format(__version__))
+        print(f"\nPYNGROK VERSION:\n   {__version__}")
     elif len(sys.argv) == 2 and sys.argv[1].lstrip("-").lstrip("-") in ["v", "version"]:
-        print("pyngrok version {}".format(__version__))
+        print(f"pyngrok version {__version__}")
 
 
 if __name__ == "__main__":

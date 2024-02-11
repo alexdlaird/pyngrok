@@ -57,10 +57,10 @@ class NgrokLog:
             setattr(self, key, value)
 
     def __repr__(self) -> str:
-        return "<NgrokLog: t={} lvl={} msg=\"{}\">".format(self.t, self.lvl, self.msg)
+        return f"<NgrokLog: t={self.t} lvl={self.lvl} msg=\"{self.msg}\">"
 
     def __str__(self) -> str:  # pragma: no cover
         attrs = [attr for attr in dir(self) if not attr.startswith("_") and getattr(self, attr) is not None]
         attrs.remove("line")
 
-        return " ".join("{}=\"{}\"".format(attr, getattr(self, attr)) for attr in attrs)
+        return " ".join(f"{attr}=\"{getattr(self, attr)}\"" for attr in attrs)

@@ -68,9 +68,9 @@ class TestProcess(NgrokTestCase):
         # THEN
         self.assertIsNotNone(error)
         if platform.system() == "Windows":
-            self.assertIn("{}: bind: Only one usage of each socket address".format(port), cm.exception.ngrok_error)
+            self.assertIn(f"{port}: bind: Only one usage of each socket address", cm.exception.ngrok_error)
         else:
-            self.assertIn("{}: bind: address already in use".format(port), str(cm.exception.ngrok_error))
+            self.assertIn(f"{port}: bind: address already in use", str(cm.exception.ngrok_error))
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assert_no_zombies()
 
@@ -108,9 +108,9 @@ class TestProcess(NgrokTestCase):
         # THEN
         self.assertIsNotNone(error)
         if platform.system() == "Windows":
-            self.assertIn("{}: bind: Only one usage of each socket address".format(port), cm.exception.ngrok_error)
+            self.assertIn(f"{port}: bind: Only one usage of each socket address", cm.exception.ngrok_error)
         else:
-            self.assertIn("{}: bind: address already in use".format(port), str(cm.exception.ngrok_error))
+            self.assertIn(f"{port}: bind: address already in use", str(cm.exception.ngrok_error))
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assert_no_zombies()
 
@@ -341,7 +341,7 @@ class TestProcess(NgrokTestCase):
         self.assertTrue(monitor_thread.is_alive())
         ngrok_process.stop_monitor_thread()
         # Make a request to the tunnel to force a log through, which will allow the thread to trigger its own teardown
-        urlopen("{}/status".format(public_url)).read()
+        urlopen(f"{public_url}/status").read()
         time.sleep(1)
 
         # THEN

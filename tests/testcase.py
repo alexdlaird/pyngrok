@@ -2,26 +2,24 @@ import logging
 import os
 import platform
 import shutil
-from random import randint
-
 import sys
 import unittest
 from copy import copy
+from random import randint
 
 import psutil
 from psutil import AccessDenied, NoSuchProcess
 
-from pyngrok.conf import PyngrokConfig
-
 from pyngrok import ngrok, installer, conf
 from pyngrok import process
+from pyngrok.conf import PyngrokConfig
 
 __author__ = "Alex Laird"
 __copyright__ = "Copyright 2023, Alex Laird"
 __version__ = "5.2.2"
 
 logger = logging.getLogger(__name__)
-ngrok_logger = logging.getLogger("{}.ngrok".format(__name__))
+ngrok_logger = logging.getLogger(f"{__name__}.ngrok")
 
 
 class NgrokTestCase(unittest.TestCase):
@@ -73,9 +71,12 @@ class NgrokTestCase(unittest.TestCase):
 
     @staticmethod
     def create_unique_subdomain():
-        return "pyngrok-{}-{}-{}-{}{}-tcp".format(randint(1000000000000000, 9999999999999999), platform.system(),
-                                                  platform.python_implementation(), sys.version_info[0],
-                                                  sys.version_info[1]).lower()
+        return "pyngrok-{random}-{system}-{python_version}-{sys_major_version}{sys_minor_version}-tcp".format(
+            random=randint(1000000000000000, 9999999999999999),
+            system=platform.system(),
+            python_version=platform.python_implementation(),
+            sys_major_version=sys.version_info[0],
+            sys_minor_version=sys.version_info[1]).lower()
 
     @staticmethod
     def copy_with_updates(to_copy, **kwargs):

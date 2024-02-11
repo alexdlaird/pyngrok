@@ -69,7 +69,7 @@ def get_ngrok_bin() -> str:
     elif system in ["windows", "cygwin"]:  # pragma: no cover
         return "ngrok.exe"
     else:  # pragma: no cover
-        raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(system))
+        raise PyngrokNgrokInstallError(f"\"{system}\" is not a supported platform")
 
 
 def install_ngrok(ngrok_path: str,
@@ -84,8 +84,10 @@ def install_ngrok(ngrok_path: str,
     :param kwargs: Remaining ``kwargs`` will be passed to :func:`_download_file`.
     """
     logger.debug(
-        "Installing ngrok {} to {}{} ...".format(ngrok_version, ngrok_path,
-                                                 ", overwriting" if os.path.exists(ngrok_path) else ""))
+        "Installing ngrok {ngrok_version} to {ngrok_path}{optional_overwrite} ...".format(ngrok_version=ngrok_version,
+                                                                                          ngrok_path=ngrok_path,
+                                                                                          optional_overwrite=", overwriting" if os.path.exists(
+                                                                                              ngrok_path) else ""))
 
     ngrok_dir = os.path.dirname(ngrok_path)
 
@@ -107,18 +109,18 @@ def install_ngrok(ngrok_path: str,
         elif ngrok_version == "v3":
             url = PLATFORMS_V3[plat]
         else:
-            raise PyngrokError("\"ngrok_version\" must be a supported version: {}".format(SUPPORTED_NGROK_VERSIONS))
+            raise PyngrokError(f"\"ngrok_version\" must be a supported version: {SUPPORTED_NGROK_VERSIONS}")
 
-        logger.debug("Platform to download: {}".format(plat))
+        logger.debug(f"Platform to download: {plat}")
     except KeyError:
-        raise PyngrokNgrokInstallError("\"{}\" is not a supported platform".format(plat))
+        raise PyngrokNgrokInstallError(f"\"{plat}\" is not a supported platform")
 
     try:
         download_path = _download_file(url, **kwargs)
 
         _install_ngrok_zip(ngrok_path, download_path)
     except Exception as e:
-        raise PyngrokNgrokInstallError("An error occurred while downloading ngrok from {}: {}".format(url, e))
+        raise PyngrokNgrokInstallError(f"An error occurred while downloading ngrok from {url}: {e}")
 
 
 def _install_ngrok_zip(ngrok_path: str,
@@ -132,7 +134,7 @@ def _install_ngrok_zip(ngrok_path: str,
     _print_progress("Installing ngrok ... ")
 
     with zipfile.ZipFile(zip_path, "r") as zip_ref:
-        logger.debug("Extracting ngrok binary from {} to {} ...".format(zip_path, ngrok_path))
+        logger.debug(f"Extracting ngrok binary from {zip_path} to {ngrok_path} ...")
         zip_ref.extractall(os.path.dirname(ngrok_path))
 
     os.chmod(ngrok_path, int("777", 8))
@@ -174,7 +176,7 @@ def get_default_config(ngrok_version: Optional[str]) -> Dict[str, Any]:
     elif ngrok_version == "v3":
         return {"version": "2", "region": "us"}
     else:
-        raise PyngrokError("\"ngrok_version\" must be a supported version: {}".format(SUPPORTED_NGROK_VERSIONS))
+        raise PyngrokError(f"\"ngrok_version\" must be a supported version: {SUPPORTED_NGROK_VERSIONS}")
 
 
 def install_default_config(config_path: str,
@@ -208,7 +210,7 @@ def install_default_config(config_path: str,
     validate_config(config)
 
     with open(config_path, "w") as config_file:
-        logger.debug("Installing default ngrok config to {} ...".format(config_path))
+        logger.debug(f"Installing default ngrok config to {config_path} ...")
 
         yaml.dump(config, config_file)
 
@@ -241,12 +243,12 @@ def _download_file(url: str,
     kwargs["timeout"] = kwargs.get("timeout", DEFAULT_DOWNLOAD_TIMEOUT)
 
     if not url.lower().startswith("http"):
-        raise PyngrokSecurityError("URL must start with \"http\": {}".format(url))
+        raise PyngrokSecurityError(f"URL must start with \"http\": {url}")
 
     try:
         _print_progress("Downloading ngrok ...")
 
-        logger.debug("Download ngrok from {} ...".format(url))
+        logger.debug(f"Download ngrok from {url} ...")
 
         local_filename = url.split("/")[-1]
         response = urlopen(url, **kwargs)
@@ -254,9 +256,9 @@ def _download_file(url: str,
         status_code = response.getcode()
 
         if status_code != HTTPStatus.OK:
-            logger.debug("Response status code: {}".format(status_code))
+            logger.debug(f"Response status code: {status_code}")
 
-            raise PyngrokNgrokInstallError("Download failed, status code: {}".format(status_code))
+            raise PyngrokNgrokInstallError(f"Download failed, status code: {status_code}")
 
         length = response.getheader("Content-Length")
         if length:
@@ -279,7 +281,7 @@ def _download_file(url: str,
 
                 if length:
                     percent_done = int((float(size) / float(length)) * 100)
-                    _print_progress("Downloading ngrok: {}%".format(percent_done))
+                    _print_progress(f"Downloading ngrok: {percent_done}%")
 
         _clear_progress()
 
@@ -296,7 +298,7 @@ def _download_file(url: str,
 
 def _print_progress(line: str) -> None:
     if _print_progress_enabled:
-        sys.stdout.write("{}\r".format(line))
+        sys.stdout.write(f"{line}\r")
         sys.stdout.flush()
 
 
