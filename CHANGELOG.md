@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.1.1...HEAD)
 ### Added
 - Relative dependency pinning in `pyproject.toml`.
-- Build improvements.
+- Style and stability improvements (check `flake8` with `make check-style`).
 
 ### Removed
 - `requirements.txt` files to streamline in to `pyproject.toml`.
