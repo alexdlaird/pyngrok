@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.1.1...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.1.2...HEAD)
+
+## [7.1.2](https://github.com/alexdlaird/pyngrok/compare/7.1.1...7.1.2) - 2024-02-11
 ### Added
 - Relative dependency pinning in `pyproject.toml`.
 - Style and stability improvements (check `flake8` with `make check-style`).
