@@ -1,6 +1,5 @@
 import os
 import socket
-import unittest
 from unittest import mock
 
 from pyngrok import ngrok, installer, conf

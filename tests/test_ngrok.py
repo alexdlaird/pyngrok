@@ -254,7 +254,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNotNone(ngrok_process.proc.poll())
         self.assertFalse(monitor_thread.is_alive())
         self.assertEqual(len(process._current_processes.keys()), 0)
-        self.assertNoZombies()
+        self.assert_no_zombies()
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_api_get_request_success(self):

@@ -72,7 +72,7 @@ class TestProcess(NgrokTestCase):
         else:
             self.assertIn("{}: bind: address already in use".format(port), str(cm.exception.ngrok_error))
         self.assertEqual(len(process._current_processes.keys()), 1)
-        self.assertNoZombies()
+        self.assert_no_zombies()
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_start_process_port_in_use_v3(self):
@@ -112,7 +112,7 @@ class TestProcess(NgrokTestCase):
         else:
             self.assertIn("{}: bind: address already in use".format(port), str(cm.exception.ngrok_error))
         self.assertEqual(len(process._current_processes.keys()), 1)
-        self.assertNoZombies()
+        self.assert_no_zombies()
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_process_external_kill(self):
@@ -136,7 +136,7 @@ class TestProcess(NgrokTestCase):
         process.kill_process(self.pyngrok_config_v3.ngrok_path)
         self.assertEqual(len(process._current_processes.keys()), 0)
         self.assertFalse(monitor_thread.is_alive())
-        self.assertNoZombies()
+        self.assert_no_zombies()
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_process_external_kill_get_process_restart(self):
@@ -165,7 +165,7 @@ class TestProcess(NgrokTestCase):
             self.assertTrue(ngrok_process2._monitor_thread.is_alive())
 
             self.assertTrue(mock_atexit.called)
-            self.assertNoZombies()
+            self.assert_no_zombies()
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_multiple_processes_different_binaries_v2(self):

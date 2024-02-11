@@ -1,4 +1,4 @@
-.PHONY: all virtualenv install nopyc clean test docs local validate-release test-downstream-dependency upload
+.PHONY: all virtualenv install nopyc clean test docs check-style local validate-release test-downstream-dependency upload
 
 SHELL := /usr/bin/env bash
 PYTHON_BIN ?= python
@@ -35,8 +35,15 @@ docs: virtualenv
 	@( \
 		source venv/bin/activate; \
 		python -m pip install ".[docs]"; \
-		mypy --strict pyngrok; \
 		sphinx-build -M html docs build/docs -n; \
+	)
+
+check-style: virtualenv
+	@( \
+		source venv/bin/activate; \
+		python -m pip install ".[dev,docs]"; \
+		mypy --strict pyngrok; \
+		flake8; \
 	)
 
 local:

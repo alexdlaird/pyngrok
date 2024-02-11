@@ -86,7 +86,7 @@ class NgrokTestCase(unittest.TestCase):
 
         return copied
 
-    def assertNoZombies(self):
+    def assert_no_zombies(self):
         try:
             self.assertEqual(0, len(
                 list(filter(lambda p: p.name() == "ngrok" and p.status() == "zombie", psutil.process_iter()))))

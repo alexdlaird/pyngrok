@@ -42,7 +42,10 @@ classifiers = [
 [project.optional-dependencies]
 dev = [
     "coverage[toml]",
-    "psutil"
+    "psutil",
+    "flake8",
+    "flake8-pyproject",
+    "pep8-naming"
 ]
 docs = [
     "Sphinx",
@@ -87,3 +90,8 @@ output = "build/coverage/coverage.xml"
 [tool.coverage.html]
 title = "Coverage Report"
 directory = "build/coverage"
+
+[tool.flake8]
+max-line-length = 119
+statistics = true
+exclude = "docs/*,venv/*,build/*,dist/*,.egg-info/*"
