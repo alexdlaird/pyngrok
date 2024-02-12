@@ -84,10 +84,11 @@ def install_ngrok(ngrok_path: str,
     :param kwargs: Remaining ``kwargs`` will be passed to :func:`_download_file`.
     """
     logger.debug(
-        "Installing ngrok {ngrok_version} to {ngrok_path}{optional_overwrite} ...".format(ngrok_version=ngrok_version,
-                                                                                          ngrok_path=ngrok_path,
-                                                                                          optional_overwrite=", overwriting" if os.path.exists(
-                                                                                              ngrok_path) else ""))
+        "Installing ngrok {ngrok_version} to "
+        "{ngrok_path}{optional_overwrite} ...".format(ngrok_version=ngrok_version,
+                                                      ngrok_path=ngrok_path,
+                                                      optional_overwrite=", overwriting" if os.path.exists(
+                                                          ngrok_path) else ""))
 
     ngrok_dir = os.path.dirname(ngrok_path)
 

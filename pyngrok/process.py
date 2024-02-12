@@ -30,10 +30,10 @@ class NgrokProcess:
     """
 
     def __init__(self,
-                 proc: subprocess.Popen,
+                 proc: subprocess.Popen,  # type: ignore
                  pyngrok_config: PyngrokConfig) -> None:
         #: The child process that is running ``ngrok``.
-        self.proc: subprocess.Popen = proc
+        self.proc: subprocess.Popen = proc  # type: ignore
         #: The ``pyngrok`` configuration to use with ``ngrok``.
         self.pyngrok_config: PyngrokConfig = pyngrok_config
 
@@ -47,6 +47,7 @@ class NgrokProcess:
         self._tunnel_started = False
         self._client_connected = False
         self._monitor_thread: Optional[threading.Thread] = None
+        self._monitor_thread_alive = False
 
     def __repr__(self) -> str:
         return f"<NgrokProcess: \"{self.api_url}\">"
@@ -129,10 +130,8 @@ class NgrokProcess:
         return self.proc.poll() is None
 
     def _monitor_process(self) -> None:
-        thread = threading.current_thread()
-
-        thread.alive = True
-        while thread.alive and self.proc.poll() is None:
+        self._monitor_thread_alive = True
+        while self._monitor_thread_alive and self.proc.poll() is None:
             if self.proc.stdout is None:
                 logger.debug("No stdout when monitoring the process, this may or may not be an issue")
                 continue
@@ -150,8 +149,8 @@ class NgrokProcess:
         if self._monitor_thread is None:
             logger.debug("Monitor thread will be started")
 
-            self._monitor_thread = threading.Thread(target=self._monitor_process)
-            self._monitor_thread.daemon = True
+            self._monitor_thread = threading.Thread(target=self._monitor_process,
+                                                    daemon=True)
             self._monitor_thread.start()
 
     def stop_monitor_thread(self) -> None:
@@ -166,7 +165,7 @@ class NgrokProcess:
         if self._monitor_thread is not None:
             logger.debug("Monitor thread will be stopped")
 
-            self._monitor_thread.alive = False
+            self._monitor_thread_alive = False
 
 
 def set_auth_token(pyngrok_config: PyngrokConfig,
@@ -304,7 +303,8 @@ def _validate_path(ngrok_path: str) -> None:
     """
     if not os.path.exists(ngrok_path):
         raise PyngrokNgrokError(
-            f"ngrok binary was not found. Be sure to call \"ngrok.install_ngrok()\" first for \"ngrok_path\": {ngrok_path}")
+            f"ngrok binary was not found. Be sure to call \"ngrok.install_ngrok()\" first "
+            f"for \"ngrok_path\": {ngrok_path}")
 
     if ngrok_path in _current_processes:
         raise PyngrokNgrokError(f"ngrok is already running for the \"ngrok_path\": {ngrok_path}")
@@ -318,7 +318,7 @@ def _validate_config(config_path: str) -> None:
         installer.validate_config(config)
 
 
-def _terminate_process(process: subprocess.Popen) -> None:
+def _terminate_process(process: subprocess.Popen) -> None:  # type: ignore
     if process is None:
         return
 

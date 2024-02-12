@@ -179,7 +179,8 @@ def _apply_cloud_edge_to_tunnel(tunnel: NgrokTunnel,
 
         if "hostports" not in edge_response or len(edge_response["hostports"]) < 1:
             raise PyngrokError(
-                f"No Endpoint is attached to your Cloud Edge {edge}, login to the ngrok dashboard to attach an Endpoint to your Edge first.")
+                f"No Endpoint is attached to your Cloud Edge {edge}, login to the ngrok "
+                f"dashboard to attach an Endpoint to your Edge first.")
 
         tunnel.public_url = f"{edges_prefix}://{edge_response['hostports'][0]}"
         tunnel.proto = edges_prefix
@@ -214,14 +215,16 @@ def connect(addr: Optional[str] = None,
 
         ``ngrok`` v2's default behavior for ``http`` when no additional properties are passed is to open *two* tunnels,
         one ``http`` and one ``https``. This method will return a reference to the ``http`` tunnel in this case. If
-        only a single tunnel is needed, pass ``bind_tls=True`` and a reference to the ``https`` tunnel will be returned.
+        only a single tunnel is needed, pass ``bind_tls=True`` and a reference to the ``https`` tunnel will be
+        returned.
 
     :param addr: The local port to which the tunnel will forward traffic, or a
-        `local directory or network address <https://ngrok.com/docs/secure-tunnels/tunnels/http-tunnels#file-url>`_, defaults to "80".
+        `local directory or network address <https://ngrok.com/docs/secure-tunnels/tunnels/http-tunnels#file-url>`_,
+        defaults to "80".
     :param proto: A valid `tunnel protocol
         <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_, defaults to "http".
-    :param name: A friendly name for the tunnel, or the name of a `ngrok tunnel definition <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_
-        to be used.
+    :param name: A friendly name for the tunnel, or the name of a `ngrok tunnel definition
+        <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_ to be used.
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
     :param options: Remaining ``kwargs`` are passed as `configuration for the ngrok
@@ -393,7 +396,8 @@ def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTun
 
         if ngrok_tunnel.public_url is None:
             raise PyngrokError(
-                f"\"public_url\" was not populated for tunnel {ngrok_tunnel}, but is required for pyngrok to function.")
+                f"\"public_url\" was not populated for tunnel {ngrok_tunnel}, "
+                f"but is required for pyngrok to function.")
 
         _current_tunnels[ngrok_tunnel.public_url] = ngrok_tunnel
 
@@ -515,7 +519,7 @@ def api_request(url: str,
         elif status_code == HTTPStatus.NO_CONTENT:
             return {}
 
-        return json.loads(response_data)
+        return json.loads(response_data)  # type: ignore
     except socket.timeout:
         raise PyngrokNgrokURLError("ngrok client exception, URLError: timed out", "timed out")
     except HTTPError as e:
