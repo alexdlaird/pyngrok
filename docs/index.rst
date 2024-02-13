@@ -19,7 +19,7 @@ pyngrok - a Python wrapper for ngrok
 .. image:: https://img.shields.io/pypi/pyversions/pyngrok.svg
    :target: https://pypi.org/project/pyngrok/
 .. image:: https://img.shields.io/github/license/alexdlaird/pyngrok
-   :target: https://github.com/alexdlaird/pyngrok?tab=MIT-1-ov-file
+   :target: https://github.com/alexdlaird/pyngrok/blob/main/LICENSE
 
 ``pyngrok`` is a Python wrapper for ``ngrok`` that manages its own binary, making ``ngrok`` available via a convenient
 Python API.

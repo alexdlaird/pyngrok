@@ -5,7 +5,7 @@
 [![Codecov](https://codecov.io/gh/alexdlaird/pyngrok/branch/main/graph/badge.svg)](https://codecov.io/gh/alexdlaird/pyngrok)
 [![Docs](https://readthedocs.org/projects/pyngrok/badge/?version=latest)](https://pyngrok.readthedocs.io/en/latest)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pyngrok.svg)](https://pypi.org/project/pyngrok/)
-[![GitHub License](https://img.shields.io/github/license/alexdlaird/pyngrok)](https://github.com/alexdlaird/pyngrok?tab=MIT-1-ov-file)
+[![GitHub License](https://img.shields.io/github/license/alexdlaird/pyngrok)](https://github.com/alexdlaird/pyngrok/blob/main/LICENSE)
 
 `pyngrok` is a Python wrapper for `ngrok` that manages its own binary, making `ngrok` available via a convenient Python
 API.
