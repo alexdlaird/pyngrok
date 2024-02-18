@@ -64,10 +64,10 @@ validate-release:
 test-downstream-dependency:
 	@( \
 		git clone https://github.com/alexdlaird/pyngrok-example-django.git; \
-		make -C pyngrok-example-django install; \
+		( make -C pyngrok-example-django install ) || exit $$?; \
 		source pyngrok-example-django/venv/bin/activate; \
-		make local; \
-		make -C pyngrok-example-django test-no-install; \
+		( make local ) || exit $$?; \
+		( make -C pyngrok-example-django test-no-install ) || exit $$?; \
 		rm -rf pyngrok-example-django; \
 	)
 
