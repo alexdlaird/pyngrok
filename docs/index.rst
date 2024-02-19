@@ -14,10 +14,10 @@ pyngrok - a Python wrapper for ngrok
    :target: https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml
 .. image:: https://img.shields.io/codecov/c/github/alexdlaird/pyngrok
    :target: https://codecov.io/gh/alexdlaird/pyngrok
-.. image:: https://img.shields.io/readthedocs/pyngrok
-   :target: https://pyngrok.readthedocs.io/en/latest
 .. image:: https://img.shields.io/pypi/pyversions/pyngrok.svg
+   :target: https://pypi.org/project/pyngrok
 .. image:: https://img.shields.io/github/license/alexdlaird/pyngrok
+   :target: https://github.com/alexdlaird/pyngrok
 
 ``pyngrok`` is a Python wrapper for ``ngrok`` that manages its own binary, making ``ngrok`` available via a convenient
 Python API.
