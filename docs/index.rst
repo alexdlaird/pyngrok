@@ -16,6 +16,8 @@ pyngrok - a Python wrapper for ngrok
    :target: https://codecov.io/gh/alexdlaird/pyngrok
 .. image:: https://img.shields.io/github/actions/workflow/status/alexdlaird/pyngrok/build.yml
    :target: https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml
+.. image:: https://img.shields.io/readthedocs/pyngrok
+   :target: https://pyngrok.readthedocs.io/en/latest
 .. image:: https://img.shields.io/github/license/alexdlaird/pyngrok
    :target: https://github.com/alexdlaird/pyngrok
 

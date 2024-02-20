@@ -14,10 +14,8 @@ A list of GitHub issues related to this PR.
 A clear and concise description of the new tests added to validate the change as well as any manual testing done.
 
 **Checklist**
-- [ ] My code follows the PEP 8 style guidelines for Python
+- [ ] I have added tests that prove my change works as expected, and `make test` passes with no new errors or warnings
+- [ ] I have run `make check-style` to ensure no new errors or warnings
+- [ ] I have updated the docs, as applicable, and run `make docs` to ensure no new errors or warnings
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code in particularly hard-to-understand areas
-- [ ] If applicable, I have made corresponding changes to the documentation
-- [ ] I have added tests that prove my change is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
-- [ ] My changes generate no new warnings
