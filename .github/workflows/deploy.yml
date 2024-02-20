@@ -38,8 +38,8 @@ jobs:
         run: make test
       - name: Build docs
         run: make docs
-      - name: Check style
-        run: make check-style
+      - name: Check code
+        run: make check
       - name: Validate package
         run: make local
       - name: Test downstream dependency
