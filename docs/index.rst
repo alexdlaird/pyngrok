@@ -9,7 +9,7 @@ pyngrok - a Python wrapper for ngrok
    :align: center
 
 .. image:: https://img.shields.io/pypi/v/pyngrok
-   :target: https://badge.fury.io/py/pyngrok
+   :target: https://pypi.org/project/pyngrok
 .. image:: https://img.shields.io/pypi/pyversions/pyngrok.svg
    :target: https://pypi.org/project/pyngrok
 .. image:: https://img.shields.io/codecov/c/github/alexdlaird/pyngrok
