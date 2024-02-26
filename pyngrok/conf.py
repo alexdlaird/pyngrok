@@ -6,8 +6,8 @@ from pyngrok.installer import get_ngrok_bin
 from pyngrok.log import NgrokLog
 
 __author__ = "Alex Laird"
-__copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "7.1.2"
+__copyright__ = "Copyright 2024, Alex Laird"
+__version__ = "7.1.3"
 
 VERSION = __version__
 
