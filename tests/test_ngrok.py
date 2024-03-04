@@ -12,7 +12,8 @@ from urllib.request import urlopen
 
 import yaml
 
-from pyngrok import ngrok, process, installer, conf
+from pyngrok import __version__
+from pyngrok import ngrok, process, installer
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError, \
     PyngrokNgrokError
 from tests.testcase import NgrokTestCase
@@ -836,7 +837,7 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertIsNotNone(ngrok_version)
-        self.assertEqual(conf.__version__, pyngrok_version)
+        self.assertEqual(__version__, pyngrok_version)
 
     def test_set_auth_token_v2(self):
         ngrok.set_auth_token("807ad30a-73be-48d8", pyngrok_config=self.pyngrok_config_v2)
