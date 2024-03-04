@@ -1,3 +1,6 @@
+__copyright__ = "Copyright (c) 2018-2024 Alex Laird"
+__license__ = "MIT"
+
 import copy
 import logging
 import os
@@ -14,10 +17,6 @@ from urllib.request import urlopen
 import yaml
 
 from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "7.0.0"
 
 logger = logging.getLogger(__name__)
 

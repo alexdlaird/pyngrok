@@ -1,12 +1,11 @@
+__copyright__ = "Copyright (c) 2018-2024 Alex Laird"
+__license__ = "MIT"
+
 import os
 import unittest
 
 from pyngrok.conf import PyngrokConfig
 from tests.testcase import NgrokTestCase
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "7.0.5"
 
 
 class TestConf(NgrokTestCase):

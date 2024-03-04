@@ -1,7 +1,9 @@
-import os
-import unittest
+__copyright__ = "Copyright (c) 2018-2024 Alex Laird"
+__license__ = "MIT"
 
+import os
 import time
+import unittest
 import uuid
 from http import HTTPStatus
 from unittest import mock
@@ -14,10 +16,6 @@ from pyngrok import ngrok, process, installer, conf
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError, \
     PyngrokNgrokError
 from tests.testcase import NgrokTestCase
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2024, Alex Laird"
-__version__ = "7.1.3"
 
 
 class TestNgrok(NgrokTestCase):

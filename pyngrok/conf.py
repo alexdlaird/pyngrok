@@ -1,15 +1,12 @@
+__copyright__ = "Copyright (c) 2018-2024 Alex Laird"
+__license__ = "MIT"
+
 import os
 import platform
 from typing import Optional, Callable
 
 from pyngrok.installer import get_ngrok_bin
 from pyngrok.log import NgrokLog
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2024, Alex Laird"
-__version__ = "7.1.3"
-
-VERSION = __version__
 
 BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
 DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())

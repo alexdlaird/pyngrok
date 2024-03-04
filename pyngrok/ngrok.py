@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+__copyright__ = "Copyright (c) 2018-2024 Alex Laird"
+__license__ = "MIT"
+
 import json
 import logging
 import os
@@ -12,15 +15,11 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import urlopen, Request
 
-from pyngrok import process, conf, installer
-from pyngrok.conf import PyngrokConfig, VERSION
+from pyngrok import process, conf, installer, __version__
+from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
 from pyngrok.installer import get_default_config
 from pyngrok.process import NgrokProcess
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2024, Alex Laird"
-__version__ = "7.1.2"
 
 logger = logging.getLogger(__name__)
 
@@ -433,7 +432,7 @@ def get_version(pyngrok_config: Optional[PyngrokConfig] = None) -> Tuple[str, st
 
     ngrok_version = process.capture_run_process(pyngrok_config.ngrok_path, ["--version"]).split("version ")[1]
 
-    return ngrok_version, VERSION
+    return ngrok_version, __version__
 
 
 def update(pyngrok_config: Optional[PyngrokConfig] = None) -> str:
@@ -570,9 +569,9 @@ def main() -> None:
     run(sys.argv[1:])
 
     if len(sys.argv) == 1 or len(sys.argv) == 2 and sys.argv[1].lstrip("-").lstrip("-") == "help":
-        print(f"\nPYNGROK VERSION:\n   {VERSION}")
+        print(f"\nPYNGROK VERSION:\n   {__version__}")
     elif len(sys.argv) == 2 and sys.argv[1].lstrip("-").lstrip("-") in ["v", "version"]:
-        print(f"pyngrok version {VERSION}")
+        print(f"pyngrok version {__version__}")
 
 
 if __name__ == "__main__":

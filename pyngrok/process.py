@@ -1,3 +1,6 @@
+__copyright__ = "Copyright (c) 2018-2024 Alex Laird"
+__license__ = "MIT"
+
 import atexit
 import logging
 import os
@@ -15,10 +18,6 @@ from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError, PyngrokError
 from pyngrok.installer import SUPPORTED_NGROK_VERSIONS
 from pyngrok.log import NgrokLog
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "7.0.0"
 
 logger = logging.getLogger(__name__)
 ngrok_logger = logging.getLogger(f"{__name__}.ngrok")

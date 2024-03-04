@@ -1,8 +1,10 @@
+__copyright__ = "Copyright (c) 2018-2024 Alex Laird"
+__license__ = "MIT"
+
 import os
 import platform
-import unittest
-
 import time
+import unittest
 from unittest import mock
 from urllib.parse import urlparse
 from urllib.request import urlopen
@@ -11,10 +13,6 @@ from pyngrok import process, installer, conf, ngrok
 from pyngrok.exception import PyngrokNgrokError
 from pyngrok.process import NgrokLog
 from tests.testcase import NgrokTestCase
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "7.0.5"
 
 
 class TestProcess(NgrokTestCase):

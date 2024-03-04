@@ -1,3 +1,6 @@
+__copyright__ = "Copyright (c) 2018-2024 Alex Laird"
+__license__ = "MIT"
+
 import logging
 import os
 import platform
@@ -13,10 +16,6 @@ from psutil import AccessDenied, NoSuchProcess
 from pyngrok import ngrok, installer, conf
 from pyngrok import process
 from pyngrok.conf import PyngrokConfig
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "5.2.2"
 
 logger = logging.getLogger(__name__)
 ngrok_logger = logging.getLogger(f"{__name__}.ngrok")

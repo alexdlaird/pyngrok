@@ -1,10 +1,9 @@
+__copyright__ = "Copyright (c) 2018-2024 Alex Laird"
+__license__ = "MIT"
+
 import logging
 import shlex
 from typing import Optional
-
-__author__ = "Alex Laird"
-__copyright__ = "Copyright 2023, Alex Laird"
-__version__ = "7.0.0"
 
 
 class NgrokLog:
