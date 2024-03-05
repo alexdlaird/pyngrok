@@ -1,4 +1,4 @@
-.PHONY: all virtualenv install nopyc clean test docs check local validate-release test-downstream-dependency upload
+.PHONY: all virtualenv install nopyc clean test docs check local validate-release test-downstream upload
 
 SHELL := /usr/bin/env bash
 PYTHON_BIN ?= python
@@ -22,13 +22,14 @@ nopyc:
 	find . -name __pycache__ | xargs rm -rf || true
 
 clean: nopyc
-	rm -rf build dist *.egg-info venv pyngrok-example-django
+	rm -rf build dist *.egg-info venv pyngrok-example-flask
 
 test: virtualenv
 	@( \
 		source venv/bin/activate; \
 		python -m pip install ".[dev]"; \
-		python -m coverage run -m unittest discover -v -b && python -m coverage xml && python -m coverage html && python -m coverage report; \
+		coverage run -m unittest discover -v -b; \
+		coverage report && coverage xml && coverage html; \
 	)
 
 docs: virtualenv
@@ -61,14 +62,14 @@ validate-release:
 	@if [[ $$(grep "version = \"${VERSION}\"" pyproject.toml) == "" ]] ; then echo "Version not bumped in pyproject.toml" & exit 1 ; fi
 	@if [[ $$(grep "__version__ = \"${VERSION}\"" pyngrok/__init__.py) == "" ]] ; then echo "Version not bumped in pyngrok/__init__.py" & exit 1 ; fi
 
-test-downstream-dependency:
+test-downstream:
 	@( \
-		git clone https://github.com/alexdlaird/pyngrok-example-django.git; \
-		( make -C pyngrok-example-django install ) || exit $$?; \
-		source pyngrok-example-django/venv/bin/activate; \
+		git clone https://github.com/alexdlaird/pyngrok-example-flask.git; \
+		( make -C pyngrok-example-flask install ) || exit $$?; \
+		source pyngrok-example-flask/venv/bin/activate; \
 		( make local ) || exit $$?; \
-		( make -C pyngrok-example-django test-no-install ) || exit $$?; \
-		rm -rf pyngrok-example-django; \
+		( cd pyngrok-example-flask && pytest -v && cd .. ) || exit $$?; \
+		rm -rf pyngrok-example-flask; \
 	)
 
 upload: local
