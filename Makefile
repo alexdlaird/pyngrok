@@ -28,8 +28,7 @@ test: virtualenv
 	@( \
 		source venv/bin/activate; \
 		python -m pip install ".[dev]"; \
-		coverage run -m unittest discover -v -b; \
-		coverage report && coverage xml && coverage html; \
+		coverage run -m unittest discover -v -b && coverage report && coverage xml && coverage html; \
 	)
 
 docs: virtualenv
@@ -68,8 +67,7 @@ test-downstream:
 		( make -C pyngrok-example-flask install ) || exit $$?; \
 		source pyngrok-example-flask/venv/bin/activate; \
 		( make local ) || exit $$?; \
-		( cd pyngrok-example-flask && pytest -v && cd .. ) || exit $$?; \
-		rm -rf pyngrok-example-flask; \
+		cd pyngrok-example-flask && pytest -v && cd ..; \
 	)
 
 upload: local
