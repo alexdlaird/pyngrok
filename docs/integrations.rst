@@ -80,8 +80,6 @@ variable that let's us configure from an environment variable whether we want to
 
     BASE_URL = "http://localhost:8000"
 
-    DEV_SERVER = len(sys.argv) > 1 and sys.argv[1] == "runserver"
-
     USE_NGROK = os.environ.get("USE_NGROK", "False") == "True" and os.environ.get("RUN_MAIN", None) != "true"
 
 If this flag is set, we want to initialize ``pyngrok`` when Django is booting from its dev server. An easy place
@@ -89,6 +87,7 @@ to do this is one of our ``apps.py`` by `extending AppConfig <https://docs.djang
 
 .. code-block:: python
 
+    import os
     import sys
     from urllib.parse import urlparse
 
@@ -101,7 +100,7 @@ to do this is one of our ``apps.py`` by `extending AppConfig <https://docs.djang
         verbose_name = "Common"
 
         def ready(self):
-            if settings.DEV_SERVER and settings.USE_NGROK and os.environ.get("NGROK_AUTHTOKEN"):
+            if settings.USE_NGROK and os.environ.get("NGROK_AUTHTOKEN"):
                 # pyngrok will only be installed, and should only ever be initialized, in a dev environment
                 from pyngrok import ngrok
 
