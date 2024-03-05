@@ -8,9 +8,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [7.1.4](https://github.com/alexdlaird/pyngrok/compare/7.1.3...7.1.4) - 2024-03-05
 ### Added
 - Build and style improvements.
-- 
-### Changed
-- Renamed `make test-downstream-dependency` to `test-downstream`.
 
 ### Removed
 - `conf.VERSION`, moved all version information to `pyngrok/__init__.py`. Get package version with `from pyngrok import __version__` instead.
