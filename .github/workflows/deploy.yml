@@ -27,8 +27,7 @@ jobs:
         with:
           python-version: 3.12
       - name: Install dependencies
-        run: |
-          make install
+        run: make install
       - name: Get version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
