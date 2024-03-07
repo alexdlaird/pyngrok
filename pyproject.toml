@@ -1,6 +1,6 @@
 [project]
 name = "pyngrok"
-version = "7.1.4"
+dynamic = ["version"]
 description = "A Python wrapper for ngrok."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -64,6 +64,9 @@ Changelog = "https://github.com/alexdlaird/pyngrok/blob/main/CHANGELOG.md"
 Documentation = "https://pyngrok.readthedocs.io"
 Sponsor = "https://github.com/sponsors/alexdlaird"
 "Source Code" = "https://github.com/alexdlaird/pyngrok"
+
+[tool.setuptools.dynamic]
+version = { attr = "pyngrok.__version__" }
 
 [tool.coverage.run]
 omit = [
