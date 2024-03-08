@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.1.4...HEAD)
+
+## [7.1.5](https://github.com/alexdlaird/pyngrok/compare/7.1.4...7.1.5) - TBD
 ### Added
 - `obj` parsing in [`NgrokLog`](https://pyngrok.readthedocs.io/en/7.1.5/api.html#pyngrok.log.NgrokLog).
 - `raises` to documentation.
