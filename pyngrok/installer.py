@@ -83,7 +83,7 @@ def install_ngrok(ngrok_path: str,
     :param ngrok_version: The major version of ``ngrok`` to be installed.
     :param kwargs: Remaining ``kwargs`` will be passed to :func:`_download_file`.
     :raises: :class:`~pyngrok.exception.PyngrokError`: When the ``ngrok_version`` is not supported.
-    :raises: :class:`~pyngrok.exception.PyngrokNgrokInstallError`: When an error occurs downloading ``ngrok``.
+    :raises: :class:`~pyngrok.exception.PyngrokNgrokInstallError`: When an error occurs installing ``ngrok``.
     """
     logger.debug(
         "Installing ngrok {ngrok_version} to "
@@ -224,7 +224,7 @@ def validate_config(data: Dict[str, Any]) -> None:
     Validate that the given dict of config items are valid for ``ngrok`` and ``pyngrok``.
 
     :param data: A dictionary of things to be validated as config items.
-    :raises: :class:`~pyngrok.exception.PyngrokError`: When key or value fails validation.
+    :raises: :class:`~pyngrok.exception.PyngrokError`: When a key or value fails validation.
     """
     if data.get("web_addr", None) is False:
         raise PyngrokError("\"web_addr\" cannot be False, as the ngrok API is a dependency for pyngrok")

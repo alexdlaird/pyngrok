@@ -385,7 +385,8 @@ def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTun
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
     :return: The active ``ngrok`` tunnels.
-    :raises: :class:`~pyngrok.exception.PyngrokError`: When the response does not contain ``public_url``.
+    :raises: :class:`~pyngrok.exception.PyngrokError`: When the response was invalid or does not
+        contain ``public_url``.
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
