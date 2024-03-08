@@ -66,6 +66,8 @@ class NgrokTunnel:
     def refresh_metrics(self) -> None:
         """
         Get the latest metrics for the tunnel and update the ``metrics`` variable.
+
+        :raises: :class:`~pyngrok.exception.PyngrokError`: When the API does not return ``metrics``.
         """
         logger.info(f"Refreshing metrics for tunnel: {self.public_url}")
 
@@ -229,6 +231,8 @@ def connect(addr: Optional[str] = None,
     :param options: Remaining ``kwargs`` are passed as `configuration for the ngrok
         tunnel <https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions>`_.
     :return: The created ``ngrok`` tunnel.
+    :raises: :class:`~pyngrok.exception.PyngrokError`: When the tunnel definition is invalid, or the response does
+        not contain ``public_url``.
     """
     if "labels" in options:
         raise PyngrokError("\"labels\" cannot be passed to connect(), define a tunnel definition in the config file.")
@@ -381,6 +385,7 @@ def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTun
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
     :return: The active ``ngrok`` tunnels.
+    :raises: :class:`~pyngrok.exception.PyngrokError`: When the response does not contain ``public_url``.
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
@@ -485,6 +490,9 @@ def api_request(url: str,
     :param timeout: The request timeout, in seconds.
     :param auth: Set as Bearer for an Authorization header.
     :return: The response from the request.
+    :raises: :class:`~pyngrok.exception.PyngrokSecurityError`: When the ``url`` is not supported.
+    :raises: :class:`~pyngrok.exception.PyngrokNgrokHTTPError`: When the request returns an error response.
+    :raises: :class:`~pyngrok.exception.PyngrokNgrokURLError`: When the request times out.
     """
     if params is None:
         params = {}

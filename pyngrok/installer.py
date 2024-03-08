@@ -61,6 +61,7 @@ def get_ngrok_bin() -> str:
     Get the ``ngrok`` executable for the current system.
 
     :return: The name of the ``ngrok`` executable.
+    :raises: :class:`~pyngrok.exception.PyngrokNgrokInstallError`: When the platform is not supported.
     """
     system = platform.system().lower()
     if system in ["darwin", "linux", "freebsd"]:
@@ -81,6 +82,8 @@ def install_ngrok(ngrok_path: str,
     :param ngrok_path: The path to where the ``ngrok`` binary will be downloaded.
     :param ngrok_version: The major version of ``ngrok`` to be installed.
     :param kwargs: Remaining ``kwargs`` will be passed to :func:`_download_file`.
+    :raises: :class:`~pyngrok.exception.PyngrokError`: When the ``ngrok_version`` is not supported.
+    :raises: :class:`~pyngrok.exception.PyngrokNgrokInstallError`: When an error occurs downloading ``ngrok``.
     """
     logger.debug(
         "Installing ngrok {ngrok_version} to "
@@ -170,6 +173,7 @@ def get_default_config(ngrok_version: Optional[str]) -> Dict[str, Any]:
 
     :param ngrok_version: The major version of ``ngrok`` installed.
     :return: The default config.
+    :raises: :class:`~pyngrok.exception.PyngrokError`: When the ``ngrok_version`` is not supported.
     """
     if ngrok_version == "v2":
         return {}
@@ -220,6 +224,7 @@ def validate_config(data: Dict[str, Any]) -> None:
     Validate that the given dict of config items are valid for ``ngrok`` and ``pyngrok``.
 
     :param data: A dictionary of things to be validated as config items.
+    :raises: :class:`~pyngrok.exception.PyngrokError`: When key or value fails validation.
     """
     if data.get("web_addr", None) is False:
         raise PyngrokError("\"web_addr\" cannot be False, as the ngrok API is a dependency for pyngrok")
@@ -239,6 +244,8 @@ def _download_file(url: str,
     :param retries: The retry attempt index, if download fails.
     :param kwargs: Remaining ``kwargs`` will be passed to :py:func:`urllib.request.urlopen`.
     :return: The path to the downloaded temporary file.
+    :raises: :class:`~pyngrok.exception.PyngrokSecurityError`: When the ``url`` is not supported.
+    :raises: :class:`~pyngrok.exception.PyngrokNgrokInstallError`: When an error occurs downloading ``ngrok``.
     """
     kwargs["timeout"] = kwargs.get("timeout", DEFAULT_DOWNLOAD_TIMEOUT)
 

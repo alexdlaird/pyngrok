@@ -111,6 +111,7 @@ class NgrokProcess:
         Check whether the ``ngrok`` process has finished starting up and is in a running, healthy state.
 
         :return: ``True`` if the ``ngrok`` process is started, running, and healthy.
+        :raises: :class:`~pyngrok.exception.PyngrokSecurityError`: When the ``url`` is not supported.
         """
         if self.api_url is None or \
                 not self._tunnel_started or \
@@ -175,6 +176,8 @@ def set_auth_token(pyngrok_config: PyngrokConfig,
 
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary.
     :param token: The auth token to set.
+    :raises: :class:`~pyngrok.exception.PyngrokError`: When the ``ngrok_version`` is not supported.
+    :raises: :class:`~pyngrok.exception.PyngrokNgrokError`: When ``ngrok`` could not start.
     """
     if pyngrok_config.ngrok_version == "v2":
         start = [pyngrok_config.ngrok_path, "authtoken", token, "--log=stdout"]
@@ -299,6 +302,7 @@ def _validate_path(ngrok_path: str) -> None:
     relevant exception.
 
     :param ngrok_path: The path to the ``ngrok`` binary.
+    :raises: :class:`~pyngrok.exception.PyngrokNgrokError`: When ``ngrok`` could not start.
     """
     if not os.path.exists(ngrok_path):
         raise PyngrokNgrokError(
@@ -334,6 +338,7 @@ def _start_process(pyngrok_config: PyngrokConfig) -> NgrokProcess:
 
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary.
     :return: The ``ngrok`` process.
+    :raises: :class:`~pyngrok.exception.PyngrokNgrokError`: When ``ngrok`` could not start.
     """
     config_path = conf.get_config_path(pyngrok_config)
 
