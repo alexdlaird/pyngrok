@@ -3,12 +3,15 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.1.3...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.1.4...HEAD)
+### Added
+- `obj` parsing in [`NgrokLog`](https://pyngrok.readthedocs.io/en/7.1.5/api.html#pyngrok.log.NgrokLog).
+- `raises` to documentation.
+- Build improvements.
 
 ## [7.1.4](https://github.com/alexdlaird/pyngrok/compare/7.1.3...7.1.4) - 2024-03-05
 ### Added
 - Build and style improvements.
-- `raises` to documentation.
 
 ### Removed
 - `conf.VERSION`, moved all version information to `pyngrok/__init__.py`. Get package version with `from pyngrok import __version__` instead.

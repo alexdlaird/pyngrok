@@ -385,6 +385,19 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 0)
 
     def test_log_parsing(self):
+        # GIVEN
+        log_line = ("t=2024-03-08T08:45:07-0600 lvl=info msg=\"starting web service\" "
+                    "obj=web addr=127.0.0.1:4040 allow_hosts=[]")
+        # WHEN
+        ngrok_log = NgrokLog(log_line)
+        # THEN
+        self.assertEqual(ngrok_log.line, log_line)
+        self.assertEqual(ngrok_log.t, "2024-03-08T08:45:07-0600")
+        self.assertEqual(ngrok_log.lvl, "INFO")
+        self.assertEqual(ngrok_log.msg, "starting web service")
+        self.assertEqual(ngrok_log.obj, "web")
+        self.assertEqual(ngrok_log.addr, "127.0.0.1:4040")
+
         # WHEN
         ngrok_log = NgrokLog("lvl=INFO msg=Test")
         # THEN
@@ -435,3 +448,8 @@ class TestProcess(NgrokTestCase):
         ngrok_log = NgrokLog("lvl=FAKE")
         # THEN
         self.assertEqual(ngrok_log.lvl, "NOTSET")
+
+        # WHEN
+        ngrok_log = NgrokLog("t=123456789")
+        # THEN
+        self.assertEqual(ngrok_log.t, "123456789")

@@ -24,6 +24,8 @@ class NgrokLog:
         self.msg: Optional[str] = None
         #: The log's error, if applicable.
         self.err: Optional[str] = None
+        #: The log's type.
+        self.obj: Optional[str] = None
         #: The URL, if ``obj`` is "web".
         self.addr: Optional[str] = None
 
