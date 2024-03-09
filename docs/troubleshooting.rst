@@ -15,15 +15,18 @@ your path. Running ``ngrok`` with no args from the command line should show ``py
 end.
 
 .. code-block:: shell
+   :substitutions:
 
     bash-3.2$ ngrok
-    NAME:
-       ngrok - tunnel local ports to public URLs and inspect traffic
+    ngrok - tunnel local ports to public URLs and inspect traffic
+
+    USAGE:
+      ngrok [command] [flags]
 
     ...
 
     PYNGROK VERSION:
-       5.0.0
+       |pyngrok_version|
 
 .. note::
 
