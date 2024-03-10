@@ -200,3 +200,7 @@ epub_exclude_files = ["search.html"]
 # -- Extension configuration -------------------------------------------------
 
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
+
+rst_prolog = """
+.. |pyngrok_version| replace:: {pyngrok_version}
+""".format(pyngrok_version=version)
