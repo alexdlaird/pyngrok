@@ -15,7 +15,6 @@ your path. Running ``ngrok`` with no args from the command line should show ``py
 end.
 
 .. code-block:: shell
-   :substitutions:
 
     bash-3.2$ ngrok
     ngrok - tunnel local ports to public URLs and inspect traffic
@@ -26,7 +25,7 @@ end.
     ...
 
     PYNGROK VERSION:
-       |pyngrok_version|
+       7.1.5
 
 .. note::
 

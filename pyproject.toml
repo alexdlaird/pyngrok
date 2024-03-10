@@ -51,7 +51,6 @@ docs = [
     "Sphinx",
     "sphinx-notfound-page",
     "sphinx_autodoc_typehints",
-    "sphinx-substitution-extensions",
     "mypy",
     "types-PyYAML"
 ]

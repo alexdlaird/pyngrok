@@ -42,8 +42,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
     "notfound.extension",
-    "sphinx_autodoc_typehints",
-    "sphinx_substitution_extensions"
+    "sphinx_autodoc_typehints"
 ]
 autodoc_member_order = "bysource"
 
@@ -201,7 +200,3 @@ epub_exclude_files = ["search.html"]
 # -- Extension configuration -------------------------------------------------
 
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
-
-rst_prolog = """
-.. |pyngrok_version| replace:: {pyngrok_version}
-""".format(pyngrok_version=version)
