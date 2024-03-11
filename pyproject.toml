@@ -50,7 +50,7 @@ dev = [
 docs = [
     "Sphinx",
     "sphinx-notfound-page",
-    "sphinx_autodoc_typehints==1.25.2",
+    "sphinx_autodoc_typehints==2.0.0",
     "sphinx-substitution-extensions",
     "mypy",
     "types-PyYAML"
