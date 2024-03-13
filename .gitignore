@@ -14,4 +14,4 @@ build
 pyngrok/bin
 tests/.ngrok
 .dmypy.json
-pyngrok-example-django
+pyngrok-example-flask
