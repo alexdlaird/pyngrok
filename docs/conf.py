@@ -5,8 +5,6 @@ import datetime
 import os
 import sys
 
-from pyngrok import __version__
-
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -14,6 +12,8 @@ from pyngrok import __version__
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
 sys.path.insert(0, os.path.abspath(".."))
+
+from pyngrok import __version__
 
 # -- Project information -----------------------------------------------------
 
