@@ -13,6 +13,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath(".."))
 
+# This import much happen after adding to sys.path or certain doc builds will break
 from pyngrok import __version__
 
 # -- Project information -----------------------------------------------------
