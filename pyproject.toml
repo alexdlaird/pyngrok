@@ -66,6 +66,9 @@ Documentation = "https://pyngrok.readthedocs.io"
 Sponsor = "https://github.com/sponsors/alexdlaird"
 "Source Code" = "https://github.com/alexdlaird/pyngrok"
 
+[tool.setuptools]
+package-dir = {"" = "pyngrok"}
+
 [tool.setuptools.dynamic]
 version = { attr = "pyngrok.__version__" }
 
