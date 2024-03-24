@@ -74,11 +74,6 @@ For more advanced usage, `pyngrok`'s official documentation is available at [htt
 `pyngrok` is compatible with `ngrok` v2 and v3, but by default it will install v3. To install v2 instead,
 [set `ngrok_version` to "v2" in `PyngrokConfig`](https://pyngrok.readthedocs.io/en/latest/index.html#ngrok-version-compatibility).
 
-### Python 2.7
-
-The last version of `pyngrok` that supports Python 2.7 is 4.1.x, so we need to pin `pyngrok>=4.1,<4.2` if we still want
-to use `pyngrok` with this version of Python. Its legacy documentation can be found [here](https://pyngrok.readthedocs.io/en/4.1.x/).
-
 ## Contributing
 
 If you would like to get involved, be sure to review the [Contribution Guide](https://github.com/alexdlaird/pyngrok/blob/main/CONTRIBUTING.rst).

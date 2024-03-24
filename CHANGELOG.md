@@ -215,7 +215,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Renamed `process._ensure_path_ready()` to `process._validate_path()`.
 
 ### Removed
-- Support for Python 2.7. To use `pyngrok` with Python 2.7, pin `pyngrok>=4.1,<4.2`.
+- Support for Python 2.7. Legacy documentation for 4.1, the latest version with Python 2.7 support, can be found [here](https://pyngrok.readthedocs.io/en/4.1.x/).
 - `return_ngrok_tunnel` from `ngrok.connect()`. The `kwarg` can still be passed, but it will do nothing, it now always uses the `True` behavior.
 
 ## [4.2.2](https://github.com/alexdlaird/pyngrok/compare/4.1.16...4.2.2) - 2020-10-12

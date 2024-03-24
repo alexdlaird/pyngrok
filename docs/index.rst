@@ -401,8 +401,7 @@ For details on how to fully leverage ``ngrok`` from the command line, see `ngrok
 Python 2.7
 ==========
 
-The last version of ``pyngrok`` that supports Python 2.7 is 4.1.x, so we need to pin ``pyngrok>=4.1,<4.2`` if we still
-want to use ``pyngrok`` with this version of Python. Its legacy documentation can be found `here <https://pyngrok.readthedocs.io/en/4.1.x/>`_.
+The last to support Python 2.7 is ``pyngrok`` 4.1. Its legacy documentation can be found `here <https://pyngrok.readthedocs.io/en/4.1.x/>`_.
 
 Dive Deeper
 ===========
