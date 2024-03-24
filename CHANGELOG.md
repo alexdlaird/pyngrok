@@ -223,7 +223,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 The next release, 5.0.0, contains breaking changes, including dropping support for Python 2.7. 4.2.x is meant to ease
 migration between 4.1.x and 5.0.0 and should not be pinned, as it will not be supported after 5.0.0 is released. To
 prepare for these breaking changes, see the changelog below. To avoid these breaking changes altogether, or if
-Python 2.7 support is still needed, pin `pyngrok>=4.1,<4.2`.
+Python 2.7 support is still needed, pin `pyngrok~=4.1.0`.
 
 ### Added
 - [ngrok.connect()](https://pyngrok.readthedocs.io/en/4.2.2/api.html#pyngrok.ngrok.connect) replaced `options` with `kwargs`, maintained backwards compatibility. Support for passing `options` as a dict will be removed in 5.0.0, unpack the dict as `kwargs`.
