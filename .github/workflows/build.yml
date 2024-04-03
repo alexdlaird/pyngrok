@@ -45,9 +45,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
@@ -56,14 +56,12 @@ jobs:
         run: make test
 
   call-validate:
-    name: Validate
     uses: alexdlaird/pyngrok/.github/workflows/validate.yml@main
     secrets: inherit
-    needs: build
 
   automerge:
     name: "Auto Approve"
-    needs: call-validate
+    needs: [build, call-validate]
 
     runs-on: ubuntu-latest
 
