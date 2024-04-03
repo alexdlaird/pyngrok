@@ -7,6 +7,8 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
+  schedule:
+    - cron: "0 9 * * *"
   workflow_dispatch:
   workflow_call:
 
@@ -61,6 +63,7 @@ jobs:
       - name: Validate package
         run: make local
       - name: Test downstream
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
         run: make test-downstream
       - name: Upload coverage
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
@@ -71,6 +74,7 @@ jobs:
   automerge:
     name: "Auto Approve"
     needs: build
+
     runs-on: ubuntu-latest
 
     permissions:
