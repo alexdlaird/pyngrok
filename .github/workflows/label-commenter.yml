@@ -8,13 +8,10 @@ on:
 jobs:
   comment:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: main
 
+    steps:
       - name: Label Commenter
-        uses: peaceiris/actions-label-commenter@v1.5.0
+        uses: peaceiris/actions-label-commenter@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           config_file: .github/label-commenter-config.yml
