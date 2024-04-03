@@ -8,7 +8,7 @@ on:
 
 jobs:
   call-build:
-    uses: alexdlaird/pyngrok/.github/workflows/build.yml
+    uses: alexdlaird/pyngrok/.github/workflows/build.yml@main
     secrets: inherit
 
   deploy:
