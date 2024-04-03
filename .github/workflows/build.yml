@@ -55,13 +55,14 @@ jobs:
       - name: Test
         run: make test
 
-  call-validate:
+  validate:
+    name: Validate
     uses: alexdlaird/pyngrok/.github/workflows/validate.yml@main
     secrets: inherit
 
   automerge:
     name: "Auto Approve"
-    needs: [build, call-validate]
+    needs: [build, validate]
 
     runs-on: ubuntu-latest
 

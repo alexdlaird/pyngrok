@@ -7,7 +7,8 @@ on:
     types: [ created ]
 
 jobs:
-  call-build:
+  build:
+    name: Build
     uses: alexdlaird/pyngrok/.github/workflows/build.yml@main
     secrets: inherit
 
