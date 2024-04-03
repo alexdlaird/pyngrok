@@ -7,16 +7,12 @@ on:
     types: [ created ]
 
 jobs:
+  call-build:
+    uses: alexdlaird/pyngrok/.github/workflows/build.yml
+    secrets: inherit
+
   deploy:
     name: Deploy
-
-    env:
-      NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-      NGROK_HTTP_EDGE: ${{ secrets.NGROK_HTTP_EDGE }}
-      NGROK_TCP_EDGE: ${{ secrets.NGROK_TCP_EDGE }}
-      NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
-      NGROK_HTTP_EDGE_ENDPOINT: ${{ secrets.NGROK_HTTP_EDGE_ENDPOINT }}
-      NGROK_TCP_EDGE_ENDPOINT: ${{ secrets.NGROK_TCP_EDGE_ENDPOINT }}
 
     runs-on: ubuntu-latest
 
@@ -26,23 +22,11 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.12
-      - name: Install dependencies
-        run: make install
       - name: Get version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       - name: Validate version
         run: make validate-release VERSION=${{ steps.get_version.outputs.VERSION }}
-      - name: Test
-        run: make test
-      - name: Build docs
-        run: make docs
-      - name: Check code
-        run: make check
-      - name: Validate package
-        run: make local
-      - name: Test downstream
-        run: make test-downstream
       - name: Publish
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}

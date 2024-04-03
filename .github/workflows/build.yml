@@ -3,14 +3,12 @@ name: "Build"
 run-name: "Build ${{ github.ref_name }}"
 
 on:
-  workflow_dispatch:
   push:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
-  schedule:
-    - cron: "0 9 * * *"
-
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
   build:
@@ -62,8 +60,10 @@ jobs:
         run: make check
       - name: Validate package
         run: make local
+      - name: Test downstream
+        run: make test-downstream
       - name: Upload coverage
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
         uses: codecov/codecov-action@v3
         with:
           directory: ./build/coverage
