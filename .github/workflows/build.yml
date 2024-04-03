@@ -1,14 +1,12 @@
-name: "Build"
+name: Build
 
-run-name: "Build ${{ github.ref_name }}"
+run-name: Build ${{ github.ref_name }}
 
 on:
   push:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
-  schedule:
-    - cron: "0 9 * * *"
   workflow_dispatch:
   workflow_call:
 
@@ -56,24 +54,16 @@ jobs:
         run: make install
       - name: Test
         run: make test
-      - name: Build docs
-        run: make docs
-      - name: Check code
-        run: make check
-      - name: Validate package
-        run: make local
-      - name: Test downstream
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
-        run: make test-downstream
-      - name: Upload coverage
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
-        uses: codecov/codecov-action@v3
-        with:
-          directory: ./build/coverage
+
+  call-validate:
+    name: Validate
+    uses: alexdlaird/pyngrok/.github/workflows/validate.yml@main
+    secrets: inherit
+    needs: build
 
   automerge:
     name: "Auto Approve"
-    needs: build
+    needs: call-validate
 
     runs-on: ubuntu-latest
 

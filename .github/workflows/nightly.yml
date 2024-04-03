@@ -1,0 +1,32 @@
+name: Nightly Test
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+
+jobs:
+  test:
+    name: Nightly Test
+
+    env:
+      NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      NGROK_HTTP_EDGE: ${{ secrets.NGROK_HTTP_EDGE }}
+      NGROK_TCP_EDGE: ${{ secrets.NGROK_TCP_EDGE }}
+      NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
+      NGROK_HTTP_EDGE_ENDPOINT: ${{ secrets.NGROK_HTTP_EDGE_ENDPOINT }}
+      NGROK_TCP_EDGE_ENDPOINT: ${{ secrets.NGROK_TCP_EDGE_ENDPOINT }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+      - name: Run tests
+        uses: nick-fields/retry@v3
+        with:
+          retry_wait_seconds: 30
+          max_attempts: 3
+          command: make install test

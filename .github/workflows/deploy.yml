@@ -1,6 +1,6 @@
-name: "Deploy"
+name: Deploy
 
-run-name: "Release ${{ github.ref_name }}"
+run-name: Release ${{ github.ref_name }}
 
 on:
   release:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   call-build:
+    name: Build
     uses: alexdlaird/pyngrok/.github/workflows/build.yml@main
     secrets: inherit
 

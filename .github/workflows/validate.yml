@@ -1,0 +1,39 @@
+name: Validate
+
+on:
+  workflow_call:
+
+jobs:
+  validate:
+    name: Validate
+
+    env:
+      NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      NGROK_HTTP_EDGE: ${{ secrets.NGROK_HTTP_EDGE }}
+      NGROK_TCP_EDGE: ${{ secrets.NGROK_TCP_EDGE }}
+      NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
+      NGROK_HTTP_EDGE_ENDPOINT: ${{ secrets.NGROK_HTTP_EDGE_ENDPOINT }}
+      NGROK_TCP_EDGE_ENDPOINT: ${{ secrets.NGROK_TCP_EDGE_ENDPOINT }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+      - name: Build test coverage
+        run: make install test
+      - name: Build docs
+        run: make docs
+      - name: Check code
+        run: make check
+      - name: Validate package
+        run: make local
+      - name: Test downstream
+        run: make test-downstream
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          directory: ./build/coverage
