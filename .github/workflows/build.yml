@@ -58,7 +58,7 @@ jobs:
 
   validate:
     name: Validate
-    uses: alexdlaird/pyngrok/.github/workflows/validate.yml@${{ github.ref_name }}
+    uses: ./.github/workflows/validate.yml
     secrets: inherit
 
   automerge:
