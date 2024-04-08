@@ -935,3 +935,56 @@ class TestNgrok(NgrokTestCase):
 
         # THEN
         self.assertIn(f": {error_msg}", str(cm.exception))
+
+    @mock.patch('pyngrok.ngrok.api_request')
+    @mock.patch('pyngrok.ngrok.get_ngrok_process')
+    def test_full_tunnel_definitions(self, mock_get_ngrok_process, mock_api_request):
+        # GIVEN
+        config = {
+            "tunnels": {
+                "my-tunnel": {
+                    "proto": "tcp",
+                    "domain": "pyngrok.com",
+                    "addr": "5000",
+                    "inspect": "false",
+                    "labels": ["edge=some-edge-id"],
+                    "basic_auth": ["auth-token"],
+                    "host-header": "host-header",
+                    "hostname": "hostname",
+                    "crt": "crt",
+                    "key": "key",
+                    "clientCas": "clientCas",
+                    "remoteAddr": "remoteAddr",
+                    "metadata": "metadata",
+                    "compression": "false",
+                    "mutualTlsCas": "mutualTlsCas",
+                    "proxyProto": "proxyProto",
+                    "websocketTcpConverter": "false",
+                    "terminateAt": "provider",
+                    "request_header": {"add": "req-addition", "remove": "req-subtraction"},
+                    "response_header": {"add": "res-addition", "remove": "res-subtraction"},
+                    "ip_restriction": {"allow_cidrs": "allowed", "deny_cidrs": "denied"},
+                    "verify_webhook": {"provider": "provider", "secret": "secret"},
+                    "allow_user_agent": {"allow": "allow-user-agent", "deny": "deny-user-agent"},
+                    "policy":
+                        {"inbound": {"name": "inbound-policy", "expressions": "inbound-policy-expression",
+                                     "actions": {"type": "inbound-policy-actions-type",
+                                                 "config": "inbound-policy-actions-config"}}}
+                }
+            }
+        }
+        config_path = os.path.join(self.config_dir, "config_v3_2.yml")
+        installer.install_default_config(config_path, config, ngrok_version="v3")
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
+                                                api_key="api-key",
+                                                config_path=config_path)
+
+        expected_options = config["tunnels"]["my-tunnel"].copy()
+        expected_options["name"] = "my-tunnel"
+
+        # WHEN
+        ngrok.connect(name="my-tunnel", pyngrok_config=pyngrok_config)
+
+        # THEN
+        mock_api_request.assert_called_with(f"{mock_get_ngrok_process().api_url}/api/tunnels", method="POST",
+                                            data=expected_options, timeout=pyngrok_config.request_timeout)
