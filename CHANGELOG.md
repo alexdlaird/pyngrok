@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.1.6...HEAD)
+### Added
+- Build improvements.
+- Test cases for TLS tunnels.
 
 ## [7.1.6](https://github.com/alexdlaird/pyngrok/compare/7.1.5...7.1.6) - 2024-03-24
 ### Added

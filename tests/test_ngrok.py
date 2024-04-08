@@ -99,6 +99,39 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(ngrok_version.startswith("3"))
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf("NGROK_DOMAIN" not in os.environ, "NGROK_DOMAIN environment variable not set")
+    def test_connect_tls(self):
+        # GIVEN
+        self.assertEqual(len(process._current_processes.keys()), 0)
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
+
+        # WHEN
+        ngrok_tunnel = ngrok.connect("80", proto="tls", domain=os.environ.get("NGROK_DOMAIN"),
+                                     terminate_at="upstream", pyngrok_config=self.pyngrok_config_v3)
+        current_process = ngrok.get_ngrok_process(self.pyngrok_config_v3)
+
+        # THEN
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
+        self.assertIsNotNone(current_process)
+        self.assertIsNone(current_process.proc.poll())
+        self.assertTrue(current_process._monitor_thread.is_alive())
+        self.assertIsNotNone(ngrok_tunnel.id)
+        self.assertTrue(ngrok_tunnel.name.startswith("tls-80-"))
+        self.assertEqual("tls", ngrok_tunnel.proto)
+        self.assertEqual("localhost:80", ngrok_tunnel.config["addr"])
+        self.assertIsNotNone(ngrok_tunnel.public_url)
+        self.assertIsNotNone(process.get_process(self.pyngrok_config_v3))
+        self.assertIn('tls://', ngrok_tunnel.public_url)
+        self.assertEqual(len(process._current_processes.keys()), 1)
+
+        # WHEN
+        ngrok.kill(self.pyngrok_config_v3)
+        ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=self.pyngrok_config_v3)
+
+        # THEN
+        self.assertTrue(ngrok_version.startswith("3"))
+
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_connect_name(self):
         # WHEN
         ngrok_tunnel = ngrok.connect(name="my-tunnel", pyngrok_config=self.pyngrok_config_v3)
@@ -584,7 +617,6 @@ class TestNgrok(NgrokTestCase):
                     "proto": "tcp",
                     "addr": "22"
                 }
-
             }
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
@@ -612,6 +644,41 @@ class TestNgrok(NgrokTestCase):
                          f"localhost:{config['tunnels']['tcp-tunnel']['addr']}")
         self.assertEqual(ssh_tunnel.proto, config["tunnels"]["tcp-tunnel"]["proto"])
         self.assertTrue(ssh_tunnel.public_url.startswith("tcp://"))
+
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    @unittest.skipIf("NGROK_DOMAIN" not in os.environ, "NGROK_DOMAIN environment variable not set")
+    def test_tunnel_definitions_tls(self):
+        domain = os.environ.get("NGROK_DOMAIN")
+
+        # GIVEN
+        config = {
+            "tunnels": {
+                "tls-tunnel": {
+                    "proto": "tls",
+                    "addr": "80",
+                    "domain": domain,
+                    "terminate_at": "upstream"
+                }
+            }
+        }
+        config_path = os.path.join(self.config_dir, "config_v3_2.yml")
+        installer.install_default_config(config_path, config, ngrok_version="v3")
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
+                                                auth_token=os.environ["NGROK_AUTHTOKEN"])
+
+        # WHEN
+        tls_tunnel = ngrok.connect(name="tls-tunnel", pyngrok_config=pyngrok_config)
+
+        # THEN
+        self.assertTrue(tls_tunnel.name.startswith("tls-"))
+        self.assertEqual(tls_tunnel.config["addr"],
+                         f"localhost:{config['tunnels']['tls-tunnel']['addr']}")
+        self.assertTrue(tls_tunnel.config["addr"], "localhost:80")
+        self.assertEqual(tls_tunnel.name, "tls-tunnel")
+        self.assertEqual(tls_tunnel.config["addr"],
+                         f"localhost:{config['tunnels']['tls-tunnel']['addr']}")
+        self.assertEqual(tls_tunnel.proto, config["tunnels"]["tls-tunnel"]["proto"])
+        self.assertTrue(tls_tunnel.public_url, f"tls://{domain}")
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf("NGROK_HTTP_EDGE" not in os.environ, "NGROK_HTTP_EDGE environment variable not set")
