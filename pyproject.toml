@@ -101,4 +101,4 @@ directory = "build/coverage"
 [tool.flake8]
 max-line-length = 119
 statistics = true
-exclude = "docs/*,venv/*,build/*,dist/*,.egg-info/*"
+exclude = "docs/*,venv/*,build/*,dist/*,.egg-info/*,pyngrok-example-flask/*"
