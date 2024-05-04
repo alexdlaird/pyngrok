@@ -12,10 +12,9 @@ from urllib.request import urlopen
 
 import yaml
 
-from pyngrok import __version__
-from pyngrok import ngrok, process, installer
-from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError, \
-    PyngrokNgrokError
+from pyngrok import __version__, installer, ngrok, process
+from pyngrok.exception import PyngrokError, PyngrokNgrokError, PyngrokNgrokHTTPError, PyngrokNgrokURLError, \
+    PyngrokSecurityError
 from tests.testcase import NgrokTestCase
 
 

@@ -1,7 +1,7 @@
 __copyright__ = "Copyright (c) 2018-2024 Alex Laird"
 __license__ = "MIT"
 
-from typing import Any, Optional, List
+from typing import Any, List, Optional
 
 from pyngrok.log import NgrokLog
 

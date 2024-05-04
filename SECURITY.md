@@ -9,7 +9,8 @@
 
 ## Reporting a Vulnerability
 
-If you suspect you have found a security vulnerability, send an email to [contact@alexlaird.com](mailto:contact@alexlaird.com).
+If you suspect you have found a security vulnerability, send an email
+to [contact@alexlaird.com](mailto:contact@alexlaird.com).
 Please include a clear and concise description of what the vulnerability is, where it is exposed in the code, and (if
 known) what best practices might apply to patching it.
 

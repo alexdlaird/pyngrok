@@ -13,8 +13,7 @@ from random import randint
 import psutil
 from psutil import AccessDenied, NoSuchProcess
 
-from pyngrok import ngrok, installer, conf
-from pyngrok import process
+from pyngrok import conf, installer, ngrok, process
 from pyngrok.conf import PyngrokConfig
 
 logger = logging.getLogger(__name__)

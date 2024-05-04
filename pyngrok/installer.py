@@ -16,7 +16,7 @@ from urllib.request import urlopen
 
 import yaml
 
-from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
+from pyngrok.exception import PyngrokError, PyngrokNgrokInstallError, PyngrokSecurityError
 
 logger = logging.getLogger(__name__)
 

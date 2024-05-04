@@ -5,9 +5,9 @@ import os
 import socket
 from unittest import mock
 
-from pyngrok import ngrok, installer, conf
+from pyngrok import conf, installer, ngrok
 from pyngrok.conf import PyngrokConfig
-from pyngrok.exception import PyngrokNgrokInstallError, PyngrokSecurityError, PyngrokError
+from pyngrok.exception import PyngrokError, PyngrokNgrokInstallError, PyngrokSecurityError
 from tests.testcase import NgrokTestCase
 
 

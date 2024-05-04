@@ -9,7 +9,7 @@ from unittest import mock
 from urllib.parse import urlparse
 from urllib.request import urlopen
 
-from pyngrok import process, installer, conf, ngrok
+from pyngrok import conf, installer, ngrok, process
 from pyngrok.exception import PyngrokNgrokError
 from pyngrok.process import NgrokLog
 from tests.testcase import NgrokTestCase

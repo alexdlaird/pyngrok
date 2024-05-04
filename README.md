@@ -54,7 +54,8 @@ named_tunnel = ngrok.connect(name="my_tunnel_name")
 ```
 
 The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes `kwargs` as
-well, which allows us to pass additional properties that are [supported by `ngrok`](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions).
+well, which allows us to pass additional properties that
+are [supported by `ngrok`](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions).
 
 This package puts the default `ngrok` binary on our path, so all features of `ngrok` are
 available on the command line.
@@ -63,11 +64,13 @@ available on the command line.
 ngrok http 80
 ```
 
-For details on how to fully leverage `ngrok` from the command line, see [`ngrok`'s official documentation](https://ngrok.com/docs).
+For details on how to fully leverage `ngrok` from the command line,
+see [`ngrok`'s official documentation](https://ngrok.com/docs).
 
 ## Documentation
 
-For more advanced usage, `pyngrok`'s official documentation is available at [http://pyngrok.readthedocs.io](http://pyngrok.readthedocs.io).
+For more advanced usage, `pyngrok`'s official documentation is available
+at [http://pyngrok.readthedocs.io](http://pyngrok.readthedocs.io).
 
 ### `ngrok` Version Compatibility
 
@@ -76,7 +79,9 @@ For more advanced usage, `pyngrok`'s official documentation is available at [htt
 
 ## Contributing
 
-If you would like to get involved, be sure to review the [Contribution Guide](https://github.com/alexdlaird/pyngrok/blob/main/CONTRIBUTING.rst).
+If you would like to get involved, be sure to review
+the [Contribution Guide](https://github.com/alexdlaird/pyngrok/blob/main/CONTRIBUTING.rst).
 
-Want to contribute financially? If you've found `pyngrok` useful, [sponsorship](https://github.com/sponsors/alexdlaird) would
+Want to contribute financially? If you've found `pyngrok` useful, [sponsorship](https://github.com/sponsors/alexdlaird)
+would
 also be greatly appreciated!

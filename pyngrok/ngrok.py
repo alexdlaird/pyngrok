@@ -10,14 +10,14 @@ import socket
 import sys
 import uuid
 from http import HTTPStatus
-from typing import Optional, Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
-from urllib.request import urlopen, Request
+from urllib.request import Request, urlopen
 
-from pyngrok import process, conf, installer, __version__
+from pyngrok import __version__, conf, installer, process
 from pyngrok.conf import PyngrokConfig
-from pyngrok.exception import PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError, PyngrokError
+from pyngrok.exception import PyngrokError, PyngrokNgrokHTTPError, PyngrokNgrokURLError, PyngrokSecurityError
 from pyngrok.installer import get_default_config
 from pyngrok.process import NgrokProcess
 

@@ -3,7 +3,7 @@ __license__ = "MIT"
 
 import os
 import platform
-from typing import Optional, Callable
+from typing import Callable, Optional
 
 from pyngrok.installer import get_ngrok_bin
 from pyngrok.log import NgrokLog

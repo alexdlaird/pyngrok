@@ -1,55 +1,59 @@
 {% extends "!layout.html" %}
 
 {%- block extrahead %}
-    {{ super() }}
+{{ super() }}
 
-    <meta name="description"
-          content="A Python wrapper for ngrok that manages its own binary, making ngrok available via a convenient Python API."/>
+<meta content="A Python wrapper for ngrok that manages its own binary, making ngrok available via a convenient Python API."
+      name="description"/>
 
-    <!-- Twitter Card data -->
-    <meta name="twitter:title" content="pyngrok - A Python wrapper for ngrok">
-    <meta name="twitter:card"
-          value="A Python wrapper for ngrok that manages its own binary, making ngrok available via a convenient Python API.">
+<!-- Twitter Card data -->
+<meta content="pyngrok - A Python wrapper for ngrok" name="twitter:title">
+<meta name="twitter:card"
+      value="A Python wrapper for ngrok that manages its own binary, making ngrok available via a convenient Python API.">
 
-    <!-- Open Graph data -->
-    <meta property="og:title" content="pyngrok - A Python wrapper for ngrok"/>
-    <meta property="og:type" content="website"/>
-    <meta property="og:url" content="https://pyngrok.readthedocs.io/en/latest/{{ pagename }}.html"/>
-    <meta property="og:image" content="https://pyngrok.readthedocs.io/en/latest/_images/logo.png"/>
-    <meta property="og:description"
-          content="A Python wrapper for ngrok that manages its own binary, making ngrok available via a convenient Python API."/>
+<!-- Open Graph data -->
+<meta content="pyngrok - A Python wrapper for ngrok" property="og:title"/>
+<meta content="website" property="og:type"/>
+<meta content="https://pyngrok.readthedocs.io/en/latest/{{ pagename }}.html" property="og:url"/>
+<meta content="https://pyngrok.readthedocs.io/en/latest/_images/logo.png" property="og:image"/>
+<meta content="A Python wrapper for ngrok that manages its own binary, making ngrok available via a convenient Python API."
+      property="og:description"/>
 
-    <meta name="yandex-verification" content="ac8f18b56add6591"/>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-43184722-4"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
+<meta content="ac8f18b56add6591" name="yandex-verification"/>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-43184722-4"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
 
-        function gtag() {
-            dataLayer.push(arguments);
-        }
+    function gtag() {
+        dataLayer.push(arguments);
+    }
 
-        gtag('js', new Date());
+    gtag('js', new Date());
 
-        gtag('config', 'UA-43184722-4');
-    </script>
+    gtag('config', 'UA-43184722-4');
+</script>
 {% endblock %}
 
 {% block footer %}
-    {{ super() }}
-    <a href="https://github.com/{{ theme_github_user }}/{{ theme_github_repo }}" class="github">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" alt="Fork me on GitHub" alt="Fork me on GitHub" class="github">
-    </a>
-    <div class="footer">This page uses <a href="https://analytics.google.com/">
-        Google Analytics</a> to collect statistics. You can disable it by blocking
-        the JavaScript coming from www.google-analytics.com.
-        <script type="text/javascript">
-            (function () {
-                var ga = document.createElement('script');
-                ga.src = ('https:' == document.location.protocol ?
-                    'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                ga.setAttribute('async', 'true');
-                document.documentElement.firstChild.appendChild(ga);
-            })();
-        </script>
-    </div>
+{{ super() }}
+<a class="github" href="https://github.com/{{ theme_github_user }}/{{ theme_github_repo }}">
+    <img alt="Fork me on GitHub"
+         alt="Fork me on GitHub"
+         class="github"
+         src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149"
+         style="position: absolute; top: 0; right: 0; border: 0;">
+</a>
+<div class="footer">This page uses <a href="https://analytics.google.com/">
+    Google Analytics</a> to collect statistics. You can disable it by blocking
+    the JavaScript coming from www.google-analytics.com.
+    <script type="text/javascript">
+        (function () {
+            var ga = document.createElement('script');
+            ga.src = ('https:' == document.location.protocol ?
+                      'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            ga.setAttribute('async', 'true');
+            document.documentElement.firstChild.appendChild(ga);
+        })();
+    </script>
+</div>
 {% endblock %}

@@ -8,14 +8,14 @@ import subprocess
 import threading
 import time
 from http import HTTPStatus
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 from urllib.request import Request, urlopen
 
 import yaml
 
 from pyngrok import conf, installer
 from pyngrok.conf import PyngrokConfig
-from pyngrok.exception import PyngrokNgrokError, PyngrokSecurityError, PyngrokError
+from pyngrok.exception import PyngrokError, PyngrokNgrokError, PyngrokSecurityError
 from pyngrok.installer import SUPPORTED_NGROK_VERSIONS
 from pyngrok.log import NgrokLog
 
