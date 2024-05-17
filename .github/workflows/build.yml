@@ -60,19 +60,3 @@ jobs:
     name: Validate
     uses: ./.github/workflows/validate.yml
     secrets: inherit
-
-  automerge:
-    name: "Auto Approve"
-    needs: [build, validate]
-
-    runs-on: ubuntu-latest
-
-    permissions:
-      pull-requests: write
-      contents: write
-
-    steps:
-      - uses: fastify/github-action-merge-dependabot@v3
-        with:
-          target: major
-          use-github-auto-merge: true
