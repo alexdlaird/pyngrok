@@ -4,11 +4,15 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.1.6...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.0...HEAD)
 
+## [7.2.0](https://github.com/alexdlaird/pyngrok/compare/7.2.0...7.1.6) - TBD
 ### Added
-- Build improvements.
+- Build and stability improvements.
 - Test cases for TLS tunnels, and other test improvements.
+
+### Changed
+- `conf.DEFAULT_NGROK_PATH` defaults to installing the binary alongside `ngrok`'s configs, rather than alongside the code (which can cause odd behavior in a `venv`).
 
 ## [7.1.6](https://github.com/alexdlaird/pyngrok/compare/7.1.5...7.1.6) - 2024-03-24
 

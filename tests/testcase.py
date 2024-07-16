@@ -26,20 +26,23 @@ class NgrokTestCase(unittest.TestCase):
         if not os.path.exists(self.config_dir):
             os.makedirs(self.config_dir)
         config_v2_path = os.path.join(self.config_dir, "config_v2.yml")
+
+        conf.DEFAULT_NGROK_CONFIG_PATH = config_v2_path
+        conf.DEFAULT_NGROK_PATH = os.path.join(config_v2_path, installer.get_ngrok_bin())
+
         config_v3_path = os.path.join(self.config_dir, "config_v3.yml")
 
-        ngrok_path_v2 = os.path.join(conf.BIN_DIR, "v2", installer.get_ngrok_bin())
+        ngrok_path_v2 = os.path.join(self.config_dir, "v2", installer.get_ngrok_bin())
         self.pyngrok_config_v2 = PyngrokConfig(
             ngrok_path=ngrok_path_v2,
             config_path=config_v2_path,
             ngrok_version="v2")
 
-        ngrok_path_v3 = os.path.join(conf.BIN_DIR, "v3", installer.get_ngrok_bin())
+        ngrok_path_v3 = os.path.join(self.config_dir, "v3", installer.get_ngrok_bin())
         self.pyngrok_config_v3 = PyngrokConfig(ngrok_path=ngrok_path_v3,
                                                config_path=config_v3_path,
                                                ngrok_version="v3")
 
-        conf.DEFAULT_NGROK_CONFIG_PATH = config_v2_path
         conf.set_default(self.pyngrok_config_v2)
 
         # ngrok's CDN can be flaky, so make sure its flakiness isn't reflect in our CI/CD test runs

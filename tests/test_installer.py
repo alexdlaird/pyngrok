@@ -40,7 +40,7 @@ class TestInstaller(NgrokTestCase):
 
     def test_installer_default(self):
         # GIVEN
-        ngrok_path = os.path.join(conf.BIN_DIR, "default", installer.get_ngrok_bin())
+        ngrok_path = os.path.join(self.config_dir, "default", installer.get_ngrok_bin())
         config_path = os.path.join(self.config_dir, "config_default.yml")
 
         pyngrok_config = PyngrokConfig(

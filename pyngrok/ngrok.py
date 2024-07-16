@@ -436,6 +436,8 @@ def get_version(pyngrok_config: Optional[PyngrokConfig] = None) -> Tuple[str, st
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
+    install_ngrok(pyngrok_config)
+
     ngrok_version = process.capture_run_process(pyngrok_config.ngrok_path, ["--version"]).split("version ")[1]
 
     return ngrok_version, __version__
@@ -451,6 +453,8 @@ def update(pyngrok_config: Optional[PyngrokConfig] = None) -> str:
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
+
+    install_ngrok(pyngrok_config)
 
     return process.capture_run_process(pyngrok_config.ngrok_path, ["update"])
 

@@ -42,7 +42,7 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assertTrue(ngrok_process._monitor_thread.is_alive())
 
-        ngrok_path_v2_2 = os.path.join(conf.BIN_DIR, "v2_2", installer.get_ngrok_bin())
+        ngrok_path_v2_2 = os.path.join(self.config_dir, "v2_2", installer.get_ngrok_bin())
         pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2, ngrok_path=ngrok_path_v2_2)
         self.given_ngrok_installed(pyngrok_config_v2_2)
         config_path_v2_2 = os.path.join(self.config_dir, "config_v2_2.yml")
@@ -82,7 +82,7 @@ class TestProcess(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assertTrue(ngrok_process._monitor_thread.is_alive())
 
-        ngrok_path_v3_2 = os.path.join(conf.BIN_DIR, "v3_2", installer.get_ngrok_bin())
+        ngrok_path_v3_2 = os.path.join(self.config_dir, "v3_2", installer.get_ngrok_bin())
         pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3, ngrok_path=ngrok_path_v3_2)
         self.given_ngrok_installed(pyngrok_config_v3_2)
         config_path_v3_2 = os.path.join(self.config_dir, "config_v3_2.yml")
@@ -176,7 +176,7 @@ class TestProcess(NgrokTestCase):
         pyngrok_config_v2_1 = self.copy_with_updates(self.pyngrok_config_v2, config_path=config_path_v2_1,
                                                      ngrok_path=self.pyngrok_config_v2.ngrok_path)
 
-        ngrok_path_v2_2 = os.path.join(conf.BIN_DIR, "v2_2", installer.get_ngrok_bin())
+        ngrok_path_v2_2 = os.path.join(self.config_dir, "v2_2", installer.get_ngrok_bin())
         pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2, ngrok_path=ngrok_path_v2_2)
         self.given_ngrok_installed(pyngrok_config_v2_2)
         config_path_v2_2 = os.path.join(self.config_dir, "config_v2_2.yml")
@@ -190,7 +190,7 @@ class TestProcess(NgrokTestCase):
         pyngrok_config_v3_1 = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path_v3_1,
                                                      ngrok_path=self.pyngrok_config_v3.ngrok_path)
 
-        ngrok_path_v3_2 = os.path.join(conf.BIN_DIR, "v3_2", installer.get_ngrok_bin())
+        ngrok_path_v3_2 = os.path.join(self.config_dir, "v3_2", installer.get_ngrok_bin())
         pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3, ngrok_path=ngrok_path_v3_2)
         self.given_ngrok_installed(pyngrok_config_v3_2)
         config_path_v3_2 = os.path.join(self.config_dir, "config_v3_2.yml")

@@ -8,8 +8,6 @@ from typing import Callable, Optional
 from pyngrok.installer import get_ngrok_bin
 from pyngrok.log import NgrokLog
 
-BIN_DIR = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), "bin"))
-DEFAULT_NGROK_PATH = os.path.join(BIN_DIR, get_ngrok_bin())
 DEFAULT_CONFIG_PATH: Optional[str] = None
 
 system = platform.system().lower()
@@ -20,6 +18,7 @@ elif system in ["windows", "cygwin"]:
 else:
     _config_rel_path = os.path.join(".config", "ngrok")
 DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), _config_rel_path, "ngrok.yml")
+DEFAULT_NGROK_PATH = os.path.join(DEFAULT_NGROK_CONFIG_PATH, get_ngrok_bin())
 
 
 class PyngrokConfig:
@@ -60,8 +59,8 @@ class PyngrokConfig:
                  start_new_session: bool = False,
                  ngrok_version: str = "v3",
                  api_key: Optional[str] = None) -> None:
-        #: The path to the ``ngrok`` binary, defaults to the value in `conf.DEFAULT_NGROK_PATH
-        #: <index.html#config-file>`_.
+        #: The path to the ``ngrok`` binary, defaults to being placed in the same directory as
+        #: `ngrok's configs <https://ngrok.com/docs/ngrok-agent/config>`_.
         self.ngrok_path: str = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
         #: The path to the ``ngrok`` config, defaults to ``None`` and ``ngrok`` manages it.
         self.config_path: Optional[str] = DEFAULT_CONFIG_PATH if config_path is None else config_path
