@@ -18,7 +18,7 @@ elif system in ["windows", "cygwin"]:
 else:
     _config_rel_path = os.path.join(".config", "ngrok")
 DEFAULT_NGROK_CONFIG_PATH = os.path.join(os.path.expanduser("~"), _config_rel_path, "ngrok.yml")
-DEFAULT_NGROK_PATH = os.path.join(_config_rel_path, get_ngrok_bin())
+DEFAULT_NGROK_PATH = os.path.join(os.path.expanduser("~"), _config_rel_path, get_ngrok_bin())
 
 
 class PyngrokConfig:
