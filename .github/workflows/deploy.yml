@@ -16,6 +16,9 @@ jobs:
     name: Deploy
     needs: build
 
+    env:
+      FORCE_COLOR: 1
+
     runs-on: ubuntu-latest
 
     steps:
