@@ -111,7 +111,7 @@ to do this is one of our ``apps.py`` by `extending AppConfig <https://docs.djang
 
                 # Open a ngrok tunnel to the dev server
                 public_url = ngrok.connect(port).public_url
-                print(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\")
+                print(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\"")
 
                 # Update any base URLs or webhooks to use the public ngrok URL
                 settings.BASE_URL = public_url
@@ -175,7 +175,7 @@ we should add a variable that let's us configure from an environment variable wh
 
         # Open a ngrok tunnel to the dev server
         public_url = ngrok.connect(port).public_url
-        logger.info(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\")
+        logger.info(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\"")
 
         # Update any base URLs or webhooks to use the public ngrok URL
         settings.BASE_URL = public_url
@@ -396,7 +396,7 @@ server. We can use ``pyngrok`` to expose it to the web via a tunnel, as show in 
     httpd = HTTPServer(server_address, BaseHTTPRequestHandler)
 
     public_url = ngrok.connect(port).public_url
-    print(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\")
+    print(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\"")
 
     try:
         # Block until CTRL-C or some other terminating event
@@ -444,7 +444,7 @@ Now create ``server.py`` with the following code:
 
     # Open a ngrok tunnel to the socket
     public_url = ngrok.connect(port, "tcp", remote_addr=f"{host}:{port}").public_url
-    print(f"ngrok tunnel \"{public_url}\" -> \"tcp://127.0.0.1:{port}\")
+    print(f"ngrok tunnel \"{public_url}\" -> \"tcp://127.0.0.1:{port}\"")
 
     while True:
         connection = None
