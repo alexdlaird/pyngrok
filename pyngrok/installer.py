@@ -6,6 +6,7 @@ import logging
 import os
 import platform
 import socket
+import ssl
 import sys
 import tempfile
 import time
@@ -293,7 +294,7 @@ def _download_file(url: str,
         _clear_progress()
 
         return download_path
-    except socket.timeout as e:
+    except (socket.timeout, ssl.SSLError) as e:
         if retries < DEFAULT_RETRY_COUNT:
             logger.warning("ngrok download failed, retrying in 0.5 seconds ...")
             time.sleep(0.5)
