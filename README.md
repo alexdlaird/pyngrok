@@ -55,7 +55,7 @@ named_tunnel = ngrok.connect(name="my_tunnel_name")
 
 The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes `kwargs` as
 well, which allows us to pass additional properties that
-are [supported by `ngrok`](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions).
+are [supported by `ngrok`](https://ngrok.com/docs/agent/config/v2/#tunnel-configurations).
 
 This package puts the default `ngrok` binary on our path, so all features of `ngrok` are
 available on the command line.

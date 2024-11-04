@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.0...HEAD)
 
+### Added
+
+- Documentation improvements update links to `ngrok`'s documentation.
+
 ## [7.2.0](https://github.com/alexdlaird/pyngrok/compare/7.2.0...7.1.6) - 2024-07-18
 
 ### Added
@@ -158,8 +162,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Support for `labels`,
   so [`ngrok`'s Labeled Tunnel Configuration](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#labeled-tunnel-configuration-properties)
-  is now supported, which enables basic support for [`ngrok`'s Cloud Edge](https://ngrok.com/docs/cloud-edge/).
-- `api_key` to `PyngrokConfig`, which can be set so `pyngrok` can interface with Cloud Edge when using `labels`.
+  is now supported, which enables basic support for [`ngrok`'s Edge](https://ngrok.com/docs/network-edge/edges).
+- `api_key` to `PyngrokConfig`, which can be set so `pyngrok` can interface with Edges when using `labels`.
 - [ngrok.api_request()](https://pyngrok.readthedocs.io/en/6.1.0/api.html#pyngrok.ngrok.api_request) now takes an `auth`
   param, so it can now be used to pass the `Bearer` token to `ngrok`'s API.
 - `id` to [NgrokTunnel](https://pyngrok.readthedocs.io/en/6.1.0/api.html#pyngrok.ngrok.NgrokTunnel).
@@ -292,11 +296,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Added
 
 - Support
-  for [`ngrok`'s tunnel definitions](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions)
+  for [`ngrok`'s tunnel definitions](https://ngrok.com/docs/agent/config/v2/#tunnel-configurations)
   when calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect). If a tunnel
   definition in `ngrok`'s config matches the given `name`, it will be used to start the tunnel.
 - Support for
-  a [`ngrok` tunnel definition](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#tunnel-definitions)
+  a [`ngrok` tunnel definition](https://ngrok.com/docs/agent/config/v2/#tunnel-configurations)
   named "pyngrok-default" when
   calling [ngrok.connect()](https://pyngrok.readthedocs.io/en/5.0.0/api.html#pyngrok.ngrok.connect). When `name`
   is `None` and a "pyngrok-default" tunnel definition exists it `ngrok`'s config, it will be used.

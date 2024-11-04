@@ -61,7 +61,7 @@ class PyngrokConfig:
                  ngrok_version: str = "v3",
                  api_key: Optional[str] = None) -> None:
         #: The path to the ``ngrok`` binary, defaults to being placed in the same directory as
-        #: `ngrok's configs <https://ngrok.com/docs/ngrok-agent/config>`_.
+        #: `ngrok's configs <https://ngrok.com/docs/agent/config/v2>`_.
         self.ngrok_path: str = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
         #: The path to the ``ngrok`` config, defaults to ``None`` and ``ngrok`` manages it.
         self.config_path: Optional[str] = DEFAULT_CONFIG_PATH if config_path is None else config_path
