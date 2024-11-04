@@ -396,7 +396,7 @@ available on the command line.
 
     ngrok http 80
 
-For details on how to fully leverage ``ngrok`` from the command line, see `ngrok's official documentation <https://ngrok.com/docs>`_.
+For details on how to fully leverage ``ngrok`` from the command line, see `ngrok's official documentation <https://ngrok.com/docs/agent/cli/>`_.
 
 Python 2.7
 ==========

@@ -96,7 +96,7 @@ ngrok http 80
 ```
 
 For details on how to fully leverage `ngrok` from the command line,
-see [`ngrok`'s official documentation](https://ngrok.com/docs).
+see [`ngrok`'s official documentation](https://ngrok.com/docs/agent/cli/).
 
 ## Documentation
 
