@@ -318,12 +318,9 @@ def connect(addr: Optional[str] = None,
 
     _interpolate_tunnel_definition(pyngrok_config, options, addr, proto, name)
 
-    # proto can't also be passed when "labels" is defined
-    if proto is not None and "labels" in options:
-        proto = options.pop("proto")
-    else:
-        proto = options.get("proto")
-    name = options.get("name")
+    # Remove proto when "labels" is defined
+    if "labels" in options:
+        options.pop("proto")
 
     _upgrade_legacy_params(pyngrok_config, options)
 

@@ -942,7 +942,6 @@ class TestNgrok(NgrokTestCase):
         config = {
             "tunnels": {
                 "my-tunnel": {
-                    "proto": "tcp",
                     "domain": "pyngrok.com",
                     "addr": "5000",
                     "inspect": "false",
