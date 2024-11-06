@@ -187,11 +187,11 @@ def _apply_edge_to_tunnel(tunnel: NgrokTunnel,
         tunnel.proto = edges_prefix
 
 
-def _interpolate_tunnel_definition(addr: Optional[str] = None,
+def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
+                                   options: Dict[str, Any],
+                                   addr: Optional[str] = None,
                                    proto: Optional[Union[str, int]] = None,
-                                   name: Optional[str] = None,
-                                   pyngrok_config: Optional[PyngrokConfig] = None,
-                                   **options: Any):
+                                   name: Optional[str] = None) -> None:
     config_path = conf.get_config_path(pyngrok_config)
 
     if os.path.exists(config_path):
@@ -232,11 +232,11 @@ def _interpolate_tunnel_definition(addr: Optional[str] = None,
         else:
             name = f"{proto}-file-{uuid.uuid4()}"
 
-    config = {
+    options.update({
         "name": name,
-        "addr": addr
-    }
-    options.update(config)
+        "addr": addr,
+        "proto": proto
+    })
 
 
 def connect(addr: Optional[str] = None,
@@ -291,13 +291,16 @@ def connect(addr: Optional[str] = None,
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
-    _interpolate_tunnel_definition(addr, proto, name, pyngrok_config, **options)
+    _interpolate_tunnel_definition(pyngrok_config, options, addr, proto, name)
+
+    proto = options.get("proto")
+    name = options.get("name")
 
     logger.info(f"Opening tunnel named: {name}")
 
-    # Only apply proto when "labels" is not defined
-    if "labels" not in options:
-        options["proto"] = proto
+    # Remove proto when "labels" is defined
+    if "labels" in options:
+        options.pop("proto")
 
     # Upgrade legacy parameters, if present
     if pyngrok_config.ngrok_version == "v3":
