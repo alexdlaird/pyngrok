@@ -215,7 +215,8 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
         proto = tunnel_definition.get("proto") if not proto else proto
         # Use the tunnel definition as the base, but override with any passed in options
         tunnel_definition.update(options)
-        options = tunnel_definition
+        options.clear()
+        options.update(tunnel_definition)
 
     if "labels" in options and not pyngrok_config.api_key:
         raise PyngrokError(
@@ -237,6 +238,30 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
         "addr": addr,
         "proto": proto
     })
+
+
+def _upgrade_legacy_params(pyngrok_config: PyngrokConfig,
+                           options: Dict[str, Any]) -> None:
+    # Upgrade legacy parameters, if present
+    if pyngrok_config.ngrok_version == "v3":
+        if "bind_tls" in options:
+            if options.get("bind_tls") is True or options.get("bind_tls") == "true":
+                options["schemes"] = ["https"]
+            elif not options.get("bind_tls") is not False or options.get("bind_tls") == "false":
+                options["schemes"] = ["http"]
+            else:
+                options["schemes"] = ["http", "https"]
+
+            options.pop("bind_tls")
+
+        if "auth" in options:
+            auth = options.get("auth")
+            if isinstance(auth, list):
+                options["basic_auth"] = auth
+            else:
+                options["basic_auth"] = [auth]
+
+            options.pop("auth")
 
 
 def connect(addr: Optional[str] = None,
@@ -296,32 +321,9 @@ def connect(addr: Optional[str] = None,
     proto = options.get("proto")
     name = options.get("name")
 
+    _upgrade_legacy_params(pyngrok_config, options)
+
     logger.info(f"Opening tunnel named: {name}")
-
-    # Remove proto when "labels" is defined
-    if "labels" in options:
-        options.pop("proto")
-
-    # Upgrade legacy parameters, if present
-    if pyngrok_config.ngrok_version == "v3":
-        if "bind_tls" in options:
-            if options.get("bind_tls") is True or options.get("bind_tls") == "true":
-                options["schemes"] = ["https"]
-            elif not options.get("bind_tls") is not False or options.get("bind_tls") == "false":
-                options["schemes"] = ["http"]
-            else:
-                options["schemes"] = ["http", "https"]
-
-            options.pop("bind_tls")
-
-        if "auth" in options:
-            auth = options.get("auth")
-            if isinstance(auth, list):
-                options["basic_auth"] = auth
-            else:
-                options["basic_auth"] = [auth]
-
-            options.pop("auth")
 
     api_url = get_ngrok_process(pyngrok_config).api_url
 
