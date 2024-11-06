@@ -10,7 +10,7 @@ import socket
 import sys
 import uuid
 from http import HTTPStatus
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -156,8 +156,8 @@ def get_ngrok_process(pyngrok_config: Optional[PyngrokConfig] = None) -> NgrokPr
     return process.get_process(pyngrok_config)
 
 
-def _apply_cloud_edge_to_tunnel(tunnel: NgrokTunnel,
-                                pyngrok_config: PyngrokConfig) -> None:
+def _apply_edge_to_tunnel(tunnel: NgrokTunnel,
+                          pyngrok_config: PyngrokConfig) -> None:
     if not tunnel.public_url and pyngrok_config.api_key and tunnel.id:
         tunnel_response = api_request(f"https://api.ngrok.com/tunnels/{tunnel.id}", method="GET",
                                       auth=pyngrok_config.api_key)
@@ -187,9 +187,60 @@ def _apply_cloud_edge_to_tunnel(tunnel: NgrokTunnel,
         tunnel.proto = edges_prefix
 
 
-# When Python <3.9 support is dropped, addr type can be changed to Optional[str|int]
+def _interpolate_tunnel_definition(addr: Optional[str] = None,
+                                   proto: Optional[Union[str, int]] = None,
+                                   name: Optional[str] = None,
+                                   pyngrok_config: Optional[PyngrokConfig] = None,
+                                   **options: Any):
+    config_path = conf.get_config_path(pyngrok_config)
+
+    if os.path.exists(config_path):
+        config = installer.get_ngrok_config(config_path, ngrok_version=pyngrok_config.ngrok_version)
+    else:
+        config = get_default_config(pyngrok_config.ngrok_version)
+
+    tunnel_definitions = config.get("tunnels", {})
+    # If a "pyngrok-default" tunnel definition exists in the ngrok config, use that
+    if not name and "pyngrok-default" in tunnel_definitions:
+        name = "pyngrok-default"
+
+    # Use a tunnel definition for the given name, if it exists
+    if name and name in tunnel_definitions:
+        tunnel_definition = tunnel_definitions[name]
+
+        if "labels" in tunnel_definition and "bind_tls" in options:
+            raise PyngrokError("\"bind_tls\" cannot be set when \"labels\" is also on the tunnel definition.")
+
+        addr = tunnel_definition.get("addr") if not addr else addr
+        proto = tunnel_definition.get("proto") if not proto else proto
+        # Use the tunnel definition as the base, but override with any passed in options
+        tunnel_definition.update(options)
+        options = tunnel_definition
+
+    if "labels" in options and not pyngrok_config.api_key:
+        raise PyngrokError(
+            "\"PyngrokConfig.api_key\" must be set when \"labels\" is on the tunnel definition.")
+
+    addr = str(addr) if addr else "80"
+    # Only apply a default proto label if "labels" isn't defined
+    if not proto and "labels" not in options:
+        proto = "http"
+
+    if not name:
+        if not addr.startswith("file://"):
+            name = f"{proto}-{addr}-{uuid.uuid4()}"
+        else:
+            name = f"{proto}-file-{uuid.uuid4()}"
+
+    config = {
+        "name": name,
+        "addr": addr
+    }
+    options.update(config)
+
+
 def connect(addr: Optional[str] = None,
-            proto: Optional[str] = None,
+            proto: Optional[Union[str, int]] = None,
             name: Optional[str] = None,
             pyngrok_config: Optional[PyngrokConfig] = None,
             **options: Any) -> NgrokTunnel:
@@ -240,53 +291,9 @@ def connect(addr: Optional[str] = None,
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
-    config_path = conf.get_config_path(pyngrok_config)
-
-    if os.path.exists(config_path):
-        config = installer.get_ngrok_config(config_path, ngrok_version=pyngrok_config.ngrok_version)
-    else:
-        config = get_default_config(pyngrok_config.ngrok_version)
-
-    tunnel_definitions = config.get("tunnels", {})
-    # If a "pyngrok-default" tunnel definition exists in the ngrok config, use that
-    if not name and "pyngrok-default" in tunnel_definitions:
-        name = "pyngrok-default"
-
-    # Use a tunnel definition for the given name, if it exists
-    if name and name in tunnel_definitions:
-        tunnel_definition = tunnel_definitions[name]
-
-        if "labels" in tunnel_definition and "bind_tls" in options:
-            raise PyngrokError("\"bind_tls\" cannot be set when \"labels\" is also on the tunnel definition.")
-
-        addr = tunnel_definition.get("addr") if not addr else addr
-        proto = tunnel_definition.get("proto") if not proto else proto
-        # Use the tunnel definition as the base, but override with any passed in options
-        tunnel_definition.update(options)
-        options = tunnel_definition
-
-    if "labels" in options and not pyngrok_config.api_key:
-        raise PyngrokError(
-            "\"PyngrokConfig.api_key\" must be set when \"labels\" is on the tunnel definition.")
-
-    addr = str(addr) if addr else "80"
-    # Only apply a default proto label if "labels" isn't defined
-    if not proto and "labels" not in options:
-        proto = "http"
-
-    if not name:
-        if not addr.startswith("file://"):
-            name = f"{proto}-{addr}-{uuid.uuid4()}"
-        else:
-            name = f"{proto}-file-{uuid.uuid4()}"
+    _interpolate_tunnel_definition(addr, proto, name, pyngrok_config, **options)
 
     logger.info(f"Opening tunnel named: {name}")
-
-    config = {
-        "name": name,
-        "addr": addr
-    }
-    options.update(config)
 
     # Only apply proto when "labels" is not defined
     if "labels" not in options:
@@ -326,7 +333,7 @@ def connect(addr: Optional[str] = None,
                                          timeout=pyngrok_config.request_timeout),
                              pyngrok_config, api_url)
 
-    _apply_cloud_edge_to_tunnel(tunnel, pyngrok_config)
+    _apply_edge_to_tunnel(tunnel, pyngrok_config)
 
     if tunnel.public_url is None:
         raise PyngrokError(
@@ -397,7 +404,7 @@ def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTun
     for tunnel in api_request(f"{api_url}/api/tunnels", method="GET",
                               timeout=pyngrok_config.request_timeout)["tunnels"]:
         ngrok_tunnel = NgrokTunnel(tunnel, pyngrok_config, api_url)
-        _apply_cloud_edge_to_tunnel(ngrok_tunnel, pyngrok_config)
+        _apply_edge_to_tunnel(ngrok_tunnel, pyngrok_config)
 
         if ngrok_tunnel.public_url is None:
             raise PyngrokError(

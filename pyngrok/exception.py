@@ -1,7 +1,7 @@
 __copyright__ = "Copyright (c) 2018-2024 Alex Laird"
 __license__ = "MIT"
 
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union, Dict, MutableMapping
 
 from pyngrok.log import NgrokLog
 
@@ -33,7 +33,7 @@ class PyngrokNgrokError(PyngrokError):
     """
 
     def __init__(self,
-                 error: str,
+                 error: Union[str, BaseException],
                  ngrok_logs: Optional[List[NgrokLog]] = None,
                  ngrok_error: Optional[str] = None) -> None:
         super(PyngrokNgrokError, self).__init__(error)
@@ -50,13 +50,12 @@ class PyngrokNgrokHTTPError(PyngrokNgrokError):
     contains the error response received from ``ngrok``.
     """
 
-    # When Python <3.9 support is dropped, headers type can be changed to Dict[str, str]|MutableMapping[str, str]|Any
     def __init__(self,
-                 error: str,
+                 error: Union[str, BaseException],
                  url: str,
                  status_code: int,
                  message: Optional[str],
-                 headers: Any,
+                 headers: Union[Dict[str, str], MutableMapping[str, str], Any],
                  body: str) -> None:
         super(PyngrokNgrokHTTPError, self).__init__(error)
 
@@ -77,9 +76,8 @@ class PyngrokNgrokURLError(PyngrokNgrokError):
     Raised when an error occurs when trying to initiate an API request.
     """
 
-    # When Python <3.9 support is dropped, reason type can be changed to str|BaseException
     def __init__(self,
-                 error: str,
+                 error: Union[str, BaseException],
                  reason: Any) -> None:
         super(PyngrokNgrokURLError, self).__init__(error)
 

@@ -687,7 +687,7 @@ class TestNgrok(NgrokTestCase):
                      "NGROK_HTTP_EDGE_ENDPOINT environment variable not set")
     @unittest.skipIf("NGROK_TCP_EDGE_ENDPOINT" not in os.environ,
                      "NGROK_TCP_EDGE_ENDPOINT environment variable not set")
-    def test_ngrok_v3_cloud_edge_tunnel_definition(self):
+    def test_ngrok_v3_edge_tunnel_definition(self):
         # GIVEN
         config = {
             "tunnels": {
