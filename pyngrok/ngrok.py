@@ -318,6 +318,9 @@ def connect(addr: Optional[str] = None,
 
     _interpolate_tunnel_definition(pyngrok_config, options, addr, proto, name)
 
+    proto = options.get("proto")
+    name = options.get("name")
+
     # Remove proto when "labels" is defined
     if "labels" in options:
         options.pop("proto")
