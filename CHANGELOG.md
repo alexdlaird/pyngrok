@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.1...HEAD)
 
+- Changed
+
+`region` parameter is no longer provisioned in default v2 config, as [it is deprecated by `ngrok`](https://ngrok.com/docs/agent/config/v2/#region).
+
 ## [7.2.1](https://github.com/alexdlaird/pyngrok/compare/7.2.0...7.2.1) - 2024-11-04
 
 ### Added
