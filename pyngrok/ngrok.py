@@ -242,7 +242,6 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
 
 def _upgrade_legacy_params(pyngrok_config: PyngrokConfig,
                            options: Dict[str, Any]) -> None:
-    # Upgrade legacy parameters, if present
     if pyngrok_config.ngrok_version == "v3":
         if "bind_tls" in options:
             if options.get("bind_tls") is True or options.get("bind_tls") == "true":
