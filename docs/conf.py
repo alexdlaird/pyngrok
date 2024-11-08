@@ -108,15 +108,10 @@ html_css_files = [
 # "searchbox.html"]``.
 #
 html_sidebars = {
-    "index": [
-        "sidebartoc.html",
-        "usefullinks.html",
-        "searchbox.html",
-    ],
     "**": [
         "sidebartoc.html",
-        "localtoc.html",
         "usefullinks.html",
+        "localtoc.html",
         "searchbox.html",
     ],
 }
