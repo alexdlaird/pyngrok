@@ -68,6 +68,18 @@ class TestInstaller(NgrokTestCase):
         # THEN
         self.assertTrue(os.path.exists(self.pyngrok_config_v3.config_path))
 
+    def test_get_default_config(self):
+        # GIVEN
+        installer.install_default_config(self.pyngrok_config_v3.config_path, {}, self.pyngrok_config_v3.ngrok_version)
+
+        # WHEN
+        ngrok_config = installer.get_ngrok_config(self.pyngrok_config_v3.config_path)
+
+        # THEN
+        self.assertEqual(2, len(ngrok_config))
+        self.assertEqual("2", ngrok_config["version"])
+        self.assertTrue(os.path.exists(self.pyngrok_config_v3.config_path))
+
     ################################################################################
     # Tests below this point don't need to start a long-lived ngrok process, they
     # are asserting on pyngrok-specific code or edge cases.
