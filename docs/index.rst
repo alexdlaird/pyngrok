@@ -1,4 +1,4 @@
-.. rst-class:: hide-header
+.. rst-class:: hide-me
 
 ************************************
 pyngrok - a Python wrapper for ngrok
@@ -106,7 +106,7 @@ To start a labeled tunnel in ``pyngrok``, pass its ``name`` to :func:`~pyngrok.n
 Once an Edge tunnel is started, it can be managed through `ngrok's dashboard <https://dashboard.ngrok.com/edges>`_.
 
 Get Active Tunnels
-==================
+------------------
 
 It can be useful to ask the ``ngrok`` client what tunnels are currently open. This can be
 accomplished with the :func:`~pyngrok.ngrok.get_tunnels` method, which returns a list of
@@ -120,7 +120,7 @@ accomplished with the :func:`~pyngrok.ngrok.get_tunnels` method, which returns a
     tunnels = ngrok.get_tunnels()
 
 Close a Tunnel
-==============
+--------------
 
 All open tunnels will automatically be closed when the Python process terminates, but we can
 also close them manually with :func:`~pyngrok.ngrok.disconnect`.
@@ -132,6 +132,31 @@ also close them manually with :func:`~pyngrok.ngrok.disconnect`.
     # The NgrokTunnel returned from methods like connect(),
     # get_tunnels(), etc. contains the public URL
     ngrok.disconnect(ngrok_tunnel.public_url)
+
+Expose Other Services
+---------------------
+
+Using ``ngrok`` we can expose any number of non-HTTP services, for instances databases, game servers, etc. This
+can be accomplished by using ``pyngrok`` to open a ``tcp`` tunnel to the desired service.
+
+.. code-block:: python
+
+    from pyngrok import ngrok
+
+    # Open a tunnel to MySQL with a Reserved TCP Address
+    # <NgrokTunnel: "tcp://1.tcp.ngrok.io:12345" -> "localhost:3306">
+    ngrok.connect("3306", "tcp",
+                  remote_addr="1.tcp.ngrok.io:12345")
+
+We can also serve up local directories via `ngrok's built-in fileserver <https://ngrok.com/docs/http/#file-serving>`_.
+
+.. code-block:: python
+
+    from pyngrok import ngrok
+
+    # Open a tunnel to a local file server
+    # <NgrokTunnel: "https://<public_sub>.ngrok.io" -> "file:///">
+    ngrok.connect("file:///")
 
 The ``ngrok`` Process
 =====================
@@ -169,7 +194,7 @@ http://127.0.0.1:4040, from which we can access the `ngrok client API <https://n
     This package also gives us access to ``ngrok`` from the command line, `as shown below <#command-line-usage>`__.
 
 Event Logs
-==========
+----------
 
 When ``ngrok`` emits logs, ``pyngrok`` can surface them to a callback function. To register this
 callback, use :class:`~pyngrok.conf.PyngrokConfig` and pass the function as ``log_event_callback``. Each time a
@@ -186,6 +211,7 @@ log is processed, this function will be called, passing a :class:`~pyngrok.log.N
 
     # <NgrokTunnel: "https://<public_sub>.ngrok.io" -> "http://localhost:80">
     ngrok_tunnel = ngrok.connect()
+
 
 If these events aren't necessary for our use case, some resources can be freed up by turning them off. Set
 ``monitor_thread`` to ``False`` in :class:`~pyngrok.conf.PyngrokConfig`.
@@ -213,33 +239,6 @@ running process.
     time.sleep(1)
     ngrok.get_ngrok_process().stop_monitor_thread()
 
-Expose Other Services
-=====================
-
-Using ``ngrok`` we can expose any number of non-HTTP services, for instances databases, game servers, etc. This
-can be accomplished by using ``pyngrok`` to open a ``tcp`` tunnel to the desired service.
-
-.. code-block:: python
-
-    from pyngrok import ngrok
-
-    # Open a tunnel to MySQL with a Reserved TCP Address
-    # <NgrokTunnel: "tcp://1.tcp.ngrok.io:12345" -> "localhost:3306">
-    ngrok.connect("3306", "tcp",
-                  remote_addr="1.tcp.ngrok.io:12345")
-
-
-We can also serve up local directories via `ngrok's built-in fileserver <https://ngrok.com/docs/http/#file-serving>`_.
-
-.. code-block:: python
-
-    from pyngrok import ngrok
-
-    # Open a tunnel to a local file server
-    # <NgrokTunnel: "https://<public_sub>.ngrok.io" -> "file:///">
-    ngrok.connect("file:///")
-
-
 Configuration
 =============
 
@@ -256,7 +255,6 @@ The default ``pyngrok_config`` object can updated with our own object using :fun
     pyngrok_config = conf.PyngrokConfig(log_event_callback=log_event_callback,
                                         max_logs=10)
     conf.set_default(pyngrok_config)
-
 
 Most methods in the :mod:`~pyngrok.ngrok` module also accept a ``pyngrok_config`` keyword arg, which can be used
 to pass in the config rather than updating the default as shown above.
@@ -359,7 +357,7 @@ Here is an example starting ``ngrok`` in Australia, then opening a tunnel with s
 Config File
 -----------
 
-By default, ngrok will look for its config file in `the default location <https://ngrok.com/docs/agent/config/v2>`_.
+By default, ngrok will look for its config file in `the default location <https://ngrok.com/docs/agent/config/#default-locations>`_.
 We can override this behavior by updating our default :class:`~pyngrok.conf.PyngrokConfig`.
 
 .. code-block:: python

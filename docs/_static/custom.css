@@ -1,4 +1,4 @@
-.hide-header > h1:first-child {
+.hide-me > :first-child {
     position: absolute;
     width: 1px;
     height: 1px;
