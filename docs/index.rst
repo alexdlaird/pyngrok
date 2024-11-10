@@ -166,7 +166,7 @@ a subdomain, or other additional `tunnel configurations that are supported by ng
 This is accomplished by passing them as ``kwargs`` to :func:`~pyngrok.ngrok.connect`, then they will be used as
 properties for the tunnel when it is created.
 
-Here is an example that opens a tunnel with subdomain ``foo, requires basic authentication for requests, and defines a
+Here is an example that opens a tunnel with subdomain ``foo``, requires basic authentication for requests, and defines a
 circuit breaker.
 
 .. code-block:: python
