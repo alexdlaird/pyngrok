@@ -45,7 +45,7 @@ from pyngrok import ngrok
 
 # Open a HTTP tunnel on the default port 80
 # <NgrokTunnel: "https://<public_sub>.ngrok.io" -> "http://localhost:80">
-http_tunnel = ngrok.connect()
+http_tunnel = ngrok.connect(3)
 
 # Open a SSH tunnel
 # <NgrokTunnel: "tcp://0.tcp.ngrok.io:12345" -> "localhost:22">
@@ -56,8 +56,9 @@ named_tunnel = ngrok.connect(name="my_tunnel_name")
 ```
 
 The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes `kwargs` as
-well, which allows us to pass additional properties that
-are [supported by `ngrok`](https://ngrok.com/docs/agent/config/v2/#tunnel-configurations).
+well, which allows us to pass
+additional tunnel configurations that are supported by ngrok,
+[as documented here](https://pyngrok.readthedocs.io/en/latest/#tunnel-configurations).
 
 ### `ngrok`'s Edges
 
