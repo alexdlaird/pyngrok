@@ -166,18 +166,17 @@ a subdomain, or other additional `tunnel configurations that are supported by ng
 This is accomplished by passing them as ``kwargs`` to :func:`~pyngrok.ngrok.connect`, then they will be used as
 properties for the tunnel when it is created.
 
-Here is an example starting ``ngrok`` in Australia, then opening a tunnel with subdomain
-``foo`` that requires basic authentication for requests.
+Here is an example that opens a tunnel with subdomain ``foo, requires basic authentication for requests, and defines a
+circuit breaker.
 
 .. code-block:: python
 
     from pyngrok import conf, ngrok
 
-    conf.get_default().region = "au"
-
     # <NgrokTunnel: "http://foo.au.ngrok.io" -> "http://localhost:80">
     ngrok_tunnel = ngrok.connect(subdomain="foo",
-                                 auth="username:password")
+                                 auth="username:password",
+                                 circuit_breaker=50)
 
 The ``ngrok`` Process
 =====================

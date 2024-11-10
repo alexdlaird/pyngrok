@@ -275,7 +275,7 @@ def connect(addr: Optional[str] = None,
     If a `tunnel definition in ngrok's config file
     <https://ngrok.com/docs/agent/config/v2/#tunnel-configurations>`_ matches the given
     ``name``, it will be loaded and used to start the tunnel. When ``name`` is ``None`` and a "pyngrok-default" tunnel
-    definition exists in ``ngrok``'s config, it will be loaded and use. Any ``kwargs`` passed as ``options`` will
+    definition exists in ``ngrok``'s config, it will be loaded and used. Any ``kwargs`` passed as ``options`` will
     override properties from the loaded tunnel definition.
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
