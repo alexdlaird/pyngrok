@@ -11,13 +11,13 @@ Test on the Command Line
 
 When you install ``pyngrok`` with ``pip install pyngrok``, ``ngrok`` should available from the command
 line. First ensure this is true by checking to see if ``pyngrok``'s version of ``ngrok`` is properly setup in
-your path. Running ``ngrok`` with no args from the command line should show ``pyngrok`` version at the very
-end.
+your path. Running ``ngrok`` with no args from the command line should show the ``pyngrok`` version at the very
+end of the output.
 
 .. code-block:: shell
     :substitutions:
 
-    bash-3.2$ ngrok
+    ~ ❯❯❯ ngrok
     ngrok - tunnel local ports to public URLs and inspect traffic
 
     USAGE:
@@ -41,13 +41,13 @@ With ``PYNGROK VERSION`` shown in your output here, you know things are setup pr
 
 .. code-block:: shell
 
-    bash-3.2$ ngrok start --none --log stdout
+    ~ ❯❯❯ ngrok start --none --log stdout
 
 If that works, try starting a simple HTTP tunnel:
 
 .. code-block:: shell
 
-    bash-3.2$ ngrok http 5000 --log stdout
+    ~ ❯❯❯ ngrok http 5000 --log stdout
 
 If neither of these work, the logs should be dumped to the console for you to troubleshoot ``ngrok``
 directly. If both of these work, you know ``pyngrok`` is properly installed on your system and able to access
@@ -90,7 +90,7 @@ Test in the Python Console
 --------------------------
 
 Try to execute the same code that is giving you an error from the Python console instead. Be sure to pair this with
-enabling logging (as illustrated in the section above) so you can see where things are going wrong.
+enabling logging, `as shown above <#enable-logging-to-the-console>`_,so you can see where things are going wrong.
 
 .. code-block:: shell
 
