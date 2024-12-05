@@ -10,7 +10,6 @@ dist/
 MANIFEST
 *.egg-info
 build
-mutants/
 
 pyngrok/bin
 tests/.ngrok

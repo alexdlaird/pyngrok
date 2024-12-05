@@ -43,7 +43,6 @@ classifiers = [
 dev = [
     "pytest",
     "coverage[toml]",
-    "mutmut",
     "psutil",
     "flake8",
     "flake8-pyproject",
