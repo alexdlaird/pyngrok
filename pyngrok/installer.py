@@ -141,7 +141,7 @@ def _install_ngrok_zip(ngrok_path: str,
         logger.debug(f"Extracting ngrok binary from {zip_path} to {ngrok_path} ...")
         zip_ref.extractall(os.path.dirname(ngrok_path))
 
-    os.chmod(ngrok_path, int("777", 8))
+    os.chmod(ngrok_path, int("700", 8))
 
     _clear_progress()
 

@@ -37,8 +37,14 @@ jobs:
         run: make local
       - name: Test downstream
         run: make test-downstream
-      - name: Upload coverage
+      - name: Upload test coverage
         uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./build/coverage
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./build/coverage
