@@ -6,9 +6,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.1...HEAD)
 
+## [7.2.2](https://github.com/alexdlaird/pyngrok/compare/7.2.1...7.2.2) - 2024-12-13
+
+### Added
+
+- Test improvements.
+
 ### Changed
 
-- Limit permission scope so only current user can execute installed binary.
+- Permission for installed binary to limit execute to user.
 
 ## [7.2.1](https://github.com/alexdlaird/pyngrok/compare/7.2.0...7.2.1) - 2024-11-04
 
