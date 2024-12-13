@@ -117,7 +117,7 @@ class TestNgrok(NgrokTestCase):
         self.assertIsNotNone(ngrok_tunnel.id)
         self.assertTrue(ngrok_tunnel.name.startswith("tls-443-"))
         self.assertEqual("tls", ngrok_tunnel.proto)
-        self.assertEqual("localhost:443", ngrok_tunnel.config["addr"])
+        self.assertEqual("tls://localhost:443", ngrok_tunnel.config["addr"])
         self.assertIsNotNone(ngrok_tunnel.public_url)
         self.assertIsNotNone(process.get_process(self.pyngrok_config_v3))
         self.assertIn('tls://', ngrok_tunnel.public_url)
@@ -793,14 +793,14 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertEqual(edge_tls_tunnel.name, "edge-tls-tunnel")
         self.assertEqual(edge_tls_tunnel.config["addr"],
-                         f"http://localhost:{config['tunnels']['edge-tls-tunnel']['addr']}")
+                         f"https://localhost:{config['tunnels']['edge-tls-tunnel']['addr']}")
         self.assertTrue(edge_tls_tunnel.config["addr"].startswith("https://"))
         self.assertEqual(edge_tls_tunnel.proto, "tls")
         self.assertEqual(edge_tls_tunnel.public_url, os.environ["NGROK_TLS_EDGE_ENDPOINT"])
         self.assertEqual(len(tunnels), 1)
         self.assertEqual(tunnels[0].name, "edge-tls-tunnel")
         self.assertEqual(tunnels[0].config["addr"],
-                         f"http://localhost:{config['tunnels']['edge-tls-tunnel']['addr']}")
+                         f"https://localhost:{config['tunnels']['edge-tls-tunnel']['addr']}")
         self.assertTrue(tunnels[0].config["addr"].startswith("https://"))
         self.assertEqual(tunnels[0].proto, "tls")
         self.assertEqual(tunnels[0].public_url, os.environ["NGROK_TLS_EDGE_ENDPOINT"])
