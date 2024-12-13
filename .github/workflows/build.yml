@@ -17,12 +17,14 @@ jobs:
     env:
       FORCE_COLOR: 1
       NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
       NGROK_DOMAIN: ${{ secrets.NGROK_DOMAIN }}
       NGROK_HTTP_EDGE: ${{ secrets.NGROK_HTTP_EDGE }}
-      NGROK_TCP_EDGE: ${{ secrets.NGROK_TCP_EDGE }}
-      NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
       NGROK_HTTP_EDGE_ENDPOINT: ${{ secrets.NGROK_HTTP_EDGE_ENDPOINT }}
+      NGROK_TCP_EDGE: ${{ secrets.NGROK_TCP_EDGE }}
       NGROK_TCP_EDGE_ENDPOINT: ${{ secrets.NGROK_TCP_EDGE_ENDPOINT }}
+      NGROK_TLS_EDGE: ${{ secrets.NGROK_TLS_EDGE }}
+      NGROK_TLS_EDGE_ENDPOINT: ${{ secrets.NGROK_TLS_EDGE_ENDPOINT }}
 
     strategy:
       fail-fast: false
