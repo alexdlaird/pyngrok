@@ -4,6 +4,7 @@
 [![Python Versions](https://img.shields.io/pypi/pyversions/pyngrok.svg)](https://pypi.org/project/pyngrok)
 [![Coverage](https://img.shields.io/codecov/c/github/alexdlaird/pyngrok)](https://codecov.io/gh/alexdlaird/pyngrok)
 [![Build](https://img.shields.io/github/actions/workflow/status/alexdlaird/pyngrok/build.yml)](https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml)
+[![Code Quality](https://app.codacy.com/project/badge/Grade/b055cf6e3f1745098fab86a2923730b3)](https://app.codacy.com/gh/alexdlaird/pyngrok/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Docs](https://img.shields.io/readthedocs/pyngrok)](https://pyngrok.readthedocs.io/en/latest)
 [![GitHub License](https://img.shields.io/github/license/alexdlaird/pyngrok)](https://github.com/alexdlaird/pyngrok/blob/main/LICENSE)
 
