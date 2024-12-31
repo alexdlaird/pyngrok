@@ -73,14 +73,14 @@ class TestInstaller(NgrokTestCase):
         installer.install_default_config(self.pyngrok_config_v3.config_path,
                                          {},
                                          self.pyngrok_config_v3.ngrok_version,
-                                         2)
+                                         "2")
 
         # WHEN
         ngrok_config = installer.get_ngrok_config(self.pyngrok_config_v3.config_path)
 
         # THEN
         self.assertEqual(2, len(ngrok_config))
-        self.assertEqual(2, ngrok_config["version"])
+        self.assertEqual("2", ngrok_config["version"])
         self.assertEqual("us", ngrok_config["region"])
         self.assertTrue(os.path.exists(self.pyngrok_config_v3.config_path))
 
@@ -89,14 +89,14 @@ class TestInstaller(NgrokTestCase):
         installer.install_default_config(self.pyngrok_config_v3.config_path,
                                          {},
                                          self.pyngrok_config_v3.ngrok_version,
-                                         3)
+                                         "3")
 
         # WHEN
         ngrok_config = installer.get_ngrok_config(self.pyngrok_config_v3.config_path)
 
         # THEN
         self.assertEqual(1, len(ngrok_config))
-        self.assertEqual(3, ngrok_config["version"])
+        self.assertEqual("3", ngrok_config["version"])
         self.assertTrue(os.path.exists(self.pyngrok_config_v3.config_path))
 
     ################################################################################
