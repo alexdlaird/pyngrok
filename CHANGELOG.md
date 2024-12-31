@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.2...HEAD)
 
+### Added
+
+- Support for `ngrok` config version 3, and `endpoints` tunnel definitions.
+
 ## [7.2.2](https://github.com/alexdlaird/pyngrok/compare/7.2.1...7.2.2) - 2024-12-13
 
 ### Added
