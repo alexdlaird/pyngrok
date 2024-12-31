@@ -911,7 +911,7 @@ class TestNgrok(NgrokTestCase):
         ngrok.connect(pyngrok_config=pyngrok_config_v3)
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
-    def test_full_v2_http_tunnel_definitions(self):
+    def test_full_config_v2_http_tunnel_definitions(self):
         # GIVEN
         config = {
             "version": "2",
@@ -966,7 +966,7 @@ class TestNgrok(NgrokTestCase):
             ngrok.connect(name="my-tunnel", pyngrok_config=pyngrok_config)
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
-    def test_full_v2_tcp_tunnel_definitions(self):
+    def test_full_config_v2_tcp_tunnel_definitions(self):
         # GIVEN
         config = {
             "version": "2",
@@ -1003,7 +1003,7 @@ class TestNgrok(NgrokTestCase):
             ngrok.connect(name="my-tunnel", pyngrok_config=pyngrok_config)
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
-    def test_full_v2_tls_tunnel_definitions(self):
+    def test_full_config_v2_tls_tunnel_definitions(self):
         # GIVEN
         config = {
             "version": "2",
@@ -1045,7 +1045,7 @@ class TestNgrok(NgrokTestCase):
         with self.assertRaises(PyngrokNgrokHTTPError):
             ngrok.connect(name="my-tunnel", pyngrok_config=pyngrok_config)
 
-    # def test_full_v3_tunnel_definitions(self):
+    # def test_full_config_v3_tunnel_definitions(self):
     #     # GIVEN
     #     config = {
     #         "version": "3",
@@ -1060,7 +1060,6 @@ class TestNgrok(NgrokTestCase):
     #                 "host_header": "host-header",
     #                 "crt": "crt",
     #                 "key": "key",
-    #                 "client_cas": "clientCas",
     #                 "remote_addr": "remoteAddr",
     #                 "metadata": "metadata",
     #                 "compression": "false",
