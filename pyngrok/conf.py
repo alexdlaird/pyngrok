@@ -59,7 +59,8 @@ class PyngrokConfig:
                  request_timeout: float = 4,
                  start_new_session: bool = False,
                  ngrok_version: str = "v3",
-                 api_key: Optional[str] = None) -> None:
+                 api_key: Optional[str] = None,
+                 config_version: int = "2") -> None:
         #: The path to the ``ngrok`` binary, defaults to being placed in the same directory as
         #: `ngrok's configs <https://ngrok.com/docs/agent/config/v2>`_.
         self.ngrok_path: str = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
@@ -88,6 +89,7 @@ class PyngrokConfig:
         self.ngrok_version: str = ngrok_version
         #: A ``ngrok`` API key.
         self.api_key: Optional[str] = api_key
+        self.config_version = config_version
 
 
 _default_pyngrok_config: PyngrokConfig = PyngrokConfig()

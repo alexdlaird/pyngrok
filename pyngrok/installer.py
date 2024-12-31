@@ -148,7 +148,8 @@ def _install_ngrok_zip(ngrok_path: str,
 
 def get_ngrok_config(config_path: str,
                      use_cache: bool = True,
-                     ngrok_version: Optional[str] = "v3") -> Dict[str, Any]:
+                     ngrok_version: Optional[str] = "v3",
+                     config_version: Optional[int] = "2") -> Dict[str, Any]:
     """
     Get the ``ngrok`` config from the given path.
 
@@ -161,32 +162,35 @@ def get_ngrok_config(config_path: str,
         with open(config_path, "r") as config_file:
             config = yaml.safe_load(config_file)
             if config is None:
-                config = get_default_config(ngrok_version)
+                config = get_default_config(ngrok_version, config_version)
 
         _config_cache[config_path] = config
 
     return _config_cache[config_path]
 
 
-def get_default_config(ngrok_version: Optional[str]) -> Dict[str, Any]:
+def get_default_config(ngrok_version: Optional[str],
+                       config_version: Optional[str]) -> Dict[str, Any]:
     """
     Get the default config params for the given major version of ``ngrok``.
 
     :param ngrok_version: The major version of ``ngrok`` installed.
+    :param config_version: The ``ngrok`` config version.
     :return: The default config.
     :raises: :class:`~pyngrok.exception.PyngrokError`: When the ``ngrok_version`` is not supported.
     """
     if ngrok_version == "v2":
         return {}
     elif ngrok_version == "v3":
-        return {"version": "2", "region": "us"}
+        return {"version": config_version}
     else:
         raise PyngrokError(f"\"ngrok_version\" must be a supported version: {SUPPORTED_NGROK_VERSIONS}")
 
 
 def install_default_config(config_path: str,
                            data: Optional[Dict[str, Any]] = None,
-                           ngrok_version: Optional[str] = "v3") -> None:
+                           ngrok_version: Optional[str] = "v3",
+                           config_version: Optional[str] = "2") -> None:
     """
     Install the given data to the ``ngrok`` config. If a config is not already present for the given path, create one.
     Before saving new data to the default config, validate that they are compatible with ``pyngrok``.
@@ -200,7 +204,7 @@ def install_default_config(config_path: str,
     else:
         data = copy.deepcopy(data)
 
-    data.update(get_default_config(ngrok_version))
+    data.update(get_default_config(ngrok_version, config_version))
 
     config_dir = os.path.dirname(config_path)
     if not os.path.exists(config_dir):
