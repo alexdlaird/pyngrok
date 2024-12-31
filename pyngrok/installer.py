@@ -149,13 +149,14 @@ def _install_ngrok_zip(ngrok_path: str,
 def get_ngrok_config(config_path: str,
                      use_cache: bool = True,
                      ngrok_version: Optional[str] = "v3",
-                     config_version: Optional[int] = "2") -> Dict[str, Any]:
+                     config_version: Optional[int] = 2) -> Dict[str, Any]:
     """
     Get the ``ngrok`` config from the given path.
 
     :param config_path: The ``ngrok`` config path to read.
     :param use_cache: Use the cached version of the config (if populated).
     :param ngrok_version: The major version of ``ngrok`` installed.
+    :param config_version: The ``ngrok`` config version.
     :return: The ``ngrok`` config.
     """
     if config_path not in _config_cache or not use_cache:
@@ -170,9 +171,9 @@ def get_ngrok_config(config_path: str,
 
 
 def get_default_config(ngrok_version: Optional[str],
-                       config_version: Optional[str]) -> Dict[str, Any]:
+                       config_version: Optional[int]) -> Dict[str, Any]:
     """
-    Get the default config params for the given major version of ``ngrok``.
+    Get the default config params for the given major version of ``ngrok`` and config version.
 
     :param ngrok_version: The major version of ``ngrok`` installed.
     :param config_version: The ``ngrok`` config version.
@@ -183,7 +184,7 @@ def get_default_config(ngrok_version: Optional[str],
         return {}
     elif ngrok_version == "v3":
         config = {"version": config_version}
-        if str(config_version) == "2":
+        if int(config_version) == 2:
             config["region"] = "us"
         return config
     else:
@@ -193,7 +194,7 @@ def get_default_config(ngrok_version: Optional[str],
 def install_default_config(config_path: str,
                            data: Optional[Dict[str, Any]] = None,
                            ngrok_version: Optional[str] = "v3",
-                           config_version: Optional[str] = "2") -> None:
+                           config_version: Optional[int] = 2) -> None:
     """
     Install the given data to the ``ngrok`` config. If a config is not already present for the given path, create one.
     Before saving new data to the default config, validate that they are compatible with ``pyngrok``.
@@ -201,6 +202,7 @@ def install_default_config(config_path: str,
     :param config_path: The path to where the ``ngrok`` config should be installed.
     :param data: A dictionary of things to add to the default config.
     :param ngrok_version: The major version of ``ngrok`` installed.
+    :param config_version: The ``ngrok`` config version.
     """
     if data is None:
         data = {}
@@ -215,7 +217,10 @@ def install_default_config(config_path: str,
     if not os.path.exists(config_path):
         open(config_path, "w").close()
 
-    config = get_ngrok_config(config_path, use_cache=False, ngrok_version=ngrok_version)
+    config = get_ngrok_config(config_path,
+                              use_cache=False,
+                              ngrok_version=ngrok_version,
+                              config_version=config_version)
 
     config.update(data)
 
