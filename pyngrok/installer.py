@@ -182,7 +182,10 @@ def get_default_config(ngrok_version: Optional[str],
     if ngrok_version == "v2":
         return {}
     elif ngrok_version == "v3":
-        return {"version": config_version}
+        config = {"version": config_version}
+        if str(config_version) == "2":
+            config["region"] = "us"
+        return config
     else:
         raise PyngrokError(f"\"ngrok_version\" must be a supported version: {SUPPORTED_NGROK_VERSIONS}")
 
