@@ -210,7 +210,7 @@ def set_api_key(pyngrok_config: PyngrokConfig,
     :raises: :class:`~pyngrok.exception.PyngrokNgrokError`: When ``ngrok`` could not start.
     """
     if pyngrok_config.ngrok_version == "v2":
-        raise PyngrokError(f"\"ngrok_version\" v2 does not have this command")
+        raise PyngrokError(f"\"ngrok_version\" v2 does not have this command.")
     elif pyngrok_config.ngrok_version == "v3":
         start = [pyngrok_config.ngrok_path, "config", "add-api-key", key, "--log=stdout"]
     else:
