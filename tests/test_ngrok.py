@@ -847,7 +847,8 @@ class TestNgrok(NgrokTestCase):
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"])
+                                                auth_token=os.environ["NGROK_AUTHTOKEN"],
+                                                api_key=None)
 
         # WHEN
         with self.assertRaises(PyngrokError):
