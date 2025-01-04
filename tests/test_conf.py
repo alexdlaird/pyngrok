@@ -18,4 +18,15 @@ class TestConf(NgrokTestCase):
         pyngrok_config = PyngrokConfig()
 
         # THEN
-        self.assertTrue(ngrok_auth_token, pyngrok_config.auth_token)
+        self.assertEqual(ngrok_auth_token, pyngrok_config.auth_token)
+
+    @unittest.skipIf(not os.environ.get("NGROK_API_KEY"), "NGROK_API_KEY environment variable not set")
+    def test_api_key_set_from_env(self):
+        # GIVEN
+        ngrok_api_key = os.environ["NGROK_API_KEY"]
+
+        # WHEN
+        pyngrok_config = PyngrokConfig()
+
+        # THEN
+        self.assertEqual(ngrok_api_key, pyngrok_config.api_key)
