@@ -117,7 +117,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
-- If no value for `PyngrokConfig.auth_token`, it will attempt to use the environment variable `NGROK_AUTHTOKEN` if it is
+- If a value for `PyngrokConfig.auth_token` is not set, it will attempt to use the environment variable `NGROK_AUTHTOKEN` if it is
   set.
 - Documentation improvements.
 - Build improvements.
