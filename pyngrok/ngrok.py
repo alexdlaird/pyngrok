@@ -131,6 +131,26 @@ def set_auth_token(token: str,
     process.set_auth_token(pyngrok_config, token)
 
 
+def set_api_key(key: str,
+                pyngrok_config: Optional[PyngrokConfig] = None) -> None:
+    """
+    Set the ``ngrok`` API key in the config file, enabling more features (for instance, labeled tunnels).
+
+    If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
+    will first download and install ``ngrok``.
+
+    :param key: The API key to set.
+    :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
+        overriding :func:`~pyngrok.conf.get_default()`.
+    """
+    if pyngrok_config is None:
+        pyngrok_config = conf.get_default()
+
+    install_ngrok(pyngrok_config)
+
+    process.set_api_key(pyngrok_config, key)
+
+
 def get_ngrok_process(pyngrok_config: Optional[PyngrokConfig] = None) -> NgrokProcess:
     """
     Get the current ``ngrok`` process for the given config's ``ngrok_path``.

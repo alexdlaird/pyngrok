@@ -199,6 +199,36 @@ def set_auth_token(pyngrok_config: PyngrokConfig,
         raise PyngrokNgrokError(f"An error occurred when saving the auth token: {result}")
 
 
+def set_api_key(pyngrok_config: PyngrokConfig,
+                key: str) -> None:
+    """
+    Set the ``ngrok`` API key in the config file, enabling more features (for instance, labeled tunnels).
+
+    :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary.
+    :param key: The API key to set.
+    :raises: :class:`~pyngrok.exception.PyngrokError`: When the ``ngrok_version`` is not supported.
+    :raises: :class:`~pyngrok.exception.PyngrokNgrokError`: When ``ngrok`` could not start.
+    """
+    if pyngrok_config.ngrok_version == "v2":
+        raise PyngrokError(f"\"ngrok_version\" v2 does not have this command")
+    elif pyngrok_config.ngrok_version == "v3":
+        start = [pyngrok_config.ngrok_path, "config", "add-api-key", key, "--log=stdout"]
+    else:
+        raise PyngrokError(f"\"ngrok_version\" must be a supported version: {SUPPORTED_NGROK_VERSIONS}")
+
+    if pyngrok_config.config_path:
+        logger.info(f"Updating API key for \"config_path\": {pyngrok_config.config_path}")
+        start.append(f"--config={pyngrok_config.config_path}")
+    else:
+        logger.info(
+            f"Updating API key for default \"config_path\" of \"ngrok_path\": {pyngrok_config.ngrok_path}")
+
+    result = str(subprocess.check_output(start))
+
+    if "API key saved" not in result:
+        raise PyngrokNgrokError(f"An error occurred when saving the API key: {result}")
+
+
 def is_process_running(ngrok_path: str) -> bool:
     """
     Check if the ``ngrok`` process is currently running.

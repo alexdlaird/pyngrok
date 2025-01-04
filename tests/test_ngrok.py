@@ -1173,21 +1173,21 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(__version__, pyngrok_version)
 
     def test_set_auth_token_v2(self):
-        ngrok.set_auth_token("807ad30a-73be-48d8", pyngrok_config=self.pyngrok_config_v2)
+        ngrok.set_auth_token("some-auth-token", pyngrok_config=self.pyngrok_config_v2)
         with open(self.pyngrok_config_v2.config_path, "r") as f:
             contents = f.read()
 
         # THEN
-        self.assertIn("807ad30a-73be-48d8", contents)
+        self.assertIn("some-auth-token", contents)
 
     def test_set_auth_token_v3(self):
         # WHEN
-        ngrok.set_auth_token("807ad30a-73be-48d8", pyngrok_config=self.pyngrok_config_v3)
+        ngrok.set_auth_token("some-auth-token", pyngrok_config=self.pyngrok_config_v3)
         with open(self.pyngrok_config_v3.config_path, "r") as f:
             contents = f.read()
 
         # THEN
-        self.assertIn("807ad30a-73be-48d8", contents)
+        self.assertIn("some-auth-token", contents)
 
     @mock.patch("subprocess.check_output")
     def test_set_auth_token_fails(self, mock_check_output):
@@ -1197,7 +1197,33 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         with self.assertRaises(PyngrokNgrokError) as cm:
-            ngrok.set_auth_token("807ad30a-73be-48d8", pyngrok_config=self.pyngrok_config_v3)
+            ngrok.set_auth_token("some-auth-token", pyngrok_config=self.pyngrok_config_v3)
+
+        # THEN
+        self.assertIn(f": {error_msg}", str(cm.exception))
+
+    def test_set_api_key_v2_fails(self):
+        with self.assertRaises(PyngrokError):
+            ngrok.set_api_key("some-api-key", pyngrok_config=self.pyngrok_config_v2)
+
+    def test_set_api_key_v3(self):
+        # WHEN
+        ngrok.set_api_key("some-api-key", pyngrok_config=self.pyngrok_config_v3)
+        with open(self.pyngrok_config_v3.config_path, "r") as f:
+            contents = f.read()
+
+        # THEN
+        self.assertIn("some-api-key", contents)
+
+    @mock.patch("subprocess.check_output")
+    def test_set_api_key_fails(self, mock_check_output):
+        # GIVEN
+        error_msg = "An error occurred"
+        mock_check_output.return_value = error_msg
+
+        # WHEN
+        with self.assertRaises(PyngrokNgrokError) as cm:
+            ngrok.set_api_key("some-api-key", pyngrok_config=self.pyngrok_config_v3)
 
         # THEN
         self.assertIn(f": {error_msg}", str(cm.exception))
