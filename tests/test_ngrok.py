@@ -940,13 +940,14 @@ class TestNgrok(NgrokTestCase):
                     "schemes": ["https"],
                     # Can't be used in conjunction with "domain", but validated in other tests
                     # "subdomain": "pyngrok",
-                    "traffic_policy":
-                        {"on_http_request": {"name": "inbound-policy", "expressions": "inbound-policy-expression",
-                                             "actions": {"type": "inbound-policy-actions-type",
-                                                         "config": "inbound-policy-actions-config"}},
-                         "on_http_response": {"name": "outbound-policy", "expressions": "outbound-policy-expression",
-                                              "actions": {"type": "outbound-policy-actions-type",
-                                                          "config": "outbound-policy-actions-config"}}},
+                    "traffic_policy": {
+                        "on_http_request": {"name": "inbound-policy", "expressions": "inbound-policy-expression",
+                                            "actions": {"type": "inbound-policy-actions-type",
+                                                        "config": "inbound-policy-actions-config"}},
+                        "on_http_response": {"name": "outbound-policy", "expressions": "outbound-policy-expression",
+                                             "actions": {"type": "outbound-policy-actions-type",
+                                                         "config": "outbound-policy-actions-config"}}
+                    },
                     "user_agent_filter": {"allow": ["allow-user-agent"], "deny": ["deny-user-agent"]},
                     "verify_webhook": {"provider": "provider", "secret": "secret"},
                     "websocket_tcp_converter": False
@@ -980,13 +981,14 @@ class TestNgrok(NgrokTestCase):
                     "ip_restriction": {"allow_cidrs": ["allowed"], "deny_cidrs": ["denied"]},
                     "proxy_proto": "1",
                     "remote_addr": "2.tcp.ngrok.io:21746",
-                    "traffic_policy":
-                        {"inbound": {"name": "inbound-policy", "expressions": "inbound-policy-expression",
-                                     "actions": {"type": "inbound-policy-actions-type",
-                                                 "config": "inbound-policy-actions-config"}},
-                         "outbound": {"name": "outbound-policy", "expressions": "outbound-policy-expression",
-                                      "actions": {"type": "outbound-policy-actions-type",
-                                                  "config": "outbound-policy-actions-config"}}}
+                    "traffic_policy": {
+                        "inbound": {"name": "inbound-policy", "expressions": "inbound-policy-expression",
+                                    "actions": {"type": "inbound-policy-actions-type",
+                                                "config": "inbound-policy-actions-config"}},
+                        "outbound": {"name": "outbound-policy", "expressions": "outbound-policy-expression",
+                                     "actions": {"type": "outbound-policy-actions-type",
+                                                 "config": "outbound-policy-actions-config"}}
+                    }
                 }
             }
         }
@@ -1023,13 +1025,14 @@ class TestNgrok(NgrokTestCase):
                     # Can't be used in conjunction with "domain", but validated in other tests
                     # "subdomain": "pyngrok",
                     "terminate_at": "edge",
-                    "traffic_policy":
-                        {"inbound": {"name": "inbound-policy", "expressions": "inbound-policy-expression",
-                                     "actions": {"type": "inbound-policy-actions-type",
-                                                 "config": "inbound-policy-actions-config"}},
-                         "outbound": {"name": "outbound-policy", "expressions": "outbound-policy-expression",
-                                      "actions": {"type": "outbound-policy-actions-type",
-                                                  "config": "outbound-policy-actions-config"}}}
+                    "traffic_policy": {
+                        "inbound": {"name": "inbound-policy", "expressions": "inbound-policy-expression",
+                                    "actions": {"type": "inbound-policy-actions-type",
+                                                "config": "inbound-policy-actions-config"}},
+                        "outbound": {"name": "outbound-policy", "expressions": "outbound-policy-expression",
+                                     "actions": {"type": "outbound-policy-actions-type",
+                                                 "config": "outbound-policy-actions-config"}}
+                    }
                 }
             }
         }
@@ -1045,76 +1048,6 @@ class TestNgrok(NgrokTestCase):
         # tries to open the tunnel after ngrok successfully starts, but we can ignore that for this test
         with self.assertRaises(PyngrokNgrokHTTPError):
             ngrok.connect(name="my-tunnel", pyngrok_config=pyngrok_config)
-
-    # def test_full_config_v3_tunnel_definitions(self):
-    #     # GIVEN
-    #     config = {
-    #         "version": "3",
-    #         "tunnels": {
-    #             "my-tunnel": {
-    #                 "proto": "tcp",
-    #                 "domain": "pyngrok.com",
-    #                 "addr": "5000",
-    #                 "inspect": "false",
-    #                 "labels": ["edge=some-edge-id"],
-    #                 "basic_auth": ["auth-token"],
-    #                 "host_header": "host-header",
-    #                 "crt": "crt",
-    #                 "key": "key",
-    #                 "remote_addr": "remoteAddr",
-    #                 "metadata": "metadata",
-    #                 "compression": "false",
-    #                 "mutual_tls_cas": "mutualTlsCas",
-    #                 "proxy_proto": "1",
-    #                 "websocket_tcp_converter": "false",
-    #                 "terminate_at": "provider",
-    #                 "request_header": {"add": "req-addition", "remove": "req-subtraction"},
-    #                 "response_header": {"add": "res-addition", "remove": "res-subtraction"},
-    #                 "ip_restriction": {"allow_cidrs": "allowed", "deny_cidrs": "denied"},
-    #                 "verify_webhook": {"provider": "provider", "secret": "secret"},
-    #                 "user_agent_filter": {"allow": "allow-user-agent", "deny": "deny-user-agent"},
-    #                 "policy":
-    #                     {"inbound": {"name": "inbound-policy", "expressions": "inbound-policy-expression",
-    #                                  "actions": {"type": "inbound-policy-actions-type",
-    #                                              "config": "inbound-policy-actions-config"}}}
-    #             }
-    #         },
-    #         "endpoints": {
-    #             "name": "my-endpoint",
-    #             "url": "https://pyngrok.com",
-    #             "upstream": {
-    #                 "url": "8080",
-    #                 "protocol": "http1"
-    #             },
-    #             "metadata": "{ \"id\": \"example-app\" }",
-    #             "description": "my endpoint",
-    #             "traffic_policy": {
-    #                 "on_http_request": {
-    #                     "name": "foobar",
-    #                     "expressions": "'bar' in getQueryParam('foo')",
-    #                     "actions": {
-    #                         "type": "custom-response",
-    #                         "config": {
-    #                             "status_code": 404,
-    #                             "content": "not found",
-    #                             "headers": {
-    #                                 "content-type": "text/plain"
-    #                             }
-    #                         }
-    #                     }
-    #                 }
-    #             }
-    #         }
-    #     }
-    #     config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-    #
-    #     installer.install_default_config(config_path, config, ngrok_version="v3", config_version="3")
-    #     pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
-    #                                             api_key="api-key",
-    #                                             config_path=config_path)
-    #
-    #     # WHEN
-    #     ngrok.connect(name="my-tunnel", pyngrok_config=pyngrok_config)
 
     ################################################################################
     # Tests below this point don't need to start a long-lived ngrok process, they
@@ -1231,7 +1164,7 @@ class TestNgrok(NgrokTestCase):
 
     @mock.patch('pyngrok.ngrok.api_request')
     @mock.patch('pyngrok.ngrok.get_ngrok_process')
-    def test_config_passed_to_api_request(self, mock_get_ngrok_process, mock_api_request):
+    def test_config_v2_passed_to_api_request(self, mock_get_ngrok_process, mock_api_request):
         # GIVEN
         config = {
             "version": "2",

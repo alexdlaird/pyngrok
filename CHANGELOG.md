@@ -8,7 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
-- Support for `ngrok` config version 3, and `endpoints` tunnel definitions.
+- Support for `ngrok` config version 3.
 - [ngrok.set_api_key()](https://pyngrok.readthedocs.io/en/7.2.3/api.html#pyngrok.ngrok.set_api_key) to allowing setting the API key in the `ngrok` config file.
 - If no value for `PyngrokConfig.api_key`, it will attempt to use the environment variable `NGROK_API_KEY` if it is set.
 
