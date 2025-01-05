@@ -53,13 +53,11 @@ http_tunnel = ngrok.connect(3)
 ssh_tunnel = ngrok.connect("22", "tcp")
 
 # Open a named tunnel from the config file
-named_tunnel = ngrok.connect(name="my_tunnel_name")
+named_tunnel = ngrok.connect(name="my-config-file-tunnel")
 ```
 
-The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes `kwargs` as
-well, which allows us to pass
-additional tunnel configurations that are supported by ngrok,
-[as documented here](https://pyngrok.readthedocs.io/en/latest/#tunnel-configurations).
+The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes `kwargs` as well (or the `name` of a tunnel defined in `ngrok`'s), which allows
+us to pass additional tunnel configurations that are supported by `ngrok`, [as documented here](https://pyngrok.readthedocs.io/en/latest/#tunnel-configurations).
 
 ### `ngrok`'s Edges
 
