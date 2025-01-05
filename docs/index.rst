@@ -180,7 +180,7 @@ circuit breaker.
                                  auth="username:password",
                                  circuit_breaker=50)
 
-If we have already have a tunnel `defined in ngrok's config file <https://ngrok.com/docs/agent/config/v2/#tunnel-configurations>`_,
+If we already have a tunnel `defined in ngrok's config file <https://ngrok.com/docs/agent/config/v2/#tunnel-configurations>`_,
 we can start it by its ``name``.
 
 .. code-block:: python
