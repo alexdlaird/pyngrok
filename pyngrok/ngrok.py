@@ -114,7 +114,7 @@ def set_auth_token(token: str,
                    pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     """
     Set the ``ngrok`` auth token in the config file, enabling authenticated features (for instance,
-    more concurrent tunnels, custom subdomains, etc.).
+    opening multiple tunnels concurrently, custom domains, etc.).
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
@@ -320,7 +320,7 @@ def connect(addr: Optional[str] = None,
     :param proto: A valid `tunnel protocol
         <https://ngrok.com/docs/agent/config/v2/#tunnel-configurations>`_, defaults to "http".
     :param name: A friendly name for the tunnel, or the name of a `ngrok tunnel definition
-        <https://ngrok.com/docs/agent/config/v2/#tunnel-configurations>`_ to be used.
+        <https://ngrok.com/docs/agent/config/v2/#tunnel-configurations>`_ defined in ``ngrok``'s config file.
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
     :param options: Remaining ``kwargs`` are passed as `configuration for the ngrok
