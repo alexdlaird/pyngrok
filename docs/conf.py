@@ -1,4 +1,4 @@
-__copyright__ = "Copyright (c) 2018-2024 Alex Laird"
+__copyright__ = "Copyright (c) 2018-2025 Alex Laird"
 __license__ = "MIT"
 
 import datetime
@@ -154,7 +154,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, "pyngrok.tex", "pyngrok Documentation",
-     "Alex Laird", "manual"),
+     author, "manual"),
 ]
 
 # -- Options for manual page output ------------------------------------------
@@ -173,7 +173,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, "pyngrok", "pyngrok Documentation",
-     author, "pyngrok", "A Python wrapper for ngrok.",
+     author, "pyngrok", "A Python wrapper for ngrok",
      "Miscellaneous"),
 ]
 

@@ -1,7 +1,7 @@
 .. rst-class:: hide-me
 
 ************************************
-pyngrok - a Python wrapper for ngrok
+pyngrok - A Python wrapper for ngrok
 ************************************
 
 .. image:: _html/logo.png
