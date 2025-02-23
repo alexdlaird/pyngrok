@@ -15,7 +15,7 @@ jobs:
           stale-issue-message: "This issue is stale because it has remained open with no further activity on it. Comment with additional context or the issue will be closed automatically. Thank you for your contribution!"
           stale-pr-message: "This PR is stale because it has remained open with no further activity on it. If is is still being actively worked by you, label it as \"wip\", otherwise it will be closed automatically. Thank you for your contribution!"
           stale-issue-label: "stale"
-          exempt-issue-labels: "ready,wip,security"
+          exempt-issue-labels: "ready,help wanted,wip,security"
           stale-pr-label: "stale"
           exempt-pr-labels: "wip,security"
           days-before-stale: 7
