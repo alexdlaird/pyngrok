@@ -627,8 +627,7 @@ class TestNgrok(NgrokTestCase):
         http_tunnel = ngrok.connect(name="http-tunnel", pyngrok_config=pyngrok_config)
         ssh_tunnel = ngrok.connect(name="tcp-tunnel", pyngrok_config=pyngrok_config)
         time.sleep(1)
-        response = urlopen(http_tunnel.public_url)
-        time.sleep(3)
+        response_body = urlopen(http_tunnel.public_url).read().decode()
 
         # THEN
         self.assertEqual(http_tunnel.name, "http-tunnel")
@@ -637,7 +636,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(http_tunnel.config["addr"].startswith("http://"))
         self.assertEqual(http_tunnel.public_url,
                          f"https://{config['tunnels']['http-tunnel']['subdomain']}.ngrok.io")
-        self.assertIn("Sign in - Google Accounts", response.read().decode())
+        self.assertIn("Sign in - Google Accounts", response_body)
         self.assertEqual(ssh_tunnel.name, "tcp-tunnel")
         self.assertEqual(ssh_tunnel.config["addr"],
                          f"localhost:{config['tunnels']['tcp-tunnel']['addr']}")
