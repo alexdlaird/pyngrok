@@ -77,11 +77,11 @@ class PyngrokConfig:
         #: one argument of type :py:class:`str`. ``monitor_thread`` must be set to ``True`` or the function will
         #: stop being called after ``ngrok`` finishes starting.
         self.log_event_callback: Optional[Callable[[NgrokLog], None]] = log_event_callback
-        #: The max number of seconds to wait for ``ngrok`` to start before timing out.
+        #: The max timeout, in seconds, to wait for ``ngrok`` to start.
         self.startup_timeout: int = startup_timeout
         #: The max number of logs to store in :class:`~pyngrok.process.NgrokProcess`'s ``logs`` variable.
         self.max_logs: int = max_logs
-        #: The max timeout when making requests to ``ngrok``'s API.
+        #: The max timeout, in seconds, when making requests to ``ngrok``'s API.
         self.request_timeout: float = request_timeout
         #: Passed to :py:class:`subprocess.Popen` when launching ``ngrok``. (Python 3 and POSIX only).
         self.start_new_session: bool = start_new_session
