@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.3...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.4...HEAD)
+
+## [7.2.4](https://github.com/alexdlaird/pyngrok/compare/7.2.3...7.2.4) - 2025-04-14
 
 ### Added
 
@@ -12,7 +14,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Removed
 
-- Behavior where `ngrok` default config file is installed to `conf.DEFAULT_NGROK_CONFIG_PATH` even if `PyngrokConfig.config_path` is set, contradicting documentation.
+- Behavior where `ngrok` default config file is always installed to `conf.DEFAULT_NGROK_CONFIG_PATH`, even when override `PyngrokConfig.config_path` is given. This contradicted documentation, and is inconsistent with parallel behavior in `java-ngrok`.
 
 ## [7.2.3](https://github.com/alexdlaird/pyngrok/compare/7.2.2...7.2.3) - 2025-01-08
 
