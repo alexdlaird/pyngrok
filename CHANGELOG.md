@@ -10,6 +10,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Documentation improvements.
 
+### Removed
+
+- Behavior where `ngrok` default config file is installed to `conf.DEFAULT_NGROK_CONFIG_PATH` even if `PyngrokConfig.config_path` is set, contradicting documentation.
+
 ## [7.2.3](https://github.com/alexdlaird/pyngrok/compare/7.2.2...7.2.3) - 2025-01-08
 
 ### Added
