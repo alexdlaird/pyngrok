@@ -60,7 +60,7 @@ class TestInstaller(NgrokTestCase):
     def test_config_provisioned(self):
         # GIVEN
         self.given_file_doesnt_exist(self.pyngrok_config_v3.config_path)
-        default_exists = os.path.exists(conf.DEFAULT_CONFIG_PATH)
+        default_exists = os.path.exists(conf.DEFAULT_NGROK_CONFIG_PATH)
         self.assertFalse(os.path.exists(self.pyngrok_config_v3.config_path))
 
         # WHEN
@@ -70,7 +70,7 @@ class TestInstaller(NgrokTestCase):
         self.assertTrue(os.path.exists(self.pyngrok_config_v3.config_path))
         # Asserting this way ensures CI validates a lack of a default config path, while running
         # locally one a dev's machine (where the default may exist) will not fail the test
-        self.assertEqual(default_exists, os.path.exists(conf.DEFAULT_CONFIG_PATH))
+        self.assertEqual(default_exists, os.path.exists(conf.DEFAULT_NGROK_CONFIG_PATH))
 
     def test_get_default_v2_config(self):
         # GIVEN
