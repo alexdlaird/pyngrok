@@ -1,5 +1,5 @@
-name: 🚀 Feature Request
-description: Want something? Let us know.
+name: 🚀 Enhancement
+description: New feature request? Docs need improvement? Let us know.
 labels: ["enhancement"]
 
 body:
@@ -20,10 +20,10 @@ body:
       required: true
 
 - type: textarea
-  id: describe-the-feature
+  id: describe-the-enhancement
   attributes:
-    label: Describe the Feature
-    description: A clear and concise description of the how and why of the feature you'd like to see. If possible, include possible code snippets of interfaces you'd like to see and how you might interact with them.
+    label: Describe the Enhancement
+    description: A clear and concise description of the how and why of the feature you'd like to see, or what specifically should be added to the documentation. If possible, include possible code snippets of interfaces you'd like to see and how you might interact with them.
   validations:
     required: true
 
