@@ -21,7 +21,7 @@ nopyc:
 	find . -name __pycache__ | xargs rm -rf || true
 
 clean: nopyc
-	rm -rf build dist *.egg-info $(PROJECT_VENV) pyngrok-example-flask
+	rm -rf build dist *.egg-info $(PROJECT_VENV) tests/.ngrok pyngrok-example-flask
 
 test: install
 	@( \
