@@ -27,7 +27,7 @@ test: install
 	@( \
 		source $(PROJECT_VENV)/bin/activate; \
 		python -m pip install ".[dev]"; \
-		coverage run -m pytest -v --junitxml=build/test-results/junit.xml -o junit_family=legacy && coverage report && coverage xml && coverage html; \
+		coverage run -m pytest -v && coverage report && coverage xml && coverage html; \
 	)
 
 docs: install
