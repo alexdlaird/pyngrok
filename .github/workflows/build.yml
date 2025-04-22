@@ -11,7 +11,7 @@ on:
   workflow_call:
 
 concurrency:
-  group: pyngrok-${{ github.workflow }}-${{ github.ref }}-singleton
+  group: pyngrok-${{ github.workflow }}-singleton
 
 jobs:
   build:
@@ -31,7 +31,7 @@ jobs:
 
     strategy:
       fail-fast: false
-      max-parallel: 2
+      max-parallel: 3
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
         python-version: [ "3.12" ]
