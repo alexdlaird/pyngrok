@@ -36,5 +36,5 @@ jobs:
         with:
           timeout_minutes: 15
           retry_wait_seconds: 30
-          max_attempts: 3
-          command: make install test
+          max_attempts: 2
+          command: make test
