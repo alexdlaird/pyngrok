@@ -102,7 +102,7 @@ To start a labeled tunnel in ``pyngrok``, pass its ``name`` to :func:`~pyngrok.n
 
     from pyngrok import ngrok
 
-    # Open the Edge tunnel that is defind in the config file
+    # Open the Edge tunnel that is defined in the config file
     named_tunnel = ngrok.connect(name="some-edge-tunnel")
 
 Once an Edge tunnel is started, it can be managed through `ngrok's dashboard <https://dashboard.ngrok.com/edges>`_.

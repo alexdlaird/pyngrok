@@ -81,7 +81,7 @@ to [connect](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.co
 ```python
 from pyngrok import ngrok
 
-# Open the Edge tunnel that is defind in the config file
+# Open the Edge tunnel that is defined in the config file
 named_tunnel = ngrok.connect(name="some-edge-tunnel")
 ```
 
