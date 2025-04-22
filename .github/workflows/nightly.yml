@@ -5,7 +5,7 @@ on:
     - cron: "0 9 * * *"
 
 concurrency:
-  group: pyngrok-${{ github.workflow }}-${{ github.ref }}-singleton
+  group: pyngrok-${{ github.workflow }}-singleton
 
 jobs:
   test:

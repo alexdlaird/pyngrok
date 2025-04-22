@@ -3,9 +3,6 @@ name: Validate
 on:
   workflow_call:
 
-concurrency:
-  group: pyngrok-${{ github.workflow }}-${{ github.ref }}-singleton
-
 jobs:
   validate:
     name: Validate
