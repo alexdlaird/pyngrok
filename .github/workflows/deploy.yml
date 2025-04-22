@@ -7,7 +7,7 @@ on:
     types: [ created ]
 
 concurrency:
-  group: pyngrok-${{ github.workflow }}-singleton
+  group: pyngrok-singleton
 
 jobs:
   build:

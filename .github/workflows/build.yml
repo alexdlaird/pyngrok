@@ -11,7 +11,7 @@ on:
   workflow_call:
 
 concurrency:
-  group: pyngrok-${{ github.workflow }}-singleton
+  group: pyngrok-singleton
 
 jobs:
   build:
