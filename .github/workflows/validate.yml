@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 concurrency:
-  group: pyngrok-workflow-singleton
+  group: pyngrok-${{ github.workflow }}-singleton
 
 jobs:
   validate:
