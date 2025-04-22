@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: "0 9 * * *"
 
+concurrency:
+  group: pyngrok-workflow-singleton
+
 jobs:
   test:
     name: Nightly Test
