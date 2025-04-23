@@ -9,6 +9,7 @@ import os
 import socket
 import sys
 import uuid
+import warnings
 from http import HTTPStatus
 from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.error import HTTPError, URLError
@@ -201,8 +202,8 @@ def _apply_edge_to_tunnel(tunnel: NgrokTunnel,
         tunnel.public_url = f"{edges_prefix}://{edge_response['hostports'][0]}"
         tunnel.proto = edges_prefix
 
-        logger.warning("ngrok has deprecated Edges and will sunset Labeled Tunnels on December 31st, 2025. "
-                       "See https://github.com/alexdlaird/pyngrok/issues/145 for more details.")
+        warnings.warn("ngrok has deprecated Edges and will sunset Labeled Tunnels on December 31st, 2025. "
+                      "See https://github.com/alexdlaird/pyngrok/issues/145 for more details.")
 
 
 def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
