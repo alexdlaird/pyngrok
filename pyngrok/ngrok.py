@@ -173,6 +173,18 @@ def get_ngrok_process(pyngrok_config: Optional[PyngrokConfig] = None) -> NgrokPr
 
 def _apply_edge_to_tunnel(tunnel: NgrokTunnel,
                           pyngrok_config: PyngrokConfig) -> None:
+    """
+    ngrok has deprecated Edges and will sunset Labeled Tunnels on December 31st, 2025. The official replacement
+    is Internal Endpoints. Internal Endpoints can be started using tunnel configurations in the config file, which
+    pyngrok has always supported.
+
+    This particular code path, as well as support for labels in ngrok's config file, will become dead code after
+    Edges are sunset, so support for this will be removed from pyngrok in a subsequent release.
+
+    Deprecation notice: https://ngrok.com/docs/universal-gateway/edges/?utm_campaign=deprecation_notice_edges_04_2025&utm_medium=email&_hsenc=p2ANqtz-9z77Owmk44wHAXaBTjCfbEVHxKMPO7w9E8W-F284lO0FIrIEnvCtbhSLQ9o9NaZCFkrHfAxRyOtHAj02mli4ZMLAbMNg&_hsmi=357901456&utm_content=docs_edges&utm_source=email
+    Docs for Internal Endpoint: https://ngrok.com/docs/universal-gateway/internal-endpoints/
+    Docs for tunnel configurations: https://ngrok.com/docs/agent/config/v2/#tunnel-configurations
+    """
     if not tunnel.public_url and pyngrok_config.api_key and tunnel.id:
         tunnel_response = api_request(f"https://api.ngrok.com/tunnels/{tunnel.id}", method="GET",
                                       auth=pyngrok_config.api_key)
