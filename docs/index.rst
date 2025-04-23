@@ -84,6 +84,11 @@ config file), `as documented here <#tunnel-configurations>`__.
 ``ngrok``'s Edges
 -----------------
 
+.. note::
+
+    ``ngrok`` has deprecated Edges and will sunset Labeled Tunnels on December 31st, 2025. See
+    `this issue <https://github.com/alexdlaird/pyngrok/issues/145>`_ for more details.
+
 To use `ngrok's Edges <https://ngrok.com/docs/universal-gateway/edges/>`_ with ``pyngrok``, first `configure an Edge on ngrok's dashboard <https://dashboard.ngrok.com/edges>`_
 (with at least one Endpoint mapped to the Edge), and define a labeled tunnel in `the ngrok config file <https://ngrok.com/docs/agent/config/v2/#define-two-labeled-tunnels>`_
 that points to the Edge.

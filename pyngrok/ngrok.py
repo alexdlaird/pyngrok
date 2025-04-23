@@ -173,14 +173,6 @@ def get_ngrok_process(pyngrok_config: Optional[PyngrokConfig] = None) -> NgrokPr
 
 def _apply_edge_to_tunnel(tunnel: NgrokTunnel,
                           pyngrok_config: PyngrokConfig) -> None:
-    """
-    ngrok has deprecated Edges and will sunset Labeled Tunnels on December 31st, 2025.
-
-    This particular code path, as well as support for labels in ngrok's config file, will become dead code after
-    Edges are sunset, so support for these things will be removed from java-ngrok in a subsequent release.
-
-    The docs for Edges includes a migration guide: https://ngrok.com/docs/universal-gateway/edges
-    """
     if not tunnel.public_url and pyngrok_config.api_key and tunnel.id:
         tunnel_response = api_request(f"https://api.ngrok.com/tunnels/{tunnel.id}", method="GET",
                                       auth=pyngrok_config.api_key)
@@ -208,6 +200,9 @@ def _apply_edge_to_tunnel(tunnel: NgrokTunnel,
 
         tunnel.public_url = f"{edges_prefix}://{edge_response['hostports'][0]}"
         tunnel.proto = edges_prefix
+
+        logger.warning("ngrok has deprecated Edges and will sunset Labeled Tunnels on December 31st, 2025. "
+                       "See https://github.com/alexdlaird/pyngrok/issues/145 for more details.")
 
 
 def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
