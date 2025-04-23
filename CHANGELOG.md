@@ -10,7 +10,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
-- Deprecation warning when using Labeled Tunnels, since `ngrok` Edges, which will be sunset December 31st, 2025. See [this issue](https://github.com/alexdlaird/pyngrok/issues/145) for more details.
+- Deprecation warning when using Labeled Tunnels, since `ngrok` Edges will be sunset December 31st, 2025. See [this issue](https://github.com/alexdlaird/pyngrok/issues/145) for more details.
 - Documentation improvements.
 - Build improvements.
 
