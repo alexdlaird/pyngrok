@@ -1,7 +1,7 @@
 name: Nightly Test
 
 on:
-workflow_dispatch:
+  workflow_dispatch:
   schedule:
     - cron: "0 9 * * *"
 
@@ -9,10 +9,10 @@ concurrency:
   group: pyngrok-singleton
 
 jobs:
-    test:
-      name: Nightly Test
-      uses: ./.github/workflows/build.yml
-      with:
-        matrix:
-          os: [ ubuntu-latest ]
-          python-version: [ "3.12" ]
+  test:
+    name: Nightly Test
+    uses: ./.github/workflows/build.yml
+    with:
+      matrix:
+        os: [ ubuntu-latest ]
+        python-version: [ "3.12" ]
