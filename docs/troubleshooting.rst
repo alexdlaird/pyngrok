@@ -130,7 +130,7 @@ enabling logging, `as shown above <#enable-logging-to-the-console>`_,so you can 
 Check the Inspector at http://localhost:4040
 --------------------------------------------
 
-Check to see if you are able to access the `traffic inspection interface <https://ngrok.com/docs#getting-started-inspect>`_
+Check to see if you are able to access the `traffic inspection interface <https://ngrok.com/docs/agent/web-inspection-interface/>`_
 via a web browser. If so, this at least means ``ngrok`` is able to start before throwing the error.
 
 ``ngrok`` Documentation

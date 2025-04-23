@@ -84,7 +84,7 @@ config file), `as documented here <#tunnel-configurations>`__.
 ``ngrok``'s Edges
 -----------------
 
-To use `ngrok's Edges <https://ngrok.com/docs/network-edge/edges/>`_ with ``pyngrok``, first `configure an Edge on ngrok's dashboard <https://dashboard.ngrok.com/edges>`_
+To use `ngrok's Edges <https://ngrok.com/docs/universal-gateway/edges/>`_ with ``pyngrok``, first `configure an Edge on ngrok's dashboard <https://dashboard.ngrok.com/edges>`_
 (with at least one Endpoint mapped to the Edge), and define a labeled tunnel in `the ngrok config file <https://ngrok.com/docs/agent/config/v2/#define-two-labeled-tunnels>`_
 that points to the Edge.
 
@@ -150,7 +150,7 @@ can be accomplished by using ``pyngrok`` to open a ``tcp`` tunnel to the desired
     ngrok.connect("3306", "tcp",
                   remote_addr="1.tcp.ngrok.io:12345")
 
-We can also serve up local directories via `ngrok's built-in fileserver <https://ngrok.com/docs/http/#file-serving>`_.
+We can also serve up local directories via `ngrok's built-in fileserver <https://ngrok.com/docs/universal-gateway/http/?cty=agent-config#agent-endpoint>`_.
 
 .. code-block:: python
 
@@ -323,7 +323,7 @@ Setting the ``authtoken`` or ``api_key``
 ----------------------------------------
 
 Running ``ngrok`` with an auth token and/or API key enables additional features available on our account (for
-instance, the ability to open multiple tunnels concurrently, custom domains, use of `ngrok's Edges <https://ngrok.com/docs/network-edge/edges/>`_),
+instance, the ability to open multiple tunnels concurrently, custom domains, use of `ngrok's Edges <https://ngrok.com/docs/universal-gateway/edges/>`_),
 etc. We can obtain our auth token from the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it to
 ``ngrok``'s config file.
 

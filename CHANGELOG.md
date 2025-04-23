@@ -192,8 +192,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Added
 
 - Support for `labels`,
-  so [`ngrok`'s Labeled Tunnel Configuration](https://ngrok.com/docs/secure-tunnels/ngrok-agent/reference/config/#labeled-tunnel-configuration-properties)
-  is now supported, which enables basic support for [`ngrok`'s Edge](https://ngrok.com/docs/network-edge/edges).
+  so [`ngrok`'s Labeled Tunnel Configuration](https://ngrok.com/docs/agent/config/v2/#labeled-tunnel-configuration)
+  is now supported, which enables basic support for [`ngrok`'s Edge](https://ngrok.com/docs/universal-gateway/edges/).
 - `api_key` to `PyngrokConfig`, which can be set so `pyngrok` can interface with Edges when using `labels`.
 - [ngrok.api_request()](https://pyngrok.readthedocs.io/en/6.1.0/api.html#pyngrok.ngrok.api_request) now takes an `auth`
   param, so it can now be used to pass the `Bearer` token to `ngrok`'s API.
@@ -239,7 +239,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
-- Support for [`ngrok` v3](https://ngrok.com/docs/guides/upgrade-v2-v3) (v2 is still used by default).
+- Support for [`ngrok` v3](https://ngrok.com/docs/guides/other-guides/upgrade-v2-v3/) (v2 is still used by default).
 - Documentation and examples for using `pyngrok` with `ngrok` v3.
 
 ### Fixed

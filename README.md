@@ -62,7 +62,7 @@ us to pass additional tunnel configurations that are supported by `ngrok` (or th
 
 ### `ngrok`'s Edges
 
-To use [`ngrok`'s Edges](https://ngrok.com/docs/network-edge/edges/) with `pyngrok`, first [configure an Edge on
+To use [`ngrok`'s Edges](https://ngrok.com/docs/universal-gateway/edges/) with `pyngrok`, first [configure an Edge on
 `ngrok`'s dashboard](https://dashboard.ngrok.com/edges) (with at least one Endpoint mapped to the Edge), and define a
 labeled tunnel in [the `ngrok` config file](https://ngrok.com/docs/agent/config/v2/#define-two-labeled-tunnels)
 that points to the Edge.
