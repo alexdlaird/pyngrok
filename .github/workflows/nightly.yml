@@ -13,10 +13,11 @@ jobs:
     name: Nightly Test
 
     strategy:
-        matrix:
-          os: [ ubuntu-latest ]
-          python-version: [ "3.12" ]
+      matrix:
+        os: [ ubuntu-latest ]
+        python-version: [ "3.12" ]
 
     uses: ./.github/workflows/build.yml
     with:
-      strategy: ${{ strategy }}
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
