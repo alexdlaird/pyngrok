@@ -11,9 +11,12 @@ concurrency:
 jobs:
   test:
     name: Nightly Test
-    uses: ./.github/workflows/build.yml
-    with:
-      strategy:
+
+    strategy:
         matrix:
           os: [ ubuntu-latest ]
           python-version: [ "3.12" ]
+
+    uses: ./.github/workflows/build.yml
+    with:
+      strategy: ${{ strategy }}
