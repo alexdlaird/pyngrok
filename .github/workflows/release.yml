@@ -1,4 +1,4 @@
-name: Deploy
+name: Release
 
 run-name: Release ${{ github.ref_name }}
 
@@ -12,8 +12,8 @@ jobs:
     uses: alexdlaird/pyngrok/.github/workflows/build.yml@main
     secrets: inherit
 
-  deploy:
-    name: Deploy
+  release:
+    name: Release
     needs: build
 
     env:
