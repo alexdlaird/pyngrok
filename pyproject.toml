@@ -75,6 +75,16 @@ package-dir = { pyngrok = "pyngrok" }
 [tool.setuptools.dynamic]
 version = { attr = "pyngrok.__version__" }
 
+[tool.pytest.ini_options]
+junit_family = "legacy"
+addopts = [
+    "--ignore=venv",
+    "--ignore=pyngrok-example-flask",
+    "--durations=0",
+    "--durations-min=2",
+    "--junitxml=build/test-results/junit.xml"
+]
+
 [tool.coverage.run]
 omit = [
     "venv/**",
