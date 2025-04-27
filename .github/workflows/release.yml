@@ -7,14 +7,8 @@ on:
     types: [ created ]
 
 jobs:
-  build:
-    name: Build
-    uses: alexdlaird/pyngrok/.github/workflows/build.yml@main
-    secrets: inherit
-
-  release:
-    name: Release
-    needs: build
+  validate-version:
+    name: Validate Version
 
     env:
       FORCE_COLOR: 1
@@ -32,6 +26,27 @@ jobs:
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       - name: Validate version
         run: make validate-release VERSION=${{ steps.get_version.outputs.VERSION }}
+
+  build:
+    name: Build
+    uses: alexdlaird/pyngrok/.github/workflows/build.yml@main
+    secrets: inherit
+
+  release:
+    name: Release
+    needs: [build, validate-version]
+
+    env:
+      FORCE_COLOR: 1
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
       - name: Publish
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
