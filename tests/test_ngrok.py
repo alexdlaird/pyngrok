@@ -2,6 +2,7 @@ __copyright__ = "Copyright (c) 2018-2025 Alex Laird"
 __license__ = "MIT"
 
 import os
+import threading
 import time
 import unittest
 import uuid
@@ -16,6 +17,9 @@ from pyngrok import __version__, installer, ngrok, process
 from pyngrok.exception import PyngrokError, PyngrokNgrokError, PyngrokNgrokHTTPError, PyngrokNgrokURLError, \
     PyngrokSecurityError
 from tests.testcase import NgrokTestCase
+
+domain_lock = threading.Lock()
+endpoint_lock = threading.Lock()
 
 
 class TestNgrok(NgrokTestCase):
@@ -100,35 +104,36 @@ class TestNgrok(NgrokTestCase):
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf("NGROK_DOMAIN" not in os.environ, "NGROK_DOMAIN environment variable not set")
     def test_connect_tls(self):
-        # GIVEN
-        self.assertEqual(len(process._current_processes.keys()), 0)
-        self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
+        with domain_lock:
+            # GIVEN
+            self.assertEqual(len(process._current_processes.keys()), 0)
+            self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
 
-        # WHEN
-        ngrok_tunnel = ngrok.connect("443", proto="tls", domain=os.environ.get("NGROK_DOMAIN"),
-                                     terminate_at="upstream", pyngrok_config=self.pyngrok_config_v3)
-        current_process = ngrok.get_ngrok_process(self.pyngrok_config_v3)
+            # WHEN
+            ngrok_tunnel = ngrok.connect("443", proto="tls", domain=os.environ.get("NGROK_DOMAIN"),
+                                         terminate_at="upstream", pyngrok_config=self.pyngrok_config_v3)
+            current_process = ngrok.get_ngrok_process(self.pyngrok_config_v3)
 
-        # THEN
-        self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
-        self.assertIsNotNone(current_process)
-        self.assertIsNone(current_process.proc.poll())
-        self.assertTrue(current_process._monitor_thread.is_alive())
-        self.assertIsNotNone(ngrok_tunnel.id)
-        self.assertTrue(ngrok_tunnel.name.startswith("tls-443-"))
-        self.assertEqual("tls", ngrok_tunnel.proto)
-        self.assertEqual("tls://localhost:443", ngrok_tunnel.config["addr"])
-        self.assertIsNotNone(ngrok_tunnel.public_url)
-        self.assertIsNotNone(process.get_process(self.pyngrok_config_v3))
-        self.assertIn('tls://', ngrok_tunnel.public_url)
-        self.assertEqual(len(process._current_processes.keys()), 1)
+            # THEN
+            self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
+            self.assertIsNotNone(current_process)
+            self.assertIsNone(current_process.proc.poll())
+            self.assertTrue(current_process._monitor_thread.is_alive())
+            self.assertIsNotNone(ngrok_tunnel.id)
+            self.assertTrue(ngrok_tunnel.name.startswith("tls-443-"))
+            self.assertEqual("tls", ngrok_tunnel.proto)
+            self.assertEqual("tls://localhost:443", ngrok_tunnel.config["addr"])
+            self.assertIsNotNone(ngrok_tunnel.public_url)
+            self.assertIsNotNone(process.get_process(self.pyngrok_config_v3))
+            self.assertIn('tls://', ngrok_tunnel.public_url)
+            self.assertEqual(len(process._current_processes.keys()), 1)
 
-        # WHEN
-        ngrok.kill(self.pyngrok_config_v3)
-        ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=self.pyngrok_config_v3)
+            # WHEN
+            ngrok.kill(self.pyngrok_config_v3)
+            ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=self.pyngrok_config_v3)
 
-        # THEN
-        self.assertTrue(ngrok_version.startswith("3"))
+            # THEN
+            self.assertTrue(ngrok_version.startswith("3"))
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_connect_name(self):
@@ -646,37 +651,38 @@ class TestNgrok(NgrokTestCase):
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf("NGROK_DOMAIN" not in os.environ, "NGROK_DOMAIN environment variable not set")
     def test_tunnel_definitions_tls(self):
-        domain = os.environ.get("NGROK_DOMAIN")
+        with domain_lock:
+            domain = os.environ.get("NGROK_DOMAIN")
 
-        # GIVEN
-        config = {
-            "tunnels": {
-                "tls-tunnel": {
-                    "proto": "tls",
-                    "addr": "80",
-                    "domain": domain,
-                    "terminate_at": "upstream"
+            # GIVEN
+            config = {
+                "tunnels": {
+                    "tls-tunnel": {
+                        "proto": "tls",
+                        "addr": "80",
+                        "domain": domain,
+                        "terminate_at": "upstream"
+                    }
                 }
             }
-        }
-        config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"])
+            config_path = os.path.join(self.config_dir, "config_v3_2.yml")
+            installer.install_default_config(config_path, config, ngrok_version="v3")
+            pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
+                                                    auth_token=os.environ["NGROK_AUTHTOKEN"])
 
-        # WHEN
-        tls_tunnel = ngrok.connect(name="tls-tunnel", pyngrok_config=pyngrok_config)
+            # WHEN
+            tls_tunnel = ngrok.connect(name="tls-tunnel", pyngrok_config=pyngrok_config)
 
-        # THEN
-        self.assertTrue(tls_tunnel.name.startswith("tls-"))
-        self.assertEqual(tls_tunnel.config["addr"],
-                         f"localhost:{config['tunnels']['tls-tunnel']['addr']}")
-        self.assertTrue(tls_tunnel.config["addr"], "localhost:80")
-        self.assertEqual(tls_tunnel.name, "tls-tunnel")
-        self.assertEqual(tls_tunnel.config["addr"],
-                         f"localhost:{config['tunnels']['tls-tunnel']['addr']}")
-        self.assertEqual(tls_tunnel.proto, config["tunnels"]["tls-tunnel"]["proto"])
-        self.assertTrue(tls_tunnel.public_url, f"tls://{domain}")
+            # THEN
+            self.assertTrue(tls_tunnel.name.startswith("tls-"))
+            self.assertEqual(tls_tunnel.config["addr"],
+                             f"localhost:{config['tunnels']['tls-tunnel']['addr']}")
+            self.assertTrue(tls_tunnel.config["addr"], "localhost:80")
+            self.assertEqual(tls_tunnel.name, "tls-tunnel")
+            self.assertEqual(tls_tunnel.config["addr"],
+                             f"localhost:{config['tunnels']['tls-tunnel']['addr']}")
+            self.assertEqual(tls_tunnel.proto, config["tunnels"]["tls-tunnel"]["proto"])
+            self.assertTrue(tls_tunnel.public_url, f"tls://{domain}")
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf("NGROK_API_KEY" not in os.environ, "NGROK_API_KEY environment variable not set")
@@ -684,41 +690,42 @@ class TestNgrok(NgrokTestCase):
     @unittest.skipIf("NGROK_HTTP_EDGE_ENDPOINT" not in os.environ,
                      "NGROK_HTTP_EDGE_ENDPOINT environment variable not set")
     def test_ngrok_v3_edge_http_tunnel_definition(self):
-        # GIVEN
-        config = {
-            "tunnels": {
-                "edge-http-tunnel": {
-                    "addr": "80",
-                    "labels": [
-                        f"edge={os.environ['NGROK_HTTP_EDGE']}",
-                    ]
+        with endpoint_lock:
+            # GIVEN
+            config = {
+                "tunnels": {
+                    "edge-http-tunnel": {
+                        "addr": "80",
+                        "labels": [
+                            f"edge={os.environ['NGROK_HTTP_EDGE']}",
+                        ]
+                    }
                 }
             }
-        }
-        config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"],
-                                                api_key=os.environ["NGROK_API_KEY"])
+            config_path = os.path.join(self.config_dir, "config_v3_2.yml")
+            installer.install_default_config(config_path, config, ngrok_version="v3")
+            pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
+                                                    auth_token=os.environ["NGROK_AUTHTOKEN"],
+                                                    api_key=os.environ["NGROK_API_KEY"])
 
-        # WHEN
-        edge_http_tunnel = ngrok.connect(name="edge-http-tunnel", pyngrok_config=pyngrok_config)
-        tunnels = sorted(ngrok.get_tunnels(pyngrok_config=pyngrok_config), key=lambda x: x.proto)
+            # WHEN
+            edge_http_tunnel = ngrok.connect(name="edge-http-tunnel", pyngrok_config=pyngrok_config)
+            tunnels = sorted(ngrok.get_tunnels(pyngrok_config=pyngrok_config), key=lambda x: x.proto)
 
-        # THEN
-        self.assertEqual(edge_http_tunnel.name, "edge-http-tunnel")
-        self.assertEqual(edge_http_tunnel.config["addr"],
-                         f"http://localhost:{config['tunnels']['edge-http-tunnel']['addr']}")
-        self.assertTrue(edge_http_tunnel.config["addr"].startswith("http://"))
-        self.assertEqual(edge_http_tunnel.proto, "https")
-        self.assertEqual(edge_http_tunnel.public_url, os.environ["NGROK_HTTP_EDGE_ENDPOINT"])
-        self.assertEqual(len(tunnels), 1)
-        self.assertEqual(tunnels[0].name, "edge-http-tunnel")
-        self.assertEqual(tunnels[0].config["addr"],
-                         f"http://localhost:{config['tunnels']['edge-http-tunnel']['addr']}")
-        self.assertTrue(tunnels[0].config["addr"].startswith("http://"))
-        self.assertEqual(tunnels[0].proto, "https")
-        self.assertEqual(tunnels[0].public_url, os.environ["NGROK_HTTP_EDGE_ENDPOINT"])
+            # THEN
+            self.assertEqual(edge_http_tunnel.name, "edge-http-tunnel")
+            self.assertEqual(edge_http_tunnel.config["addr"],
+                             f"http://localhost:{config['tunnels']['edge-http-tunnel']['addr']}")
+            self.assertTrue(edge_http_tunnel.config["addr"].startswith("http://"))
+            self.assertEqual(edge_http_tunnel.proto, "https")
+            self.assertEqual(edge_http_tunnel.public_url, os.environ["NGROK_HTTP_EDGE_ENDPOINT"])
+            self.assertEqual(len(tunnels), 1)
+            self.assertEqual(tunnels[0].name, "edge-http-tunnel")
+            self.assertEqual(tunnels[0].config["addr"],
+                             f"http://localhost:{config['tunnels']['edge-http-tunnel']['addr']}")
+            self.assertTrue(tunnels[0].config["addr"].startswith("http://"))
+            self.assertEqual(tunnels[0].proto, "https")
+            self.assertEqual(tunnels[0].public_url, os.environ["NGROK_HTTP_EDGE_ENDPOINT"])
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf("NGROK_API_KEY" not in os.environ, "NGROK_API_KEY environment variable not set")
@@ -726,41 +733,42 @@ class TestNgrok(NgrokTestCase):
     @unittest.skipIf("NGROK_TCP_EDGE_ENDPOINT" not in os.environ,
                      "NGROK_TCP_EDGE_ENDPOINT environment variable not set")
     def test_ngrok_v3_edge_tcp_tunnel_definition(self):
-        # GIVEN
-        config = {
-            "tunnels": {
-                "edge-tcp-tunnel": {
-                    "addr": "22",
-                    "labels": [
-                        f"edge={os.environ['NGROK_TCP_EDGE']}",
-                    ]
+        with endpoint_lock:
+            # GIVEN
+            config = {
+                "tunnels": {
+                    "edge-tcp-tunnel": {
+                        "addr": "22",
+                        "labels": [
+                            f"edge={os.environ['NGROK_TCP_EDGE']}",
+                        ]
+                    }
                 }
             }
-        }
-        config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"],
-                                                api_key=os.environ["NGROK_API_KEY"])
+            config_path = os.path.join(self.config_dir, "config_v3_2.yml")
+            installer.install_default_config(config_path, config, ngrok_version="v3")
+            pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
+                                                    auth_token=os.environ["NGROK_AUTHTOKEN"],
+                                                    api_key=os.environ["NGROK_API_KEY"])
 
-        # WHEN
-        edge_tcp_tunnel = ngrok.connect(name="edge-tcp-tunnel", pyngrok_config=pyngrok_config)
-        tunnels = sorted(ngrok.get_tunnels(pyngrok_config=pyngrok_config), key=lambda x: x.proto)
+            # WHEN
+            edge_tcp_tunnel = ngrok.connect(name="edge-tcp-tunnel", pyngrok_config=pyngrok_config)
+            tunnels = sorted(ngrok.get_tunnels(pyngrok_config=pyngrok_config), key=lambda x: x.proto)
 
-        # THEN
-        self.assertEqual(edge_tcp_tunnel.name, "edge-tcp-tunnel")
-        self.assertEqual(edge_tcp_tunnel.config["addr"],
-                         f"tcp://localhost:{config['tunnels']['edge-tcp-tunnel']['addr']}")
-        self.assertTrue(edge_tcp_tunnel.config["addr"].startswith("tcp://"))
-        self.assertEqual(edge_tcp_tunnel.proto, "tcp")
-        self.assertEqual(edge_tcp_tunnel.public_url, os.environ["NGROK_TCP_EDGE_ENDPOINT"])
-        self.assertEqual(len(tunnels), 1)
-        self.assertEqual(tunnels[0].name, "edge-tcp-tunnel")
-        self.assertEqual(tunnels[0].config["addr"],
-                         f"tcp://localhost:{config['tunnels']['edge-tcp-tunnel']['addr']}")
-        self.assertTrue(tunnels[0].config["addr"].startswith("tcp://"))
-        self.assertEqual(tunnels[0].proto, "tcp")
-        self.assertTrue(tunnels[0].public_url, os.environ["NGROK_TCP_EDGE_ENDPOINT"])
+            # THEN
+            self.assertEqual(edge_tcp_tunnel.name, "edge-tcp-tunnel")
+            self.assertEqual(edge_tcp_tunnel.config["addr"],
+                             f"tcp://localhost:{config['tunnels']['edge-tcp-tunnel']['addr']}")
+            self.assertTrue(edge_tcp_tunnel.config["addr"].startswith("tcp://"))
+            self.assertEqual(edge_tcp_tunnel.proto, "tcp")
+            self.assertEqual(edge_tcp_tunnel.public_url, os.environ["NGROK_TCP_EDGE_ENDPOINT"])
+            self.assertEqual(len(tunnels), 1)
+            self.assertEqual(tunnels[0].name, "edge-tcp-tunnel")
+            self.assertEqual(tunnels[0].config["addr"],
+                             f"tcp://localhost:{config['tunnels']['edge-tcp-tunnel']['addr']}")
+            self.assertTrue(tunnels[0].config["addr"].startswith("tcp://"))
+            self.assertEqual(tunnels[0].proto, "tcp")
+            self.assertTrue(tunnels[0].public_url, os.environ["NGROK_TCP_EDGE_ENDPOINT"])
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf("NGROK_API_KEY" not in os.environ, "NGROK_API_KEY environment variable not set")
@@ -768,90 +776,93 @@ class TestNgrok(NgrokTestCase):
     @unittest.skipIf("NGROK_TLS_EDGE_ENDPOINT" not in os.environ,
                      "NGROK_TLS_EDGE_ENDPOINT environment variable not set")
     def test_ngrok_v3_edge_tls_tunnel_definition(self):
-        # GIVEN
-        config = {
-            "tunnels": {
-                "edge-tls-tunnel": {
-                    "addr": "443",
-                    "labels": [
-                        f"edge={os.environ['NGROK_TLS_EDGE']}",
-                    ]
+        with endpoint_lock:
+            # GIVEN
+            config = {
+                "tunnels": {
+                    "edge-tls-tunnel": {
+                        "addr": "443",
+                        "labels": [
+                            f"edge={os.environ['NGROK_TLS_EDGE']}",
+                        ]
+                    }
                 }
             }
-        }
-        config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"],
-                                                api_key=os.environ["NGROK_API_KEY"])
+            config_path = os.path.join(self.config_dir, "config_v3_2.yml")
+            installer.install_default_config(config_path, config, ngrok_version="v3")
+            pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
+                                                    auth_token=os.environ["NGROK_AUTHTOKEN"],
+                                                    api_key=os.environ["NGROK_API_KEY"])
 
-        # WHEN
-        edge_tls_tunnel = ngrok.connect(name="edge-tls-tunnel", pyngrok_config=pyngrok_config)
-        tunnels = sorted(ngrok.get_tunnels(pyngrok_config=pyngrok_config), key=lambda x: x.proto)
+            # WHEN
+            edge_tls_tunnel = ngrok.connect(name="edge-tls-tunnel", pyngrok_config=pyngrok_config)
+            tunnels = sorted(ngrok.get_tunnels(pyngrok_config=pyngrok_config), key=lambda x: x.proto)
 
-        # THEN
-        self.assertEqual(edge_tls_tunnel.name, "edge-tls-tunnel")
-        self.assertEqual(edge_tls_tunnel.config["addr"],
-                         f"https://localhost:{config['tunnels']['edge-tls-tunnel']['addr']}")
-        self.assertTrue(edge_tls_tunnel.config["addr"].startswith("https://"))
-        self.assertEqual(edge_tls_tunnel.proto, "tls")
-        self.assertEqual(edge_tls_tunnel.public_url, os.environ["NGROK_TLS_EDGE_ENDPOINT"])
-        self.assertEqual(len(tunnels), 1)
-        self.assertEqual(tunnels[0].name, "edge-tls-tunnel")
-        self.assertEqual(tunnels[0].config["addr"],
-                         f"https://localhost:{config['tunnels']['edge-tls-tunnel']['addr']}")
-        self.assertTrue(tunnels[0].config["addr"].startswith("https://"))
-        self.assertEqual(tunnels[0].proto, "tls")
-        self.assertEqual(tunnels[0].public_url, os.environ["NGROK_TLS_EDGE_ENDPOINT"])
+            # THEN
+            self.assertEqual(edge_tls_tunnel.name, "edge-tls-tunnel")
+            self.assertEqual(edge_tls_tunnel.config["addr"],
+                             f"https://localhost:{config['tunnels']['edge-tls-tunnel']['addr']}")
+            self.assertTrue(edge_tls_tunnel.config["addr"].startswith("https://"))
+            self.assertEqual(edge_tls_tunnel.proto, "tls")
+            self.assertEqual(edge_tls_tunnel.public_url, os.environ["NGROK_TLS_EDGE_ENDPOINT"])
+            self.assertEqual(len(tunnels), 1)
+            self.assertEqual(tunnels[0].name, "edge-tls-tunnel")
+            self.assertEqual(tunnels[0].config["addr"],
+                             f"https://localhost:{config['tunnels']['edge-tls-tunnel']['addr']}")
+            self.assertTrue(tunnels[0].config["addr"].startswith("https://"))
+            self.assertEqual(tunnels[0].proto, "tls")
+            self.assertEqual(tunnels[0].public_url, os.environ["NGROK_TLS_EDGE_ENDPOINT"])
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf("NGROK_HTTP_EDGE" not in os.environ, "NGROK_HTTP_EDGE environment variable not set")
     @unittest.skipIf("NGROK_API_KEY" not in os.environ, "NGROK_API_KEY environment variable not set")
     def test_bind_tls_and_labels_not_allowed(self):
-        # GIVEN
-        config = {
-            "tunnels": {
-                "edge-tunnel": {
-                    "addr": "80",
-                    "labels": [
-                        f"edge={os.environ['NGROK_HTTP_EDGE']}",
-                    ]
+        with endpoint_lock:
+            # GIVEN
+            config = {
+                "tunnels": {
+                    "edge-tunnel": {
+                        "addr": "80",
+                        "labels": [
+                            f"edge={os.environ['NGROK_HTTP_EDGE']}",
+                        ]
+                    }
                 }
             }
-        }
-        config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"],
-                                                api_key=os.environ["NGROK_API_KEY"])
+            config_path = os.path.join(self.config_dir, "config_v3_2.yml")
+            installer.install_default_config(config_path, config, ngrok_version="v3")
+            pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
+                                                    auth_token=os.environ["NGROK_AUTHTOKEN"],
+                                                    api_key=os.environ["NGROK_API_KEY"])
 
-        # WHEN
-        with self.assertRaises(PyngrokError):
-            ngrok.connect(name="edge-tunnel", bind_tls=True, pyngrok_config=pyngrok_config)
+            # WHEN
+            with self.assertRaises(PyngrokError):
+                ngrok.connect(name="edge-tunnel", bind_tls=True, pyngrok_config=pyngrok_config)
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf("NGROK_HTTP_EDGE" not in os.environ, "NGROK_HTTP_EDGE environment variable not set")
     def test_labels_no_api_key_fails(self):
-        # GIVEN
-        config = {
-            "tunnels": {
-                "edge-tunnel": {
-                    "addr": "80",
-                    "labels": [
-                        f"edge={os.environ['NGROK_HTTP_EDGE']}",
-                    ]
+        with endpoint_lock:
+            # GIVEN
+            config = {
+                "tunnels": {
+                    "edge-tunnel": {
+                        "addr": "80",
+                        "labels": [
+                            f"edge={os.environ['NGROK_HTTP_EDGE']}",
+                        ]
+                    }
                 }
             }
-        }
-        config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"],
-                                                api_key=None)
+            config_path = os.path.join(self.config_dir, "config_v3_2.yml")
+            installer.install_default_config(config_path, config, ngrok_version="v3")
+            pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
+                                                    auth_token=os.environ["NGROK_AUTHTOKEN"],
+                                                    api_key=None)
 
-        # WHEN
-        with self.assertRaises(PyngrokError):
-            ngrok.connect(name="edge-tunnel", pyngrok_config=pyngrok_config)
+            # WHEN
+            with self.assertRaises(PyngrokError):
+                ngrok.connect(name="edge-tunnel", pyngrok_config=pyngrok_config)
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_pyngrok_default_with_overrides(self):
