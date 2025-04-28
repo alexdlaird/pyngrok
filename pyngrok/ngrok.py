@@ -214,10 +214,11 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
                                    name: Optional[str] = None) -> None:
     config_path = conf.get_config_path(pyngrok_config)
 
-    if os.path.exists(config_path):
-        config = installer.get_ngrok_config(config_path, ngrok_version=pyngrok_config.ngrok_version)
-    else:
-        config = get_default_config(pyngrok_config.ngrok_version, pyngrok_config.config_version)
+    with conf.config_file_lock:
+        if os.path.exists(config_path):
+            config = installer.get_ngrok_config(config_path, ngrok_version=pyngrok_config.ngrok_version)
+        else:
+            config = get_default_config(pyngrok_config.ngrok_version, pyngrok_config.config_version)
 
     tunnel_definitions = config.get("tunnels", {})
     # If a "pyngrok-default" tunnel definition exists in the ngrok config, use that
