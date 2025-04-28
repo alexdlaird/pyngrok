@@ -17,6 +17,7 @@ from urllib.request import urlopen
 
 import yaml
 
+from pyngrok import conf
 from pyngrok.exception import PyngrokError, PyngrokNgrokInstallError, PyngrokSecurityError
 
 logger = logging.getLogger(__name__)
@@ -159,13 +160,14 @@ def get_ngrok_config(config_path: str,
     :param config_version: The ``ngrok`` config version.
     :return: The ``ngrok`` config.
     """
-    if config_path not in _config_cache or not use_cache:
-        with open(config_path, "r") as config_file:
-            config = yaml.safe_load(config_file)
-            if config is None:
-                config = get_default_config(ngrok_version, config_version)
+    with conf.config_file_lock:
+        if config_path not in _config_cache or not use_cache:
+            with open(config_path, "r") as config_file:
+                config = yaml.safe_load(config_file)
+                if config is None:
+                    config = get_default_config(ngrok_version, config_version)
 
-        _config_cache[config_path] = config
+            _config_cache[config_path] = config
 
     return _config_cache[config_path]
 
@@ -204,32 +206,33 @@ def install_default_config(config_path: str,
     :param ngrok_version: The major version of ``ngrok`` installed.
     :param config_version: The ``ngrok`` config version.
     """
-    if data is None:
-        data = {}
-    else:
-        data = copy.deepcopy(data)
+    with conf.config_file_lock:
+        if data is None:
+            data = {}
+        else:
+            data = copy.deepcopy(data)
 
-    data.update(get_default_config(ngrok_version, config_version))
+        data.update(get_default_config(ngrok_version, config_version))
 
-    config_dir = os.path.dirname(config_path)
-    if not os.path.exists(config_dir):
-        os.makedirs(config_dir)
-    if not os.path.exists(config_path):
-        open(config_path, "w").close()
+        config_dir = os.path.dirname(config_path)
+        if not os.path.exists(config_dir):
+            os.makedirs(config_dir)
+        if not os.path.exists(config_path):
+            open(config_path, "w").close()
 
-    config = get_ngrok_config(config_path,
-                              use_cache=False,
-                              ngrok_version=ngrok_version,
-                              config_version=config_version)
+        config = get_ngrok_config(config_path,
+                                  use_cache=False,
+                                  ngrok_version=ngrok_version,
+                                  config_version=config_version)
 
-    config.update(data)
+        config.update(data)
 
-    validate_config(config)
+        validate_config(config)
 
-    with open(config_path, "w") as config_file:
-        logger.debug(f"Installing default ngrok config to {config_path} ...")
+        with open(config_path, "w") as config_file:
+            logger.debug(f"Installing default ngrok config to {config_path} ...")
 
-        yaml.dump(config, config_file)
+            yaml.dump(config, config_file)
 
 
 def validate_config(data: Dict[str, Any]) -> None:

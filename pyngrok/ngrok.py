@@ -102,8 +102,9 @@ def install_ngrok(pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     config_path = conf.get_config_path(pyngrok_config)
 
     # Install the config to the requested path
-    if not os.path.exists(config_path):
-        installer.install_default_config(config_path, ngrok_version=pyngrok_config.ngrok_version)
+    with conf.config_file_lock:
+        if not os.path.exists(config_path):
+            installer.install_default_config(config_path, ngrok_version=pyngrok_config.ngrok_version)
 
 
 def set_auth_token(token: str,

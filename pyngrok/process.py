@@ -344,8 +344,9 @@ def _validate_path(ngrok_path: str) -> None:
 
 
 def _validate_config(config_path: str) -> None:
-    with open(config_path, "r") as config_file:
-        config = yaml.safe_load(config_file)
+    with conf.config_file_lock:
+        with open(config_path, "r") as config_file:
+            config = yaml.safe_load(config_file)
 
     if config is not None:
         installer.validate_config(config)
