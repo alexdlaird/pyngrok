@@ -1,6 +1,7 @@
 __copyright__ = "Copyright (c) 2018-2024 Alex Laird"
 __license__ = "MIT"
 
+import getpass
 import logging
 import os
 import platform
@@ -22,6 +23,8 @@ ngrok_logger = logging.getLogger(f"{__name__}.ngrok")
 
 class NgrokTestCase(unittest.TestCase):
     def setUp(self):
+        self.ngrok_subdomain = os.environ.get("NGROK_SUBDOMAIN", getpass.getuser())
+
         self.config_dir = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".ngrok"))
         if not os.path.exists(self.config_dir):
             os.makedirs(self.config_dir)
@@ -72,12 +75,12 @@ class NgrokTestCase(unittest.TestCase):
 
     @staticmethod
     def create_unique_subdomain():
-        return "pyngrok-{random}-{system}-{python_version}-{sys_major_version}{sys_minor_version}-tcp".format(
-            random=randint(1000000000000000, 9999999999999999),
-            system=platform.system(),
-            python_version=platform.python_implementation(),
+        return "pyngrok-{system}-{python_version}-{sys_major_version}-{sys_minor_version}".format(
+            random=randint(10000, 99999),
+            system=platform.system().lower(),
+            python_version=platform.python_implementation().lower(),
             sys_major_version=sys.version_info[0],
-            sys_minor_version=sys.version_info[1]).lower()
+            sys_minor_version=sys.version_info[1])
 
     @staticmethod
     def copy_with_updates(to_copy, **kwargs):
