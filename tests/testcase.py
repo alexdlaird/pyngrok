@@ -76,7 +76,7 @@ class NgrokTestCase(unittest.TestCase):
     @staticmethod
     def create_unique_subdomain():
         return "pyngrok-{system}-{python_version}-{sys_major_version}-{sys_minor_version}".format(
-            random=randint(10000, 99999),
+            random=randint(1000000000, 2000000000),
             system=platform.system().lower(),
             python_version=platform.python_implementation().lower(),
             sys_major_version=sys.version_info[0],
