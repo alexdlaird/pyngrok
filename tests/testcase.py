@@ -2,6 +2,7 @@ __copyright__ = "Copyright (c) 2018-2024 Alex Laird"
 __license__ = "MIT"
 
 import getpass
+import json
 import logging
 import os
 import platform
@@ -115,7 +116,7 @@ class NgrokTestCase(unittest.TestCase):
                                      ["--config", pyngrok_config.config_path,
                                       "api", "reserved-domains", "create",
                                       "--domain", domain])
-        return re.sub(r"^.*?({)", r"\1", output)
+        return json.loads(output[output.find("{"):])
 
     @staticmethod
     def given_ngrok_edge_exists(pyngrok_config, proto, domain):
@@ -127,7 +128,7 @@ class NgrokTestCase(unittest.TestCase):
 
     @staticmethod
     def create_unique_subdomain():
-        return "pyngrok-{system}-{python_version}-{sys_major_version}-{sys_minor_version}".format(
+        return "pyngrok-{random}-{system}-{python_version}-{sys_major_version}-{sys_minor_version}".format(
             random=randint(1000000000, 2000000000),
             system=platform.system().lower(),
             python_version=platform.python_implementation().lower(),

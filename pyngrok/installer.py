@@ -8,6 +8,7 @@ import platform
 import socket
 import sys
 import tempfile
+import threading
 import time
 import zipfile
 from http import HTTPStatus
@@ -17,7 +18,6 @@ from urllib.request import urlopen
 
 import yaml
 
-from pyngrok import conf
 from pyngrok.exception import PyngrokError, PyngrokNgrokInstallError, PyngrokSecurityError
 
 logger = logging.getLogger(__name__)
@@ -53,6 +53,8 @@ PLATFORMS_V3 = {
 SUPPORTED_NGROK_VERSIONS = ["v2", "v3"]
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
+
+config_file_lock = threading.RLock()
 
 _config_cache: Dict[str, Dict[str, Any]] = {}
 _print_progress_enabled = True
@@ -160,7 +162,7 @@ def get_ngrok_config(config_path: str,
     :param config_version: The ``ngrok`` config version.
     :return: The ``ngrok`` config.
     """
-    with conf.config_file_lock:
+    with config_file_lock:
         if config_path not in _config_cache or not use_cache:
             with open(config_path, "r") as config_file:
                 config = yaml.safe_load(config_file)
@@ -206,7 +208,7 @@ def install_default_config(config_path: str,
     :param ngrok_version: The major version of ``ngrok`` installed.
     :param config_version: The ``ngrok`` config version.
     """
-    with conf.config_file_lock:
+    with config_file_lock:
         if data is None:
             data = {}
         else:

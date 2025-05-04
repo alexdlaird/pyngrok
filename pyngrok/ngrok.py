@@ -102,7 +102,7 @@ def install_ngrok(pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     config_path = conf.get_config_path(pyngrok_config)
 
     # Install the config to the requested path
-    with conf.config_file_lock:
+    with installer.config_file_lock:
         if not os.path.exists(config_path):
             installer.install_default_config(config_path, ngrok_version=pyngrok_config.ngrok_version)
 
@@ -214,7 +214,7 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
                                    name: Optional[str] = None) -> None:
     config_path = conf.get_config_path(pyngrok_config)
 
-    with conf.config_file_lock:
+    with installer.config_file_lock:
         if os.path.exists(config_path):
             config = installer.get_ngrok_config(config_path, ngrok_version=pyngrok_config.ngrok_version)
         else:

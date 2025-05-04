@@ -3,7 +3,6 @@ __license__ = "MIT"
 
 import os
 import platform
-import threading
 from typing import Callable, Optional
 
 from pyngrok.installer import get_ngrok_bin
@@ -21,8 +20,6 @@ else:
 DEFAULT_NGROK_DIR = os.path.join(os.path.expanduser("~"), _config_rel_path)
 DEFAULT_NGROK_CONFIG_PATH = os.path.join(DEFAULT_NGROK_DIR, "ngrok.yml")
 DEFAULT_NGROK_PATH = os.path.join(DEFAULT_NGROK_DIR, get_ngrok_bin())
-
-config_file_lock = threading.RLock()
 
 
 class PyngrokConfig:
