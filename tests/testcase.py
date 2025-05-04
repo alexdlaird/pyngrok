@@ -6,7 +6,6 @@ import json
 import logging
 import os
 import platform
-import re
 import shutil
 import sys
 import unittest
@@ -19,7 +18,6 @@ from psutil import AccessDenied, NoSuchProcess
 
 from pyngrok import conf, installer, ngrok, process
 from pyngrok.conf import PyngrokConfig
-from pyngrok.exception import PyngrokNgrokError
 from pyngrok.process import capture_run_process
 
 logger = logging.getLogger(__name__)
