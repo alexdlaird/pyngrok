@@ -102,8 +102,8 @@ class TestNgrok(NgrokTestCase):
     def test_connect_tls(self):
         # GIVEN
         subdomain = self.create_unique_subdomain()
-        domain = f"{subdomain}.ngrok.dev"
-        self.given_ngrok_domain_exists(domain)
+        domain = f"{subdomain}.{self.ngrok_subdomain}.ngrok.dev"
+        self.given_ngrok_domain_exists(self.pyngrok_config_v3, domain)
         self.assertEqual(len(process._current_processes.keys()), 0)
         self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
 
@@ -650,8 +650,8 @@ class TestNgrok(NgrokTestCase):
     @unittest.skipIf(not os.environ.get("NGROK_API_KEY"), "NGROK_API_KEY environment variable not set")
     def test_tunnel_definitions_tls(self):
         subdomain = self.create_unique_subdomain()
-        domain = f"{subdomain}.ngrok.dev"
-        self.given_ngrok_domain_exists(domain)
+        domain = f"{subdomain}.{self.ngrok_subdomain}.ngrok.dev"
+        self.given_ngrok_domain_exists(self.pyngrok_config_v3, domain)
 
         # GIVEN
         config = {

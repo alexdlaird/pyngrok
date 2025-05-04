@@ -321,7 +321,7 @@ def capture_run_process(ngrok_path: str, args: List[str]) -> str:
     _validate_path(ngrok_path)
 
     start = [ngrok_path] + args
-    output = subprocess.check_output(start)
+    output = subprocess.check_output(start, stderr=subprocess.STDOUT)
 
     return output.decode("utf-8").strip()
 
