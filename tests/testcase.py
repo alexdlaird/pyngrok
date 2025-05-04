@@ -30,21 +30,22 @@ class NgrokTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         if os.environ.get("NGROK_API_KEY"):
-            config_dir = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".ngrok"))
-            config_for_test_client = os.path.join(config_dir, "config_for_test_client.yml")
-            ngrok_for_test_client_path = os.path.join(config_dir, "for-test-client", installer.get_ngrok_bin())
-            cls.pyngrok_config_for_test_client = PyngrokConfig(ngrok_path=ngrok_for_test_client_path,
-                                                               config_path=config_for_test_client)
-            cls.given_ngrok_installed(cls.pyngrok_config_for_test_client)
+            testcase_config_dir = os.path.normpath(
+                os.path.join(os.path.abspath(os.path.dirname(__file__)), ".testcase-ngrok"))
+            testcase_config_path = os.path.join(testcase_config_dir, "config.yml")
+            testcase_ngrok_path = os.path.join(testcase_config_dir, installer.get_ngrok_bin())
+            cls.testcase_pyngrok_config = PyngrokConfig(ngrok_path=testcase_ngrok_path,
+                                                        config_path=testcase_config_path)
+            cls.given_ngrok_installed(cls.testcase_pyngrok_config)
 
             cls.ngrok_subdomain = os.environ.get("NGROK_SUBDOMAIN", getpass.getuser())
             domain = f"{cls.ngrok_subdomain}.ngrok.dev"
             try:
-                cls.given_ngrok_domain_exists(cls.pyngrok_config_for_test_client, domain)
+                cls.given_ngrok_reserved_domain(cls.testcase_pyngrok_config, domain)
             except CalledProcessError as e:
                 output = e.output.decode("utf-8")
                 if "domain is already reserved" not in output:
-                    raise PyngrokNgrokError(f"Unable to create base ngrok domain for testing: {output}")
+                    raise e
 
     def setUp(self):
         self.ngrok_subdomain = os.environ.get("NGROK_SUBDOMAIN", getpass.getuser())
@@ -75,8 +76,9 @@ class NgrokTestCase(unittest.TestCase):
         # ngrok's CDN can be flaky, so make sure its flakiness isn't reflect in our CI/CD test runs
         installer.DEFAULT_RETRY_COUNT = 3
 
-        self.domain = None
-        self.endpoint = None
+        self.edge = None
+        self.reserved_domain = None
+        self.reserved_addr = None
 
     def tearDown(self):
         for p in list(process._current_processes.values()):
@@ -88,15 +90,23 @@ class NgrokTestCase(unittest.TestCase):
 
         ngrok._current_tunnels.clear()
 
-        if self.domain:
-            capture_run_process(self.pyngrok_config_v3.ngrok_path,
-                                ["--config", self.pyngrok_config_v3.config_path,
-                                 "api", "reserved-domains", "delete", self.domain["id"]])
-
-        if self.endpoint:
-            capture_run_process(self.pyngrok_config_v3.ngrok_path,
-                                ["--config", self.pyngrok_config_v3.config_path,
-                                 "api", "endpoints", "delete", self.endpoint["id"]])
+        if self.edge:
+            proto = "https"
+            if self.edge["id"].startswith("edgtcp"):
+                proto = "tcp"
+            elif self.edge["id"].startswith("edgtls"):
+                proto = "tls"
+            capture_run_process(self.testcase_pyngrok_config.ngrok_path,
+                                ["--config", self.testcase_pyngrok_config.config_path,
+                                 "api", "edges", proto, "delete", self.edge["id"]])
+        if self.reserved_domain:
+            capture_run_process(self.testcase_pyngrok_config.ngrok_path,
+                                ["--config", self.testcase_pyngrok_config.config_path,
+                                 "api", "reserved-domains", "delete", self.reserved_domain["id"]])
+        if self.reserved_addr:
+            capture_run_process(self.testcase_pyngrok_config.ngrok_path,
+                                ["--config", self.testcase_pyngrok_config.config_path,
+                                 "api", "reserved-addrs", "delete", self.reserved_addr["id"]])
 
         if os.path.exists(self.config_dir):
             shutil.rmtree(self.config_dir)
@@ -111,20 +121,30 @@ class NgrokTestCase(unittest.TestCase):
             os.remove(path)
 
     @staticmethod
-    def given_ngrok_domain_exists(pyngrok_config, domain):
+    def given_ngrok_reserved_domain(pyngrok_config, domain):
         output = capture_run_process(pyngrok_config.ngrok_path,
                                      ["--config", pyngrok_config.config_path,
                                       "api", "reserved-domains", "create",
-                                      "--domain", domain])
+                                      "--domain", domain,
+                                      "--description", "Created by pyngrok test"])
         return json.loads(output[output.find("{"):])
 
     @staticmethod
-    def given_ngrok_edge_exists(pyngrok_config, proto, domain):
+    def given_ngrok_reserved_addr(pyngrok_config):
+        output = capture_run_process(pyngrok_config.ngrok_path,
+                                     ["--config", pyngrok_config.config_path,
+                                      "api", "reserved-addrs", "create",
+                                      "--description", "Created by pyngrok test"])
+        return json.loads(output[output.find("{"):])
+
+    @staticmethod
+    def given_ngrok_edge_exists(pyngrok_config, proto, domain, port):
         output = capture_run_process(pyngrok_config.ngrok_path,
                                      ["--config", pyngrok_config.config_path,
                                       "api", "edges", proto, "create",
-                                      "--domain", domain])
-        return re.sub(r"^.*?({)", r"\1", output)
+                                      "--hostports", f"{domain}:{port}",
+                                      "--description", "Created by pyngrok test"])
+        return json.loads(output[output.find("{"):])
 
     @staticmethod
     def create_unique_subdomain():

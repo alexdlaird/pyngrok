@@ -13,5 +13,6 @@ build
 
 pyngrok/bin
 tests/.ngrok
+tests/.testcase-ngrok
 .dmypy.json
 pyngrok-example-flask
