@@ -651,7 +651,7 @@ class TestNgrok(NgrokTestCase):
     def test_tunnel_definitions_tls(self):
         subdomain = self.create_unique_subdomain()
         domain = f"{subdomain}.{self.ngrok_subdomain}.ngrok.dev"
-        self.given_ngrok_domain_exists(self.pyngrok_config_v3, domain)
+        self.given_ngrok_domain_exists(self.pyngrok_config_for_test_client, domain)
 
         # GIVEN
         config = {

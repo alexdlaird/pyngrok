@@ -30,23 +30,20 @@ class NgrokTestCase(unittest.TestCase):
     def setUpClass(cls):
         if os.environ.get("NGROK_API_KEY"):
             config_dir = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".ngrok"))
-            config_for_api_path = os.path.join(config_dir, "config_for_api.yml")
-            ngrok_for_api_path = os.path.join(config_dir, "for-api", installer.get_ngrok_bin())
-            pyngrok_config_for_api = PyngrokConfig(ngrok_path=ngrok_for_api_path,
-                                                   config_path=config_for_api_path)
-            cls.given_ngrok_installed(pyngrok_config_for_api)
+            config_for_test_client = os.path.join(config_dir, "config_for_test_client.yml")
+            ngrok_for_test_client_path = os.path.join(config_dir, "for-test-client", installer.get_ngrok_bin())
+            cls.pyngrok_config_for_test_client = PyngrokConfig(ngrok_path=ngrok_for_test_client_path,
+                                                               config_path=config_for_test_client)
+            cls.given_ngrok_installed(cls.pyngrok_config_for_test_client)
 
             cls.ngrok_subdomain = os.environ.get("NGROK_SUBDOMAIN", getpass.getuser())
             domain = f"{cls.ngrok_subdomain}.ngrok.dev"
             try:
-                cls.given_ngrok_domain_exists(pyngrok_config_for_api, domain)
+                cls.given_ngrok_domain_exists(cls.pyngrok_config_for_test_client, domain)
             except CalledProcessError as e:
                 output = e.output.decode("utf-8")
                 if "domain is already reserved" not in output:
                     raise PyngrokNgrokError(f"Unable to create base ngrok domain for testing: {output}")
-
-            cls.given_file_doesnt_exist(pyngrok_config_for_api.ngrok_path)
-            cls.given_file_doesnt_exist(pyngrok_config_for_api.ngrok_path)
 
     def setUp(self):
         self.ngrok_subdomain = os.environ.get("NGROK_SUBDOMAIN", getpass.getuser())
@@ -120,15 +117,13 @@ class NgrokTestCase(unittest.TestCase):
                                       "--domain", domain])
         return re.sub(r"^.*?({)", r"\1", output)
 
-    def given_ngrok_edge_exists(self, proto, domain):
-        output = capture_run_process(self.pyngrok_config_v3.ngrok_path,
-                                     ["--config", self.pyngrok_config_v3.config_path,
+    @staticmethod
+    def given_ngrok_edge_exists(pyngrok_config, proto, domain):
+        output = capture_run_process(pyngrok_config.ngrok_path,
+                                     ["--config", pyngrok_config.config_path,
                                       "api", "edges", proto, "create",
                                       "--domain", domain])
-        if "ERROR:" not in output:
-            self.domain = re.sub(r"^.*?({)", r"\1", output)
-        else:
-            raise PyngrokNgrokError(f"Unable to create ngrok domain: f{output}")
+        return re.sub(r"^.*?({)", r"\1", output)
 
     @staticmethod
     def create_unique_subdomain():
