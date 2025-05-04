@@ -49,6 +49,8 @@ class NgrokTestCase(unittest.TestCase):
             cls.given_file_doesnt_exist(pyngrok_config_for_api.ngrok_path)
 
     def setUp(self):
+        self.ngrok_subdomain = os.environ.get("NGROK_SUBDOMAIN", getpass.getuser())
+
         self.config_dir = os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".ngrok"))
         if not os.path.exists(self.config_dir):
             os.makedirs(self.config_dir)
@@ -130,12 +132,12 @@ class NgrokTestCase(unittest.TestCase):
 
     @staticmethod
     def create_unique_subdomain():
-        return "pyngrok-{random}-{system}-{python_version}-{sys_major_version}{sys_minor_version}-tcp".format(
-            random=randint(1000000000000000, 9999999999999999),
-            system=platform.system(),
-            python_version=platform.python_implementation(),
+        return "pyngrok-{system}-{python_version}-{sys_major_version}-{sys_minor_version}".format(
+            random=randint(1000000000, 2000000000),
+            system=platform.system().lower(),
+            python_version=platform.python_implementation().lower(),
             sys_major_version=sys.version_info[0],
-            sys_minor_version=sys.version_info[1]).lower()
+            sys_minor_version=sys.version_info[1])
 
     @staticmethod
     def copy_with_updates(to_copy, **kwargs):
