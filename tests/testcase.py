@@ -48,6 +48,12 @@ class NgrokTestCase(unittest.TestCase):
         # ngrok's CDN can be flaky, so make sure its flakiness isn't reflect in our CI/CD test runs
         installer.DEFAULT_RETRY_COUNT = 3
 
+        self.domain = None
+        self.endpoint = None
+        if os.environ.get("NGROK_API_KEY"):
+            self.ngrok_subdomain = os.environ.get("NGROK_SUBDOMAIN", getpass.getuser())
+            self.given_ngrok_domain_exists(self.ngrok_subdomain)
+
     def tearDown(self):
         for p in list(process._current_processes.values()):
             try:
@@ -57,6 +63,16 @@ class NgrokTestCase(unittest.TestCase):
                 pass
 
         ngrok._current_tunnels.clear()
+
+        if self.domain:
+            process.capture_run_process(self.pyngrok_config_v3.ngrok_path,
+                                        ["--config", self.pyngrok_config_v3.config_path,
+                                         "api", "reserved-domains", "delete",
+                                         "--domain", self.domain["id"]])
+
+        if self.endpoint:
+            # TODO: teardown endpoint
+            pass
 
         if os.path.exists(self.config_dir):
             shutil.rmtree(self.config_dir)
@@ -69,6 +85,13 @@ class NgrokTestCase(unittest.TestCase):
     def given_file_doesnt_exist(path):
         if os.path.exists(path):
             os.remove(path)
+
+    # def given_ngrok_domain_exists(self, domain):
+    #     output = process.capture_run_process(self.pyngrok_config_v3.ngrok_path,
+    #                                          ["--config", self.pyngrok_config_v3.config_path,
+    #                                           "api", "reserved-domains", "create",
+    #                                           "--domain", domain])
+    #     self.domain = domain
 
     @staticmethod
     def create_unique_subdomain():
