@@ -103,7 +103,7 @@ class TestNgrok(NgrokTestCase):
         # GIVEN
         subdomain = self.create_unique_subdomain()
         domain = f"{subdomain}.{self.ngrok_subdomain}.ngrok.dev"
-        self.domain = self.given_ngrok_reserved_domain(self.testcase_pyngrok_config, domain)
+        self.reserved_domain = self.given_ngrok_reserved_domain(self.testcase_pyngrok_config, domain)
         self.assertEqual(len(process._current_processes.keys()), 0)
         self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
 
@@ -651,7 +651,7 @@ class TestNgrok(NgrokTestCase):
     def test_tunnel_definitions_tls(self):
         subdomain = self.create_unique_subdomain()
         domain = f"{subdomain}.{self.ngrok_subdomain}.ngrok.dev"
-        self.domain = self.given_ngrok_reserved_domain(self.testcase_pyngrok_config, domain)
+        self.reserved_domain = self.given_ngrok_reserved_domain(self.testcase_pyngrok_config, domain)
 
         # GIVEN
         config = {
@@ -689,7 +689,7 @@ class TestNgrok(NgrokTestCase):
         # GIVEN
         subdomain = self.create_unique_subdomain()
         domain = f"{subdomain}.{self.ngrok_subdomain}.ngrok.dev"
-        self.domain = self.given_ngrok_reserved_domain(self.testcase_pyngrok_config, domain)
+        self.reserved_domain = self.given_ngrok_reserved_domain(self.testcase_pyngrok_config, domain)
         self.edge = self.given_ngrok_edge_exists(self.testcase_pyngrok_config, "https", domain, "443")
         config = {
             "tunnels": {
