@@ -1,4 +1,4 @@
-.PHONY: all install nopyc clean test docs check local validate-release test-downstream upload
+.PHONY: all install nopyc clean clean-api-tests test docs check local validate-release test-downstream upload
 
 SHELL := /usr/bin/env bash
 PYTHON_BIN ?= python
@@ -21,7 +21,10 @@ nopyc:
 	find . -name __pycache__ | xargs rm -rf || true
 
 clean: nopyc
-	rm -rf build dist *.egg-info $(PROJECT_VENV) tests/.ngrok pyngrok-example-flask
+	rm -rf build dist *.egg-info $(PROJECT_VENV) tests/.*ngrok pyngrok-example-flask
+
+clean-api-tests: local
+	$(PYTHON_BIN) scripts/clean-api-tests.py
 
 test: install
 	@( \
