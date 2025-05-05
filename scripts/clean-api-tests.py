@@ -11,7 +11,7 @@ from pyngrok.conf import PyngrokConfig
 from pyngrok.process import capture_run_process
 
 
-def clean_api_tests(args):
+def clean_api_tests():
     description = "Created by pyngrok test"
 
     pyngrok_config = PyngrokConfig()
@@ -65,8 +65,8 @@ def clean_api_tests(args):
                                 ["api", "reserved-addrs", "delete",
                                  value["id"]])
 
-    print(f"... done!")
+    print("... done!")
 
 
 if __name__ == "__main__":
-    clean_api_tests(sys.argv)
+    clean_api_tests()
