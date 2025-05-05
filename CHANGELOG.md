@@ -4,7 +4,16 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.5...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.6...HEAD)
+
+## [7.2.6](https://github.com/alexdlaird/pyngrok/compare/7.2.5...7.2.6) - 2025-05-05
+
+### Added
+
+- `stderr` is now also set to output for in [capture_run_process()](https://pyngrok.readthedocs.io/en/7.2.6/api.html#pyngrok.process.capture_run_process).
+- Stability improvements around concurrency.
+- Documentation improvements.
+- Test improvements.
 
 ## [7.2.5](https://github.com/alexdlaird/pyngrok/compare/7.2.4...7.2.5) - 2025-04-23
 
