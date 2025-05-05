@@ -4,7 +4,6 @@ __copyright__ = "Copyright (c) 2024-2025 Alex Laird"
 __license__ = "MIT"
 
 import json
-import sys
 
 from pyngrok import ngrok
 from pyngrok.conf import PyngrokConfig
