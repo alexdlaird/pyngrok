@@ -56,38 +56,39 @@ class TestNgrok(NgrokTestCase):
             cls.reserved_domain_http_edge = cls.given_ngrok_reserved_domain(cls.testcase_pyngrok_config,
                                                                             http_edge_domain)
             cls.http_edge = cls.given_ngrok_edge_exists(cls.testcase_pyngrok_config, "https",
-                                                        http_edge_domain, "443")
+                                                        http_edge_domain, 443)
 
             subdomain = cls.create_unique_subdomain()
             tls_edge_domain = f"{subdomain}.{cls.ngrok_subdomain}.ngrok.dev"
             cls.reserved_domain_tls_edge = cls.given_ngrok_reserved_domain(cls.testcase_pyngrok_config,
                                                                            tls_edge_domain)
             cls.tls_edge = cls.given_ngrok_edge_exists(cls.testcase_pyngrok_config, "tls",
-                                                       tls_edge_domain, "443")
+                                                       tls_edge_domain, 443)
 
     @classmethod
     def tearDownClass(cls):
-        capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                            ["--config", cls.testcase_pyngrok_config.config_path,
-                             "api", "edges", "tls", "delete", cls.tls_edge["id"]])
-        capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                            ["--config", cls.testcase_pyngrok_config.config_path,
-                             "api", "edges", "https", "delete", cls.http_edge["id"]])
-        capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                            ["--config", cls.testcase_pyngrok_config.config_path,
-                             "api", "edges", "tcp", "delete", cls.tcp_edge["id"]])
-        capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                            ["--config", cls.testcase_pyngrok_config.config_path,
-                             "api", "reserved-domains", "delete", cls.reserved_domain["id"]])
-        capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                            ["--config", cls.testcase_pyngrok_config.config_path,
-                             "api", "reserved-domains", "delete", cls.reserved_domain_tls_edge["id"]])
-        capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                            ["--config", cls.testcase_pyngrok_config.config_path,
-                             "api", "reserved-domains", "delete", cls.reserved_domain_http_edge["id"]])
-        capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                            ["--config", cls.testcase_pyngrok_config.config_path,
-                             "api", "reserved-addrs", "delete", cls.reserved_addr_tcp_edge["id"]])
+        if os.environ.get("NGROK_API_KEY"):
+            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
+                                ["--config", cls.testcase_pyngrok_config.config_path,
+                                 "api", "edges", "tls", "delete", cls.tls_edge["id"]])
+            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
+                                ["--config", cls.testcase_pyngrok_config.config_path,
+                                 "api", "edges", "https", "delete", cls.http_edge["id"]])
+            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
+                                ["--config", cls.testcase_pyngrok_config.config_path,
+                                 "api", "edges", "tcp", "delete", cls.tcp_edge["id"]])
+            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
+                                ["--config", cls.testcase_pyngrok_config.config_path,
+                                 "api", "reserved-domains", "delete", cls.reserved_domain["id"]])
+            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
+                                ["--config", cls.testcase_pyngrok_config.config_path,
+                                 "api", "reserved-domains", "delete", cls.reserved_domain_tls_edge["id"]])
+            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
+                                ["--config", cls.testcase_pyngrok_config.config_path,
+                                 "api", "reserved-domains", "delete", cls.reserved_domain_http_edge["id"]])
+            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
+                                ["--config", cls.testcase_pyngrok_config.config_path,
+                                 "api", "reserved-addrs", "delete", cls.reserved_addr_tcp_edge["id"]])
 
     @mock.patch("subprocess.call")
     def test_run(self, mock_call):
