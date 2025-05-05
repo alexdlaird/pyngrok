@@ -1,7 +1,6 @@
 __copyright__ = "Copyright (c) 2018-2024 Alex Laird"
 __license__ = "MIT"
 
-import getpass
 import json
 import logging
 import os
@@ -11,7 +10,6 @@ import sys
 import unittest
 from copy import copy
 from random import randint
-from subprocess import CalledProcessError
 
 import psutil
 from psutil import AccessDenied, NoSuchProcess
