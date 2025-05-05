@@ -423,11 +423,6 @@ available on the command line.
 
 For details on how to fully leverage ``ngrok`` from the command line, see `ngrok's official documentation <https://ngrok.com/docs/agent/cli/>`_.
 
-Python 2.7
-==========
-
-The last version to support Python 2.7 is ``pyngrok`` 4.1. Its legacy documentation can be found `here <https://pyngrok.readthedocs.io/en/4.1.x/>`_.
-
 Dive Deeper
 ===========
 
