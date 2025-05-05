@@ -10,7 +10,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
-- `stderr` is now also set to output for in [capture_run_process()](https://pyngrok.readthedocs.io/en/7.2.6/api.html#pyngrok.process.capture_run_process).
+- `stderr` is now sent to `stdout` for in [capture_run_process()](https://pyngrok.readthedocs.io/en/7.2.6/api.html#pyngrok.process.capture_run_process).
 - Stability improvements around concurrency.
 - Documentation improvements.
 - Test improvements.
