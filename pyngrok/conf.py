@@ -50,7 +50,7 @@ class PyngrokConfig:
     def __init__(self,
                  ngrok_path: Optional[str] = None,
                  config_path: Optional[str] = None,
-                 auth_token: Optional[str] = os.environ.get("NGROK_AUTHTOKEN"),
+                 auth_token: Optional[str] = None,
                  region: Optional[str] = None,
                  monitor_thread: bool = True,
                  log_event_callback: Optional[Callable[[NgrokLog], None]] = None,
@@ -59,7 +59,7 @@ class PyngrokConfig:
                  request_timeout: float = 4,
                  start_new_session: bool = False,
                  ngrok_version: str = "v3",
-                 api_key: Optional[str] = os.environ.get("NGROK_API_KEY"),
+                 api_key: Optional[str] = None,
                  config_version: str = "2") -> None:
         #: The path to the ``ngrok`` binary, defaults to being placed in the same directory as
         #: `ngrok's configs <https://ngrok.com/docs/agent/config/v2>`_.
@@ -68,7 +68,7 @@ class PyngrokConfig:
         self.config_path: Optional[str] = DEFAULT_CONFIG_PATH if config_path is None else config_path
         #: A ``ngrok`` authtoken to pass to commands (overrides what is in the config). If a value is not passed, will
         #: attempt to use the environment variable ``NGROK_AUTHTOKEN`` if it is set.
-        self.auth_token: Optional[str] = auth_token
+        self.auth_token: Optional[str] = os.environ.get("NGROK_AUTHTOKEN") or auth_token
         #: The region in which ``ngrok`` should start.
         self.region: Optional[str] = region
         #: Whether ``ngrok`` should continue to be monitored (for logs, etc.) after startup is complete.
@@ -88,7 +88,7 @@ class PyngrokConfig:
         #: The major version of ``ngrok`` installed.
         self.ngrok_version: str = ngrok_version
         #: A ``ngrok`` API key.
-        self.api_key: Optional[str] = api_key
+        self.api_key: Optional[str] = os.environ.get("NGROK_API_KEY") or api_key
         #: The ``ngrok`` config version.
         self.config_version = config_version
 
