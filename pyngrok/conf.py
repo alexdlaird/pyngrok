@@ -68,7 +68,7 @@ class PyngrokConfig:
         self.config_path: Optional[str] = DEFAULT_CONFIG_PATH if config_path is None else config_path
         #: A ``ngrok`` authtoken to pass to commands (overrides what is in the config). If a value is not passed, will
         #: attempt to use the environment variable ``NGROK_AUTHTOKEN`` if it is set.
-        self.auth_token: Optional[str] = os.environ.get("NGROK_AUTHTOKEN") or auth_token
+        self.auth_token: Optional[str] = auth_token or os.environ.get("NGROK_AUTHTOKEN")
         #: The region in which ``ngrok`` should start.
         self.region: Optional[str] = region
         #: Whether ``ngrok`` should continue to be monitored (for logs, etc.) after startup is complete.
@@ -88,7 +88,7 @@ class PyngrokConfig:
         #: The major version of ``ngrok`` installed.
         self.ngrok_version: str = ngrok_version
         #: A ``ngrok`` API key.
-        self.api_key: Optional[str] = os.environ.get("NGROK_API_KEY") or api_key
+        self.api_key: Optional[str] = api_key or os.environ.get("NGROK_API_KEY")
         #: The ``ngrok`` config version.
         self.config_version = config_version
 
