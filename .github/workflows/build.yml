@@ -49,6 +49,7 @@ jobs:
 
   build:
     name: Build
+    needs: init
 
     env:
       FORCE_COLOR: 1
