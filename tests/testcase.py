@@ -1,22 +1,17 @@
 __copyright__ = "Copyright (c) 2018-2024 Alex Laird"
 __license__ = "MIT"
 
-import json
 import logging
 import os
-import platform
 import shutil
-import sys
 import unittest
 from copy import copy
-from random import randint
 
 import psutil
 from psutil import AccessDenied, NoSuchProcess
 
 from pyngrok import conf, installer, ngrok, process
 from pyngrok.conf import PyngrokConfig
-from pyngrok.process import capture_run_process
 
 logger = logging.getLogger(__name__)
 ngrok_logger = logging.getLogger(f"{__name__}.ngrok")
@@ -71,41 +66,6 @@ class NgrokTestCase(unittest.TestCase):
     def given_file_doesnt_exist(path):
         if os.path.exists(path):
             os.remove(path)
-
-    @staticmethod
-    def given_ngrok_reserved_domain(pyngrok_config, domain):
-        output = capture_run_process(pyngrok_config.ngrok_path,
-                                     ["--config", pyngrok_config.config_path,
-                                      "api", "reserved-domains", "create",
-                                      "--domain", domain,
-                                      "--description", "Created by pyngrok test"])
-        return json.loads(output[output.find("{"):])
-
-    @staticmethod
-    def given_ngrok_reserved_addr(pyngrok_config):
-        output = capture_run_process(pyngrok_config.ngrok_path,
-                                     ["--config", pyngrok_config.config_path,
-                                      "api", "reserved-addrs", "create",
-                                      "--description", "Created by pyngrok test"])
-        return json.loads(output[output.find("{"):])
-
-    @staticmethod
-    def given_ngrok_edge_exists(pyngrok_config, proto, domain, port):
-        output = capture_run_process(pyngrok_config.ngrok_path,
-                                     ["--config", pyngrok_config.config_path,
-                                      "api", "edges", proto, "create",
-                                      "--hostports", f"{domain}:{port}",
-                                      "--description", "Created by pyngrok test"])
-        return json.loads(output[output.find("{"):])
-
-    @staticmethod
-    def create_unique_subdomain():
-        return "pyngrok-{random}-{system}-{python_version}-{sys_major_version}-{sys_minor_version}".format(
-            random=randint(1000000000, 2000000000),
-            system=platform.system().lower(),
-            python_version=platform.python_implementation().lower(),
-            sys_major_version=sys.version_info[0],
-            sys_minor_version=sys.version_info[1])
 
     @staticmethod
     def copy_with_updates(to_copy, **kwargs):

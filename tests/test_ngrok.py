@@ -18,7 +18,10 @@ from pyngrok import __version__, installer, ngrok, process
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokError, PyngrokNgrokError, PyngrokNgrokHTTPError, PyngrokNgrokURLError, \
     PyngrokSecurityError
-from pyngrok.process import capture_run_process
+from scripts.init_test_resources import reserve_ngrok_addr, reserve_ngrok_domain, create_unique_subdomain_name, \
+    create_ngrok_edge, init_test_resources
+from scripts.prune_test_resources import delete_ngrok_edge, release_ngrok_addr, release_ngrok_domain, \
+    prune_test_resources
 from tests.testcase import NgrokTestCase
 
 
@@ -34,61 +37,27 @@ class TestNgrok(NgrokTestCase):
                                                         config_path=testcase_config_path)
             cls.given_ngrok_installed(cls.testcase_pyngrok_config)
 
-            cls.ngrok_subdomain = os.environ.get("NGROK_SUBDOMAIN", getpass.getuser())
-            domain = f"{cls.ngrok_subdomain}.ngrok.dev"
-            try:
-                cls.given_ngrok_reserved_domain(cls.testcase_pyngrok_config, domain)
-            except CalledProcessError as e:
-                output = e.output.decode("utf-8")
-                if "domain is already reserved" not in output:
-                    raise e
+            # NGROK_PARENT_DOMAIN is set when init_test_resources.py is done provisioning test resources, so if it hasn't
+            # been set, we need to do that now. When running tests on CI, using the init script can protect against
+            # rate limiting, as this allows API resources to be shared across the build matrix.
+            if not os.environ.get("NGROK_PARENT_DOMAIN"):
+                init_test_resources()
 
-            cls.reserved_addr_tcp_edge = cls.given_ngrok_reserved_addr(cls.testcase_pyngrok_config)
-            cls.tcp_edge = cls.given_ngrok_edge_exists(cls.testcase_pyngrok_config, "tcp",
-                                                       *cls.reserved_addr_tcp_edge["addr"].split(":"))
-
-            subdomain = cls.create_unique_subdomain()
-            domain = f"{subdomain}.{cls.ngrok_subdomain}.ngrok.dev"
-            cls.reserved_domain = cls.given_ngrok_reserved_domain(cls.testcase_pyngrok_config, domain)
-
-            subdomain = cls.create_unique_subdomain()
-            http_edge_domain = f"{subdomain}.{cls.ngrok_subdomain}.ngrok.dev"
-            cls.reserved_domain_http_edge = cls.given_ngrok_reserved_domain(cls.testcase_pyngrok_config,
-                                                                            http_edge_domain)
-            cls.http_edge = cls.given_ngrok_edge_exists(cls.testcase_pyngrok_config, "https",
-                                                        http_edge_domain, 443)
-
-            subdomain = cls.create_unique_subdomain()
-            tls_edge_domain = f"{subdomain}.{cls.ngrok_subdomain}.ngrok.dev"
-            cls.reserved_domain_tls_edge = cls.given_ngrok_reserved_domain(cls.testcase_pyngrok_config,
-                                                                           tls_edge_domain)
-            cls.tls_edge = cls.given_ngrok_edge_exists(cls.testcase_pyngrok_config, "tls",
-                                                       tls_edge_domain, 443)
+            cls.reserved_domain = os.environ["NGROK_DOMAIN"]
+            cls.tcp_edge_reserved_addr = os.environ["NGROK_TCP_EDGE_ADDR"]
+            cls.tcp_edge_id = os.environ["NGROK_TCP_EDGE_ID"]
+            cls.http_edge_reserved_domain = os.environ["NGROK_HTTP_EDGE_DOMAIN"]
+            cls.http_edge_id = os.environ["NGROK_HTTP_EDGE_ID"]
+            cls.tls_edge_reserved_domain = os.environ["NGROK_TLS_EDGE_DOMAIN"]
+            cls.tls_edge_id = os.environ["NGROK_TLS_EDGE_ID"]
 
     @classmethod
     def tearDownClass(cls):
-        if os.environ.get("NGROK_API_KEY"):
-            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                                ["--config", cls.testcase_pyngrok_config.config_path,
-                                 "api", "edges", "tls", "delete", cls.tls_edge["id"]])
-            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                                ["--config", cls.testcase_pyngrok_config.config_path,
-                                 "api", "edges", "https", "delete", cls.http_edge["id"]])
-            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                                ["--config", cls.testcase_pyngrok_config.config_path,
-                                 "api", "edges", "tcp", "delete", cls.tcp_edge["id"]])
-            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                                ["--config", cls.testcase_pyngrok_config.config_path,
-                                 "api", "reserved-domains", "delete", cls.reserved_domain["id"]])
-            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                                ["--config", cls.testcase_pyngrok_config.config_path,
-                                 "api", "reserved-domains", "delete", cls.reserved_domain_tls_edge["id"]])
-            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                                ["--config", cls.testcase_pyngrok_config.config_path,
-                                 "api", "reserved-domains", "delete", cls.reserved_domain_http_edge["id"]])
-            capture_run_process(cls.testcase_pyngrok_config.ngrok_path,
-                                ["--config", cls.testcase_pyngrok_config.config_path,
-                                 "api", "reserved-addrs", "delete", cls.reserved_addr_tcp_edge["id"]])
+        # NGROK_PARENT_DOMAIN is set when init_test_resources.py is done provisioning test resources, in which case
+        # prune_test_resources.py should also be called to clean up test resources after all tests complete. Otherwise,
+        # this testcase set up the resources, so it should also tear them down.
+        if os.environ.get("NGROK_API_KEY") and not os.environ.get("NGROK_PARENT_DOMAIN"):
+            prune_test_resources()
 
     @mock.patch("subprocess.call")
     def test_run(self, mock_call):
@@ -176,7 +145,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
 
         # WHEN
-        ngrok_tunnel = ngrok.connect("443", proto="tls", domain=self.reserved_domain["domain"],
+        ngrok_tunnel = ngrok.connect("443", proto="tls", domain=self.reserved_domain,
                                      terminate_at="upstream", pyngrok_config=self.pyngrok_config_v3)
         current_process = ngrok.get_ngrok_process(self.pyngrok_config_v3)
 
@@ -452,7 +421,7 @@ class TestNgrok(NgrokTestCase):
     def test_regional_tcp_v2(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        subdomain = self.create_unique_subdomain()
+        subdomain = create_unique_subdomain_name("pyngrok")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2, auth_token=os.environ["NGROK_AUTHTOKEN"],
                                                 region="au")
 
@@ -531,7 +500,7 @@ class TestNgrok(NgrokTestCase):
     def test_regional_subdomain(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        subdomain = self.create_unique_subdomain()
+        subdomain = create_unique_subdomain_name("pyngrok")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, auth_token=os.environ["NGROK_AUTHTOKEN"],
                                                 region="au")
 
@@ -628,7 +597,7 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_v2(self):
-        subdomain = self.create_unique_subdomain()
+        subdomain = create_unique_subdomain_name("pyngrok")
 
         # GIVEN
         config = {
@@ -668,7 +637,7 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_v3(self):
-        subdomain = self.create_unique_subdomain()
+        subdomain = create_unique_subdomain_name("pyngrok")
 
         # GIVEN
         config = {
@@ -723,7 +692,7 @@ class TestNgrok(NgrokTestCase):
                 "tls-tunnel": {
                     "proto": "tls",
                     "addr": "80",
-                    "domain": self.reserved_domain["domain"],
+                    "domain": self.reserved_domain,
                     "terminate_at": "upstream"
                 }
             }
@@ -745,7 +714,7 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(tls_tunnel.config["addr"],
                          f"localhost:{config['tunnels']['tls-tunnel']['addr']}")
         self.assertEqual(tls_tunnel.proto, config["tunnels"]["tls-tunnel"]["proto"])
-        self.assertTrue(tls_tunnel.public_url, "tls://{domain}".format(domain=self.reserved_domain["domain"]))
+        self.assertTrue(tls_tunnel.public_url, "tls://{domain}".format(domain=self.reserved_domain))
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf(not os.environ.get("NGROK_API_KEY"), "NGROK_API_KEY environment variable not set")
@@ -756,7 +725,7 @@ class TestNgrok(NgrokTestCase):
                 "edge-http-tunnel": {
                     "addr": "80",
                     "labels": [
-                        "edge={edge_id}".format(edge_id=self.http_edge["id"]),
+                        "edge={edge_id}".format(edge_id=self.http_edge_id),
                     ]
                 }
             }
@@ -778,7 +747,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(edge_http_tunnel.config["addr"].startswith("http://"))
         self.assertEqual(edge_http_tunnel.proto, "https")
         self.assertEqual(edge_http_tunnel.public_url,
-                         "https://{domain}:443".format(domain=self.reserved_domain_http_edge["domain"]))
+                         "https://{domain}:443".format(domain=self.http_edge_reserved_domain))
         self.assertEqual(len(tunnels), 1)
         self.assertEqual(tunnels[0].name, "edge-http-tunnel")
         self.assertEqual(tunnels[0].config["addr"],
@@ -786,19 +755,19 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(tunnels[0].config["addr"].startswith("http://"))
         self.assertEqual(tunnels[0].proto, "https")
         self.assertEqual(tunnels[0].public_url,
-                         "https://{domain}:443".format(domain=self.reserved_domain_http_edge["domain"]))
+                         "https://{domain}:443".format(domain=self.http_edge_reserved_domain))
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf(not os.environ.get("NGROK_API_KEY"), "NGROK_API_KEY environment variable not set")
     def test_ngrok_v3_edge_tcp_tunnel_definition(self):
         # GIVEN
-        hostname, port = self.reserved_addr_tcp_edge["addr"].split(":")
+        hostname, port = self.tcp_edge_reserved_addr.split(":")
         config = {
             "tunnels": {
                 "edge-tcp-tunnel": {
                     "addr": "22",
                     "labels": [
-                        "edge={edge_id}".format(edge_id=self.tcp_edge["id"]),
+                        "edge={edge_id}".format(edge_id=self.tcp_edge_id),
                     ]
                 }
             }
@@ -837,7 +806,7 @@ class TestNgrok(NgrokTestCase):
                 "edge-tls-tunnel": {
                     "addr": "443",
                     "labels": [
-                        "edge={edge_id}".format(edge_id=self.tls_edge["id"]),
+                        "edge={edge_id}".format(edge_id=self.tls_edge_id),
                     ]
                 }
             }
@@ -859,7 +828,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(edge_tls_tunnel.config["addr"].startswith("https://"))
         self.assertEqual(edge_tls_tunnel.proto, "tls")
         self.assertEqual(edge_tls_tunnel.public_url,
-                         "tls://{domain}:443".format(domain=self.reserved_domain_tls_edge["domain"]))
+                         "tls://{domain}:443".format(domain=self.tls_edge_reserved_domain))
         self.assertEqual(len(tunnels), 1)
         self.assertEqual(tunnels[0].name, "edge-tls-tunnel")
         self.assertEqual(tunnels[0].config["addr"],
@@ -867,7 +836,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(tunnels[0].config["addr"].startswith("https://"))
         self.assertEqual(tunnels[0].proto, "tls")
         self.assertEqual(tunnels[0].public_url,
-                         "tls://{domain}:443".format(domain=self.reserved_domain_tls_edge["domain"]))
+                         "tls://{domain}:443".format(domain=self.tls_edge_reserved_domain))
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf(not os.environ.get("NGROK_API_KEY"), "NGROK_API_KEY environment variable not set")
@@ -878,7 +847,7 @@ class TestNgrok(NgrokTestCase):
                 "edge-tunnel": {
                     "addr": "80",
                     "labels": [
-                        "edge={edge_id}".format(edge_id=self.tls_edge["id"]),
+                        "edge={edge_id}".format(edge_id=self.tls_edge_id),
                     ]
                 }
             }
@@ -902,7 +871,7 @@ class TestNgrok(NgrokTestCase):
                 "edge-tunnel": {
                     "addr": "80",
                     "labels": [
-                        "edge={edge_id}".format(edge_id=self.http_edge["id"]),
+                        "edge={edge_id}".format(edge_id=self.http_edge_id),
                     ]
                 }
             }
@@ -919,7 +888,7 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_pyngrok_default_with_overrides(self):
-        subdomain = self.create_unique_subdomain()
+        subdomain = create_unique_subdomain_name("pyngrok")
 
         # GIVEN
         config = {
@@ -933,7 +902,7 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
-        subdomain = self.create_unique_subdomain()
+        subdomain = create_unique_subdomain_name("pyngrok")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
                                                 auth_token=os.environ["NGROK_AUTHTOKEN"])
 

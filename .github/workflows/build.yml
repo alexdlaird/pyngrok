@@ -21,6 +21,7 @@ jobs:
 
     env:
       FORCE_COLOR: 1
+      PYTHONDONTWRITEBYTECODE: 1
       NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
       NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
       NGROK_SUBDOMAIN: ${{ github.repository_owner }}
