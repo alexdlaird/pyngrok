@@ -49,7 +49,7 @@ jobs:
         id: init
         run: make init-test-resources
 
-    name: Build
+  name: Build
 
     env:
       FORCE_COLOR: 1
