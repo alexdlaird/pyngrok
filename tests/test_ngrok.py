@@ -1,13 +1,12 @@
 __copyright__ = "Copyright (c) 2018-2025 Alex Laird"
 __license__ = "MIT"
 
-import getpass
 import os
 import time
+import traceback
 import unittest
 import uuid
 from http import HTTPStatus
-from subprocess import CalledProcessError
 from unittest import mock
 from urllib.parse import urlparse
 from urllib.request import urlopen
@@ -18,10 +17,8 @@ from pyngrok import __version__, installer, ngrok, process
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokError, PyngrokNgrokError, PyngrokNgrokHTTPError, PyngrokNgrokURLError, \
     PyngrokSecurityError
-from scripts.init_test_resources import reserve_ngrok_addr, reserve_ngrok_domain, create_unique_subdomain_name, \
-    create_ngrok_edge, init_test_resources
-from scripts.prune_test_resources import delete_ngrok_edge, release_ngrok_addr, release_ngrok_domain, \
-    prune_test_resources
+from scripts.init_test_resources import generate_name_for_subdomain, init_test_resources
+from scripts.prune_test_resources import prune_test_resources
 from tests.testcase import NgrokTestCase
 
 
@@ -37,9 +34,9 @@ class TestNgrok(NgrokTestCase):
                                                         config_path=testcase_config_path)
             cls.given_ngrok_installed(cls.testcase_pyngrok_config)
 
-            # NGROK_PARENT_DOMAIN is set when init_test_resources.py is done provisioning test resources, so if it hasn't
-            # been set, we need to do that now. When running tests on CI, using the init script can protect against
-            # rate limiting, as this allows API resources to be shared across the build matrix.
+            # NGROK_PARENT_DOMAIN is set when init_test_resources.py is done provisioning test resources, so if it
+            # hasn't been set, we need to do that now. When running tests on CI, using the init script can protect
+            # against rate limiting, as this allows API resources to be shared across the build matrix.
             if not os.environ.get("NGROK_PARENT_DOMAIN"):
                 init_test_resources()
 
@@ -57,7 +54,12 @@ class TestNgrok(NgrokTestCase):
         # prune_test_resources.py should also be called to clean up test resources after all tests complete. Otherwise,
         # this testcase set up the resources, so it should also tear them down.
         if os.environ.get("NGROK_API_KEY") and not os.environ.get("NGROK_PARENT_DOMAIN"):
-            prune_test_resources()
+            try:
+                prune_test_resources()
+            except Exception:
+                print(traceback.format_exc())
+                print("--> An error occurred while cleaning up test resources. Run scripts/prune_test_resources.py to "
+                      "finish.")
 
     @mock.patch("subprocess.call")
     def test_run(self, mock_call):
@@ -421,7 +423,7 @@ class TestNgrok(NgrokTestCase):
     def test_regional_tcp_v2(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        subdomain = create_unique_subdomain_name("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2, auth_token=os.environ["NGROK_AUTHTOKEN"],
                                                 region="au")
 
@@ -500,7 +502,7 @@ class TestNgrok(NgrokTestCase):
     def test_regional_subdomain(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        subdomain = create_unique_subdomain_name("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, auth_token=os.environ["NGROK_AUTHTOKEN"],
                                                 region="au")
 
@@ -597,7 +599,7 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_v2(self):
-        subdomain = create_unique_subdomain_name("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok")
 
         # GIVEN
         config = {
@@ -637,7 +639,7 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_v3(self):
-        subdomain = create_unique_subdomain_name("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok")
 
         # GIVEN
         config = {
@@ -888,7 +890,7 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_pyngrok_default_with_overrides(self):
-        subdomain = create_unique_subdomain_name("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok")
 
         # GIVEN
         config = {
@@ -902,7 +904,7 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
-        subdomain = create_unique_subdomain_name("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
                                                 auth_token=os.environ["NGROK_AUTHTOKEN"])
 

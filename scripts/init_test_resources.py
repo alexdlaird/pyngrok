@@ -35,30 +35,30 @@ def init_test_resources():
             sys.exit(1)
 
     try:
-        subdomain = create_unique_subdomain_name("pyngrok")
-        domain = f"{subdomain}.{ngrok_parent_domain}"
-        reserved_domain = reserve_ngrok_domain(pyngrok_config, domain)
+        subdomain = generate_name_for_subdomain("pyngrok")
+        hostname = f"{subdomain}.{ngrok_parent_domain}"
+        reserved_domain = reserve_ngrok_domain(pyngrok_config, hostname)
 
-        reserved_addr_tcp_edge = reserve_ngrok_addr(pyngrok_config)
+        tcp_edge_reserved_addr = reserve_ngrok_addr(pyngrok_config)
         time.sleep(0.5)
         tcp_edge = create_ngrok_edge(pyngrok_config, "tcp",
-                                     *reserved_addr_tcp_edge["addr"].split(":"))
+                                     *tcp_edge_reserved_addr["addr"].split(":"))
 
-        subdomain = create_unique_subdomain_name("pyngrok")
-        http_edge_domain = f"{subdomain}.{ngrok_parent_domain}"
-        reserved_domain_http_edge = reserve_ngrok_domain(pyngrok_config,
-                                                         http_edge_domain)
+        subdomain = generate_name_for_subdomain("pyngrok")
+        http_edge_hostname = f"{subdomain}.{ngrok_parent_domain}"
+        http_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config,
+                                                         http_edge_hostname)
         time.sleep(0.5)
         http_edge = create_ngrok_edge(pyngrok_config, "https",
-                                      http_edge_domain, 443)
+                                      http_edge_hostname, 443)
 
-        subdomain = create_unique_subdomain_name("pyngrok")
-        tls_edge_domain = f"{subdomain}.{ngrok_parent_domain}"
-        reserved_domain_tls_edge = reserve_ngrok_domain(pyngrok_config,
-                                                        tls_edge_domain)
+        subdomain = generate_name_for_subdomain("pyngrok")
+        tls_edge_hostname = f"{subdomain}.{ngrok_parent_domain}"
+        tls_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config,
+                                                        tls_edge_hostname)
         time.sleep(0.5)
         tls_edge = create_ngrok_edge(pyngrok_config, "tls",
-                                     tls_edge_domain, 443)
+                                     tls_edge_hostname, 443)
     except CalledProcessError as e:
         print("An error occurred: " + e.output.decode("utf-8"))
         sys.exit(1)
@@ -68,23 +68,23 @@ def init_test_resources():
     print(f"export NGROK_DOMAIN={reserved_domain['domain']}")
     os.environ["NGROK_DOMAIN"] = reserved_domain["domain"]
 
-    print(f"export NGROK_TCP_EDGE_ADDR={reserved_addr_tcp_edge['addr']}")
+    print(f"export NGROK_TCP_EDGE_ADDR={tcp_edge_reserved_addr['addr']}")
     print(f"export NGROK_TCP_EDGE_ID={tcp_edge['id']}")
-    os.environ["NGROK_TCP_EDGE_ADDR"] = reserved_addr_tcp_edge["addr"]
+    os.environ["NGROK_TCP_EDGE_ADDR"] = tcp_edge_reserved_addr["addr"]
     os.environ["NGROK_TCP_EDGE_ID"] = tcp_edge["id"]
 
-    print(f"export NGROK_HTTP_EDGE_DOMAIN={reserved_domain_http_edge['domain']}")
+    print(f"export NGROK_HTTP_EDGE_DOMAIN={http_edge_reserved_domain['domain']}")
     print(f"export NGROK_HTTP_EDGE_ID={http_edge['id']}")
-    os.environ["NGROK_HTTP_EDGE_DOMAIN"] = reserved_domain_http_edge["domain"]
+    os.environ["NGROK_HTTP_EDGE_DOMAIN"] = http_edge_reserved_domain["domain"]
     os.environ["NGROK_HTTP_EDGE_ID"] = http_edge["id"]
 
-    print(f"export NGROK_TLS_EDGE_DOMAIN={reserved_domain_tls_edge['domain']}")
+    print(f"export NGROK_TLS_EDGE_DOMAIN={tls_edge_reserved_domain['domain']}")
     print(f"export NGROK_TLS_EDGE_ID={tls_edge['id']}")
-    os.environ["NGROK_TLS_EDGE_DOMAIN"] = reserved_domain_tls_edge["domain"]
+    os.environ["NGROK_TLS_EDGE_DOMAIN"] = tls_edge_reserved_domain["domain"]
     os.environ["NGROK_TLS_EDGE_ID"] = tls_edge["id"]
 
 
-def create_unique_subdomain_name(prefix):
+def generate_name_for_subdomain(prefix):
     return "{prefix}-{random}-{system}-{python_version}-{sys_major_version}-{sys_minor_version}".format(
         prefix=prefix,
         random=randint(1000000000, 2000000000),
@@ -98,14 +98,14 @@ def reserve_ngrok_domain(pyngrok_config, domain):
     output = capture_run_process(pyngrok_config.ngrok_path,
                                  ["api", "reserved-domains", "create",
                                   "--domain", domain,
-                                  "--description", "Created by pyngrok test"])
+                                  "--description", description])
     return json.loads(output[output.find("{"):])
 
 
 def reserve_ngrok_addr(pyngrok_config):
     output = capture_run_process(pyngrok_config.ngrok_path,
                                  ["api", "reserved-addrs", "create",
-                                  "--description", "Created by pyngrok test"])
+                                  "--description", description])
     return json.loads(output[output.find("{"):])
 
 
@@ -113,7 +113,7 @@ def create_ngrok_edge(pyngrok_config, proto, domain, port):
     output = capture_run_process(pyngrok_config.ngrok_path,
                                  ["api", "edges", proto, "create",
                                   "--hostports", f"{domain}:{port}",
-                                  "--description", "Created by pyngrok test"])
+                                  "--description", description])
     return json.loads(output[output.find("{"):])
 
 

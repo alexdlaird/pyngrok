@@ -15,7 +15,7 @@ from pyngrok.process import capture_run_process
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-from scripts.init_test_resources import description
+from scripts.init_test_resources import description  # noqa: E402
 
 
 def prune_test_resources():
