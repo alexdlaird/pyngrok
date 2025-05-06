@@ -35,7 +35,7 @@ def init_test_resources():
             sys.exit(1)
 
     try:
-        subdomain = generate_name_for_subdomain("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok-init")
         hostname = f"{subdomain}.{ngrok_parent_domain}"
         reserved_domain = reserve_ngrok_domain(pyngrok_config, hostname)
 
@@ -44,7 +44,7 @@ def init_test_resources():
         tcp_edge = create_ngrok_edge(pyngrok_config, "tcp",
                                      *tcp_edge_reserved_addr["addr"].split(":"))
 
-        subdomain = generate_name_for_subdomain("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok-init")
         http_edge_hostname = f"{subdomain}.{ngrok_parent_domain}"
         http_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config,
                                                          http_edge_hostname)
@@ -52,7 +52,7 @@ def init_test_resources():
         http_edge = create_ngrok_edge(pyngrok_config, "https",
                                       http_edge_hostname, 443)
 
-        subdomain = generate_name_for_subdomain("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok-init")
         tls_edge_hostname = f"{subdomain}.{ngrok_parent_domain}"
         tls_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config,
                                                         tls_edge_hostname)
@@ -85,13 +85,7 @@ def init_test_resources():
 
 
 def generate_name_for_subdomain(prefix):
-    return "{prefix}-{random}-{system}-{python_version}-{sys_major_version}-{sys_minor_version}".format(
-        prefix=prefix,
-        random=randint(1000000000, 2000000000),
-        system=platform.system().lower(),
-        python_version=platform.python_implementation().lower(),
-        sys_major_version=sys.version_info[0],
-        sys_minor_version=sys.version_info[1])
+    return "{prefix}-{random}".format(prefix=prefix, random=randint(1000000000, 2000000000))
 
 
 def reserve_ngrok_domain(pyngrok_config, domain):
