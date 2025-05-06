@@ -16,13 +16,6 @@ concurrency:
   group: pyngrok-singleton
 
 jobs:
-
-  validate:
-    name: Validate
-    uses: ./.github/workflows/validate.yml
-    secrets: inherit
-
-  build:
   init:
     name: Initialize test resources
 
@@ -49,7 +42,13 @@ jobs:
         id: init
         run: make init-test-resources
 
-  name: Build
+  validate:
+    name: Validate
+    uses: ./.github/workflows/validate.yml
+    secrets: inherit
+
+  build:
+    name: Build
 
     env:
       FORCE_COLOR: 1
