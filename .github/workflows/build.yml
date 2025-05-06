@@ -16,7 +16,39 @@ concurrency:
   group: pyngrok-singleton
 
 jobs:
+
+  validate:
+    name: Validate
+    uses: ./.github/workflows/validate.yml
+    secrets: inherit
+
   build:
+  init:
+    name: Initialize test resources
+
+    env:
+      NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
+      NGROK_SUBDOMAIN: ${{ github.repository_owner }}
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      NGROK_PARENT_DOMAIN: ${{ steps.init.outputs.NGROK_PARENT_DOMAIN }}
+      NGROK_DOMAIN: ${{ steps.init.outputs.NGROK_DOMAIN }}
+      NGROK_TCP_EDGE_ADDR: ${{ steps.init.outputs.NGROK_TCP_EDGE_ADDR }}
+      NGROK_TCP_EDGE_ID: ${{ steps.init.outputs.NGROK_TCP_EDGE_ID }}
+      NGROK_HTTP_EDGE_DOMAIN: ${{ steps.init.outputs.NGROK_HTTP_EDGE_DOMAIN }}
+      NGROK_HTTP_EDGE_ID: ${{ steps.init.outputs.NGROK_HTTP_EDGE_ID }}
+      NGROK_TLS_EDGE_DOMAIN: ${{ steps.init.outputs.NGROK_TLS_EDGE_DOMAIN }}
+      NGROK_TLS_EDGE_ID: ${{ steps.init.outputs.NGROK_TLS_EDGE_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Initialize test resources
+        id: init
+        run: make init-test-resources
+
     name: Build
 
     env:
@@ -24,11 +56,18 @@ jobs:
       PYTHONDONTWRITEBYTECODE: 1
       NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
       NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
-      NGROK_SUBDOMAIN: ${{ github.repository_owner }}
+      NGROK_PARENT_DOMAIN: ${{ needs.init.outputs.NGROK_PARENT_DOMAIN }}
+      NGROK_DOMAIN: ${{ needs.init.outputs.NGROK_DOMAIN }}
+      NGROK_TCP_EDGE_ADDR: ${{ needs.init.outputs.NGROK_TCP_EDGE_ADDR }}
+      NGROK_TCP_EDGE_ID: ${{ needs.init.outputs.NGROK_TCP_EDGE_ID }}
+      NGROK_HTTP_EDGE_DOMAIN: ${{ needs.init.outputs.NGROK_HTTP_EDGE_DOMAIN }}
+      NGROK_HTTP_EDGE_ID: ${{ needs.init.outputs.NGROK_HTTP_EDGE_ID }}
+      NGROK_TLS_EDGE_DOMAIN: ${{ needs.init.outputs.NGROK_TLS_EDGE_DOMAIN }}
+      NGROK_TLS_EDGE_ID: ${{ needs.init.outputs.NGROK_TLS_EDGE_ID }}
 
     strategy:
       fail-fast: false
-      max-parallel: 2
+      max-parallel: 3
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
         python-version: [ "3.12" ]
@@ -59,7 +98,13 @@ jobs:
       - name: Test
         run: make test
 
-  validate:
-    name: Validate
-    uses: ./.github/workflows/validate.yml
-    secrets: inherit
+  cleanup:
+    name: Cleanup test resources
+    needs: [validate, build]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Initialize test resources
+        run: make prune-test-resources
