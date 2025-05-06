@@ -106,5 +106,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Initialize test resources
+      - name: Cleanup test resources
+        if: always()
         run: make prune-test-resources
