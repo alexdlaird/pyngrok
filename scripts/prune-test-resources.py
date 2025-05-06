@@ -10,14 +10,13 @@ from pyngrok.conf import PyngrokConfig
 from pyngrok.process import capture_run_process
 
 
-def clean_api_tests():
+def prune_test_resources():
     description = "Created by pyngrok test"
 
     pyngrok_config = PyngrokConfig()
     ngrok.install_ngrok(pyngrok_config)
 
-    print(f"\nLooking for test resources against the ngrok API that have the description "
-          f"\"{description}\" to cleanup ...")
+    print(f"\nPruning stale test resources from the ngrok API that have the description \"{description}\" ...")
 
     output = capture_run_process(pyngrok_config.ngrok_path,
                                  ["api", "edges", "https", "list"])
@@ -68,4 +67,4 @@ def clean_api_tests():
 
 
 if __name__ == "__main__":
-    clean_api_tests()
+    prune_test_resources()

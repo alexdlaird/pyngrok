@@ -21,11 +21,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
-      - name: Get version
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       - name: Validate version
-        run: make validate-release VERSION=${{ steps.get_version.outputs.VERSION }}
+        run: make validate-release VERSION=${GITHUB_REF#refs/tags/}
 
   build:
     name: Build

@@ -311,8 +311,9 @@ def capture_run_process(ngrok_path: str, args: List[str]) -> str:
     Start a blocking ``ngrok`` process with the binary at the given path and the passed args. When the process
     returns, so will this method, and the captured output from the process along with it.
 
-    This method is meant for invoking ``ngrok`` directly (for instance, from the command line) and is not
-    necessarily compatible with non-blocking API methods. For that, use :func:`~pyngrok.process.get_process`.
+    This method is meant for invoking ``ngrok`` directly (for instance, for API requests) and is not
+    necessarily compatible with non-blocking API methods or interacting with active tunnels. For that, use
+    :func:`~pyngrok.process.get_process`.
 
     :param ngrok_path: The path to the ``ngrok`` binary.
     :param args: The args to pass to ``ngrok``.
