@@ -6,15 +6,13 @@ __license__ = "MIT"
 import getpass
 import json
 import os
-import platform
 import sys
 import time
-from random import randint
-from subprocess import CalledProcessError
-
 from pyngrok import ngrok
 from pyngrok.conf import PyngrokConfig
 from pyngrok.process import capture_run_process
+from random import randint
+from subprocess import CalledProcessError
 
 description = "Created by pyngrok test"
 
@@ -82,6 +80,17 @@ def init_test_resources():
     print(f"export NGROK_TLS_EDGE_ID={tls_edge['id']}")
     os.environ["NGROK_TLS_EDGE_DOMAIN"] = tls_edge_reserved_domain["domain"]
     os.environ["NGROK_TLS_EDGE_ID"] = tls_edge["id"]
+
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+            f.write(f"NGROK_PARENT_DOMAIN={ngrok_parent_domain}\n")
+            f.write(f"NGROK_DOMAIN={reserved_domain['domain']}\n")
+            f.write(f"NGROK_TCP_EDGE_ADDR={tcp_edge_reserved_addr['addr']}\n")
+            f.write(f"NGROK_TCP_EDGE_ID={tcp_edge['id']}\n")
+            f.write(f"NGROK_HTTP_EDGE_DOMAIN={http_edge_reserved_domain['domain']}\n")
+            f.write(f"NGROK_HTTP_EDGE_ID={http_edge['id']}\n")
+            f.write(f"NGROK_TLS_EDGE_DOMAIN={tls_edge_reserved_domain['domain']}\n")
+            f.write(f"NGROK_TLS_EDGE_ID={tls_edge['id']}")
 
 
 def generate_name_for_subdomain(prefix):
