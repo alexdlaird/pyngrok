@@ -31,6 +31,8 @@ jobs:
         run: make local
       - name: Test downstream
         run: make test-downstream
+      - name: Cleanup temporary test resources
+        run: make delete-temp-test-resources
       - name: Upload test coverage
         uses: codecov/codecov-action@v4
         with:
