@@ -18,7 +18,7 @@ from pyngrok.process import capture_run_process
 description = "Created by pyngrok test"
 
 
-def create_test_resources():
+def create_test_resources(subdomain_prefix="pyngrok-init"):
     """
     Provisioning test resources with the ngrok API, and then setting secrets in the CI environment so the resources are
     shared across tests, can greatly reduce the chances of being rate limited when running a build matrix.
@@ -40,7 +40,7 @@ def create_test_resources():
             sys.exit(1)
 
     try:
-        subdomain = generate_name_for_subdomain("pyngrok-init")
+        subdomain = generate_name_for_subdomain(subdomain_prefix)
         hostname = f"{subdomain}.{ngrok_hostname}"
         reserved_domain = reserve_ngrok_domain(pyngrok_config, hostname)
 
@@ -49,7 +49,7 @@ def create_test_resources():
         tcp_edge = create_ngrok_edge(pyngrok_config, "tcp",
                                      *tcp_edge_reserved_addr["addr"].split(":"))
 
-        subdomain = generate_name_for_subdomain("pyngrok-init")
+        subdomain = generate_name_for_subdomain(subdomain_prefix)
         http_edge_hostname = f"{subdomain}.{ngrok_hostname}"
         http_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config,
                                                          http_edge_hostname)
@@ -57,7 +57,7 @@ def create_test_resources():
         http_edge = create_ngrok_edge(pyngrok_config, "https",
                                       http_edge_hostname, 443)
 
-        subdomain = generate_name_for_subdomain("pyngrok-init")
+        subdomain = generate_name_for_subdomain(subdomain_prefix)
         tls_edge_hostname = f"{subdomain}.{ngrok_hostname}"
         tls_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config,
                                                         tls_edge_hostname)

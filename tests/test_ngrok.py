@@ -39,7 +39,7 @@ class TestNgrok(NgrokTestCase):
             # hasn't been set, we need to do that now. When running tests on CI, using the init script can protect
             # against rate limiting, as this allows API resources to be shared across the build matrix.
             if not os.environ.get("NGROK_HOSTNAME"):
-                create_test_resources()
+                create_test_resources("pyngrok")
 
                 cls.reserved_domain_id = os.environ["NGROK_DOMAIN_ID"]
                 cls.tcp_edge_reserved_addr_id = os.environ["NGROK_TCP_EDGE_ADDR_ID"]
