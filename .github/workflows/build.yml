@@ -30,14 +30,14 @@ jobs:
       NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
       NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
       NGROK_SUBDOMAIN: ${{ github.repository_owner }}
-      NGROK_HOSTNAME: ${{ needs.init.outputs.NGROK_HOSTNAME }}
-      NGROK_DOMAIN: ${{ needs.init.outputs.NGROK_DOMAIN }}
-      NGROK_TCP_EDGE_ADDR: ${{ needs.init.outputs.NGROK_TCP_EDGE_ADDR }}
-      NGROK_TCP_EDGE_ID: ${{ needs.init.outputs.NGROK_TCP_EDGE_ID }}
-      NGROK_HTTP_EDGE_DOMAIN: ${{ needs.init.outputs.NGROK_HTTP_EDGE_DOMAIN }}
-      NGROK_HTTP_EDGE_ID: ${{ needs.init.outputs.NGROK_HTTP_EDGE_ID }}
-      NGROK_TLS_EDGE_DOMAIN: ${{ needs.init.outputs.NGROK_TLS_EDGE_DOMAIN }}
-      NGROK_TLS_EDGE_ID: ${{ needs.init.outputs.NGROK_TLS_EDGE_ID }}
+      NGROK_HOSTNAME: ${{ secrets.NGROK_HOSTNAME }}
+      NGROK_DOMAIN: ${{ secrets.NGROK_DOMAIN }}
+      NGROK_TCP_EDGE_ADDR: ${{ secrets.NGROK_TCP_EDGE_ADDR }}
+      NGROK_TCP_EDGE_ID: ${{ secrets.NGROK_TCP_EDGE_ID }}
+      NGROK_HTTP_EDGE_DOMAIN: ${{ secrets.NGROK_HTTP_EDGE_DOMAIN }}
+      NGROK_HTTP_EDGE_ID: ${{ secrets.NGROK_HTTP_EDGE_ID }}
+      NGROK_TLS_EDGE_DOMAIN: ${{ secrets.NGROK_TLS_EDGE_DOMAIN }}
+      NGROK_TLS_EDGE_ID: ${{ secrets.NGROK_TLS_EDGE_ID }}
 
     strategy:
       fail-fast: false
