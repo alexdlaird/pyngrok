@@ -17,15 +17,23 @@ from pyngrok import ngrok
 from pyngrok.conf import PyngrokConfig
 from pyngrok.process import capture_run_process
 
-description = "Created by pyngrok test"
+project = os.path.basename(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 
-def create_test_resources(subdomain_prefix="pyngrok-init"):
+def create_test_resources(temp=False):
     """
-    Provisioning test resources with the ngrok API, and then setting secrets in the CI environment so the resources are
-    shared across tests, can greatly reduce the chances of being rate limited when running a build matrix.
+    This script will provision test resources with the ngrok API. These can be torn down after each test, or they can
+    remain to be reused between tests, which will reduce rate limiting (especially when running a build matrix on CI).
+    Set these as environment variables, or secrets in a CI build environment, to reuse them across runs after they're
+    provisioned.
+
+    :param temp: Whether the resources being created are for single-use (set up and tear down within a single test
+        case run), or are to be persisted (to be set in the environment and used across runs).
     """
     ensure_api_key_present()
+
+    prefix = get_prefix(temp)
+    description = get_description(temp)
 
     pyngrok_config = PyngrokConfig()
     ngrok.install_ngrok(pyngrok_config)
@@ -34,7 +42,7 @@ def create_test_resources(subdomain_prefix="pyngrok-init"):
     ngrok_hostname = f"{subdomain}.ngrok.dev"
 
     try:
-        reserve_ngrok_domain(pyngrok_config, ngrok_hostname)
+        reserve_ngrok_domain(pyngrok_config, description, ngrok_hostname)
     except CalledProcessError as e:
         output = e.output.decode("utf-8")
         if "domain is already reserved" not in output:
@@ -42,36 +50,32 @@ def create_test_resources(subdomain_prefix="pyngrok-init"):
             sys.exit(1)
 
     try:
-        subdomain = generate_name_for_subdomain(subdomain_prefix)
+        subdomain = generate_name_for_subdomain(prefix)
         hostname = f"{subdomain}.{ngrok_hostname}"
-        reserved_domain = reserve_ngrok_domain(pyngrok_config, hostname)
+        reserved_domain = reserve_ngrok_domain(pyngrok_config, description, hostname)
 
-        tcp_edge_reserved_addr = reserve_ngrok_addr(pyngrok_config)
+        tcp_edge_reserved_addr = reserve_ngrok_addr(pyngrok_config, description)
         time.sleep(0.5)
-        tcp_edge = create_ngrok_edge(pyngrok_config, "tcp",
-                                     *tcp_edge_reserved_addr["addr"].split(":"))
+        tcp_edge = create_ngrok_edge(pyngrok_config, description, "tcp", *tcp_edge_reserved_addr["addr"].split(":"))
 
-        subdomain = generate_name_for_subdomain(subdomain_prefix)
+        subdomain = generate_name_for_subdomain(prefix)
         http_edge_hostname = f"{subdomain}.{ngrok_hostname}"
-        http_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config,
-                                                         http_edge_hostname)
+        http_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config, description, http_edge_hostname)
         time.sleep(0.5)
-        http_edge = create_ngrok_edge(pyngrok_config, "https",
-                                      http_edge_hostname, 443)
+        http_edge = create_ngrok_edge(pyngrok_config, description, "https", http_edge_hostname, 443)
 
-        subdomain = generate_name_for_subdomain(subdomain_prefix)
+        subdomain = generate_name_for_subdomain(prefix)
         tls_edge_hostname = f"{subdomain}.{ngrok_hostname}"
-        tls_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config,
-                                                        tls_edge_hostname)
+        tls_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config, description, tls_edge_hostname)
         time.sleep(0.5)
-        tls_edge = create_ngrok_edge(pyngrok_config, "tls",
-                                     tls_edge_hostname, 443)
+        tls_edge = create_ngrok_edge(pyngrok_config, description, "tls", tls_edge_hostname, 443)
     except CalledProcessError as e:
         print("An error occurred: " + e.output.decode("utf-8"))
         sys.exit(1)
 
-    print("--> The following ngrok resources have been provisioned. Set these as GitHub secrets to reduce rate "
-          "limiting when running a build matrix.")
+    if not shutil.which("gh"):
+        print("--> The following ngrok resources have been provisioned. Set these as environment variables, or "
+              "secrets in a CI build environment, to reduce rate limiting when running a build matrix.")
 
     env_vars = {
         "NGROK_HOSTNAME": ngrok_hostname,
@@ -108,11 +112,25 @@ def ensure_api_key_present():
         sys.exit(1)
 
 
+def get_prefix(temp):
+    prefix = project
+    if temp:
+        prefix += "-temp"
+    return prefix
+
+
+def get_description(temp):
+    if temp:
+        return f"Created by {project} testcase"
+    else:
+        return f"Created for {project}"
+
+
 def generate_name_for_subdomain(prefix):
     return "{prefix}-{random}".format(prefix=prefix, random=randint(1000000000, 2000000000))
 
 
-def reserve_ngrok_domain(pyngrok_config, domain):
+def reserve_ngrok_domain(pyngrok_config, description, domain):
     output = capture_run_process(pyngrok_config.ngrok_path,
                                  ["api", "reserved-domains", "create",
                                   "--domain", domain,
@@ -120,14 +138,14 @@ def reserve_ngrok_domain(pyngrok_config, domain):
     return json.loads(output[output.find("{"):])
 
 
-def reserve_ngrok_addr(pyngrok_config):
+def reserve_ngrok_addr(pyngrok_config, description):
     output = capture_run_process(pyngrok_config.ngrok_path,
                                  ["api", "reserved-addrs", "create",
                                   "--description", description])
     return json.loads(output[output.find("{"):])
 
 
-def create_ngrok_edge(pyngrok_config, proto, domain, port):
+def create_ngrok_edge(pyngrok_config, description, proto, domain, port):
     output = capture_run_process(pyngrok_config.ngrok_path,
                                  ["api", "edges", proto, "create",
                                   "--hostports", f"{domain}:{port}",

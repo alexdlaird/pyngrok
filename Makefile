@@ -23,11 +23,17 @@ nopyc:
 clean: nopyc
 	rm -rf build dist *.egg-info $(PROJECT_VENV) tests/.*ngrok pyngrok-example-flask
 
-create-test-resources: local
+create-test-resources:
+	$(PYTHON_BIN) -m pip install pyngrok
 	$(PYTHON_BIN) scripts/create_test_resources.py
 
-delete-test-resources: local
+delete-test-resources:
+	$(PYTHON_BIN) -m pip install pyngrok
 	$(PYTHON_BIN) scripts/delete_test_resources.py
+
+delete-temp-test-resources:
+	$(PYTHON_BIN) -m pip install pyngrok
+	$(PYTHON_BIN) scripts/delete_test_resources.py --temp
 
 test: install
 	@( \

@@ -15,11 +15,13 @@ from pyngrok.process import capture_run_process
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-from scripts.create_test_resources import description, ensure_api_key_present  # noqa: E402
+from scripts.create_test_resources import ensure_api_key_present, get_description  # noqa: E402
 
 
-def delete_test_resources():
+def delete_test_resources(temp=False):
     ensure_api_key_present()
+
+    description = get_description(temp)
 
     pyngrok_config = PyngrokConfig()
     ngrok.install_ngrok(pyngrok_config)
@@ -88,4 +90,7 @@ def release_ngrok_addr(pyngrok_config, id):
 
 
 if __name__ == "__main__":
-    delete_test_resources()
+    temp = False
+    if len(sys.argv) > 1 and sys.argv[1] == "--temp":
+        temp = True
+    delete_test_resources(temp)
