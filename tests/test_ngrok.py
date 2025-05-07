@@ -877,7 +877,6 @@ class TestNgrok(NgrokTestCase):
             ngrok.connect(name="edge-tunnel", bind_tls=True, pyngrok_config=pyngrok_config)
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
-    @unittest.skipIf(not os.environ.get("NGROK_API_KEY"), "NGROK_API_KEY environment variable not set")
     def test_labels_no_api_key_fails(self):
         # GIVEN
         config = {
@@ -885,7 +884,7 @@ class TestNgrok(NgrokTestCase):
                 "edge-tunnel": {
                     "addr": "80",
                     "labels": [
-                        "edge={edge_id}".format(edge_id=self.http_edge_id),
+                        "edge=edghts_some-id",
                     ]
                 }
             }
@@ -895,6 +894,7 @@ class TestNgrok(NgrokTestCase):
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
                                                 auth_token=os.environ["NGROK_AUTHTOKEN"],
                                                 api_key=None)
+        self.assertIsNone(pyngrok_config.api_key)
 
         # WHEN
         with self.assertRaises(PyngrokError):
