@@ -17,7 +17,7 @@ from pyngrok import __version__, installer, ngrok, process
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokError, PyngrokNgrokError, PyngrokNgrokHTTPError, PyngrokNgrokURLError, \
     PyngrokSecurityError
-from scripts.create_test_resources import generate_name_for_subdomain, create_test_resources
+from scripts.create_test_resources import create_test_resources, generate_name_for_subdomain
 from scripts.delete_test_resources import delete_ngrok_edge, release_ngrok_addr, \
     release_ngrok_domain
 from tests.testcase import NgrokTestCase
@@ -436,7 +436,7 @@ class TestNgrok(NgrokTestCase):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
         subdomain = generate_name_for_subdomain("pyngrok-temp")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2, auth_token=os.environ["NGROK_AUTHTOKEN"],
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2,
                                                 region="au")
 
         # WHEN
@@ -457,7 +457,7 @@ class TestNgrok(NgrokTestCase):
     def test_regional_tcp_v3(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, auth_token=os.environ["NGROK_AUTHTOKEN"],
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
                                                 region="au")
 
         # WHEN
@@ -478,36 +478,34 @@ class TestNgrok(NgrokTestCase):
     def test_auth_v2(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2, auth_token=os.environ["NGROK_AUTHTOKEN"])
 
         # WHEN
-        ngrok_tunnel = ngrok.connect("5000", auth="username:password", pyngrok_config=pyngrok_config)
-        current_process = ngrok.get_ngrok_process(pyngrok_config)
+        ngrok_tunnel = ngrok.connect("5000", auth="username:password", pyngrok_config=self.pyngrok_config_v2)
+        current_process = ngrok.get_ngrok_process(self.pyngrok_config_v2)
 
         # THEN
         self.assertIsNotNone(current_process)
         self.assertIsNone(current_process.proc.poll())
         self.assertIsNotNone(ngrok_tunnel.public_url)
-        self.assertIsNotNone(process.get_process(pyngrok_config))
+        self.assertIsNotNone(process.get_process(self.pyngrok_config_v2))
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_auth_v3(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, auth_token=os.environ["NGROK_AUTHTOKEN"])
 
         # WHEN
-        ngrok_tunnel1 = ngrok.connect("5000", auth="username:password", pyngrok_config=pyngrok_config)
-        ngrok_tunnel2 = ngrok.connect("5000", basic_auth=["username:password"], pyngrok_config=pyngrok_config)
-        current_process = ngrok.get_ngrok_process(pyngrok_config)
+        ngrok_tunnel1 = ngrok.connect("5000", auth="username:password", pyngrok_config=self.pyngrok_config_v3)
+        ngrok_tunnel2 = ngrok.connect("5000", basic_auth=["username:password"], pyngrok_config=self.pyngrok_config_v3)
+        current_process = ngrok.get_ngrok_process(self.pyngrok_config_v3)
 
         # THEN
         self.assertIsNotNone(current_process)
         self.assertIsNone(current_process.proc.poll())
         self.assertIsNotNone(ngrok_tunnel1.public_url)
         self.assertIsNotNone(ngrok_tunnel2.public_url)
-        self.assertIsNotNone(process.get_process(pyngrok_config))
+        self.assertIsNotNone(process.get_process(self.pyngrok_config_v3))
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
@@ -515,7 +513,7 @@ class TestNgrok(NgrokTestCase):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
         subdomain = generate_name_for_subdomain("pyngrok-temp")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, auth_token=os.environ["NGROK_AUTHTOKEN"],
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
                                                 region="au")
 
         # WHEN
@@ -536,13 +534,11 @@ class TestNgrok(NgrokTestCase):
     def test_connect_fileserver(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, auth_token=os.environ["NGROK_AUTHTOKEN"])
 
         # WHEN
-        ngrok_tunnel = ngrok.connect("file:///", pyngrok_config=pyngrok_config)
-        current_process = ngrok.get_ngrok_process(pyngrok_config)
-        time.sleep(1)
-        tunnels = ngrok.get_tunnels(pyngrok_config)
+        ngrok_tunnel = ngrok.connect("file:///", pyngrok_config=self.pyngrok_config_v3)
+        current_process = ngrok.get_ngrok_process(self.pyngrok_config_v3)
+        tunnels = ngrok.get_tunnels(self.pyngrok_config_v3)
 
         # THEN
         self.assertEqual(len(tunnels), 1)
@@ -552,7 +548,7 @@ class TestNgrok(NgrokTestCase):
         self.assertTrue(ngrok_tunnel.name.startswith("http-file-"))
         self.assertEqual("file:///", ngrok_tunnel.config["addr"])
         self.assertIsNotNone(ngrok_tunnel.public_url)
-        self.assertIsNotNone(process.get_process(pyngrok_config))
+        self.assertIsNotNone(process.get_process(self.pyngrok_config_v3))
         self.assertIn('https://', ngrok_tunnel.public_url)
         self.assertEqual(len(process._current_processes.keys()), 1)
 
@@ -560,14 +556,11 @@ class TestNgrok(NgrokTestCase):
     def test_disconnect_fileserver_v2(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2, auth_token=os.environ["NGROK_AUTHTOKEN"])
-        url = ngrok.connect("file:///", pyngrok_config=pyngrok_config).public_url
-        time.sleep(1)
+        url = ngrok.connect("file:///", pyngrok_config=self.pyngrok_config_v2).public_url
 
         # WHEN
-        ngrok.disconnect(url, pyngrok_config)
-        time.sleep(1)
-        tunnels = ngrok.get_tunnels(pyngrok_config)
+        ngrok.disconnect(url, self.pyngrok_config_v2)
+        tunnels = ngrok.get_tunnels(self.pyngrok_config_v2)
 
         # THEN
         # There is still one tunnel left, as we only disconnected the http tunnel
@@ -577,10 +570,9 @@ class TestNgrok(NgrokTestCase):
     def test_get_tunnel_fileserver(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, auth_token=os.environ["NGROK_AUTHTOKEN"])
-        ngrok_tunnel = ngrok.connect("file:///", pyngrok_config=pyngrok_config)
+        ngrok_tunnel = ngrok.connect("file:///", pyngrok_config=self.pyngrok_config_v3)
         time.sleep(1)
-        api_url = ngrok.get_ngrok_process(pyngrok_config).api_url
+        api_url = ngrok.get_ngrok_process(self.pyngrok_config_v3).api_url
 
         # WHEN
         response = ngrok.api_request(f"{api_url}{ngrok_tunnel.uri}", "GET")
@@ -629,8 +621,8 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config_v2_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v2")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"])
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2,
+                                                config_path=config_path)
 
         # WHEN
         http_tunnel = ngrok.connect(name="http-tunnel", pyngrok_config=pyngrok_config)
@@ -660,6 +652,7 @@ class TestNgrok(NgrokTestCase):
                     "proto": "http",
                     "addr": "8000",
                     "subdomain": subdomain,
+                    "circuit_breaker": 0.5,
                     "oauth": {
                         "provider": "google",
                         "allow_domains": ["pyngrok.com"],
@@ -674,8 +667,8 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"])
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
+                                                config_path=config_path)
 
         # WHEN
         http_tunnel = ngrok.connect(name="http-tunnel", pyngrok_config=pyngrok_config)
@@ -713,8 +706,8 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"])
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
+                                                config_path=config_path)
 
         # WHEN
         tls_tunnel = ngrok.connect(name="tls-tunnel", pyngrok_config=pyngrok_config)
@@ -732,7 +725,7 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf(not os.environ.get("NGROK_API_KEY"), "NGROK_API_KEY environment variable not set")
-    def test_ngrok_v3_edge_http_tunnel_definition(self):
+    def test_ngrok_edge_http_tunnel_definition(self):
         # GIVEN
         config = {
             "tunnels": {
@@ -746,13 +739,12 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"],
-                                                api_key=os.environ["NGROK_API_KEY"])
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
+                                                config_path=config_path)
 
         # WHEN
         edge_http_tunnel = ngrok.connect(name="edge-http-tunnel", pyngrok_config=pyngrok_config)
-        tunnels = sorted(ngrok.get_tunnels(pyngrok_config=pyngrok_config), key=lambda x: x.proto)
+        tunnels = ngrok.get_tunnels(pyngrok_config=pyngrok_config)
 
         # THEN
         self.assertEqual(edge_http_tunnel.name, "edge-http-tunnel")
@@ -773,7 +765,7 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf(not os.environ.get("NGROK_API_KEY"), "NGROK_API_KEY environment variable not set")
-    def test_ngrok_v3_edge_tcp_tunnel_definition(self):
+    def test_ngrok_edge_tcp_tunnel_definition(self):
         # GIVEN
         hostname, port = self.tcp_edge_reserved_addr.split(":")
         config = {
@@ -788,13 +780,12 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"],
-                                                api_key=os.environ["NGROK_API_KEY"])
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
+                                                config_path=config_path)
 
         # WHEN
         edge_tcp_tunnel = ngrok.connect(name="edge-tcp-tunnel", pyngrok_config=pyngrok_config)
-        tunnels = sorted(ngrok.get_tunnels(pyngrok_config=pyngrok_config), key=lambda x: x.proto)
+        tunnels = ngrok.get_tunnels(pyngrok_config=pyngrok_config)
 
         # THEN
         self.assertEqual(edge_tcp_tunnel.name, "edge-tcp-tunnel")
@@ -813,7 +804,7 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     @unittest.skipIf(not os.environ.get("NGROK_API_KEY"), "NGROK_API_KEY environment variable not set")
-    def test_ngrok_v3_edge_tls_tunnel_definition(self):
+    def test_ngrok_edge_tls_tunnel_definition(self):
         # GIVEN
         config = {
             "tunnels": {
@@ -827,13 +818,12 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"],
-                                                api_key=os.environ["NGROK_API_KEY"])
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
+                                                config_path=config_path)
 
         # WHEN
         edge_tls_tunnel = ngrok.connect(name="edge-tls-tunnel", pyngrok_config=pyngrok_config)
-        tunnels = sorted(ngrok.get_tunnels(pyngrok_config=pyngrok_config), key=lambda x: x.proto)
+        tunnels = ngrok.get_tunnels(pyngrok_config=pyngrok_config)
 
         # THEN
         self.assertEqual(edge_tls_tunnel.name, "edge-tls-tunnel")
@@ -868,9 +858,8 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"],
-                                                api_key=os.environ["NGROK_API_KEY"])
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
+                                                config_path=config_path)
 
         # WHEN
         with self.assertRaises(PyngrokError):
@@ -891,14 +880,52 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"],
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
+                                                config_path=config_path,
                                                 api_key=None)
         self.assertIsNone(pyngrok_config.api_key)
 
         # WHEN
         with self.assertRaises(PyngrokError):
             ngrok.connect(name="edge-tunnel", pyngrok_config=pyngrok_config)
+
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    def test_ngrok_http_internal_endpoint_pooling(self):
+        # WHEN
+        internal_http_endpoint = ngrok.connect(proto="http", addr="80", domain="pyngrok.internal",
+                                             pooling_enabled=True,
+                                             pyngrok_config=self.pyngrok_config_v3)
+        tunnels = ngrok.get_tunnels(pyngrok_config=self.pyngrok_config_v3)
+
+        # THEN
+        self.assertEqual(internal_http_endpoint.config["addr"], "http://localhost:80")
+        self.assertTrue(internal_http_endpoint.config["addr"].startswith("http://"))
+        self.assertEqual(internal_http_endpoint.proto, "https")
+        self.assertEqual(internal_http_endpoint.public_url, "https://pyngrok.internal")
+        self.assertEqual(len(tunnels), 1)
+        self.assertEqual(tunnels[0].config["addr"], "http://localhost:80")
+        self.assertTrue(tunnels[0].config["addr"].startswith("http://"))
+        self.assertEqual(tunnels[0].proto, "https")
+        self.assertEqual(tunnels[0].public_url, "https://pyngrok.internal")
+
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    def test_ngrok_tls_internal_endpoint_pooling(self):
+        # WHEN
+        tls_internal_endpoint = ngrok.connect(proto="tls", addr="443", domain="pyngrok.internal",
+                                            pooling_enabled=True,
+                                            pyngrok_config=self.pyngrok_config_v3)
+        tunnels = ngrok.get_tunnels(pyngrok_config=self.pyngrok_config_v3)
+
+        # THEN
+        self.assertEqual(tls_internal_endpoint.config["addr"], "tls://localhost:443")
+        self.assertTrue(tls_internal_endpoint.config["addr"].startswith("tls://"))
+        self.assertEqual(tls_internal_endpoint.proto, "tls")
+        self.assertEqual(tls_internal_endpoint.public_url, "tls://pyngrok.internal")
+        self.assertEqual(len(tunnels), 1)
+        self.assertEqual(tunnels[0].config["addr"], "tls://localhost:443")
+        self.assertTrue(tunnels[0].config["addr"].startswith("tls://"))
+        self.assertEqual(tunnels[0].proto, "tls")
+        self.assertEqual(tunnels[0].public_url, "tls://pyngrok.internal")
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_pyngrok_default_with_overrides(self):
@@ -917,8 +944,8 @@ class TestNgrok(NgrokTestCase):
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
         subdomain = generate_name_for_subdomain("pyngrok-temp")
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
-                                                auth_token=os.environ["NGROK_AUTHTOKEN"])
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
+                                                config_path=config_path)
 
         # WHEN
         ngrok_tunnel1 = ngrok.connect(pyngrok_config=pyngrok_config)
@@ -1003,8 +1030,8 @@ class TestNgrok(NgrokTestCase):
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
-                                                api_key="api-key",
-                                                config_path=config_path)
+                                                config_path=config_path,
+                                                api_key="api-key")
 
         # WHEN
         # This test ensures the validity of the config (pyngrok will fail with PyngrokNgrokError if the above is
@@ -1041,8 +1068,8 @@ class TestNgrok(NgrokTestCase):
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
-                                                api_key="api-key",
-                                                config_path=config_path)
+                                                config_path=config_path,
+                                                api_key="api-key")
 
         # WHEN
         # This test ensures the validity of the config (pyngrok will fail with PyngrokNgrokError if the above is
@@ -1085,8 +1112,8 @@ class TestNgrok(NgrokTestCase):
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
-                                                api_key="api-key",
-                                                config_path=config_path)
+                                                config_path=config_path,
+                                                api_key="api-key")
 
         # WHEN
         # This test ensures the validity of the config (pyngrok will fail with PyngrokNgrokError if the above is
@@ -1225,8 +1252,8 @@ class TestNgrok(NgrokTestCase):
 
         installer.install_default_config(config_path, config, ngrok_version="v3", config_version="3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
-                                                api_key="api-key",
-                                                config_path=config_path)
+                                                config_path=config_path,
+                                                api_key="api-key", )
 
         expected_options = config["tunnels"]["my-tunnel"].copy()
         expected_options["name"] = "my-tunnel"

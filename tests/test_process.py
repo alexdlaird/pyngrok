@@ -43,12 +43,14 @@ class TestProcess(NgrokTestCase):
         self.assertTrue(ngrok_process._monitor_thread.is_alive())
 
         ngrok_path_v2_2 = os.path.join(self.config_dir, "v2_2", installer.get_ngrok_bin())
-        pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2, ngrok_path=ngrok_path_v2_2)
+        pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2,
+                                                     ngrok_path=ngrok_path_v2_2)
         self.given_ngrok_installed(pyngrok_config_v2_2)
         config_path_v2_2 = os.path.join(self.config_dir, "config_v2_2.yml")
         installer.install_default_config(config_path_v2_2, {"web_addr": ngrok_process.api_url.lstrip("http://")},
                                          ngrok_version="v2")
-        pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2, config_path=config_path_v2_2,
+        pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2,
+                                                     config_path=config_path_v2_2,
                                                      ngrok_path=ngrok_path_v2_2)
 
         error = None
@@ -83,12 +85,14 @@ class TestProcess(NgrokTestCase):
         self.assertTrue(ngrok_process._monitor_thread.is_alive())
 
         ngrok_path_v3_2 = os.path.join(self.config_dir, "v3_2", installer.get_ngrok_bin())
-        pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3, ngrok_path=ngrok_path_v3_2)
+        pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3,
+                                                     ngrok_path=ngrok_path_v3_2)
         self.given_ngrok_installed(pyngrok_config_v3_2)
         config_path_v3_2 = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path_v3_2, {"web_addr": ngrok_process.api_url.lstrip("http://")},
                                          ngrok_version="v3")
-        pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path_v3_2,
+        pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3,
+                                                     config_path=config_path_v3_2,
                                                      ngrok_path=ngrok_path_v3_2)
 
         error = None
@@ -166,36 +170,42 @@ class TestProcess(NgrokTestCase):
             self.assert_no_zombies()
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
-    def test_multiple_processes_different_binaries_v2(self):
+    def test_multiple_processes_different_binaries(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
 
         self.given_ngrok_installed(self.pyngrok_config_v2)
         config_path_v2_1 = os.path.join(self.config_dir, "config_v2_1.yml")
         installer.install_default_config(config_path_v2_1, {"web_addr": "localhost:4040"}, ngrok_version="v2")
-        pyngrok_config_v2_1 = self.copy_with_updates(self.pyngrok_config_v2, config_path=config_path_v2_1,
+        pyngrok_config_v2_1 = self.copy_with_updates(self.pyngrok_config_v2,
+                                                     config_path=config_path_v2_1,
                                                      ngrok_path=self.pyngrok_config_v2.ngrok_path)
 
         ngrok_path_v2_2 = os.path.join(self.config_dir, "v2_2", installer.get_ngrok_bin())
-        pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2, ngrok_path=ngrok_path_v2_2)
+        pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2,
+                                                     ngrok_path=ngrok_path_v2_2)
         self.given_ngrok_installed(pyngrok_config_v2_2)
         config_path_v2_2 = os.path.join(self.config_dir, "config_v2_2.yml")
         installer.install_default_config(config_path_v2_2, {"web_addr": "localhost:4041"}, ngrok_version="v2")
-        pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2, config_path=config_path_v2_2,
+        pyngrok_config_v2_2 = self.copy_with_updates(self.pyngrok_config_v2,
+                                                     config_path=config_path_v2_2,
                                                      ngrok_path=ngrok_path_v2_2)
 
         self.given_ngrok_installed(self.pyngrok_config_v3)
         config_path_v3_1 = os.path.join(self.config_dir, "config_v3_1.yml")
         installer.install_default_config(config_path_v3_1, {"web_addr": "localhost:4042"}, ngrok_version="v3")
-        pyngrok_config_v3_1 = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path_v3_1,
+        pyngrok_config_v3_1 = self.copy_with_updates(self.pyngrok_config_v3,
+                                                     config_path=config_path_v3_1,
                                                      ngrok_path=self.pyngrok_config_v3.ngrok_path)
 
         ngrok_path_v3_2 = os.path.join(self.config_dir, "v3_2", installer.get_ngrok_bin())
-        pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3, ngrok_path=ngrok_path_v3_2)
+        pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3,
+                                                     ngrok_path=ngrok_path_v3_2)
         self.given_ngrok_installed(pyngrok_config_v3_2)
         config_path_v3_2 = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path_v3_2, {"web_addr": "localhost:4043"}, ngrok_version="v3")
-        pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path_v3_2,
+        pyngrok_config_v3_2 = self.copy_with_updates(self.pyngrok_config_v3,
+                                                     config_path=config_path_v3_2,
                                                      ngrok_path=ngrok_path_v3_2)
 
         # WHEN
@@ -279,7 +289,8 @@ class TestProcess(NgrokTestCase):
         self.given_ngrok_installed(self.pyngrok_config_v3)
 
         # WHEN
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, start_new_session=True)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
+                                                start_new_session=True)
         try:
             process._start_process(pyngrok_config=pyngrok_config)
         except TypeError:
@@ -315,7 +326,8 @@ class TestProcess(NgrokTestCase):
     def test_no_monitor_thread(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v3)
-        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, monitor_thread=False)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3,
+                                                monitor_thread=False)
 
         # WHEN
         ngrok.connect(pyngrok_config=pyngrok_config)
