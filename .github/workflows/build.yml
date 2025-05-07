@@ -20,7 +20,6 @@ jobs:
     name: Initialize test resources
 
     env:
-      NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
       NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
       NGROK_SUBDOMAIN: ${{ github.repository_owner }}
 
@@ -104,6 +103,9 @@ jobs:
     if: always()
 
     runs-on: ubuntu-latest
+
+    env:
+      NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
 
     steps:
       - uses: actions/checkout@v4
