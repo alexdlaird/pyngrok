@@ -1,4 +1,4 @@
-.PHONY: all install nopyc clean create-test-resources delete-test-resources test docs check local validate-release test-downstream upload
+.PHONY: all install nopyc clean create-test-resources delete-test-resources delete-temp-test-resources test docs check local validate-release test-downstream upload
 
 SHELL := /usr/bin/env bash
 PYTHON_BIN ?= python
