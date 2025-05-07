@@ -435,7 +435,7 @@ class TestNgrok(NgrokTestCase):
     def test_regional_tcp_v2(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        subdomain = generate_name_for_subdomain("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok-temp")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v2, auth_token=os.environ["NGROK_AUTHTOKEN"],
                                                 region="au")
 
@@ -514,7 +514,7 @@ class TestNgrok(NgrokTestCase):
     def test_regional_subdomain(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)
-        subdomain = generate_name_for_subdomain("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok-temp")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, auth_token=os.environ["NGROK_AUTHTOKEN"],
                                                 region="au")
 
@@ -611,7 +611,7 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_v2(self):
-        subdomain = generate_name_for_subdomain("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok-temp")
 
         # GIVEN
         config = {
@@ -651,7 +651,7 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_v3(self):
-        subdomain = generate_name_for_subdomain("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok-temp")
 
         # GIVEN
         config = {
@@ -902,7 +902,7 @@ class TestNgrok(NgrokTestCase):
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_tunnel_definitions_pyngrok_default_with_overrides(self):
-        subdomain = generate_name_for_subdomain("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok-temp")
 
         # GIVEN
         config = {
@@ -916,7 +916,7 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
         installer.install_default_config(config_path, config, ngrok_version="v3")
-        subdomain = generate_name_for_subdomain("pyngrok")
+        subdomain = generate_name_for_subdomain("pyngrok-temp")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config_v3, config_path=config_path,
                                                 auth_token=os.environ["NGROK_AUTHTOKEN"])
 
