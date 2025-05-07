@@ -24,7 +24,7 @@ def delete_test_resources():
     pyngrok_config = PyngrokConfig()
     ngrok.install_ngrok(pyngrok_config)
 
-    print(f"Pruning stale test resources from the ngrok API that have the description \"{description}\" ...")
+    print(f"Deleting test resources from the ngrok API that have the description \"{description}\" ...")
 
     try:
         output = capture_run_process(pyngrok_config.ngrok_path,

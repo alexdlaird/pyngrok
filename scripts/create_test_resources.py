@@ -68,8 +68,8 @@ def create_test_resources(subdomain_prefix="pyngrok-init"):
         print("An error occurred: " + e.output.decode("utf-8"))
         sys.exit(1)
 
-    print("--> The following ngrok resources have been provisioned, set these GitHub secrets to reduce the chances "
-          "of rate limiting in CI workflows")
+    print("--> The following ngrok resources have been provisioned. Set these as GitHub secrets to reduce rate limiting"
+          "when running a build matrix.")
 
     print(f"export NGROK_HOSTNAME={ngrok_hostname}")
 
