@@ -101,11 +101,11 @@ jobs:
   cleanup:
     name: Cleanup test resources
     needs: [validate, build]
+    if: always()
 
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
       - name: Cleanup test resources
-        if: always()
         run: make prune-test-resources
