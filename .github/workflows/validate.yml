@@ -32,6 +32,7 @@ jobs:
       - name: Test downstream
         run: make test-downstream
       - name: Cleanup temporary test resources
+        continue-on-error: true
         run: make delete-temp-test-resources
       - name: Upload test coverage
         uses: codecov/codecov-action@v4
