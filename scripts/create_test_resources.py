@@ -90,7 +90,7 @@ def create_test_resources(temp=False):
 
     for key, value in env_vars.items():
         print(f"export {key}={value}")
-        if shutil.which("gh"):
+        if not temp and shutil.which("gh"):
             subprocess.run(["gh", "secret", "set", key, "--body", value])
         # Also set the values in os.environ, so if a testcase is setting up its own resources, it can also tear them
         # down at the end. The exception is NGROK_HOSTNAME, since it is used as the flag to determine if resources
