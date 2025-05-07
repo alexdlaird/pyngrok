@@ -8,24 +8,31 @@ import json
 import os
 import sys
 import time
+from random import randint
+from subprocess import CalledProcessError
+
 from pyngrok import ngrok
 from pyngrok.conf import PyngrokConfig
 from pyngrok.process import capture_run_process
-from random import randint
-from subprocess import CalledProcessError
 
 description = "Created by pyngrok test"
 
 
-def init_test_resources():
+def create_test_resources():
+    """
+    Provisioning test resources with the ngrok API, and then setting secrets in the CI environment so the resources are
+    shared across tests, can greatly reduce the chances of being rate limited when running a build matrix.
+    """
+    ensure_api_key_present()
+
     pyngrok_config = PyngrokConfig()
     ngrok.install_ngrok(pyngrok_config)
 
-    ngrok_subdomain = os.environ.get("NGROK_SUBDOMAIN", getpass.getuser())
-    ngrok_parent_domain = f"{ngrok_subdomain}.ngrok.dev"
+    subdomain = os.environ.get("NGROK_SUBDOMAIN", getpass.getuser())
+    ngrok_hostname = f"{subdomain}.ngrok.dev"
 
     try:
-        reserve_ngrok_domain(pyngrok_config, ngrok_parent_domain)
+        reserve_ngrok_domain(pyngrok_config, ngrok_hostname)
     except CalledProcessError as e:
         output = e.output.decode("utf-8")
         if "domain is already reserved" not in output:
@@ -34,7 +41,7 @@ def init_test_resources():
 
     try:
         subdomain = generate_name_for_subdomain("pyngrok-init")
-        hostname = f"{subdomain}.{ngrok_parent_domain}"
+        hostname = f"{subdomain}.{ngrok_hostname}"
         reserved_domain = reserve_ngrok_domain(pyngrok_config, hostname)
 
         tcp_edge_reserved_addr = reserve_ngrok_addr(pyngrok_config)
@@ -43,7 +50,7 @@ def init_test_resources():
                                      *tcp_edge_reserved_addr["addr"].split(":"))
 
         subdomain = generate_name_for_subdomain("pyngrok-init")
-        http_edge_hostname = f"{subdomain}.{ngrok_parent_domain}"
+        http_edge_hostname = f"{subdomain}.{ngrok_hostname}"
         http_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config,
                                                          http_edge_hostname)
         time.sleep(0.5)
@@ -51,7 +58,7 @@ def init_test_resources():
                                       http_edge_hostname, 443)
 
         subdomain = generate_name_for_subdomain("pyngrok-init")
-        tls_edge_hostname = f"{subdomain}.{ngrok_parent_domain}"
+        tls_edge_hostname = f"{subdomain}.{ngrok_hostname}"
         tls_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config,
                                                         tls_edge_hostname)
         time.sleep(0.5)
@@ -61,7 +68,10 @@ def init_test_resources():
         print("An error occurred: " + e.output.decode("utf-8"))
         sys.exit(1)
 
-    print(f"export NGROK_PARENT_DOMAIN={ngrok_parent_domain}")
+    print("--> The following ngrok resources have been provisioned, set these GitHub secrets to reduce the chances "
+          "of rate limiting in CI workflows")
+
+    print(f"export NGROK_HOSTNAME={ngrok_hostname}")
 
     print(f"export NGROK_DOMAIN={reserved_domain['domain']}")
     os.environ["NGROK_DOMAIN"] = reserved_domain["domain"]
@@ -81,16 +91,11 @@ def init_test_resources():
     os.environ["NGROK_TLS_EDGE_DOMAIN"] = tls_edge_reserved_domain["domain"]
     os.environ["NGROK_TLS_EDGE_ID"] = tls_edge["id"]
 
-    if os.environ.get("GITHUB_ACTIONS") == "true":
-        with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-            f.write(f"NGROK_PARENT_DOMAIN={ngrok_parent_domain}\n")
-            f.write(f"NGROK_DOMAIN={reserved_domain['domain']}\n")
-            f.write(f"NGROK_TCP_EDGE_ADDR={tcp_edge_reserved_addr['addr']}\n")
-            f.write(f"NGROK_TCP_EDGE_ID={tcp_edge['id']}\n")
-            f.write(f"NGROK_HTTP_EDGE_DOMAIN={http_edge_reserved_domain['domain']}\n")
-            f.write(f"NGROK_HTTP_EDGE_ID={http_edge['id']}\n")
-            f.write(f"NGROK_TLS_EDGE_DOMAIN={tls_edge_reserved_domain['domain']}\n")
-            f.write(f"NGROK_TLS_EDGE_ID={tls_edge['id']}")
+
+def ensure_api_key_present():
+    if "NGROK_API_KEY" not in os.environ:
+        print("An error occurred: NGROK_API_KEY environment variable must be set to use this script.")
+        sys.exit(1)
 
 
 def generate_name_for_subdomain(prefix):
@@ -121,4 +126,4 @@ def create_ngrok_edge(pyngrok_config, proto, domain, port):
 
 
 if __name__ == "__main__":
-    init_test_resources()
+    create_test_resources()

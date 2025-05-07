@@ -16,31 +16,6 @@ concurrency:
   group: pyngrok-singleton
 
 jobs:
-  init:
-    name: Initialize test resources
-
-    env:
-      NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
-      NGROK_SUBDOMAIN: ${{ github.repository_owner }}
-
-    runs-on: ubuntu-latest
-
-    outputs:
-      NGROK_PARENT_DOMAIN: ${{ steps.init.outputs.NGROK_PARENT_DOMAIN }}
-      NGROK_DOMAIN: ${{ steps.init.outputs.NGROK_DOMAIN }}
-      NGROK_TCP_EDGE_ADDR: ${{ steps.init.outputs.NGROK_TCP_EDGE_ADDR }}
-      NGROK_TCP_EDGE_ID: ${{ steps.init.outputs.NGROK_TCP_EDGE_ID }}
-      NGROK_HTTP_EDGE_DOMAIN: ${{ steps.init.outputs.NGROK_HTTP_EDGE_DOMAIN }}
-      NGROK_HTTP_EDGE_ID: ${{ steps.init.outputs.NGROK_HTTP_EDGE_ID }}
-      NGROK_TLS_EDGE_DOMAIN: ${{ steps.init.outputs.NGROK_TLS_EDGE_DOMAIN }}
-      NGROK_TLS_EDGE_ID: ${{ steps.init.outputs.NGROK_TLS_EDGE_ID }}
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Initialize test resources
-        id: init
-        run: make init-test-resources
-
   validate:
     name: Validate
     uses: ./.github/workflows/validate.yml
@@ -48,14 +23,13 @@ jobs:
 
   build:
     name: Build
-    needs: init
 
     env:
       FORCE_COLOR: 1
       PYTHONDONTWRITEBYTECODE: 1
       NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
       NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
-      NGROK_PARENT_DOMAIN: ${{ needs.init.outputs.NGROK_PARENT_DOMAIN }}
+      NGROK_HOSTNAME: ${{ needs.init.outputs.NGROK_HOSTNAME }}
       NGROK_DOMAIN: ${{ needs.init.outputs.NGROK_DOMAIN }}
       NGROK_TCP_EDGE_ADDR: ${{ needs.init.outputs.NGROK_TCP_EDGE_ADDR }}
       NGROK_TCP_EDGE_ID: ${{ needs.init.outputs.NGROK_TCP_EDGE_ID }}
@@ -96,18 +70,3 @@ jobs:
         run: make install
       - name: Test
         run: make test
-
-  cleanup:
-    name: Cleanup test resources
-    needs: [validate, build]
-    if: always()
-
-    runs-on: ubuntu-latest
-
-    env:
-      NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Cleanup test resources
-        run: make prune-test-resources

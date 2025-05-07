@@ -1,4 +1,4 @@
-.PHONY: all install nopyc clean init-test-resources prune-test-resources test docs check local validate-release test-downstream upload
+.PHONY: all install nopyc clean create-test-resources delete-test-resources test docs check local validate-release test-downstream upload
 
 SHELL := /usr/bin/env bash
 PYTHON_BIN ?= python
@@ -23,11 +23,11 @@ nopyc:
 clean: nopyc
 	rm -rf build dist *.egg-info $(PROJECT_VENV) tests/.*ngrok pyngrok-example-flask
 
-init-test-resources: local
-	$(PYTHON_BIN) scripts/init_test_resources.py
+create-test-resources: local
+	$(PYTHON_BIN) scripts/create_test_resources.py
 
-prune-test-resources: local
-	$(PYTHON_BIN) scripts/prune_test_resources.py
+delete-test-resources: local
+	$(PYTHON_BIN) scripts/delete_test_resources.py
 
 test: install
 	@( \

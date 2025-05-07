@@ -34,10 +34,10 @@ class TestNgrok(NgrokTestCase):
                                                         config_path=testcase_config_path)
             cls.given_ngrok_installed(cls.testcase_pyngrok_config)
 
-            # NGROK_PARENT_DOMAIN is set when init_test_resources.py is done provisioning test resources, so if it
+            # NGROK_HOSTNAME is set when init_test_resources.py is done provisioning test resources, so if it
             # hasn't been set, we need to do that now. When running tests on CI, using the init script can protect
             # against rate limiting, as this allows API resources to be shared across the build matrix.
-            if not os.environ.get("NGROK_PARENT_DOMAIN"):
+            if not os.environ.get("NGROK_HOSTNAME"):
                 init_test_resources()
 
             cls.reserved_domain = os.environ["NGROK_DOMAIN"]
@@ -50,10 +50,10 @@ class TestNgrok(NgrokTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        # NGROK_PARENT_DOMAIN is set when init_test_resources.py is done provisioning test resources, in which case
+        # NGROK_HOSTNAME is set when init_test_resources.py is done provisioning test resources, in which case
         # prune_test_resources.py should also be called to clean up test resources after all tests complete. Otherwise,
         # this testcase set up the resources, so it should also tear them down.
-        if os.environ.get("NGROK_API_KEY") and not os.environ.get("NGROK_PARENT_DOMAIN"):
+        if os.environ.get("NGROK_API_KEY") and not os.environ.get("NGROK_HOSTNAME"):
             try:
                 prune_test_resources()
             except Exception:

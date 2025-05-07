@@ -12,7 +12,6 @@ jobs:
       NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
       NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
       NGROK_SUBDOMAIN: ${{ github.repository_owner }}
-      NGROK_SKIP_TEST_RESOURCE_TEARDOWN: true
 
     runs-on: ubuntu-latest
 
