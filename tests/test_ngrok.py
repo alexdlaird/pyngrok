@@ -893,8 +893,8 @@ class TestNgrok(NgrokTestCase):
     def test_ngrok_http_internal_endpoint_pooling(self):
         # WHEN
         internal_http_endpoint = ngrok.connect(proto="http", addr="80", domain="pyngrok.internal",
-                                             pooling_enabled=True,
-                                             pyngrok_config=self.pyngrok_config_v3)
+                                               pooling_enabled=True,
+                                               pyngrok_config=self.pyngrok_config_v3)
         tunnels = ngrok.get_tunnels(pyngrok_config=self.pyngrok_config_v3)
 
         # THEN
@@ -912,8 +912,8 @@ class TestNgrok(NgrokTestCase):
     def test_ngrok_tls_internal_endpoint_pooling(self):
         # WHEN
         tls_internal_endpoint = ngrok.connect(proto="tls", addr="443", domain="pyngrok.internal",
-                                            pooling_enabled=True,
-                                            pyngrok_config=self.pyngrok_config_v3)
+                                              pooling_enabled=True,
+                                              pyngrok_config=self.pyngrok_config_v3)
         tunnels = ngrok.get_tunnels(pyngrok_config=self.pyngrok_config_v3)
 
         # THEN
