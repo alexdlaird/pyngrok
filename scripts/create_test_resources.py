@@ -75,20 +75,24 @@ def create_test_resources():
 
     print(f"export NGROK_DOMAIN={reserved_domain['domain']}")
     os.environ["NGROK_DOMAIN"] = reserved_domain["domain"]
+    os.environ["NGROK_DOMAIN_ID"] = reserved_domain["id"]
 
     print(f"export NGROK_TCP_EDGE_ADDR={tcp_edge_reserved_addr['addr']}")
     print(f"export NGROK_TCP_EDGE_ID={tcp_edge['id']}")
     os.environ["NGROK_TCP_EDGE_ADDR"] = tcp_edge_reserved_addr["addr"]
+    os.environ["NGROK_TCP_EDGE_ADDR_ID"] = tcp_edge_reserved_addr["id"]
     os.environ["NGROK_TCP_EDGE_ID"] = tcp_edge["id"]
 
     print(f"export NGROK_HTTP_EDGE_DOMAIN={http_edge_reserved_domain['domain']}")
     print(f"export NGROK_HTTP_EDGE_ID={http_edge['id']}")
     os.environ["NGROK_HTTP_EDGE_DOMAIN"] = http_edge_reserved_domain["domain"]
+    os.environ["NGROK_HTTP_EDGE_DOMAIN_ID"] = http_edge_reserved_domain["id"]
     os.environ["NGROK_HTTP_EDGE_ID"] = http_edge["id"]
 
     print(f"export NGROK_TLS_EDGE_DOMAIN={tls_edge_reserved_domain['domain']}")
     print(f"export NGROK_TLS_EDGE_ID={tls_edge['id']}")
     os.environ["NGROK_TLS_EDGE_DOMAIN"] = tls_edge_reserved_domain["domain"]
+    os.environ["NGROK_TLS_EDGE_DOMAIN_ID"] = tls_edge_reserved_domain["id"]
     os.environ["NGROK_TLS_EDGE_ID"] = tls_edge["id"]
 
 

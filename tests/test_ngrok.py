@@ -18,7 +18,8 @@ from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokError, PyngrokNgrokError, PyngrokNgrokHTTPError, PyngrokNgrokURLError, \
     PyngrokSecurityError
 from scripts.create_test_resources import generate_name_for_subdomain, create_test_resources
-from scripts.delete_test_resources import delete_test_resources
+from scripts.delete_test_resources import delete_ngrok_edge, release_ngrok_addr, \
+    release_ngrok_domain
 from tests.testcase import NgrokTestCase
 
 
@@ -40,6 +41,11 @@ class TestNgrok(NgrokTestCase):
             if not os.environ.get("NGROK_HOSTNAME"):
                 create_test_resources()
 
+                cls.reserved_domain_id = os.environ["NGROK_DOMAIN_ID"]
+                cls.tcp_edge_reserved_addr_id = os.environ["NGROK_TCP_EDGE_ADDR_ID"]
+                cls.http_edge_reserved_domain_id = os.environ["NGROK_HTTP_EDGE_DOMAIN_ID"]
+                cls.tls_edge_reserved_domain_id = os.environ["NGROK_TLS_EDGE_DOMAIN_ID"]
+
             cls.reserved_domain = os.environ["NGROK_DOMAIN"]
             cls.tcp_edge_reserved_addr = os.environ["NGROK_TCP_EDGE_ADDR"]
             cls.tcp_edge_id = os.environ["NGROK_TCP_EDGE_ID"]
@@ -55,7 +61,13 @@ class TestNgrok(NgrokTestCase):
         # this testcase set up the resources, so it should also tear them down.
         if os.environ.get("NGROK_API_KEY") and not os.environ.get("NGROK_HOSTNAME"):
             try:
-                delete_test_resources()
+                release_ngrok_domain(cls.testcase_pyngrok_config, cls.reserved_domain_id)
+                release_ngrok_addr(cls.testcase_pyngrok_config, cls.tcp_edge_reserved_addr_id)
+                release_ngrok_domain(cls.testcase_pyngrok_config, cls.http_edge_reserved_domain_id)
+                release_ngrok_domain(cls.testcase_pyngrok_config, cls.tls_edge_reserved_domain_id)
+                delete_ngrok_edge(cls.testcase_pyngrok_config, cls.tcp_edge_id)
+                delete_ngrok_edge(cls.testcase_pyngrok_config, cls.http_edge_id)
+                delete_ngrok_edge(cls.testcase_pyngrok_config, cls.tls_edge_id)
             except Exception:
                 print(traceback.format_exc())
                 print("--> An error occurred while cleaning up test resources. Run scripts/prune_test_resources.py to "
