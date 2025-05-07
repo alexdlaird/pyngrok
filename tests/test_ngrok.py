@@ -17,8 +17,8 @@ from pyngrok import __version__, installer, ngrok, process
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokError, PyngrokNgrokError, PyngrokNgrokHTTPError, PyngrokNgrokURLError, \
     PyngrokSecurityError
-from scripts.init_test_resources import generate_name_for_subdomain, init_test_resources
-from scripts.prune_test_resources import prune_test_resources
+from scripts.create_test_resources import generate_name_for_subdomain, create_test_resources
+from scripts.delete_test_resources import delete_test_resources
 from tests.testcase import NgrokTestCase
 
 
@@ -38,7 +38,7 @@ class TestNgrok(NgrokTestCase):
             # hasn't been set, we need to do that now. When running tests on CI, using the init script can protect
             # against rate limiting, as this allows API resources to be shared across the build matrix.
             if not os.environ.get("NGROK_HOSTNAME"):
-                init_test_resources()
+                create_test_resources()
 
             cls.reserved_domain = os.environ["NGROK_DOMAIN"]
             cls.tcp_edge_reserved_addr = os.environ["NGROK_TCP_EDGE_ADDR"]
@@ -55,7 +55,7 @@ class TestNgrok(NgrokTestCase):
         # this testcase set up the resources, so it should also tear them down.
         if os.environ.get("NGROK_API_KEY") and not os.environ.get("NGROK_HOSTNAME"):
             try:
-                prune_test_resources()
+                delete_test_resources()
             except Exception:
                 print(traceback.format_exc())
                 print("--> An error occurred while cleaning up test resources. Run scripts/prune_test_resources.py to "
