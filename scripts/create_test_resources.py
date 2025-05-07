@@ -6,6 +6,8 @@ __license__ = "MIT"
 import getpass
 import json
 import os
+import shutil
+import subprocess
 import sys
 import time
 from random import randint
@@ -71,29 +73,33 @@ def create_test_resources(subdomain_prefix="pyngrok-init"):
     print("--> The following ngrok resources have been provisioned. Set these as GitHub secrets to reduce rate "
           "limiting when running a build matrix.")
 
-    print(f"export NGROK_HOSTNAME={ngrok_hostname}")
+    env_vars = {
+        "NGROK_HOSTNAME": ngrok_hostname,
+        "NGROK_DOMAIN": reserved_domain["domain"],
+        "NGROK_TCP_EDGE_ADDR": tcp_edge_reserved_addr["addr"],
+        "NGROK_TCP_EDGE_ID": tcp_edge["id"],
+        "NGROK_HTTP_EDGE_DOMAIN": http_edge_reserved_domain["domain"],
+        "NGROK_HTTP_EDGE_ID": http_edge["id"],
+        "NGROK_TLS_EDGE_DOMAIN": tls_edge_reserved_domain["domain"],
+        "NGROK_TLS_EDGE_ID": tls_edge["id"],
+    }
 
-    print(f"export NGROK_DOMAIN={reserved_domain['domain']}")
-    os.environ["NGROK_DOMAIN"] = reserved_domain["domain"]
+    for key, value in env_vars.items():
+        print(f"export {key}={value}")
+        if shutil.which("gh"):
+            subprocess.run(["gh", "secret", "set", key, "--body", value])
+        # Also set the values in os.environ, so if a testcase is setting up its own resources, it can also tear them
+        # down at the end. The exception is NGROK_HOSTNAME, since it is used as the flag to determine if resources
+        # were set up to be shared across a build matrix or not (which would indicate the test did not set up its own
+        # resources, and thus also shouldn't tear them down when finished).
+        if key != "NGROK_HOSTNAME":
+            os.environ[key] = value
+
+    # Additional ID vars are needed so a testcase that set up its own resources can also tear them down
     os.environ["NGROK_DOMAIN_ID"] = reserved_domain["id"]
-
-    print(f"export NGROK_TCP_EDGE_ADDR={tcp_edge_reserved_addr['addr']}")
-    print(f"export NGROK_TCP_EDGE_ID={tcp_edge['id']}")
-    os.environ["NGROK_TCP_EDGE_ADDR"] = tcp_edge_reserved_addr["addr"]
     os.environ["NGROK_TCP_EDGE_ADDR_ID"] = tcp_edge_reserved_addr["id"]
-    os.environ["NGROK_TCP_EDGE_ID"] = tcp_edge["id"]
-
-    print(f"export NGROK_HTTP_EDGE_DOMAIN={http_edge_reserved_domain['domain']}")
-    print(f"export NGROK_HTTP_EDGE_ID={http_edge['id']}")
-    os.environ["NGROK_HTTP_EDGE_DOMAIN"] = http_edge_reserved_domain["domain"]
     os.environ["NGROK_HTTP_EDGE_DOMAIN_ID"] = http_edge_reserved_domain["id"]
-    os.environ["NGROK_HTTP_EDGE_ID"] = http_edge["id"]
-
-    print(f"export NGROK_TLS_EDGE_DOMAIN={tls_edge_reserved_domain['domain']}")
-    print(f"export NGROK_TLS_EDGE_ID={tls_edge['id']}")
-    os.environ["NGROK_TLS_EDGE_DOMAIN"] = tls_edge_reserved_domain["domain"]
     os.environ["NGROK_TLS_EDGE_DOMAIN_ID"] = tls_edge_reserved_domain["id"]
-    os.environ["NGROK_TLS_EDGE_ID"] = tls_edge["id"]
 
 
 def ensure_api_key_present():
