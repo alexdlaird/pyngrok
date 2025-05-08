@@ -329,9 +329,9 @@ Setting the ``authtoken`` or ``api_key``
 ----------------------------------------
 
 Running ``ngrok`` with an auth token and/or API key enables additional features available on our account (for
-instance, the ability to open multiple tunnels concurrently, custom domains, use of `ngrok's Edges <https://ngrok.com/docs/universal-gateway/edges/>`_),
-etc. We can obtain our auth token from the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it to
-``ngrok``'s config file.
+instance, the ability to open multiple tunnels concurrently, custom domains, use of
+`Internal Endpoints <https://ngrok.com/docs/universal-gateway/internal-endpoints/>`_, etc). We can obtain our
+auth token from the `ngrok dashboard <https://dashboard.ngrok.com>`_ and install it to ``ngrok``'s config file.
 
 .. code-block:: python
 
@@ -340,17 +340,18 @@ etc. We can obtain our auth token from the `ngrok dashboard <https://dashboard.n
     # Setting an auth token allows us to open multiple
     # tunnels at the same time
     ngrok.set_auth_token("<NGROK_AUTHTOKEN>")
-    # Setting an API key allows us to use labeled tunnels
+    # Setting an API key allows us to use things like Internal Endpoints
     ngrok.set_api_key("<NGROK_API_KEY>")
 
     # <NgrokTunnel: "https://<public_sub1>.ngrok.io" -> "http://localhost:80">
     ngrok_tunnel1 = ngrok.connect()
     # <NgrokTunnel: "https://<public_sub2>.ngrok.io" -> "http://localhost:8000">
     ngrok_tunnel2 = ngrok.connect("8000")
-    # <NgrokTunnel: "https://<public_sub3>.ngrok.io" -> "http://localhost:??">
-    ngrok_tunnel2 = ngrok.connect(name="some-edge-tunnel")
-
-For a more complete example of using labeled tunnels with the API key, see `the section on ngrok's Edges <#ngrok-s-edges>`_.
+    # <NgrokTunnel: "https://some-endpoint.internall" -> "http://localhost:9000">
+    ngrok_tunnel3 = ngrok.connect(name="some-internal-endpoint",
+                                  addr="9000",
+                                  domain="some-endpoint.internal",
+                                  pooling_enabled=True)
 
 We can also override ``ngrok``'s installed auth token or API key using :class:`~pyngrok.conf.PyngrokConfig`.
 

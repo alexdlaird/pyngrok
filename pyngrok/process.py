@@ -202,7 +202,7 @@ def set_auth_token(pyngrok_config: PyngrokConfig,
 def set_api_key(pyngrok_config: PyngrokConfig,
                 key: str) -> None:
     """
-    Set the ``ngrok`` API key in the config file, enabling more features (for instance, labeled tunnels).
+    Set the ``ngrok`` API key in the config file, enabling more features (for instance, Internal Endpoints).
 
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary.
     :param key: The API key to set.
