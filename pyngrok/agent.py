@@ -24,13 +24,13 @@ class NgrokAgent:
         self.data: Dict[str, Any] = data
 
         #: The status of the agent.
-        self.status: str = data.get("status")
+        self.status: Optional[str] = data.get("status")
         #: The version of the agent.
-        self.agent_version: str = data.get("agent_version")
+        self.agent_version: Optional[str] = data.get("agent_version")
         #: The session details for the agent.
-        self.session: Dict[str, Any] = data.get("session")
+        self.session: Any = data.get("session")
         #: The URI of the agent.
-        self.uri: str = data.get("uri")
+        self.uri: Optional[str] = data.get("uri")
 
     def __repr__(self) -> str:
         return f"<NgrokAgent: \"{self.uri}\">"
@@ -50,14 +50,14 @@ class CapturedRequest:
         self.data: Dict[str, Any] = data
 
         #: The URI of the captured request.
-        self.id: str = data.get("id")
-        self.uri: str = data.get("uri")
-        self.tunnel_name: str = data.get("tunnel_name")
-        self.remote_addr: str = data.get("remote_addr")
-        self.start: str = data.get("start")
-        self.duration: str = data.get("duration")
-        self.request: Dict[str, Any] = data.get("request")
-        self.response: Dict[str, Any] = data.get("response")
+        self.id: Optional[str] = data.get("id")
+        self.uri: Optional[str] = data.get("uri")
+        self.tunnel_name: Optional[str] = data.get("tunnel_name")
+        self.remote_addr: Optional[str] = data.get("remote_addr")
+        self.start: Optional[str] = data.get("start")
+        self.duration: Optional[int] = data.get("duration")
+        self.request: Any = data.get("request")
+        self.response: Any = data.get("response")
 
     def __repr__(self) -> str:
         return f"<CapturedRequest: \"{self.id}\">"
@@ -89,10 +89,10 @@ def get_agent_status(pyngrok_config: Optional[PyngrokConfig] = None, ) -> NgrokA
                                   timeout=pyngrok_config.request_timeout))
 
 
-def get_requests(params: Optional[Dict[str, Any]] = None,
+def get_requests(tunnel_name: Optional[str] = None,
                  pyngrok_config: Optional[PyngrokConfig] = None, ) -> List[CapturedRequest]:
     """
-    Get a list of requests made to the tunnel.
+    Get the list of requests made to either all tunnels, or the given tunnel name.
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
@@ -100,13 +100,14 @@ def get_requests(params: Optional[Dict[str, Any]] = None,
     If ``ngrok`` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
 
-    :param params: The URL parameters.
+    :param tunnel_name: The tunnel name to filter by.
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
     :return: The requests made to the tunnels.
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
+    params = {"tunnel_name": tunnel_name} if tunnel_name else None
 
     api_url = get_ngrok_process(pyngrok_config).api_url
 
@@ -121,7 +122,7 @@ def get_requests(params: Optional[Dict[str, Any]] = None,
 def get_request(request_id: str,
                 pyngrok_config: Optional[PyngrokConfig] = None, ) -> CapturedRequest:
     """
-    Get the given request made to the tunnel.
+    Get the given request made.
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
@@ -147,7 +148,7 @@ def replay_request(request_id: str,
                    tunnel_name: Optional[str] = None,
                    pyngrok_config: Optional[PyngrokConfig] = None, ) -> None:
     """
-    Replay a given request through the tunnel.
+    Replay a given request through its original tunnel, or through a different given tunnel.
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
@@ -156,8 +157,7 @@ def replay_request(request_id: str,
     :class:`~pyngrok.conf.PyngrokConfig`.
 
     :param request_id: The request ID.
-    :param tunnel_name: The name of the tunnel to replay the request against, or ``None`` to replay against the
-        original tunnel.
+    :param tunnel_name: The name of tunnel to replay the request through.
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
     """
@@ -173,7 +173,7 @@ def replay_request(request_id: str,
 
 def delete_requests(pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     """
-    Delete request history on the tunnel.
+    Delete request history.
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.

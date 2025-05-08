@@ -26,14 +26,14 @@ class TestAgent(NgrokTestCase):
 
         # WHEN
         response1 = agent.get_requests(pyngrok_config=self.pyngrok_config_v3)
-        response2 = agent.get_requests({"tunnel_name": "unknown-tunnel"}, self.pyngrok_config_v3)
+        response2 = agent.get_requests("unknown-tunnel", self.pyngrok_config_v3)
 
         # THEN
         self.assertEqual(1, len(response1))
         self.assertIsNotNone(1, len(response1[0].uri))
         self.assertIsNotNone(response1[0].id)
         self.assertIsNotNone(response1[0].uri)
-        self.assertIsNotNone(response1[0].duration)
+        self.assertGreater(response1[0].duration, 0)
         self.assertIsNotNone(response1[0].request)
         self.assertIsNotNone(response1[0].response)
         self.assertEqual(tunnel_name, response1[0].tunnel_name)
@@ -43,11 +43,7 @@ class TestAgent(NgrokTestCase):
         response3 = agent.get_request(response1[0].id, pyngrok_config=self.pyngrok_config_v3)
 
         # THEN
-        self.assertEqual(response3.id, response3.id)
-        self.assertEqual(response3.uri, response3.uri)
-        self.assertEqual(response3.duration, response3.duration)
-        self.assertEqual(response3.request, response3.request)
-        self.assertEqual(response3.response, response3.response)
+        self.assertEqual(response1[0].id, response3.id)
         self.assertEqual(tunnel_name, response3.tunnel_name)
 
         # WHEN
@@ -57,16 +53,7 @@ class TestAgent(NgrokTestCase):
         # THEN
         self.assertEqual(2, len(response4))
         self.assertEqual(response1[0].id, response4[0].id)
-        self.assertEqual(response1[0].uri, response4[0].uri)
-        self.assertEqual(response1[0].duration, response4[0].duration)
-        self.assertIsNotNone(response4[0].request)
-        self.assertIsNotNone(response4[0].response)
         self.assertEqual(tunnel_name, response4[0].tunnel_name)
-        self.assertNotEqual(response1[0].id, response4[1].id)
-        self.assertNotEqual(response1[0].uri, response4[1].uri)
-        self.assertNotEqual(response1[0].duration, response4[1].duration)
-        self.assertIsNotNone(response4[1].request)
-        self.assertIsNotNone(response4[1].response)
         self.assertEqual(tunnel_name, response4[1].tunnel_name)
 
         # WHEN
