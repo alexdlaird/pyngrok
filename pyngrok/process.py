@@ -171,7 +171,8 @@ class NgrokProcess:
 def set_auth_token(pyngrok_config: PyngrokConfig,
                    token: str) -> None:
     """
-    See :func:`~pyngrok.ngrok.set_auth_token`.
+    Set the ``ngrok`` auth token in the config file to streamline access to more features (for instance, multiple
+    concurrent tunnels, custom domains, etc.).
 
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary.
     :param token: The auth token to set.
@@ -201,7 +202,8 @@ def set_auth_token(pyngrok_config: PyngrokConfig,
 def set_api_key(pyngrok_config: PyngrokConfig,
                 key: str) -> None:
     """
-    See :func:`~pyngrok.ngrok.set_api_key`.
+    Set the ``ngrok`` API key in the config file to enable access to more features (for instance,
+    `Internal Endpoints <https://ngrok.com/docs/universal-gateway/internal-endpoints/>`_).
 
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary.
     :param key: The API key to set.

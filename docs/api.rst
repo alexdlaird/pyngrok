@@ -28,6 +28,14 @@ Configuration
     :private-members:
     :show-inheritance:
 
+Agent Interface
+------------------------
+
+.. automodule:: pyngrok.agent
+    :members:
+    :private-members:
+    :show-inheritance:
+
 ``ngrok`` Installer
 -------------------
 

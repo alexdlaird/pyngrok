@@ -8,8 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
-- Captured Request Agent support, with `ngrok.get_requests()`, `ngrok.get_request()`, `ngrok.replay_request()`, and `ngrok.delete_requests()`.
-- Agent status with `ngrok.get_agent_status()`.
+- [Agent interface](https://pyngrok.readthedocs.io/en/7.2.8/api.html#module-pyngrok.agent), which provides access to Captured Requests and Agent status.
 - Documentation improvements.
 
 ## [7.2.7](https://github.com/alexdlaird/pyngrok/compare/7.2.5...7.2.7) - 2025-05-05

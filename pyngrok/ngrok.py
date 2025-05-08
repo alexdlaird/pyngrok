@@ -11,7 +11,7 @@ import sys
 import uuid
 import warnings
 from http import HTTPStatus
-from typing import Any, Dict, List, Optional, Tuple, Union, cast
+from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -494,130 +494,6 @@ def update(pyngrok_config: Optional[PyngrokConfig] = None) -> str:
     install_ngrok(pyngrok_config)
 
     return process.capture_run_process(pyngrok_config.ngrok_path, ["update"])
-
-
-def get_agent_status(pyngrok_config: Optional[PyngrokConfig] = None, ) -> Dict[str, Any]:
-    """
-    Get the ``ngrok`` agent status.
-
-    If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
-    will first download and install ``ngrok``.
-
-    If ``ngrok`` is not running, calling this method will first start a process with
-    :class:`~pyngrok.conf.PyngrokConfig`.
-
-    :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
-        overriding :func:`~pyngrok.conf.get_default()`.
-    :return: The requests made to the tunnels.
-    """
-    if pyngrok_config is None:
-        pyngrok_config = conf.get_default()
-
-    api_url = get_ngrok_process(pyngrok_config).api_url
-
-    return api_request(f"{api_url}/api/status", "GET",
-                       timeout=pyngrok_config.request_timeout)
-
-
-def get_requests(params: Optional[Dict[str, Any]] = None,
-                 pyngrok_config: Optional[PyngrokConfig] = None, ) -> List[Dict[str, Any]]:
-    """
-    Get a list of requests made to the tunnel.
-
-    If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
-    will first download and install ``ngrok``.
-
-    If ``ngrok`` is not running, calling this method will first start a process with
-    :class:`~pyngrok.conf.PyngrokConfig`.
-
-    :param params: The URL parameters.
-    :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
-        overriding :func:`~pyngrok.conf.get_default()`.
-    :return: The requests made to the tunnels.
-    """
-    if pyngrok_config is None:
-        pyngrok_config = conf.get_default()
-
-    api_url = get_ngrok_process(pyngrok_config).api_url
-
-    return cast(List[Dict[str, Any]], api_request(f"{api_url}/api/requests/http", "GET",
-                                                  params=params,
-                                                  timeout=pyngrok_config.request_timeout)["requests"])
-
-
-def get_request(request_id: str,
-                pyngrok_config: Optional[PyngrokConfig] = None, ) -> Dict[str, Any]:
-    """
-    Get the given request made to the tunnel.
-
-    If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
-    will first download and install ``ngrok``.
-
-    If ``ngrok`` is not running, calling this method will first start a process with
-    :class:`~pyngrok.conf.PyngrokConfig`.
-
-    :param request_id: The ID of the request to fetch.
-    :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
-        overriding :func:`~pyngrok.conf.get_default()`.
-    :return: The request made to the tunnel.
-    """
-    if pyngrok_config is None:
-        pyngrok_config = conf.get_default()
-
-    api_url = get_ngrok_process(pyngrok_config).api_url
-
-    return api_request(f"{api_url}/api/requests/http/{request_id}", "GET",
-                       timeout=pyngrok_config.request_timeout)
-
-
-def replay_request(request_id: str,
-                   tunnel_name: Optional[str] = None,
-                   pyngrok_config: Optional[PyngrokConfig] = None, ) -> None:
-    """
-    Replay a given request through the tunnel.
-
-    If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
-    will first download and install ``ngrok``.
-
-    If ``ngrok`` is not running, calling this method will first start a process with
-    :class:`~pyngrok.conf.PyngrokConfig`.
-
-    :param request_id: The request ID.
-    :param tunnel_name: The name of the tunnel to replay the request against, or ``None`` to replay against the
-        original tunnel.
-    :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
-        overriding :func:`~pyngrok.conf.get_default()`.
-    """
-    if pyngrok_config is None:
-        pyngrok_config = conf.get_default()
-
-    api_url = get_ngrok_process(pyngrok_config).api_url
-
-    api_request(f"{api_url}/api/requests/http", "POST",
-                data={"id": request_id, "tunnel_name": tunnel_name},
-                timeout=pyngrok_config.request_timeout)
-
-
-def delete_requests(pyngrok_config: Optional[PyngrokConfig] = None) -> None:
-    """
-    Delete request history on the tunnel.
-
-    If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
-    will first download and install ``ngrok``.
-
-    If ``ngrok`` is not running, calling this method will first start a process with
-    :class:`~pyngrok.conf.PyngrokConfig`.
-
-    :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
-        overriding :func:`~pyngrok.conf.get_default()`.
-    """
-    if pyngrok_config is None:
-        pyngrok_config = conf.get_default()
-
-    api_url = get_ngrok_process(pyngrok_config).api_url
-
-    api_request(f"{api_url}/api/requests/http", "DELETE",
-                timeout=pyngrok_config.request_timeout)
 
 
 def api_request(url: str,
