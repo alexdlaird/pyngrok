@@ -110,8 +110,8 @@ def install_ngrok(pyngrok_config: Optional[PyngrokConfig] = None) -> None:
 def set_auth_token(token: str,
                    pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     """
-    Set the ``ngrok`` auth token in the config file, enabling authenticated features (for instance,
-    opening multiple tunnels concurrently, custom domains, etc.).
+    Set the ``ngrok`` auth token in the config file to streamline access to more features (for instance, multiple
+    concurrent tunnels, custom domains, etc.).
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
@@ -131,7 +131,8 @@ def set_auth_token(token: str,
 def set_api_key(key: str,
                 pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     """
-    Set the ``ngrok`` API key in the config file, enabling more features (for instance, Internal Endpoints).
+    Set the ``ngrok`` API key in the config file to enable access to more features (for instance,
+    `Internal Endpoints <https://ngrok.com/docs/universal-gateway/internal-endpoints/>`_).
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.

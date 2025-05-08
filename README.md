@@ -55,6 +55,12 @@ ssh_tunnel = ngrok.connect("22", "tcp")
 
 # Open a named tunnel from the config file
 named_tunnel = ngrok.connect(name="my-config-file-tunnel")
+
+# Open an Internal Endpoint that's load balanced
+# <NgrokTunnel: "https://some-endpoint.internal" -> "http://localhost:9000">
+internal_endpoint = ngrok.connect(addr="9000",
+                                  domain="some-endpoint.internal",
+                                  pooling_enabled=True)
 ```
 
 The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes `kwargs` as well, which allows
@@ -106,7 +112,7 @@ see [`ngrok`'s official documentation](https://ngrok.com/docs/agent/cli/).
 ## Documentation
 
 For more advanced usage, `pyngrok`'s official documentation is available
-at [http://pyngrok.readthedocs.io](http://pyngrok.readthedocs.io).
+at [https://pyngrok.readthedocs.io](https://pyngrok.readthedocs.io).
 
 ### Integration Examples
 
@@ -114,12 +120,6 @@ at [http://pyngrok.readthedocs.io](http://pyngrok.readthedocs.io).
 - [Django](https://pyngrok.readthedocs.io/en/latest/integrations.html#django)
 - [End-to-End Testing](https://pyngrok.readthedocs.io/en/latest/integrations.html#end-to-end-testing)
 - [Google Colab](https://pyngrok.readthedocs.io/en/latest/integrations.html#google-colaboratory)
-
-### `ngrok` Version Compatibility
-
-`pyngrok` is compatible with `ngrok` v2 and v3, but by default it will install v3. To install v2 instead,
-[set `ngrok_version` to "v2" in
-`PyngrokConfig`](https://pyngrok.readthedocs.io/en/latest/index.html#ngrok-version-compatibility).
 
 ## Contributing
 
