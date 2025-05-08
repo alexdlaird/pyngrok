@@ -342,6 +342,80 @@ class TestNgrok(NgrokTestCase):
         self.assert_no_zombies()
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    def test_captured_requests(self):
+        # GIVEN
+        tunnel_name = "my-tunnel"
+        current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v3)
+        public_url = ngrok.connect(urlparse(current_process.api_url).port, name=tunnel_name,
+                                   pyngrok_config=self.pyngrok_config_v3).public_url
+        time.sleep(1)
+
+        urlopen(f"{public_url}/api/status").read()
+        time.sleep(3)
+
+        # WHEN
+        response1 = ngrok.get_requests(pyngrok_config=self.pyngrok_config_v3)
+        response2 = ngrok.get_requests({"tunnel_name": "unknown-tunnel"}, self.pyngrok_config_v3)
+
+        # THEN
+        self.assertEqual(1, len(response1))
+        self.assertIsNotNone(response1[0]["id"])
+        self.assertIsNotNone(response1[0]["uri"])
+        self.assertIsNotNone(response1[0]["duration"])
+        self.assertIsNotNone(response1[0]["request"])
+        self.assertIsNotNone(response1[0]["response"])
+        self.assertEqual(tunnel_name, response1[0]["tunnel_name"])
+        self.assertEqual(0, len(response2))
+
+        # WHEN
+        response3 = ngrok.get_request(response1[0]["id"], pyngrok_config=self.pyngrok_config_v3)
+
+        # THEN
+        self.assertEqual(response3["id"], response3["id"])
+        self.assertEqual(response3["uri"], response3["uri"])
+        self.assertEqual(response3["duration"], response3["duration"])
+        self.assertEqual(response3["request"], response3["request"])
+        self.assertEqual(response3["response"], response3["response"])
+        self.assertEqual(tunnel_name, response3["tunnel_name"])
+
+        # WHEN
+        ngrok.replay_request(response1[0]["id"], pyngrok_config=self.pyngrok_config_v3)
+        response4 = sorted(ngrok.get_requests(pyngrok_config=self.pyngrok_config_v3), key=lambda x: x["id"])
+
+        # THEN
+        self.assertEqual(2, len(response4))
+        self.assertEqual(response1[0]["id"], response4[0]["id"])
+        self.assertEqual(response1[0]["uri"], response4[0]["uri"])
+        self.assertEqual(response1[0]["duration"], response4[0]["duration"])
+        self.assertIsNotNone(response4[0]["request"])
+        self.assertIsNotNone(response4[0]["response"])
+        self.assertEqual(tunnel_name, response4[0]["tunnel_name"])
+        self.assertNotEqual(response1[0]["id"], response4[1]["id"])
+        self.assertNotEqual(response1[0]["uri"], response4[1]["uri"])
+        self.assertNotEqual(response1[0]["duration"], response4[1]["duration"])
+        self.assertIsNotNone(response4[1]["request"])
+        self.assertIsNotNone(response4[1]["response"])
+        self.assertEqual(tunnel_name, response4[1]["tunnel_name"])
+
+        # WHEN
+        ngrok.delete_requests(pyngrok_config=self.pyngrok_config_v3)
+        response5 = ngrok.get_requests(pyngrok_config=self.pyngrok_config_v3)
+
+        self.assertEqual(0, len(response5))
+
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    def test_get_agent_status(self):
+        # GIVEN
+        ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v3)
+        time.sleep(1)
+
+        response = ngrok.get_agent_status(self.pyngrok_config_v3)
+
+        # THEN
+        self.assertIsNotNone(response["agent_version"])
+        self.assertEqual("online", response["status"])
+
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_api_get_request_success(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v3)
@@ -361,10 +435,10 @@ class TestNgrok(NgrokTestCase):
         tunnel_name = "tunnel (1)"
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v3)
         public_url = ngrok.connect(urlparse(current_process.api_url).port, name=tunnel_name,
-                                   bind_tls=True, pyngrok_config=self.pyngrok_config_v3).public_url
+                                   pyngrok_config=self.pyngrok_config_v3).public_url
         time.sleep(1)
 
-        urlopen(f"{public_url}/status").read()
+        urlopen(f"{public_url}/api/status").read()
         time.sleep(3)
 
         # WHEN
@@ -372,11 +446,11 @@ class TestNgrok(NgrokTestCase):
         response2 = ngrok.api_request(f"{current_process.api_url}/api/requests/http", "GET",
                                       params={"tunnel_name": f"{tunnel_name}"})
         response3 = ngrok.api_request(f"{current_process.api_url}/api/requests/http", "GET",
-                                      params={"tunnel_name": f"{tunnel_name} (http)"})
+                                      params={"tunnel_name": "unknown-tunnel"})
 
         # THEN
-        self.assertGreater(len(response1["requests"]), 0)
-        self.assertGreater(len(response2["requests"]), 0)
+        self.assertEqual(len(response1["requests"]), 1)
+        self.assertEqual(len(response2["requests"]), 1)
         self.assertEqual(0, len(response3["requests"]))
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
@@ -585,13 +659,12 @@ class TestNgrok(NgrokTestCase):
     def test_ngrok_tunnel_refresh_metrics(self):
         # GIVEN
         current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v3)
-        ngrok_tunnel = ngrok.connect(urlparse(current_process.api_url).port, bind_tls=True,
-                                     pyngrok_config=self.pyngrok_config_v3)
+        ngrok_tunnel = ngrok.connect(urlparse(current_process.api_url).port, pyngrok_config=self.pyngrok_config_v3)
         time.sleep(1)
         self.assertEqual(0, ngrok_tunnel.metrics.get("http").get("count"))
         self.assertEqual(ngrok_tunnel.data["metrics"].get("http").get("count"), 0)
 
-        urlopen(f"{ngrok_tunnel.public_url}/status").read()
+        urlopen(f"{ngrok_tunnel.public_url}/api/status").read()
         time.sleep(3)
 
         # WHEN
@@ -849,7 +922,7 @@ class TestNgrok(NgrokTestCase):
         config = {
             "tunnels": {
                 "edge-tunnel": {
-                    "addr": "80",
+                    "addr": "443",
                     "labels": [
                         "edge={edge_id}".format(edge_id=self.tls_edge_id),
                     ]
