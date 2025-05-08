@@ -194,7 +194,7 @@ Google Colaboratory
 -------------------
 
 Using ``ngrok`` in a `Google Colab Notebook <https://colab.research.google.com/notebooks/intro.ipynb#recent=true>`_
-takes just two code cells with ``pyngrok``. Install ``pyngrok`` as a dependency in our Notebook by create a code
+takes just two code cells with ``pyngrok``. Install ``pyngrok`` as a dependency in our Notebook by creating a code
 block like this:
 
 .. code-block:: sh

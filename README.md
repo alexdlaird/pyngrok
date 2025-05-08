@@ -111,9 +111,8 @@ at [http://pyngrok.readthedocs.io](http://pyngrok.readthedocs.io).
 
 - [Flask](https://pyngrok.readthedocs.io/en/latest/integrations.html#flask)
 - [Django](https://pyngrok.readthedocs.io/en/latest/integrations.html#django)
-- [FastAPI](https://pyngrok.readthedocs.io/en/latest/integrations.html#fastapi)
 - [End-to-End Testing](https://pyngrok.readthedocs.io/en/latest/integrations.html#end-to-end-testing)
-- [Python HTTP Server](https://pyngrok.readthedocs.io/en/latest/integrations.html#python-http-server)
+- [Google Colab](https://pyngrok.readthedocs.io/en/latest/integrations.html#google-colaboratory)
 
 ### `ngrok` Version Compatibility
 
