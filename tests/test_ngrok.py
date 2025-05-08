@@ -160,7 +160,8 @@ class TestNgrok(NgrokTestCase):
 
         # WHEN
         ngrok_tunnel = ngrok.connect("443", proto="tls", domain=self.reserved_domain,
-                                     terminate_at="upstream", pyngrok_config=self.pyngrok_config_v3)
+                                     terminate_at="upstream",
+                                     pooling_enabled=True, pyngrok_config=self.pyngrok_config_v3)
         current_process = ngrok.get_ngrok_process(self.pyngrok_config_v3)
 
         # THEN
@@ -773,7 +774,8 @@ class TestNgrok(NgrokTestCase):
                     "proto": "tls",
                     "addr": "80",
                     "domain": self.reserved_domain,
-                    "terminate_at": "upstream"
+                    "terminate_at": "upstream",
+                    "pooling_enabled": True
                 }
             }
         }
