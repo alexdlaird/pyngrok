@@ -193,6 +193,8 @@ def _apply_edge_to_tunnel(tunnel: NgrokTunnel,
         else:
             raise PyngrokError(f"Unknown Edge prefix: {edge}.")
 
+        logger.info(f"Applying edge {edge} to tunnel {tunnel.id}")
+
         edge_response = api_request(f"https://api.ngrok.com/edges/{edges_prefix}/{edge}", method="GET",
                                     auth=pyngrok_config.api_key)
 
@@ -224,6 +226,7 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
     tunnel_definitions = config.get("tunnels", {})
     # If a "pyngrok-default" tunnel definition exists in the ngrok config, use that
     if not name and "pyngrok-default" in tunnel_definitions:
+        logger.info("pyngrok-default found defined in config, using for tunnel definition")
         name = "pyngrok-default"
 
     # Use a tunnel definition for the given name, if it exists
@@ -363,6 +366,8 @@ def connect(addr: Optional[str] = None,
                                          timeout=pyngrok_config.request_timeout),
                              pyngrok_config, api_url)
 
+        logger.info(f"ngrok v2 opens multiple tunnels, fetching just HTTP tunnel {tunnel.id} for return")
+
     _apply_edge_to_tunnel(tunnel, pyngrok_config)
 
     if tunnel.public_url is None:
@@ -464,9 +469,9 @@ def kill(pyngrok_config: Optional[PyngrokConfig] = None) -> None:
 
 def api(pyngrok_config: Optional[PyngrokConfig] = None, *args: Any) -> str:
     """
-    Run a ``ngrok`` command against the ``api`` with the given args. This allows for executing remote API commands
-    against the ``ngrok`` service (not the local agent). Start by just passing "--help" for a list of available
-    options.
+    Run a ``ngrok`` command against the ``api`` with the given args. This will use the local agent
+    to run a remote API request for ``ngrok``, which requires that an API key has been set. For a list of
+    available commands, pass "--help".
 
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
@@ -483,6 +488,8 @@ def api(pyngrok_config: Optional[PyngrokConfig] = None, *args: Any) -> str:
     if pyngrok_config.api_key:
         cmd_args += ["--api-key", pyngrok_config.api_key]
     cmd_args += [*args]
+
+    logger.info(f"Executing \"ngrok api\" command with args: {args}")
 
     return process.capture_run_process(pyngrok_config.ngrok_path,
                                        cmd_args)

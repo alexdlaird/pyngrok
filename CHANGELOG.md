@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - [`ngrok.api()`](https://pyngrok.readthedocs.io/en/7.2.8/api.html#pyngrok.ngrok.api), allowing `api` commands to be executed from the agent.
 - [Agent interface](https://pyngrok.readthedocs.io/en/7.2.8/api.html#module-pyngrok.agent), which provides access to Captured Requests and agent status.
+- Stability and logging improvements.
 - Documentation improvements.
 
 ## [7.2.7](https://github.com/alexdlaird/pyngrok/compare/7.2.5...7.2.7) - 2025-05-05
