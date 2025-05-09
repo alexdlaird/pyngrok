@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.8...HEAD)
 
-## [7.2.8](https://github.com/alexdlaird/pyngrok/compare/7.2.7...7.2.8) - 2025-05-08
+## [7.2.8](https://github.com/alexdlaird/pyngrok/compare/7.2.7...7.2.8) - 2025-05-09
 
 ### Added
 
