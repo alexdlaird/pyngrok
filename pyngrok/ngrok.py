@@ -462,6 +462,32 @@ def kill(pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     _current_tunnels.clear()
 
 
+def api(pyngrok_config: Optional[PyngrokConfig] = None, *args: Any) -> str:
+    """
+    Run a ``ngrok`` command against the ``api`` with the given args. This allows for executing remote API commands
+    against the ``ngrok`` service (not the local agent). Start by just passing "--help" for a list of available
+    options.
+
+    :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
+        overriding :func:`~pyngrok.conf.get_default()`.
+    :param args: The args to pass to the ``api`` command.
+    :return: The output from executing the ``api`` command.
+    :raises: PyngrokNgrokError The ``ngrok`` process exited with an error.
+    :raises: CalledProcessError An error occurred while executing the process.
+    """
+    if pyngrok_config is None:
+        pyngrok_config = conf.get_default()
+
+    cmd_args = ["--config", pyngrok_config.config_path] if pyngrok_config.config_path else []
+    cmd_args.append("api")
+    if pyngrok_config.api_key:
+        cmd_args += ["--api-key", pyngrok_config.api_key]
+    cmd_args += [*args]
+
+    return process.capture_run_process(pyngrok_config.ngrok_path,
+                                       cmd_args)
+
+
 def get_version(pyngrok_config: Optional[PyngrokConfig] = None) -> Tuple[str, str]:
     """
     Get a tuple with the ``ngrok`` and ``pyngrok`` versions.

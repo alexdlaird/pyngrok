@@ -15,7 +15,6 @@ from subprocess import CalledProcessError
 
 from pyngrok import ngrok
 from pyngrok.conf import PyngrokConfig
-from pyngrok.process import capture_run_process
 
 project = os.path.basename(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -131,25 +130,25 @@ def generate_name_for_subdomain(prefix):
 
 
 def reserve_ngrok_domain(pyngrok_config, description, domain):
-    output = capture_run_process(pyngrok_config.ngrok_path,
-                                 ["api", "reserved-domains", "create",
-                                  "--domain", domain,
-                                  "--description", description])
+    output = ngrok.api(pyngrok_config,
+                       "reserved-domains", "create",
+                       "--domain", domain,
+                       "--description", description)
     return json.loads(output[output.find("{"):])
 
 
 def reserve_ngrok_addr(pyngrok_config, description):
-    output = capture_run_process(pyngrok_config.ngrok_path,
-                                 ["api", "reserved-addrs", "create",
-                                  "--description", description])
+    output = ngrok.api(pyngrok_config,
+                       "reserved-addrs", "create",
+                       "--description", description)
     return json.loads(output[output.find("{"):])
 
 
 def create_ngrok_edge(pyngrok_config, description, proto, domain, port):
-    output = capture_run_process(pyngrok_config.ngrok_path,
-                                 ["api", "edges", proto, "create",
-                                  "--hostports", f"{domain}:{port}",
-                                  "--description", description])
+    output = ngrok.api(pyngrok_config,
+                       "edges", proto,
+                       "create", "--hostports", f"{domain}:{port}",
+                       "--description", description)
     return json.loads(output[output.find("{"):])
 
 

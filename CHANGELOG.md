@@ -4,11 +4,14 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.7...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.8...HEAD)
+
+## [7.2.8](https://github.com/alexdlaird/pyngrok/compare/7.2.7...7.2.8) - 2025-05-08
 
 ### Added
 
-- [Agent interface](https://pyngrok.readthedocs.io/en/7.2.8/api.html#module-pyngrok.agent), which provides access to Captured Requests and Agent status.
+- [`ngrok.api()`](https://pyngrok.readthedocs.io/en/7.2.8/api.html#pyngrok.ngrok.api), allowing `api` commands to be executed from the agent.
+- [Agent interface](https://pyngrok.readthedocs.io/en/7.2.8/api.html#module-pyngrok.agent), which provides access to Captured Requests and agent status.
 - Documentation improvements.
 
 ## [7.2.7](https://github.com/alexdlaird/pyngrok/compare/7.2.5...7.2.7) - 2025-05-05
