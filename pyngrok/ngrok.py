@@ -88,13 +88,27 @@ class NgrokApiResponse:
     """
 
     def __init__(self,
-                 body: str) -> None:
+                 status: str,
+                 data: Optional[Dict[str, Any]]) -> None:
+        #: The description of the response.
+        self.status: str = status
+        #: The parsed API response.
+        self.data: Optional[Dict[str, Any]] = data
+
+    @staticmethod
+    def from_body(body: str) -> "NgrokApiResponse":
+        """
+        Construct an object from a response body.
+
+        :param body: The response body to be parsed.
+        :return: The constructed object.
+        """
         json_starts = body.find("{")
 
-        #: The description of the response.
-        self.status: str = body[:json_starts]
-        #: The parsed API response.
-        self.data: Dict[str, Any] = json.loads(body[json_starts:])
+        if json_starts < 0:
+            return NgrokApiResponse(body, None)
+        else:
+            return NgrokApiResponse(body[:json_starts], json.loads(body[json_starts:]))
 
 
 _current_tunnels: Dict[str, NgrokTunnel] = {}
@@ -506,7 +520,7 @@ def api(*args: Any, pyngrok_config: Optional[PyngrokConfig] = None) -> NgrokApiR
 
     logger.info(f"Executing \"ngrok api\" command with args: {args}")
 
-    return NgrokApiResponse(
+    return NgrokApiResponse.from_body(
         process.capture_run_process(pyngrok_config.ngrok_path,
                                     cmd_args))
 
