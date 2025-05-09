@@ -88,6 +88,26 @@ config file), `as documented here <#tunnel-configurations>`__.
     the ``http`` tunnel in this case. If only a single tunnel is needed, pass ``bind_tls=True`` and a reference to
     the ``https`` tunnel will be returned.
 
+``ngrok``'s API
+---------------
+
+The `api <https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.api>`_ method allows us to use the local
+``ngrok`` agent to make requests against `the ngrok API <https://ngrok.com/docs/agent/cli-api/>`_, if we have
+`set an API key <https://pyngrok.readthedocs.io/en/latest/#setting-the-authtoken-or-api-key>`_.
+For example, here we reserve a ``ngrok`` domain, then create a Cloud Endpoint with an associated traffic policy:
+
+.. code-block:: python
+
+    from pyngrok import ngrok
+
+    domain = "some-domain.ngrok.dev"
+    ngrok.api("reserved-domains", "create",
+              "--domain", domain)
+    ngrok.api("endpoints", "create",
+              "--bindings", "public",
+              "--url", f"https://{domain}",
+              "--traffic-policy-file", "policy.yml")
+
 ``ngrok``'s Edges
 -----------------
 

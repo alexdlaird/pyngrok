@@ -4,7 +4,6 @@ __copyright__ = "Copyright (c) 2024-2025 Alex Laird"
 __license__ = "MIT"
 
 import getpass
-import json
 import os
 import shutil
 import subprocess
@@ -129,26 +128,23 @@ def generate_name_for_subdomain(prefix):
 
 
 def reserve_ngrok_domain(pyngrok_config, description, domain):
-    output = ngrok.api(pyngrok_config,
-                       "reserved-domains", "create",
-                       "--domain", domain,
-                       "--description", description)
-    return json.loads(output[output.find("{"):])
+    return ngrok.api("reserved-domains", "create",
+                     "--domain", domain,
+                     "--description", description,
+                     pyngrok_config=pyngrok_config).data
 
 
 def reserve_ngrok_addr(pyngrok_config, description):
-    output = ngrok.api(pyngrok_config,
-                       "reserved-addrs", "create",
-                       "--description", description)
-    return json.loads(output[output.find("{"):])
+    return ngrok.api("reserved-addrs", "create",
+                     "--description", description,
+                     pyngrok_config=pyngrok_config).data
 
 
 def create_ngrok_edge(pyngrok_config, description, proto, domain, port):
-    output = ngrok.api(pyngrok_config,
-                       "edges", proto,
-                       "create", "--hostports", f"{domain}:{port}",
-                       "--description", description)
-    return json.loads(output[output.find("{"):])
+    return ngrok.api("edges", proto,
+                     "create", "--hostports", f"{domain}:{port}",
+                     "--description", description,
+                     pyngrok_config=pyngrok_config).data
 
 
 if __name__ == "__main__":

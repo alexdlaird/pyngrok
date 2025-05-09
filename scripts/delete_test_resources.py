@@ -3,7 +3,6 @@
 __copyright__ = "Copyright (c) 2024-2025 Alex Laird"
 __license__ = "MIT"
 
-import json
 import os
 import sys
 import time
@@ -28,65 +27,57 @@ def delete_test_resources(temp=False):
     print(f"Deleting test resources from the ngrok API that have the description \"{description}\" ...")
 
     try:
-        output = ngrok.api(pyngrok_config,
-                           "edges", "https", "list")
-        for value in json.loads(output[output.find("{"):])["https_edges"]:
+        response = ngrok.api("edges", "https", "list",
+                             pyngrok_config=pyngrok_config).data
+        for value in response["https_edges"]:
             if value.get("description") == description:
                 print(f"--> Deleting test Edge for {value['hostports']}")
-                delete_ngrok_edge(pyngrok_config, "https", value["id"])
+                ngrok.api("edges", "https",
+                          "delete", value["id"],
+                          pyngrok_config=pyngrok_config)
                 time.sleep(0.2)
 
-        output = ngrok.api(pyngrok_config,
-                           "edges", "tcp", "list")
-        for value in json.loads(output[output.find("{"):])["tcp_edges"]:
+        response = ngrok.api("edges", "tcp", "list",
+                             pyngrok_config=pyngrok_config).data
+        for value in response["tcp_edges"]:
             if value.get("description") == description:
                 print(f"--> Deleting test Edge for {value['hostports']}")
-                delete_ngrok_edge(pyngrok_config, "tcp", value["id"])
+                ngrok.api("edges", "tcp",
+                          "delete", value["id"],
+                          pyngrok_config=pyngrok_config)
                 time.sleep(0.2)
 
-        output = ngrok.api(pyngrok_config,
-                           "edges", "tls", "list")
-        for value in json.loads(output[output.find("{"):])["tls_edges"]:
+        response = ngrok.api("edges", "tls", "list",
+                             pyngrok_config=pyngrok_config).data
+        for value in response["tls_edges"]:
             if value.get("description") == description:
                 print(f"--> Deleting test Edge for {value['hostports']}")
-                delete_ngrok_edge(pyngrok_config, "tls", value["id"])
+                ngrok.api("edges", "tls",
+                          "delete", value["id"],
+                          pyngrok_config=pyngrok_config)
                 time.sleep(0.2)
 
-        output = ngrok.api(pyngrok_config,
-                           "reserved-domains", "list")
-        for value in json.loads(output[output.find("{"):])["reserved_domains"]:
+        response = ngrok.api("reserved-domains", "list",
+                             pyngrok_config=pyngrok_config).data
+        for value in response["reserved_domains"]:
             if value.get("description") == description:
                 print(f"--> Deleting test reserved-domain {value['domain']}")
-                release_ngrok_domain(pyngrok_config, value["id"])
+                ngrok.api("reserved-domains", "delete", value["id"],
+                          pyngrok_config=pyngrok_config)
                 time.sleep(0.2)
 
-        output = ngrok.api(pyngrok_config,
-                           "reserved-addrs", "list")
-        for value in json.loads(output[output.find("{"):])["reserved_addrs"]:
+        response = ngrok.api("reserved-addrs", "list",
+                             pyngrok_config=pyngrok_config).data
+        for value in response["reserved_addrs"]:
             if value.get("description") == description:
                 print(f"--> Deleting test reserved-addr {value['addr']}")
-                release_ngrok_addr(pyngrok_config, value["id"])
+                ngrok.api("reserved-addrs", "delete", value["id"],
+                          pyngrok_config=pyngrok_config)
     except CalledProcessError as e:
         print("An error occurred: " + e.output.decode("utf-8"))
         sys.exit(1)
 
     print("... done!")
-
-
-def delete_ngrok_edge(pyngrok_config, proto, id):
-    ngrok.api(pyngrok_config,
-              "edges", proto,
-              "delete", id)
-
-
-def release_ngrok_domain(pyngrok_config, id):
-    ngrok.api(pyngrok_config,
-              "reserved-domains", "delete", id)
-
-
-def release_ngrok_addr(pyngrok_config, id):
-    ngrok.api(pyngrok_config,
-              "reserved-addrs", "delete", id)
 
 
 if __name__ == "__main__":

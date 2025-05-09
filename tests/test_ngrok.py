@@ -18,8 +18,6 @@ from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokError, PyngrokNgrokError, PyngrokNgrokHTTPError, PyngrokNgrokURLError, \
     PyngrokSecurityError
 from scripts.create_test_resources import create_test_resources, generate_name_for_subdomain
-from scripts.delete_test_resources import delete_ngrok_edge, release_ngrok_addr, \
-    release_ngrok_domain
 from tests.testcase import NgrokTestCase
 
 
@@ -61,13 +59,23 @@ class TestNgrok(NgrokTestCase):
         # this testcase set up the resources, so it should also tear them down.
         if os.environ.get("NGROK_API_KEY") and not os.environ.get("NGROK_HOSTNAME"):
             try:
-                delete_ngrok_edge(cls.testcase_pyngrok_config, "https", cls.http_edge_id)
-                delete_ngrok_edge(cls.testcase_pyngrok_config, "tcp", cls.tcp_edge_id)
-                delete_ngrok_edge(cls.testcase_pyngrok_config, "tls", cls.tls_edge_id)
-                release_ngrok_domain(cls.testcase_pyngrok_config, cls.reserved_domain_id)
-                release_ngrok_domain(cls.testcase_pyngrok_config, cls.http_edge_reserved_domain_id)
-                release_ngrok_domain(cls.testcase_pyngrok_config, cls.tls_edge_reserved_domain_id)
-                release_ngrok_addr(cls.testcase_pyngrok_config, cls.tcp_edge_reserved_addr_id)
+                ngrok.api("edges", "https",
+                          "delete", cls.http_edge_id,
+                          pyngrok_config=cls.testcase_pyngrok_config)
+                ngrok.api("edges", "tcp",
+                          "delete", cls.http_edge_id,
+                          pyngrok_config=cls.testcase_pyngrok_config)
+                ngrok.api("edges", "tls",
+                          "delete", cls.http_edge_id,
+                          pyngrok_config=cls.testcase_pyngrok_config)
+                ngrok.api("reserved-domains", "delete", cls.reserved_domain_id,
+                          pyngrok_config=cls.testcase_pyngrok_config)
+                ngrok.api("reserved-domains", "delete", cls.http_edge_reserved_domain_id,
+                          pyngrok_config=cls.testcase_pyngrok_config)
+                ngrok.api("reserved-domains", "delete", cls.tls_edge_reserved_domain_id,
+                          pyngrok_config=cls.testcase_pyngrok_config)
+                ngrok.api("reserved-addrs", "delete", cls.tcp_edge_reserved_addr_id,
+                          pyngrok_config=cls.testcase_pyngrok_config)
             except Exception:
                 print(traceback.format_exc())
                 print("--> An error occurred while cleaning up test resources. Run scripts/prune_test_resources.py to "

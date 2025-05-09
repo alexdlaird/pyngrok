@@ -11,7 +11,8 @@
 `pyngrok` is a Python wrapper for `ngrok` that manages its own binary, making `ngrok` available via a convenient Python
 API.
 
-[`ngrok`](https://ngrok.com) is a reverse proxy that opens secure tunnels from public URLs to localhost. It's perfect for rapid
+[`ngrok`](https://ngrok.com) is a reverse proxy that opens secure tunnels from public URLs to localhost. It's perfect
+for rapid
 development (test webhooks, demo local websites, enable SSH access), establishing ingress to external
 networks and devices, building production APIs (traffic policies, OAuth, load balancing), and more. And
 it's made even more powerful with native Python integration through the `pyngrok` client.
@@ -63,9 +64,29 @@ internal_endpoint = ngrok.connect(addr="9000",
                                   pooling_enabled=True)
 ```
 
-The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes `kwargs` as well, which allows
+The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes `kwargs` as well,
+which allows
 us to pass additional tunnel configurations that are supported by `ngrok` (or the `name` of a tunnel defined in
 `ngrok`'s config file), [as documented here](https://pyngrok.readthedocs.io/en/latest/#tunnel-configurations).
+
+### `ngrok`'s API
+
+The [`api`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.api) method allows us to use the local
+`ngrok` agent to make requests against [the `ngrok` API](https://ngrok.com/docs/agent/cli-api/), if we
+have [set an API key](https://pyngrok.readthedocs.io/en/latest/#setting-the-authtoken-or-api-key).
+For example, here we reserve a `ngrok` domain, then create a Cloud Endpoint with an associated traffic policy:
+
+```python
+from pyngrok import ngrok
+
+domain = "some-domain.ngrok.dev"
+ngrok.api("reserved-domains", "create",
+          "--domain", domain)
+ngrok.api("endpoints", "create",
+          "--bindings", "public",
+          "--url", f"https://{domain}",
+          "--traffic-policy-file", "policy.yml")
+```
 
 ### `ngrok`'s Edges
 

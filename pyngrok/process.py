@@ -96,7 +96,9 @@ class NgrokProcess:
         if log.line == "":
             return None
 
-        ngrok_logger.log(getattr(logging, log.lvl), log.line)
+        lvl = log.lvl if log.lvl != "NOTSET" else "INFO"
+
+        ngrok_logger.log(getattr(logging, lvl), log.line)
         self.logs.append(log)
         if len(self.logs) > self.pyngrok_config.max_logs:
             self.logs.pop(0)

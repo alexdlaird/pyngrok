@@ -82,6 +82,21 @@ class NgrokTunnel:
         self.metrics = self.data["metrics"]
 
 
+class NgrokApiResponse:
+    """
+    An object containing a response from the ``ngrok`` API.
+    """
+
+    def __init__(self,
+                 body: str) -> None:
+        json_starts = body.find("{")
+
+        #: The description of the response.
+        self.status: str = body[:json_starts]
+        #: The parsed API response.
+        self.data: Dict[str, Any] = json.loads(body[json_starts:])
+
+
 _current_tunnels: Dict[str, NgrokTunnel] = {}
 
 
@@ -467,16 +482,16 @@ def kill(pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     _current_tunnels.clear()
 
 
-def api(pyngrok_config: Optional[PyngrokConfig] = None, *args: Any) -> str:
+def api(*args: Any, pyngrok_config: Optional[PyngrokConfig] = None) -> NgrokApiResponse:
     """
     Run a ``ngrok`` command against the ``api`` with the given args. This will use the local agent
     to run a remote API request for ``ngrok``, which requires that an API key has been set. For a list of
-    available commands, pass "--help".
+    available commands, pass ``"--help"``.
 
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
     :param args: The args to pass to the ``api`` command.
-    :return: The output from executing the ``api`` command.
+    :return: The response from executing the ``api`` command.
     :raises: PyngrokNgrokError The ``ngrok`` process exited with an error.
     :raises: CalledProcessError An error occurred while executing the process.
     """
@@ -491,8 +506,9 @@ def api(pyngrok_config: Optional[PyngrokConfig] = None, *args: Any) -> str:
 
     logger.info(f"Executing \"ngrok api\" command with args: {args}")
 
-    return process.capture_run_process(pyngrok_config.ngrok_path,
-                                       cmd_args)
+    return NgrokApiResponse(
+        process.capture_run_process(pyngrok_config.ngrok_path,
+                                    cmd_args))
 
 
 def get_version(pyngrok_config: Optional[PyngrokConfig] = None) -> Tuple[str, str]:

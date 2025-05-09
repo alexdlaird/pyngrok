@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class NgrokAgent:
     """
-    An object containing information about a ``ngrok` agent.
+    An object containing information about a ``ngrok`` agent.
     """
 
     def __init__(self,
@@ -41,7 +41,7 @@ class NgrokAgent:
 
 class CapturedRequest:
     """
-    An object containing a Captured Request from a ``ngrok` tunnel.
+    An object containing a Captured Request from a ``ngrok`` tunnel.
     """
 
     def __init__(self,
