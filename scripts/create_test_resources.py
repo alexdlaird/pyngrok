@@ -15,6 +15,7 @@ from subprocess import CalledProcessError
 
 from pyngrok import ngrok
 from pyngrok.conf import PyngrokConfig
+from pyngrok.exception import PyngrokNgrokError
 
 project = os.path.basename(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -42,11 +43,9 @@ def create_test_resources(temp=False):
 
     try:
         reserve_ngrok_domain(pyngrok_config, description, ngrok_hostname)
-    except CalledProcessError as e:
-        output = e.output.decode("utf-8")
-        if "domain is already reserved" not in output:
-            print("An error occurred: " + e.output.decode("utf-8"))
-            sys.exit(1)
+    except PyngrokNgrokError as e:
+        if "domain is already reserved" not in str(e):
+            raise e
 
     try:
         subdomain = generate_name_for_subdomain(prefix)
