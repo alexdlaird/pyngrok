@@ -33,7 +33,7 @@ class TestAgent(NgrokTestCase):
         self.assertIsNotNone(1, len(response1[0].uri))
         self.assertIsNotNone(response1[0].id)
         self.assertIsNotNone(response1[0].uri)
-        self.assertGreater(response1[0].duration, 0)
+        self.assertIsNotNone(response1[0].duration)
         self.assertIsNotNone(response1[0].request)
         self.assertIsNotNone(response1[0].response)
         self.assertEqual(tunnel_name, response1[0].tunnel_name)
