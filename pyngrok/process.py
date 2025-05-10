@@ -135,7 +135,8 @@ class NgrokProcess:
         self._monitor_thread_alive = True
         while self._monitor_thread_alive and self.proc.poll() is None:
             if self.proc.stdout is None:
-                logger.debug("No stdout when monitoring the process, this may or may not be an issue")
+                logger.debug("Output from process is empty, nothing to log")
+
                 continue
 
             self._log_line(self.proc.stdout.readline())
@@ -421,7 +422,7 @@ def _start_process(pyngrok_config: PyngrokConfig) -> NgrokProcess:
     timeout = time.time() + pyngrok_config.startup_timeout
     while time.time() < timeout:
         if proc.stdout is None:
-            logger.debug("No stdout when starting the process, this may or may not be an issue")
+            logger.debug("Output from process is empty, breaking startup loop")
             break
 
         line = proc.stdout.readline()
