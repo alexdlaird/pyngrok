@@ -53,20 +53,14 @@ class TestProcess(NgrokTestCase):
                                                      config_path=config_path_v2_2,
                                                      ngrok_path=ngrok_path_v2_2)
 
-        error = None
-        retries = 0
-        while error is None and retries < 10:
-            time.sleep(1)
+        time.sleep(3)
 
-            # WHEN
-            with self.assertRaises(PyngrokNgrokError) as cm:
-                process._start_process(pyngrok_config_v2_2)
-
-            error = cm.exception.ngrok_error
-            retries += 1
+        # WHEN
+        with self.assertRaises(PyngrokNgrokError) as cm:
+            process._start_process(pyngrok_config_v2_2)
 
         # THEN
-        self.assertIsNotNone(error)
+        self.assertIsNotNone(cm.exception)
         if platform.system() == "Windows":
             self.assertIn(f"{port}: bind: Only one usage of each socket address", cm.exception.ngrok_error)
         else:
@@ -95,20 +89,14 @@ class TestProcess(NgrokTestCase):
                                                      config_path=config_path_v3_2,
                                                      ngrok_path=ngrok_path_v3_2)
 
-        error = None
-        retries = 0
-        while error is None and retries < 10:
-            time.sleep(1)
+        time.sleep(3)
 
-            # WHEN
-            with self.assertRaises(PyngrokNgrokError) as cm:
-                process._start_process(pyngrok_config_v3_2)
-
-            error = cm.exception.ngrok_error
-            retries += 1
+        # WHEN
+        with self.assertRaises(PyngrokNgrokError) as cm:
+            process._start_process(pyngrok_config_v3_2)
 
         # THEN
-        self.assertIsNotNone(error)
+        self.assertIsNotNone(cm.exception.ngrok_error)
         if platform.system() == "Windows":
             self.assertIn(f"{port}: bind: Only one usage of each socket address", cm.exception.ngrok_error)
         else:

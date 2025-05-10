@@ -435,8 +435,7 @@ def _start_process(pyngrok_config: PyngrokConfig) -> NgrokProcess:
             if pyngrok_config.monitor_thread:
                 ngrok_process.start_monitor_thread()
 
-            break
-        elif ngrok_process.proc.poll() is not None:
+        if ngrok_process.healthy() or ngrok_process.proc.poll() is not None:
             break
 
     if not ngrok_process.healthy():
