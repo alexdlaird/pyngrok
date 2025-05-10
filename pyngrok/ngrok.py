@@ -413,6 +413,9 @@ def disconnect(public_url: str,
     """
     Disconnect the ``ngrok`` tunnel for the given URL, if open.
 
+    If ``ngrok`` is not running, calling this method will first start a process with
+    :class:`~pyngrok.conf.PyngrokConfig`.
+
     :param public_url: The public URL of the tunnel to disconnect.
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
@@ -422,6 +425,8 @@ def disconnect(public_url: str,
 
     # If ngrok is not running, there are no tunnels to disconnect
     if not process.is_process_running(pyngrok_config.ngrok_path):
+        logger.debug(f"\"ngrok_path\" {pyngrok_config.ngrok_path} is not running a process")
+
         return
 
     api_url = get_ngrok_process(pyngrok_config).api_url
