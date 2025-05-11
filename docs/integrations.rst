@@ -35,7 +35,7 @@ same place.
             USE_NGROK=os.environ.get("USE_NGROK", "False") == "True" and os.environ.get("WERKZEUG_RUN_MAIN") != "true"
         )
 
-        if app.config["USE_NGROK"] and os.environ.get("NGROK_AUTHTOKEN"):
+        if app.config["USE_NGROK"]:
             # pyngrok will only be installed, and should only ever be initialized, in a dev environment
             from pyngrok import ngrok
 
@@ -100,7 +100,7 @@ to do this is one of our ``apps.py`` by `extending AppConfig <https://docs.djang
         verbose_name = "Common"
 
         def ready(self):
-            if settings.USE_NGROK and os.environ.get("NGROK_AUTHTOKEN"):
+            if settings.USE_NGROK:
                 # pyngrok will only be installed, and should only ever be initialized, in a dev environment
                 from pyngrok import ngrok
 
@@ -165,7 +165,7 @@ we should add a variable that let's us configure from an environment variable wh
     # Initialize the FastAPI app for a simple web server
     app = FastAPI()
 
-    if settings.USE_NGROK and os.environ.get("NGROK_AUTHTOKEN"):
+    if settings.USE_NGROK:
         # pyngrok should only ever be installed or initialized in a dev environment when this flag is set
         from pyngrok import ngrok
 
@@ -217,7 +217,7 @@ that uses ``pyngrok`` to open a tunnel to that server.
 
     from pyngrok import ngrok, conf
 
-    print("Enter your authtoken, which can be copied from https://dashboard.ngrok.com/auth")
+    print("Enter your authtoken, which can be copied from https://dashboard.ngrok.com/get-started/your-authtoken")
     conf.get_default().auth_token = getpass.getpass()
 
     # Open a TCP ngrok tunnel to the SSH server
