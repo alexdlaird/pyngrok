@@ -108,30 +108,6 @@ class TestProcess(NgrokTestCase):
     def test_process_external_kill(self):
         # GIVEN
         self.given_ngrok_installed(self.pyngrok_config_v3)
-        ngrok_process = process._start_process(self.pyngrok_config_v3)
-        monitor_thread = ngrok_process._monitor_thread
-        self.assertEqual(len(process._current_processes.keys()), 1)
-        self.assertTrue(ngrok_process._monitor_thread.is_alive())
-
-        # WHEN
-        # Kill the process by external means, pyngrok still thinks process is active
-        ngrok_process.proc.kill()
-        ngrok_process.proc.wait()
-        self.assertEqual(len(process._current_processes.keys()), 1)
-        time.sleep(1)
-        self.assertFalse(monitor_thread.is_alive())
-
-        # THEN
-        # Try to kill the process via pyngrok, no error, just update state
-        process.kill_process(self.pyngrok_config_v3.ngrok_path)
-        self.assertEqual(len(process._current_processes.keys()), 0)
-        self.assertFalse(monitor_thread.is_alive())
-        self.assert_no_zombies()
-
-    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
-    def test_process_external_kill_get_process_restart(self):
-        # GIVEN
-        self.given_ngrok_installed(self.pyngrok_config_v3)
         ngrok_process1 = process._start_process(self.pyngrok_config_v3)
         monitor_thread1 = ngrok_process1._monitor_thread
         self.assertEqual(len(process._current_processes.keys()), 1)
@@ -144,6 +120,13 @@ class TestProcess(NgrokTestCase):
         time.sleep(1)
         self.assertEqual(len(process._current_processes.keys()), 1)
         self.assertFalse(monitor_thread1.is_alive())
+
+        # THEN
+        # Try to kill the process via pyngrok, no error, just update state
+        process.kill_process(self.pyngrok_config_v3.ngrok_path)
+        self.assertEqual(len(process._current_processes.keys()), 0)
+        self.assertFalse(monitor_thread1.is_alive())
+        self.assert_no_zombies()
 
         # THEN
         # Try to get process via pyngrok, it has been killed, restart and correct state
