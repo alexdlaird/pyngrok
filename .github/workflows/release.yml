@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: "3.13"
       - name: Validate version
         run: make validate-release VERSION=${GITHUB_REF#refs/tags/}
 
@@ -43,7 +43,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: "3.13"
       - name: Publish
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
