@@ -79,7 +79,7 @@ def get_default_ngrok_dir() -> str:
 
 def get_system() -> str:
     """
-    Parse the name fo the OS from system properties and return a friendly name.
+    Parse the name of the OS from the system and return a friendly name.
 
     :return: The friendly name of the OS.
     :raises: :class:`~pyngrok.exception.PyngrokNgrokInstallError`: When the platform is not supported.

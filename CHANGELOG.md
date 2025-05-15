@@ -6,6 +6,18 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.8...HEAD)
 
+### Added
+
+- Support for [MSYS2's `mingw`](https://www.msys2.org/) when installing the agent. Like `cygwin`, it is mapped to its corresponding Windows binary.
+- Windows ARM 64-bit support.
+- FreeBSD ARM support.
+- Build and stability improvements.
+- Documentation improvements.
+
+### Removed
+
+- `cygwin` from dict of `PLATFORMS`, since the installer can just map to its corresponding Windows CDN value instead.
+
 ## [7.2.8](https://github.com/alexdlaird/pyngrok/compare/7.2.7...7.2.8) - 2025-05-09
 
 ### Added
@@ -728,7 +740,7 @@ An [integration example for end-to-end testing](https://pyngrok.readthedocs.io/e
   See [ngrok module](https://pyngrok.readthedocs.io/en/2.1.0/api.html#module-pyngrok.ngrok).
 - `auth_token` parameter for `ngrok.connect()`, and `process.get_process()`.
   See [ngrok module](https://pyngrok.readthedocs.io/en/2.1.0/api.html#module-pyngrok.ngrok).
-- Support for `Cygwin` as a platform by having it use the 64-bit Windows binary.
+- Support for [`cygwin`](https://www.cygwin.com/) as a platform by having it use the 64-bit Windows binary.
 
 ## [2.0.3](https://github.com/alexdlaird/pyngrok/compare/2.0.2...2.0.3) - 2020-02-14
 
