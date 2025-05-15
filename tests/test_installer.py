@@ -167,7 +167,7 @@ class TestInstaller(NgrokTestCase):
         default_ngrok_dir = installer.get_default_ngrok_dir()
 
         # THEN
-        self.assertEqual(f"{user_home}/Library/Application Support/ngrok", default_ngrok_dir)
+        self.assertEqual(os.path.join(user_home, "Library", "Application Support", "ngrok"), default_ngrok_dir)
 
     @mock.patch("platform.system")
     def test_get_default_ngrok_dir_windows(self, mock_system):
@@ -179,7 +179,7 @@ class TestInstaller(NgrokTestCase):
         default_ngrok_dir = installer.get_default_ngrok_dir()
 
         # THEN
-        self.assertEqual(f"{user_home}/AppData/Local/ngrok", default_ngrok_dir)
+        self.assertEqual(os.path.join(user_home, "AppData", "Local", "ngrok"), default_ngrok_dir)
 
     @mock.patch("platform.system")
     def test_get_default_ngrok_dir_unix(self, mock_system):
@@ -191,7 +191,7 @@ class TestInstaller(NgrokTestCase):
         default_ngrok_dir = installer.get_default_ngrok_dir()
 
         # THEN
-        self.assertEqual(f"{user_home}/.config/ngrok", default_ngrok_dir)
+        self.assertEqual(os.path.join(user_home, ".config", "ngrok"), default_ngrok_dir)
 
     @mock.patch("platform.system")
     def test_get_ngrok_binary_mac(self, mock_system):
