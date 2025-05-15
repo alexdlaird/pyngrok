@@ -88,36 +88,6 @@ ngrok.api("endpoints", "create",
           "--traffic-policy-file", "policy.yml")
 ```
 
-### `ngrok`'s Edges
-
-> `ngrok` has deprecated Edges and will sunset Labeled Tunnels on December 31st, 2025. See
-> [this issue](https://github.com/alexdlaird/pyngrok/issues/145) for more details.
-
-To use [`ngrok`'s Edges](https://ngrok.com/docs/universal-gateway/edges/) with `pyngrok`, first [configure an Edge on
-`ngrok`'s dashboard](https://dashboard.ngrok.com/edges) (with at least one Endpoint mapped to the Edge), and define a
-labeled tunnel in [the `ngrok` config file](https://ngrok.com/docs/agent/config/v2/#define-two-labeled-tunnels)
-that points to the Edge.
-
-```yaml
-tunnels:
-  some-edge-tunnel:
-    labels:
-      - edge=my_edge_id
-    addr: http://localhost:80
-```
-
-To start a labeled tunnel in `pyngrok`, pass its `name`
-to [connect](https://pyngrok.readthedocs.io/en/develop/api.html#pyngrok.ngrok.connect).
-
-```python
-from pyngrok import ngrok
-
-# Open the Edge tunnel that is defined in the config file
-named_tunnel = ngrok.connect(name="some-edge-tunnel")
-```
-
-Once an Edge tunnel is started, it can be managed through [`ngrok`'s dashboard](https://dashboard.ngrok.com/edges).
-
 ### Command Line Usage
 
 This package puts the default `ngrok` binary on our path, so all features of `ngrok` are

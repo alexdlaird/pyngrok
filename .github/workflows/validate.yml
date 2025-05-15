@@ -32,6 +32,7 @@ jobs:
       - name: Test downstream
         run: make test-downstream
       - name: Cleanup temporary test resources
+        if: ${{ !cancelled() }}
         continue-on-error: true
         run: make delete-temp-test-resources
       - name: Upload test coverage
