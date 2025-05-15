@@ -129,7 +129,7 @@ def get_ngrok_bin() -> str:
         return "ngrok.exe"
 
 
-def get_ngrok_cdn_url(ngrok_version: str) -> str:
+def get_ngrok_cdn_url(ngrok_version: Optional[str]) -> str:
     """
     Determine the ``ngrok`` CDN URL for the current OS and architecture.
 
