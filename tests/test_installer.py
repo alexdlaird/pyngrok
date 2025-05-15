@@ -3,11 +3,15 @@ __license__ = "MIT"
 
 import os
 import socket
+import urllib
+import urllib.request
 from unittest import mock
+from urllib.error import HTTPError
 
 from pyngrok import installer, ngrok, conf
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokError, PyngrokNgrokInstallError, PyngrokSecurityError
+from pyngrok.installer import PLATFORMS_V3
 from tests.testcase import NgrokTestCase
 
 
@@ -152,3 +156,212 @@ class TestInstaller(NgrokTestCase):
         # WHEN
         with self.assertRaises(PyngrokError):
             installer.install_default_config(self.pyngrok_config_v3.config_path, {"web_addr": False})
+
+    @mock.patch("platform.system")
+    def test_get_default_ngrok_dir_mac(self, mock_system):
+        # GIVEN
+        mock_system.return_value = "Darwin"
+        user_home = os.path.expanduser("~")
+
+        # WHEN
+        default_ngrok_dir = installer.get_default_ngrok_dir()
+
+        # THEN
+        self.assertEqual(f"{user_home}/Library/Application Support/ngrok", default_ngrok_dir)
+
+    @mock.patch("platform.system")
+    def test_get_default_ngrok_dir_windows(self, mock_system):
+        # GIVEN
+        mock_system.return_value = "Windows 10"
+        user_home = os.path.expanduser("~")
+
+        # WHEN
+        default_ngrok_dir = installer.get_default_ngrok_dir()
+
+        # THEN
+        self.assertEqual(f"{user_home}/AppData/Local/ngrok", default_ngrok_dir)
+
+    @mock.patch("platform.system")
+    def test_get_default_ngrok_dir_unix(self, mock_system):
+        # GIVEN
+        mock_system.return_value = "Linux"
+        user_home = os.path.expanduser("~")
+
+        # WHEN
+        default_ngrok_dir = installer.get_default_ngrok_dir()
+
+        # THEN
+        self.assertEqual(f"{user_home}/.config/ngrok", default_ngrok_dir)
+
+    @mock.patch("platform.system")
+    def test_get_ngrok_binary_mac(self, mock_system):
+        # GIVEN
+        mock_system.return_value = "Darwin"
+
+        # WHEN
+        ngrok_bin = installer.get_ngrok_bin()
+
+        # THEN
+        self.assertEqual("ngrok", ngrok_bin)
+
+    @mock.patch("platform.system")
+    def test_get_system_windows(self, mock_system):
+        # GIVEN
+        mock_system.return_value = "Windows 10"
+
+        # WHEN
+        ngrok_bin = installer.get_ngrok_bin()
+
+        # THEN
+        self.assertEqual("ngrok.exe", ngrok_bin)
+
+    @mock.patch("platform.system")
+    def test_get_system_linux(self, mock_system):
+        # GIVEN
+        mock_system.return_value = "Linux"
+
+        # WHEN
+        ngrok_bin = installer.get_ngrok_bin()
+
+        # THEN
+        self.assertEqual("ngrok", ngrok_bin)
+
+    @mock.patch("platform.system")
+    def test_get_system_freebsd(self, mock_system):
+        # GIVEN
+        mock_system.return_value = "FreeBSD"
+
+        # WHEN
+        ngrok_bin = installer.get_ngrok_bin()
+
+        # THEN
+        self.assertEqual("ngrok", ngrok_bin)
+
+    @mock.patch("platform.system")
+    def test_get_system_cygwin_is_windows(self, mock_system):
+        # GIVEN
+        mock_system.return_value = "Cygwin NT"
+
+        # WHEN
+        ngrok_bin = installer.get_ngrok_bin()
+
+        # THEN
+        self.assertEqual("ngrok.exe", ngrok_bin)
+
+    @mock.patch("platform.system")
+    def test_get_system_mingw_is_windows(self, mock_system):
+        # GIVEN
+        mock_system.return_value = "MinGW NT"
+
+        # WHEN
+        ngrok_bin = installer.get_ngrok_bin()
+
+        # THEN
+        self.assertEqual("ngrok.exe", ngrok_bin)
+
+    @mock.patch("platform.system")
+    def test_get_system_unsupported(self, mock_system):
+        # GIVEN
+        mock_system.return_value = "Solaris"
+
+        # WHEN
+        with self.assertRaises(PyngrokNgrokInstallError):
+            installer.get_ngrok_bin()
+
+    @mock.patch("platform.system")
+    @mock.patch("platform.machine")
+    def test_get_ngrok_cdn_url_mac_arm64(self, mock_machine, mock_system):
+        # GIVEN
+        mock_system.return_value = "Darwin"
+        mock_machine.return_value = "arm64"
+
+        # WHEN
+        url = installer.get_ngrok_cdn_url("v3")
+
+        # THEN
+        self.assertEqual(PLATFORMS_V3["darwin_x86_64_arm"], url)
+
+    @mock.patch("platform.system")
+    @mock.patch("platform.machine")
+    def test_get_ngrok_cdn_url_windows32(self, mock_machine, mock_system):
+        # GIVEN
+        mock_system.return_value = "Windows 10"
+        mock_machine.return_value = "i386"
+
+        # WHEN
+        url = installer.get_ngrok_cdn_url("v3")
+
+        # THEN
+        self.assertEqual(PLATFORMS_V3["windows_i386"], url)
+
+    @mock.patch("platform.system")
+    @mock.patch("platform.machine")
+    def test_get_ngrok_cdn_url_linux_arm64(self, mock_machine, mock_system):
+        # GIVEN
+        mock_system.return_value = "Linux"
+        mock_machine.return_value = "arm aarch64"
+
+        # WHEN
+        url = installer.get_ngrok_cdn_url("v3")
+
+        # THEN
+        self.assertEqual(PLATFORMS_V3["linux_x86_64_arm"], url)
+
+    @mock.patch("platform.system")
+    @mock.patch("platform.machine")
+    def test_get_ngrok_cdn_url_freebsd64(self, mock_machine, mock_system):
+        # GIVEN
+        mock_system.return_value = "FreeBSD"
+        mock_machine.return_value = "x86_64"
+
+        # WHEN
+        url = installer.get_ngrok_cdn_url("v3")
+
+        # THEN
+        self.assertEqual(PLATFORMS_V3["freebsd_x86_64"], url)
+
+    @mock.patch("platform.system")
+    @mock.patch("platform.machine")
+    def test_get_ngrok_cdn_url_cygwin_is_windows(self, mock_machine, mock_system):
+        # GIVEN
+        mock_system.return_value = "Cygwin NT"
+        mock_machine.return_value = "aarch64"
+
+        # WHEN
+        url = installer.get_ngrok_cdn_url("v3")
+
+        # THEN
+        self.assertEqual(PLATFORMS_V3["windows_x86_64_arm"], url)
+
+    @mock.patch("platform.system")
+    @mock.patch("platform.machine")
+    def test_get_ngrok_cdn_url_mingw_is_windows(self, mock_machine, mock_system):
+        # GIVEN
+        mock_system.return_value = "MinGW NT"
+        mock_machine.return_value = "i386"
+
+        # WHEN
+        url = installer.get_ngrok_cdn_url("v3")
+
+        # THEN
+        self.assertEqual(PLATFORMS_V3["windows_i386"], url)
+
+    def test_ensure_installer_urls_exist_v2(self):
+        for key, value in installer.PLATFORMS.items():
+            try:
+                urllib.request.urlopen(urllib.request.Request(value, method="HEAD"))
+            except HTTPError as e:
+                if e.status == 404:
+                    self.fail("Installer URL returned 404: %s" % value)
+                else:
+                    raise e
+
+    def test_ensure_installer_urls_exist_v3(self):
+        for key, value in installer.PLATFORMS_V3.items():
+            try:
+                urllib.request.urlopen(urllib.request.Request(value, method="HEAD"))
+            except HTTPError as e:
+                if e.status == 404:
+                    self.fail("Installer URL returned 404: %s" % value)
+                else:
+                    raise e

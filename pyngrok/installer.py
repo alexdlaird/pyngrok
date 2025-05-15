@@ -27,29 +27,30 @@ CDN_V3_URL_PREFIX = "https://bin.equinox.io/c/bNyj1mQVY4c/"
 PLATFORMS = {
     "darwin_x86_64": CDN_URL_PREFIX + "ngrok-stable-darwin-amd64.zip",
     "darwin_x86_64_arm": CDN_URL_PREFIX + "ngrok-stable-darwin-arm64.zip",
-    "windows_x86_64": CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
     "windows_i386": CDN_URL_PREFIX + "ngrok-stable-windows-386.zip",
-    "linux_x86_64_arm": CDN_URL_PREFIX + "ngrok-stable-linux-arm64.zip",
-    "linux_i386_arm": CDN_URL_PREFIX + "ngrok-stable-linux-arm.zip",
+    "windows_x86_64": CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
     "linux_i386": CDN_URL_PREFIX + "ngrok-stable-linux-386.zip",
+    "linux_i386_arm": CDN_URL_PREFIX + "ngrok-stable-linux-arm.zip",
     "linux_x86_64": CDN_URL_PREFIX + "ngrok-stable-linux-amd64.zip",
-    "freebsd_x86_64": CDN_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip",
+    "linux_x86_64_arm": CDN_URL_PREFIX + "ngrok-stable-linux-arm64.zip",
     "freebsd_i386": CDN_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
-    "cygwin_x86_64": CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
+    "freebsd_x86_64": CDN_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip"
 }
 PLATFORMS_V3 = {
     "darwin_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-darwin-amd64.zip",
     "darwin_x86_64_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-darwin-arm64.zip",
-    "windows_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-windows-amd64.zip",
     "windows_i386": CDN_V3_URL_PREFIX + "ngrok-v3-stable-windows-386.zip",
-    "linux_x86_64_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-arm64.zip",
-    "linux_i386_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-arm.zip",
+    "windows_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-windows-amd64.zip",
+    "windows_x86_64_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-windows-arm64.zip",
     "linux_i386": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-386.zip",
+    "linux_i386_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-arm.zip",
     "linux_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-amd64.zip",
-    "freebsd_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-amd64.zip",
+    "linux_x86_64_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-arm64.zip",
     "freebsd_i386": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-386.zip",
-    "cygwin_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-windows-amd64.zip",
+    "freebsd_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-amd64.zip",
+    "freebsd_i386_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-arm.zip"
 }
+UNIX_BINARIES = ["darwin", "linux", "freebsd"]
 SUPPORTED_NGROK_VERSIONS = ["v2", "v3"]
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
@@ -60,6 +61,60 @@ _config_cache: Dict[str, Dict[str, Any]] = {}
 _print_progress_enabled = True
 
 
+def get_default_ngrok_dir() -> str:
+    """
+    Get the default ``ngrok`` directory for the current system.
+
+    :return: The default ``ngrok`` directory.
+    """
+    system = get_system()
+    user_home = os.path.expanduser("~")
+    if system == "darwin":
+        return os.path.join(user_home, "Library", "Application Support", "ngrok")
+    elif system == "windows":
+        return os.path.join(user_home, "AppData", "Local", "ngrok")
+    else:
+        return os.path.join(user_home, ".config", "ngrok")
+
+
+def get_system() -> str:
+    """
+    Parse the name fo the OS from system properties and return a friendly name.
+
+    :return: The friendly name of the OS.
+    :raises: :class:`~pyngrok.exception.PyngrokNgrokInstallError`: When the platform is not supported.
+    """
+    system = platform.system().replace(" ", "").lower()
+
+    if system.startswith("darwin"):
+        return "darwin"
+    elif system.startswith("windows") \
+            or system.startswith("cygwin") \
+            or system.startswith("ming"):
+        return "windows"
+    elif system.startswith("linux"):
+        return "linux"
+    elif system.startswith("freebsd"):
+        return "freebsd"
+    else:
+        raise PyngrokNgrokInstallError(f"\"{system}\" is not a supported system")
+
+
+def get_arch() -> str:
+    """
+    Get the architecture of the current system. This will be ``i386`` for 32-bit systems, ``x86_64`` for 64-bit
+    systems, and have ``_arm`` appended for ARM systems.
+
+    :return: The name of the architecture.
+    """
+    machine = platform.machine().lower()
+    arch = "x86_64" if machine.endswith("64") else "i386"
+    if machine.startswith("arm") or \
+            machine.startswith("aarch64"):
+        arch += "_arm"
+    return arch
+
+
 def get_ngrok_bin() -> str:
     """
     Get the ``ngrok`` executable for the current system.
@@ -67,13 +122,33 @@ def get_ngrok_bin() -> str:
     :return: The name of the ``ngrok`` executable.
     :raises: :class:`~pyngrok.exception.PyngrokNgrokInstallError`: When the platform is not supported.
     """
-    system = platform.system().lower()
-    if system in ["darwin", "linux", "freebsd"]:
+    system = get_system()
+    if system in UNIX_BINARIES:
         return "ngrok"
-    elif system in ["windows", "cygwin"]:  # pragma: no cover
+    else:
         return "ngrok.exe"
-    else:  # pragma: no cover
-        raise PyngrokNgrokInstallError(f"\"{system}\" is not a supported platform")
+
+
+def get_ngrok_cdn_url(ngrok_version: str) -> str:
+    """
+    Determine the ``ngrok`` CDN URL for the current OS and architecture.
+
+    :param ngrok_version: The major version of ``ngrok`` to be installed.
+    :return: The ``ngrok`` CDN URL.
+    """
+    plat = "{system}_{arch}".format(system=get_system(), arch=get_arch())
+
+    logger.debug(f"Platform to download: {plat}")
+
+    try:
+        if ngrok_version == "v2":
+            return PLATFORMS[plat]
+        elif ngrok_version == "v3":
+            return PLATFORMS_V3[plat]
+        else:
+            raise PyngrokError(f"\"ngrok_version\" must be a supported version: {SUPPORTED_NGROK_VERSIONS}")
+    except KeyError:
+        raise PyngrokNgrokInstallError(f"\"{plat}\" is not a supported platform")
 
 
 def install_ngrok(ngrok_path: str,
@@ -101,26 +176,7 @@ def install_ngrok(ngrok_path: str,
     if not os.path.exists(ngrok_dir):
         os.makedirs(ngrok_dir)
 
-    arch = "x86_64" if sys.maxsize > 2 ** 32 else "i386"
-    if platform.uname()[4].startswith("arm") or \
-            platform.uname()[4].startswith("aarch64"):
-        arch += "_arm"
-    system = platform.system().lower()
-    if "cygwin" in system:
-        system = "cygwin"
-
-    plat = system + "_" + arch
-    try:
-        if ngrok_version == "v2":
-            url = PLATFORMS[plat]
-        elif ngrok_version == "v3":
-            url = PLATFORMS_V3[plat]
-        else:
-            raise PyngrokError(f"\"ngrok_version\" must be a supported version: {SUPPORTED_NGROK_VERSIONS}")
-
-        logger.debug(f"Platform to download: {plat}")
-    except KeyError:
-        raise PyngrokNgrokInstallError(f"\"{plat}\" is not a supported platform")
+    url = get_ngrok_cdn_url(ngrok_version)
 
     try:
         download_path = _download_file(url, **kwargs)

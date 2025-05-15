@@ -2,22 +2,14 @@ __copyright__ = "Copyright (c) 2018-2025 Alex Laird"
 __license__ = "MIT"
 
 import os
-import platform
 from typing import Callable, Optional
 
-from pyngrok.installer import get_ngrok_bin
+from pyngrok.installer import get_ngrok_bin, get_default_ngrok_dir
 from pyngrok.log import NgrokLog
 
 DEFAULT_CONFIG_PATH: Optional[str] = None
 
-system = platform.system().lower()
-if system == "darwin":
-    _config_rel_path = os.path.join("Library", "Application Support", "ngrok")
-elif system in ["windows", "cygwin"]:
-    _config_rel_path = os.path.join("AppData", "Local", "ngrok")
-else:
-    _config_rel_path = os.path.join(".config", "ngrok")
-DEFAULT_NGROK_DIR = os.path.join(os.path.expanduser("~"), _config_rel_path)
+DEFAULT_NGROK_DIR = get_default_ngrok_dir()
 DEFAULT_NGROK_CONFIG_PATH = os.path.join(DEFAULT_NGROK_DIR, "ngrok.yml")
 DEFAULT_NGROK_PATH = os.path.join(DEFAULT_NGROK_DIR, get_ngrok_bin())
 
