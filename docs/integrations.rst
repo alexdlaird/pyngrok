@@ -10,9 +10,9 @@ Flask
 .. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
    :target: https://github.com/alexdlaird/pyngrok-example-flask
 
-In ``server.py``, `where our Flask app is initialized <https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/#the-application-factory>`_,
-we should add a variable that let's us configure from an environment variable whether we want to open a tunnel
-to ``localhost`` with ``ngrok`` when the dev server starts. We can initialize the ``pyngrok`` tunnel in this
+In ``server.py``, `where your Flask app is initialized <https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/#the-application-factory>`_,
+you should add a variable that let's you configure from an environment variable whether you want to open a tunnel
+to ``localhost`` with ``ngrok`` when the dev server starts. You can initialize the ``pyngrok`` tunnel in this
 same place.
 
 .. code-block:: python
@@ -29,7 +29,7 @@ same place.
     def create_app():
         app = Flask(__name__)
 
-        # Initialize our ngrok settings into Flask
+        # Initialize your ngrok settings into Flask
         app.config.from_mapping(
             BASE_URL="http://localhost:5000",
             USE_NGROK=os.environ.get("USE_NGROK", "False") == "True" and os.environ.get("WERKZEUG_RUN_MAIN") != "true"
@@ -51,7 +51,7 @@ same place.
             app.config["BASE_URL"] = public_url
             init_webhooks(public_url)
 
-        # ... Initialize Blueprints and the rest of our app
+        # ... Initialize Blueprints and the rest of your app
 
         return app
 
@@ -67,8 +67,8 @@ Django
    :target: https://github.com/alexdlaird/pyngrok-example-django
 
 In `settings.py <https://docs.djangoproject.com/en/3.0/topics/settings/>`_ of
-`our Django project <https://docs.djangoproject.com/en/3.0/intro/tutorial01/#creating-a-project>`_, we should add a
-variable that let's us configure from an environment variable whether we want to open a tunnel to
+`your Django project <https://docs.djangoproject.com/en/3.0/intro/tutorial01/#creating-a-project>`_, you should add a
+variable that let's you configure from an environment variable whether you want to open a tunnel to
 ``localhost`` with ``ngrok`` when the dev server starts.
 
 .. code-block:: python
@@ -76,14 +76,14 @@ variable that let's us configure from an environment variable whether we want to
     import os
     import sys
 
-    # ... The rest of our Django settings
+    # ... The rest of your Django settings
 
     BASE_URL = "http://localhost:8000"
 
     USE_NGROK = os.environ.get("USE_NGROK", "False") == "True" and os.environ.get("RUN_MAIN", None) != "true"
 
-If this flag is set, we want to initialize ``pyngrok`` when Django is booting from its dev server. An easy place
-to do this is one of our ``apps.py`` by `extending AppConfig <https://docs.djangoproject.com/en/3.0/ref/applications/#django.apps.AppConfig.ready>`_.
+If this flag is set, you want to initialize ``pyngrok`` when Django is booting from its dev server. An easy place
+to do this is one of your ``apps.py`` by `extending AppConfig <https://docs.djangoproject.com/en/3.0/ref/applications/#django.apps.AppConfig.ready>`_.
 
 .. code-block:: python
 
@@ -133,9 +133,9 @@ FastAPI
 .. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
    :target: https://github.com/alexdlaird/pyngrok-example-fastapi
 
-In ``server.py``, `where our FastAPI app is initialized <https://fastapi.tiangolo.com/tutorial/first-steps/>`_,
-we should add a variable that let's us configure from an environment variable whether we want to tunnel to
-``localhost`` with ``ngrok``. We can initialize the ``pyngrok`` tunnel in this same place.
+In ``server.py``, `where your FastAPI app is initialized <https://fastapi.tiangolo.com/tutorial/first-steps/>`_,
+you should add a variable that let's you configure from an environment variable whether you want to tunnel to
+``localhost`` with ``ngrok``. You can initialize the ``pyngrok`` tunnel in this same place.
 
 .. code-block:: python
 
@@ -148,7 +148,7 @@ we should add a variable that let's us configure from an environment variable wh
 
 
     class Settings(BaseSettings):
-        # ... The rest of our FastAPI settings
+        # ... The rest of your FastAPI settings
 
         BASE_URL = "http://localhost:8000"
         USE_NGROK = os.environ.get("USE_NGROK", "False") == "True"
@@ -181,7 +181,7 @@ we should add a variable that let's us configure from an environment variable wh
         settings.BASE_URL = public_url
         init_webhooks(public_url)
 
-    # ... Initialize routers and the rest of our app
+    # ... Initialize routers and the rest of your app
 
 Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicorn.org/#usage>`_, setting
 ``USE_NGROK`` to open a tunnel.
@@ -194,7 +194,7 @@ Google Colaboratory
 -------------------
 
 Using ``ngrok`` in a `Google Colab Notebook <https://colab.research.google.com/notebooks/intro.ipynb#recent=true>`_
-takes just two code cells with ``pyngrok``. Install ``pyngrok`` as a dependency in our Notebook by creating a code
+takes just two code cells with ``pyngrok``. Install ``pyngrok`` as a dependency in your Notebook by creating a code
 block like this:
 
 .. code-block:: sh
@@ -208,8 +208,8 @@ Colab SSH Example
    :target: https://colab.research.google.com/drive/1_ZDG69zjD-6j1dbGbrzAQkyrtlUfdr88?usp=sharing
    :alt: Open SSH Example in Colab
 
-With an SSH server setup and running (as shown fully in the linked example), all we need to do is create another code cell
-that uses ``pyngrok`` to open a tunnel to that server.
+With an SSH server setup and running (as shown fully in the linked example), all you need to do is create another code
+cell that uses ``pyngrok`` to open a tunnel to that server.
 
 .. code-block:: python
 
@@ -233,8 +233,8 @@ Colab HTTP Example
    :target: https://colab.research.google.com/drive/1F-b8Vv_jaThi55_z0VLYLw3DDVnPYZMp?usp=sharing
    :alt: Open HTTP Example in Colab
 
-It can also be useful to expose a web server, process HTTP requests, etc. from within our Notebook. This code block
-assumes we have also added ``!pip install flask`` to our dependency code block.
+It can also be useful to expose a web server, process HTTP requests, etc. from within your Notebook. This code block
+assumes you have also added ``!pip install flask`` to your dependency code block.
 
 .. code-block:: python
 
@@ -268,12 +268,12 @@ assumes we have also added ``!pip install flask`` to our dependency code block.
 End-to-End Testing
 ------------------
 
-Some testing use-cases might mean we want to temporarily expose a route via a ``pyngrok`` tunnel to fully
+Some testing use-cases might mean you want to temporarily expose a route via a ``pyngrok`` tunnel to fully
 validate a workflow. For example, an internal end-to-end tester, a step in a pre-deployment validation pipeline, or a
 service that automatically updates a status page.
 
 Whatever the case may be, extending `unittest.TestCase <https://docs.python.org/3/library/unittest.html#unittest.TestCase>`_
-and adding our own fixtures that start the dev server and open a ``pyngrok`` tunnel is relatively simple. This
+and adding your own fixtures that start the dev server and open a ``pyngrok`` tunnel is relatively simple. This
 snippet builds on the `Flask example above <#flask>`_, but it could be easily modified to work with Django or another
 framework if its dev server was started/stopped in the ``start_dev_server()`` and ``stop_dev_server()`` methods
 and ``PORT`` was changed.
@@ -338,7 +338,7 @@ and ``PORT`` was changed.
             cls.stop_dev_server()
 
 Now, any test that needs a ``pyngrok`` tunnel can simply extend ``PyngrokTestCase`` to inherit these fixtures.
-If we want the ``pyngrok`` tunnel to remain open across numerous tests, it may be more efficient to
+If you want the ``pyngrok`` tunnel to remain open across numerous tests, it may be more efficient to
 `setup these fixtures at the suite or module level instead <https://docs.python.org/3/library/unittest.html#class-and-module-fixtures>`_,
 which would also be a simple change.
 
@@ -346,11 +346,11 @@ AWS Lambda (Local)
 ------------------
 
 Lambdas deployed to AWS can be easily developed locally using ``pyngrok`` and extending the
-`Flask example shown above <#flask>`_. In addition to effortless local development, this gives us more flexibility when
+`Flask example shown above <#flask>`_. In addition to effortless local development, this gives you more flexibility when
 writing tests, leveraging a CI, managing revisions, etc.
 
-Let's assume we have a file ``foo_GET.py`` in our ``lambdas`` module and, when deployed, it handles requests to
-``GET /foo``. Locally, we can use a Flask route as a shim to funnel requests to this same Lambda handler.
+Let's assume you have a file ``foo_GET.py`` in your ``lambdas`` module and, when deployed, it handles requests to
+``GET /foo``. Locally, you can use a Flask route as a shim to funnel requests to this same Lambda handler.
 
 To start, add ``app.register_blueprint(lambda_routes.bp)`` to ``server.py`` from the example above. The create
 ``lambda_routes.py`` as shown below to handle the routing:
@@ -373,7 +373,7 @@ To start, add ``app.register_blueprint(lambda_routes.bp)`` to ``server.py`` from
 
         return json.dumps(foo_GET.lambda_handler(event, {}))
 
-For a complete example of how we can leverage all these things together to rapidly and reliably develop, test,
+For a complete example of how you can leverage all these things together to rapidly and reliably develop, test,
 and deploy AWS Lambda's, check out `the Air Quality Bot repository <https://github.com/alexdlaird/air-quality-bot>`_
 and have a look at the ``Makefile`` and ``devserver.py``.
 
@@ -381,7 +381,7 @@ Python HTTP Server
 ------------------
 
 Python's `http.server module <https://docs.python.org/3/library/http.server.html>`_ also makes for a useful development
-server. We can use ``pyngrok`` to expose it to the web via a tunnel, as show in ``server.py`` here:
+server. You can use ``pyngrok`` to expose it to the web via a tunnel, as show in ``server.py`` here:
 
 .. code-block:: python
 
@@ -406,7 +406,7 @@ server. We can use ``pyngrok`` to expose it to the web via a tunnel, as show in 
 
        httpd.socket.close()
 
-We can then run this script to start the server.
+You can then run this script to start the server.
 
 .. code-block:: sh
 
@@ -418,7 +418,7 @@ Python TCP Server and Client
 Here is an example of a simple TCP ping/pong server. It opens a local socket, uses ``ngrok`` to tunnel to that
 socket, then the client/server communicate via the publicly exposed address.
 
-For this code to run, we first need to go to
+For this code to run, you first need to go to
 `ngrok's Reserved TCP Addresses <https://dashboard.ngrok.com/tcp-addresses>`_ and make a reservation. Set the ``HOST``
 and ``PORT`` environment variables pointing to that reserved address.
 
@@ -475,7 +475,7 @@ Now create ``server.py`` with the following code:
 
     sock.close()
 
-In a terminal window, we can now start our socket server:
+In a terminal window, you can now start your socket server:
 
 .. code-block:: sh
 
@@ -496,7 +496,7 @@ Create ``client.py`` with the following code:
     # Create a TCP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    # Connect to the server with the socket via our ngrok tunnel
+    # Connect to the server with the socket via your ngrok tunnel
     server_address = (host, port)
     sock.connect(server_address)
     print(f"Connected to {host}:{port}")
@@ -517,10 +517,10 @@ Create ``client.py`` with the following code:
 
     sock.close()
 
-In another terminal window, we can run our client:
+In another terminal window, you can run your client:
 
 .. code-block:: sh
 
     HOST="1.tcp.ngrok.io" PORT=12345 python client.py
 
-And that's it! Data was sent and received from a socket via our ``ngrok`` tunnel.
+And that's it! Data was sent and received from a socket via your ``ngrok`` tunnel.

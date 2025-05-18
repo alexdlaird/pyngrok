@@ -27,14 +27,14 @@ class PyngrokConfig:
 
         from pyngrok import conf, ngrok
 
-        # Here we update the entire default config
+        # Here you update the entire default config
         pyngrok_config = conf.PyngrokConfig(ngrok_path="/usr/local/bin/ngrok")
         conf.set_default(pyngrok_config)
 
-        # Here we update just one variable in the default config
+        # Here you update just one variable in the default config
         conf.get_default().ngrok_path = "/usr/local/bin/ngrok"
 
-        # Here we leave the default config as-is and pass an override
+        # Here you leave the default config as-is and pass an override
         pyngrok_config = conf.PyngrokConfig(ngrok_path="/usr/local/bin/ngrok")
         ngrok.connect(pyngrok_config=pyngrok_config)
     """

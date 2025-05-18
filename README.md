@@ -32,7 +32,7 @@ or `conda`:
 conda install -c conda-forge pyngrok
 ```
 
-That's it! `pyngrok` is now available as a package to our Python projects, and `ngrok` is now available from
+That's it! `pyngrok` is now available as a package to your Python projects, and `ngrok` is now available from
 the command line.
 
 ## Basic Usage
@@ -66,15 +66,16 @@ internal_endpoint = ngrok.connect(addr="9000",
 
 The [`connect`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.connect) method takes `kwargs` as well,
 which allows
-us to pass additional tunnel configurations that are supported by `ngrok` (or the `name` of a tunnel defined in
+you to pass additional tunnel configurations that are supported by `ngrok` (or the `name` of a tunnel defined in
 `ngrok`'s config file), [as documented here](https://pyngrok.readthedocs.io/en/latest/#tunnel-configurations).
 
 ### `ngrok`'s API
 
-The [`api`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.api) method allows us to use the local
-`ngrok` agent to make requests against [the `ngrok` API](https://ngrok.com/docs/agent/cli-api/), if we
+The [`api`](https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.api) method allows you to use the local
+`ngrok` agent to make requests against [the `ngrok` API](https://ngrok.com/docs/agent/cli-api/), if you
 have [set an API key](https://pyngrok.readthedocs.io/en/latest/#setting-the-authtoken-or-api-key).
-For example, here we reserve a `ngrok` domain, then create a Cloud Endpoint with an associated traffic policy:
+For example, here's how you would reserve a `ngrok` domain, then create a Cloud Endpoint with an associated traffic
+policy:
 
 ```python
 from pyngrok import ngrok
@@ -90,7 +91,7 @@ ngrok.api("endpoints", "create",
 
 ### Command Line Usage
 
-This package puts the default `ngrok` binary on our path, so all features of `ngrok` are
+This package puts the default `ngrok` binary on your path, so all features of `ngrok` are
 available on the command line.
 
 ```sh
