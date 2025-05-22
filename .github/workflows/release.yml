@@ -12,6 +12,7 @@ jobs:
 
     env:
       FORCE_COLOR: 1
+      PYTHONUNBUFFERED: 1
 
     runs-on: ubuntu-latest
 
@@ -35,6 +36,7 @@ jobs:
 
     env:
       FORCE_COLOR: 1
+      PYTHONUNBUFFERED: 1
 
     runs-on: ubuntu-latest
 
