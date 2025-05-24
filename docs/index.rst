@@ -181,7 +181,8 @@ can be accomplished by using ``pyngrok`` to open a ``tcp`` tunnel to the desired
 
     # Open a tunnel to MySQL with a Reserved TCP Address
     # <NgrokTunnel: "tcp://1.tcp.ngrok.io:12345" -> "localhost:3306">
-    ngrok.connect("3306", "tcp",
+    ngrok.connect("3306",
+                  "tcp",
                   remote_addr="1.tcp.ngrok.io:12345")
 
 You can also serve up local directories via `ngrok's built-in fileserver <https://ngrok.com/docs/universal-gateway/http/?cty=agent-config#agent-endpoint>`_.

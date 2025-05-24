@@ -59,7 +59,9 @@ Now Flask can be started in development by the usual means, setting ``USE_NGROK`
 
 .. code-block:: sh
 
-    USE_NGROK=True NGROK_AUTHTOKEN=<AUTHTOKEN> FLASK_APP=server.py flask run
+    USE_NGROK=True NGROK_AUTHTOKEN=<AUTHTOKEN> \
+    FLASK_APP=server.py \
+    flask run
 
 Django
 ------
@@ -126,7 +128,8 @@ Now the Django dev server can be started by the usual means, setting ``USE_NGROK
 
 .. code-block:: sh
 
-    USE_NGROK=True NGROK_AUTHTOKEN=<AUTHTOKEN> python manage.py runserver
+    USE_NGROK=True NGROK_AUTHTOKEN=<AUTHTOKEN> \
+    python manage.py runserver
 
 FastAPI
 -------
@@ -188,7 +191,8 @@ Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicor
 
 .. code-block:: sh
 
-    USE_NGROK=True NGROK_AUTHTOKEN=<AUTHTOKEN> uvicorn server:app
+    USE_NGROK=True NGROK_AUTHTOKEN=<AUTHTOKEN> \
+    uvicorn server:app
 
 Google Colaboratory
 -------------------
@@ -479,7 +483,9 @@ In a terminal window, you can now start your socket server:
 
 .. code-block:: sh
 
-    NGROK_AUTHTOKEN=<AUTHTOKEN> HOST="1.tcp.ngrok.io" PORT=12345 python server.py
+    NGROK_AUTHTOKEN=<AUTHTOKEN> \
+    HOST="1.tcp.ngrok.io" PORT=12345 \
+    python server.py
 
 It's now waiting for incoming connections, so let's write a client to connect to it and send it something.
 
@@ -521,6 +527,7 @@ In another terminal window, you can run your client:
 
 .. code-block:: sh
 
-    HOST="1.tcp.ngrok.io" PORT=12345 python client.py
+    HOST="1.tcp.ngrok.io" PORT=12345 \
+    python client.py
 
 And that's it! Data was sent and received from a socket via your ``ngrok`` tunnel.
