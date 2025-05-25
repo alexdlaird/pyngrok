@@ -337,9 +337,9 @@ still running by calling its :func:`~pyngrok.process.NgrokProcess.healthy` metho
     will be installed the first time most methods in the :mod:`~pyngrok.ngrok` module are called.
 
     If you need to customize the installation of ``ngrok``, perhaps specifying a timeout, proxy, use a custom mirror
-    for the download, etc. you can do so by leveraging the :mod:`~pyngrok.installer` module. Keyword arguments in this
+    for the download, etc., you can do so by leveraging the :mod:`~pyngrok.installer` module. Keyword arguments in this
     module are ultimately passed down to :py:func:`urllib.request.urlopen`, so as long as you use the
-    :mod:`~pyngrok.installer` module ourselves prior to invoking any :mod:`~pyngrok.ngrok` methods, you can can control
+    :mod:`~pyngrok.installer` module yourself prior to invoking any :mod:`~pyngrok.ngrok` methods, you can can control
     how ``ngrok`` is installed and from where.
 
 Setting the ``authtoken`` or ``api_key``
