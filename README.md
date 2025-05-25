@@ -105,7 +105,7 @@ see [`ngrok`'s official documentation](https://ngrok.com/docs/agent/cli/).
 ## Documentation
 
 For more advanced usage, `pyngrok`'s official documentation is available
-at [https://pyngrok.readthedocs.io](https://pyngrok.readthedocs.io).
+on [Read the Docs](https://pyngrok.readthedocs.io).
 
 ### Integration Examples
 

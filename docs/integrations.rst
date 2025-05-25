@@ -388,11 +388,11 @@ For a complete example of how you can leverage all these things together to rapi
 and deploy AWS Lambda's, check out `the Air Quality Bot repository <https://github.com/alexdlaird/air-quality-bot>`_
 and have a look at the ``Makefile`` and ``devserver.py``.
 
-Python HTTP Server
-------------------
+Python Simple HTTP Server
+-------------------------
 
 Python's `http.server module <https://docs.python.org/3/library/http.server.html>`_ also makes for a useful development
-server. You can use ``pyngrok`` to expose it to the web via a tunnel, as show in ``server.py`` here:
+server. You can use ``pyngrok`` to expose it to the web via a tunnel, as shown in ``server.py`` here:
 
 .. code-block:: python
 
@@ -423,15 +423,15 @@ You can then run this script to start the server.
 
     NGROK_AUTHTOKEN=<AUTHTOKEN> python server.py
 
-Python TCP Server and Client
-----------------------------
+Python Simple TCP Server and Client
+-----------------------------------
 
 Here is an example of a simple TCP ping/pong server. It opens a local socket, uses ``ngrok`` to tunnel to that
 socket, then the client/server communicate via the publicly exposed address.
 
-For this code to run, you first need to go to
-`ngrok's Reserved TCP Addresses <https://dashboard.ngrok.com/tcp-addresses>`_ and make a reservation. Set the ``HOST``
-and ``PORT`` environment variables pointing to that reserved address.
+For this code to run, you'll first need a reserved TCP address, which you obtain using
+`ngrok's API <index.html#ngrok-s-api>`_. Set the ``HOST`` and ``PORT`` environment variables pointing to that reserved
+address.
 
 Now create ``server.py`` with the following code:
 
