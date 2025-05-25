@@ -284,6 +284,8 @@ and ``PORT`` was changed.
 
 .. code-block:: python
 
+    import os
+    import signal
     import unittest
     import threading
 
@@ -303,7 +305,13 @@ and ``PORT`` was changed.
             app = create_app()
 
             def shutdown():
-                request.environ.get("werkzeug.server.shutdown")()
+                # Newer versions of Werkzeug and Flask don't provide this environment variable
+                if "werkzeug.server.shutdown" in request.environ:
+                    request.environ.get("werkzeug.server.shutdown")()
+                else:
+                    # Windows does not provide SIGKILL, go with SIGTERM then
+                    sig = getattr(signal, "SIGKILL", signal.SIGTERM)
+                    os.kill(os.getpid(), sig)
 
             @app.route("/shutdown", methods=["POST"])
             def route_shutdown():
@@ -343,8 +351,7 @@ and ``PORT`` was changed.
 
 Now, any test that needs a ``pyngrok`` tunnel can simply extend ``PyngrokTestCase`` to inherit these fixtures.
 If you want the ``pyngrok`` tunnel to remain open across numerous tests, it may be more efficient to
-`setup these fixtures at the suite or module level instead <https://docs.python.org/3/library/unittest.html#class-and-module-fixtures>`_,
-which would also be a simple change.
+`setup these fixtures at the suite or module level instead <https://docs.python.org/3/library/unittest.html#class-and-module-fixtures>`_.
 
 AWS Lambda (Local)
 ------------------
@@ -377,7 +384,7 @@ To start, add ``app.register_blueprint(lambda_routes.bp)`` to ``server.py`` from
 
         return json.dumps(foo_GET.lambda_handler(event, {}))
 
-For a complete example of how you can leverage all these things together to rapidly and reliably develop, test,
+For a complete example of how you can leverage all these things together to rapidly develop, test,
 and deploy AWS Lambda's, check out `the Air Quality Bot repository <https://github.com/alexdlaird/air-quality-bot>`_
 and have a look at the ``Makefile`` and ``devserver.py``.
 
