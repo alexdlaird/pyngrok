@@ -326,18 +326,18 @@ and ``PORT`` was changed.
             request.urlopen(req)
 
         @classmethod
-        def init_webhooks(cls, base_url):
-            webhook_url = f"{base_url}/foo"
+        def init_webhooks(cls):
+            webhook_url = f"{cls.public_url}/foo"
 
             # ... Update inbound traffic via APIs to use the public-facing ngrok URL
 
         @classmethod
         def init_pyngrok(cls):
             # Open a ngrok tunnel to the dev server
-            public_url = ngrok.connect(PORT).public_url
+            cls.public_url = ngrok.connect(PORT).public_url
 
             # Update any base URLs or webhooks to use the public ngrok URL
-            cls.init_webhooks(public_url)
+            cls.init_webhooks()
 
         @classmethod
         def setUpClass(cls):
@@ -348,6 +348,8 @@ and ``PORT`` was changed.
         @classmethod
         def tearDownClass(cls):
             cls.stop_dev_server()
+
+            ngrok.disconnect(cls.public_url)
 
 Now, any test that needs a ``pyngrok`` tunnel can simply extend ``PyngrokTestCase`` to inherit these fixtures.
 If you want the ``pyngrok`` tunnel to remain open across numerous tests, it may be more efficient to
