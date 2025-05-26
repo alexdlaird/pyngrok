@@ -278,9 +278,8 @@ service that automatically updates a status page.
 
 Whatever the case may be, extending `unittest.TestCase <https://docs.python.org/3/library/unittest.html#unittest.TestCase>`_
 and adding your own fixtures that start the dev server and open a ``pyngrok`` tunnel is relatively simple. This
-snippet builds on the `Flask example above <#flask>`_, but it could be easily modified to work with Django or another
-framework if its dev server was started/stopped in the ``start_dev_server()`` and ``stop_dev_server()`` methods
-and ``PORT`` was changed.
+snippet builds on the `Flask example above <#flask>`_, but it could be modified to work with other
+frameworks.
 
 .. code-block:: python
 
@@ -297,9 +296,6 @@ and ``PORT`` was changed.
 
 
     class PyngrokTestCase(unittest.TestCase):
-        # Default Flask port
-        PORT = "5000"
-
         @classmethod
         def start_dev_server(cls):
             app = create_app()
@@ -320,30 +316,23 @@ and ``PORT`` was changed.
 
             threading.Thread(target=app.run).start()
 
+            return app
+
         @classmethod
         def stop_dev_server(cls):
             req = request.Request("http://localhost:5000/shutdown", method="POST")
             request.urlopen(req)
 
         @classmethod
-        def init_webhooks(cls):
-            webhook_url = f"{cls.public_url}/foo"
+        def setUpClass(cls):
+            # Ensure a tunnel is opened when the dev server is started
+            os.environ["USE_NGROK"] = True
+
+            app = cls.start_dev_server()
+
+            cls.base_url = app.config["BASE_URL"]
 
             # ... Update inbound traffic via APIs to use the public-facing ngrok URL
-
-        @classmethod
-        def init_pyngrok(cls):
-            # Open a ngrok tunnel to the dev server
-            cls.public_url = ngrok.connect(PORT).public_url
-
-            # Update any base URLs or webhooks to use the public ngrok URL
-            cls.init_webhooks()
-
-        @classmethod
-        def setUpClass(cls):
-            cls.start_dev_server()
-
-            cls.init_pyngrok()
 
         @classmethod
         def tearDownClass(cls):
@@ -351,9 +340,9 @@ and ``PORT`` was changed.
 
             ngrok.disconnect(cls.public_url)
 
-Now, any test that needs a ``pyngrok`` tunnel can simply extend ``PyngrokTestCase`` to inherit these fixtures.
-If you want the ``pyngrok`` tunnel to remain open across numerous tests, it may be more efficient to
-`setup these fixtures at the suite or module level instead <https://docs.python.org/3/library/unittest.html#class-and-module-fixtures>`_.
+Now, any test that needs to assert against responses through a ``pyngrok`` tunnel can simply extend ``PyngrokTestCase``
+to inherit these fixtures. If you want the ``pyngrok`` tunnel to remain open across numerous tests, it may be more
+efficient to `setup these fixtures at the suite or module level instead <https://docs.python.org/3/library/unittest.html#class-and-module-fixtures>`_.
 
 AWS Lambda (Local)
 ------------------
