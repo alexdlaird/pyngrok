@@ -23,7 +23,7 @@ same place.
     from flask import Flask
 
     def init_webhooks(base_url):
-        # Update inbound traffic via APIs to use the public-facing ngrok URL
+        # ... Implement updates necessary so inbound traffic uses the public-facing ngrok URL
         pass
 
     def create_app():
@@ -36,7 +36,7 @@ same place.
         )
 
         if app.config["USE_NGROK"]:
-            # pyngrok will only be installed, and should only ever be initialized, in a dev environment
+            # Only import pyngrok and install if we're actually going to use it
             from pyngrok import ngrok
 
             # Get the dev server port (defaults to 5000 for Flask, can be overridden with `--port`
@@ -51,7 +51,7 @@ same place.
             app.config["BASE_URL"] = public_url
             init_webhooks(public_url)
 
-        # ... Initialize Blueprints and the rest of your app
+        # ... Implement Blueprints and the rest of your app
 
         return app
 
@@ -78,7 +78,7 @@ variable that let's you configure from an environment variable whether you want 
     import os
     import sys
 
-    # ... The rest of your Django settings
+    # ... Implement the rest of your Django settings
 
     BASE_URL = "http://localhost:8000"
 
@@ -103,7 +103,7 @@ to do this is one of your ``apps.py`` by `extending AppConfig <https://docs.djan
 
         def ready(self):
             if settings.USE_NGROK:
-                # pyngrok will only be installed, and should only ever be initialized, in a dev environment
+                # Only import pyngrok and install if we're actually going to use it
                 from pyngrok import ngrok
 
                 # Get the dev server port (defaults to 8000 for Django, can be overridden with the
@@ -121,7 +121,7 @@ to do this is one of your ``apps.py`` by `extending AppConfig <https://docs.djan
 
         @staticmethod
         def init_webhooks(base_url):
-            # Update inbound traffic via APIs to use the public-facing ngrok URL
+            # ... Implement updates necessary so inbound traffic uses the public-facing ngrok URL
             pass
 
 Now the Django dev server can be started by the usual means, setting ``USE_NGROK`` to open a tunnel.
@@ -151,7 +151,7 @@ you should add a variable that let's you configure from an environment variable 
 
 
     class Settings(BaseSettings):
-        # ... The rest of your FastAPI settings
+        # ... Implement the rest of your FastAPI settings
 
         BASE_URL = "http://localhost:8000"
         USE_NGROK = os.environ.get("USE_NGROK", "False") == "True"
@@ -161,7 +161,7 @@ you should add a variable that let's you configure from an environment variable 
 
 
     def init_webhooks(base_url):
-        # Update inbound traffic via APIs to use the public-facing ngrok URL
+        # ... Implement updates necessary so inbound traffic uses the public-facing ngrok URL
         pass
 
 
@@ -169,7 +169,7 @@ you should add a variable that let's you configure from an environment variable 
     app = FastAPI()
 
     if settings.USE_NGROK:
-        # pyngrok should only ever be installed or initialized in a dev environment when this flag is set
+        # Only import pyngrok and install if we're actually going to use it
         from pyngrok import ngrok
 
         # Get the dev server port (defaults to 8000 for Uvicorn, can be overridden with `--port`
@@ -184,7 +184,7 @@ you should add a variable that let's you configure from an environment variable 
         settings.BASE_URL = public_url
         init_webhooks(public_url)
 
-    # ... Initialize routers and the rest of your app
+    # ... Implement routers and the rest of your app
 
 Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicorn.org/#usage>`_, setting
 ``USE_NGROK`` to open a tunnel.
@@ -258,8 +258,7 @@ assumes you have also added ``!pip install flask`` to your dependency code block
     # Update any base URLs to use the public ngrok URL
     app.config["BASE_URL"] = public_url
 
-    # ... Update inbound traffic via APIs to use the public-facing ngrok URL
-
+    # ... Implement updates necessary so inbound traffic uses the public-facing ngrok URL
 
     # Define Flask routes
     @app.route("/")
@@ -325,20 +324,20 @@ frameworks.
 
         @classmethod
         def setUpClass(cls):
-            # Ensure a tunnel is opened when the dev server is started
+            # Ensure a tunnel is opened and webhooks initialized when the dev server is started
             os.environ["USE_NGROK"] = True
 
             app = cls.start_dev_server()
 
             cls.base_url = app.config["BASE_URL"]
 
-            # ... Update inbound traffic via APIs to use the public-facing ngrok URL
+            # ... Implement other initializes so you can assert against the inbound traffic through your tunnel
 
         @classmethod
         def tearDownClass(cls):
             cls.stop_dev_server()
 
-            ngrok.disconnect(cls.public_url)
+            ngrok.kill()
 
 Now, any test that needs to assert against responses through a ``pyngrok`` tunnel can simply extend ``PyngrokTestCase``
 to inherit these fixtures. If you want the ``pyngrok`` tunnel to remain open across numerous tests, it may be more
