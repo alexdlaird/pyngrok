@@ -197,7 +197,7 @@ Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicor
 Docker
 ------
 
-``pyngrok`` provides `pre-built images on Docker Hub <https://hub.docker.com/r/alexdlaird/pyngrok>`_.
+``pyngrok`` provides `pre-built container images on Docker Hub <https://hub.docker.com/r/alexdlaird/pyngrok>`_.
 
 To launch the container in to a Python shell, run:
 
@@ -217,12 +217,11 @@ script to run on startup:
         command:
           - "python /root/my-script.py"
         volumes:
-          - ./ngrok.yml:/root/.config/ngrok/ngrok.yml
           - ./my-script.py:/root/my-script.py
         ports:
           - 4040:4040
 
-Then launch the container with:
+Then launch it with:
 
 .. code-block:: shell
 
