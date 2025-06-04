@@ -10,6 +10,8 @@ Flask
 .. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
    :target: https://github.com/alexdlaird/pyngrok-example-flask
 
+This example project is also setup to `show Docker usage <#docker>`_.
+
 In ``server.py``, `where your Flask app is initialized <https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/#the-application-factory>`_,
 you should add a variable that let's you configure from an environment variable whether you want to open a tunnel
 to ``localhost`` with ``ngrok`` when the dev server starts. You can initialize the ``pyngrok`` tunnel in this
@@ -204,6 +206,9 @@ To launch the container in to a Python shell, run:
 .. code-block:: shell
 
     docker run -e NGROK_AUTHTOKEN=<NGROK_AUTHTOKEN> -it alexdlaird/pyngrok
+
+The [`pyngrok-example-flask` repository](https://github.com/alexdlaird/pyngrok-example-flask/) also includes a
+`Dockerfile` and `make` commands to run it, if you would like to see a complete example.
 
 Here is an example of how you could launch the container using ``docker-compose.yml``, where you also want a given Python
 script to run on startup:
