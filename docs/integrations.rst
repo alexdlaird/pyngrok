@@ -207,8 +207,8 @@ To launch the container in to a Python shell, run:
 
     docker run -e NGROK_AUTHTOKEN=<NGROK_AUTHTOKEN> -it alexdlaird/pyngrok
 
-The [`pyngrok-example-flask` repository](https://github.com/alexdlaird/pyngrok-example-flask/) also includes a
-`Dockerfile` and `make` commands to run it, if you would like to see a complete example.
+The `pyngrok-example-flask repository <https://github.com/alexdlaird/pyngrok-example-flask>`_ also includes a
+``Dockerfile`` and ``make`` commands to run it, if you would like to see a complete example.
 
 Here is an example of how you could launch the container using ``docker-compose.yml``, where you also want a given Python
 script to run on startup:
