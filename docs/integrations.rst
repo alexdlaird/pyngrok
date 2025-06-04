@@ -197,15 +197,16 @@ Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicor
 Docker
 ------
 
-``pyngrok`` provides `pre-built Docker images on Docker Hub <https://hub.docker.com/r/alexdlaird/pyngrok>`_.
+``pyngrok`` provides `pre-built images on Docker Hub <https://hub.docker.com/r/alexdlaird/pyngrok>`_.
 
-To launch the container in to a Python shell with ``pyngrok`` installed, run:
+To launch the container in to a Python shell, run:
 
 .. code-block:: shell
 
     docker run -e NGROK_AUTHTOKEN=<NGROK_AUTHTOKEN> -it alexdlaird/pyngrok
 
-Or, here is an example using ``docker-compose.yml``, that also launches a Python script on startup:
+Here is an example of how you could launch the container using `docker-compose.yml`, where you also want a given Python
+script to run on startup:
 
 .. code-block:: yaml
 
@@ -221,7 +222,7 @@ Or, here is an example using ``docker-compose.yml``, that also launches a Python
         ports:
           - 4040:4040
 
-To launch the container with Docker Compose, execute:
+Then launch the container with:
 
 .. code-block:: shell
 
