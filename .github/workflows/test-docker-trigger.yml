@@ -1,0 +1,27 @@
+name: Test Docker Trigger
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Release
+
+    env:
+      FORCE_COLOR: 1
+      PYTHONUNBUFFERED: 1
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Last Step
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/alexdlaird/pyngrok-docker/releases \
+             -f "tag_name=7.3.0" -f "target_commitish=master" -f "name=7.3.0" -f "body=Published containers for `pyngrok` 7.3.0." -F "draft=false" -F "prerelease=false" -F "generate_release_notes=false"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
