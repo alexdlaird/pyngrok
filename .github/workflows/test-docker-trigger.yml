@@ -16,6 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Last Step
+        if: ${{ secrets.PYNGROK_DOCKER_GITHUB_TOKE != '' }}
         run: |
           gh release create -R alexdlaird/pyngrok-docker 7.3.0 --notes "Pre-built containers for [pyngrok==7.3.0](https://pypi.org/project/pyngrok/7.3.0)</a>."
         env:
