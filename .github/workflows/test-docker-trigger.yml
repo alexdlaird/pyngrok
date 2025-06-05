@@ -17,6 +17,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Last Step
         run: |
-          gh release create -R alexdlaird/pyngrok-docker 7.3.0 --notes "Published containers for &#96;pyngrok&#96; 7.3.0."
+          gh release create -R alexdlaird/pyngrok-docker 7.3.0 --notes "Published containers for `pyngrok` 7.3.0."
         env:
           GH_TOKEN: ${{ secrets.PYNGROK_DOCKER_GITHUB_TOKEN }}
