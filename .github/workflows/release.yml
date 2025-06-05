@@ -37,6 +37,7 @@ jobs:
     env:
       FORCE_COLOR: 1
       PYTHONUNBUFFERED: 1
+      PYNGROK_DOCKER_GITHUB_TOKEN: ${{ secrets.PYNGROK_DOCKER_GITHUB_TOKEN }}
 
     runs-on: ubuntu-latest
 
