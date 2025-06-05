@@ -51,3 +51,11 @@ jobs:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: make upload
+      - name: Trigger pyngrok-docker Release
+        if: ${{ env.PYNGROK_DOCKER_GITHUB_TOKEN != '' }}
+        run: |
+          gh release create \
+          -R alexdlaird/pyngrok-docker ${GITHUB_REF#refs/tags/} \
+          --notes "Pre-built containers for [pyngrok==${GITHUB_REF#refs/tags/}](https://pypi.org/project/pyngrok/${GITHUB_REF#refs/tags/})."
+        env:
+          GH_TOKEN: ${{ env.PYNGROK_DOCKER_GITHUB_TOKEN }}
