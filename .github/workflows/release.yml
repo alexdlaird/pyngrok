@@ -56,7 +56,7 @@ jobs:
         if: ${{ env.PYNGROK_DOCKER_GITHUB_TOKEN != '' }}
         run: |
           gh release create \
-          -R alexdlaird/pyngrok-docker ${GITHUB_REF#refs/tags/} \
+          -R alexdlaird/pyngrok-docker ${GITHUB_REF#refs/tags/}.0 \
           --notes "Pre-built containers for [pyngrok==${GITHUB_REF#refs/tags/}](https://pypi.org/project/pyngrok/${GITHUB_REF#refs/tags/})."
         env:
           GH_TOKEN: ${{ env.PYNGROK_DOCKER_GITHUB_TOKEN }}
