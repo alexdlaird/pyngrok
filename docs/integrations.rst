@@ -61,7 +61,7 @@ Now Flask can be started in development by the usual means, setting ``USE_NGROK`
 
 .. code-block:: sh
 
-    USE_NGROK=True NGROK_AUTHTOKEN=<AUTHTOKEN> \
+    USE_NGROK=True NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN \
         FLASK_APP=server.py \
         flask run
 
@@ -130,7 +130,7 @@ Now the Django dev server can be started by the usual means, setting ``USE_NGROK
 
 .. code-block:: sh
 
-    USE_NGROK=True NGROK_AUTHTOKEN=<AUTHTOKEN> \
+    USE_NGROK=True NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN \
         python manage.py runserver
 
 FastAPI
@@ -193,7 +193,7 @@ Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicor
 
 .. code-block:: sh
 
-    USE_NGROK=True NGROK_AUTHTOKEN=<AUTHTOKEN> \
+    USE_NGROK=True NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN \
         uvicorn server:app
 
 Docker
@@ -205,7 +205,7 @@ To launch the container in to a Python shell, run:
 
 .. code-block:: shell
 
-    docker run -e NGROK_AUTHTOKEN=<NGROK_AUTHTOKEN> -it alexdlaird/pyngrok
+    docker run -e NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN -it alexdlaird/pyngrok
 
 The `pyngrok-example-flask repository <https://github.com/alexdlaird/pyngrok-example-flask>`_ also includes a
 ``Dockerfile`` and ``make`` commands to run it, if you would like to see a complete example.
@@ -451,7 +451,7 @@ You can then run this script to start the server.
 
 .. code-block:: sh
 
-    NGROK_AUTHTOKEN=<AUTHTOKEN> python server.py
+    NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN python server.py
 
 Simple TCP Server and Client
 ----------------------------
@@ -520,7 +520,7 @@ In a terminal window, you can now start your socket server:
 
 .. code-block:: sh
 
-    NGROK_AUTHTOKEN=<AUTHTOKEN> \
+    NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN \
         HOST="1.tcp.ngrok.io" PORT=12345 \
         python server.py
 

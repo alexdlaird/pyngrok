@@ -348,7 +348,7 @@ Setting the ``authtoken`` or ``api_key``
 Running ``ngrok`` with an auth token and  API key enables access to more features available on your account (for
 instance, multiple concurrent tunnels, custom domains, use of
 `Internal Endpoints <https://ngrok.com/docs/universal-gateway/internal-endpoints/>`_, etc). You can obtain your
-auth token and generate API keys from the `ngrok dashboard <https://dashboard.ngrok.com>`_, then install it to
+auth token and generate API keys from the `ngrok dashboard <https://dashboard.ngrok.com>`_, then install in to
 ``ngrok``'s config file.
 
 .. code-block:: python
