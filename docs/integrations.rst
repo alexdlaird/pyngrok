@@ -10,7 +10,7 @@ Flask
 .. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
    :target: https://github.com/alexdlaird/pyngrok-example-flask
 
-This example project is also setup to `show Docker usage <#docker>`_.
+The Flask example includes a ``Dockerfile`` to highlight a `containerized use case <#docker>`_.
 
 In ``server.py``, `where your Flask app is initialized <https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/#the-application-factory>`_,
 you should add a variable that let's you configure from an environment variable whether you want to open a tunnel
