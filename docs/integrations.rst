@@ -199,19 +199,53 @@ Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicor
 Docker
 ------
 
-``pyngrok`` provides `pre-built container images on Docker Hub <https://hub.docker.com/r/alexdlaird/pyngrok>`_.
+``pyngrok`` provides `pre-built container images on Docker Hub <https://hub.docker.com/r/alexdlaird/pyngrok>`_, where
+you'll also find usage examples and a breakdown of the image tags available.
 
 To launch the container in to a Python shell, run:
 
 .. code-block:: shell
 
-    docker run -e NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN -it alexdlaird/pyngrok
+    docker run \
+        -e NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN -it alexdlaird/pyngrok
+
+If you want to start in a `bash` shell instead of Python, you can launch the container with:
+
+.. code-block:: shell
+
+    docker run \
+        -e NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN -it alexdlaird/pyngrok /bin/bash
 
 The `pyngrok-example-flask repository <https://github.com/alexdlaird/pyngrok-example-flask>`_ also includes a
 ``Dockerfile`` and ``make`` commands to run it, if you would like to see a complete example.
 
-Here is an example of how you could launch the container using ``docker-compose.yml``, where you also want a given Python
-script to run on startup:
+Config File
+"""""""""""
+
+``ngrok`` will look for its config file in this container at ``/root/.config/ngrok/ngrok.yml``. If you want to provide a
+custom config file, specify a mount to this file when launching the container.
+
+.. code-block:: shell
+
+    docker run \
+        -v ./ngrok.yml:/root/.config/ngrok/ngrok.yml -it alexdlaird/pyngrok
+
+Web Inspector
+"""""""""""""
+
+If you want to use ``ngrok``'s web inspector, be sure to expose its port. Be sure whatever config file you use
+`sets web_addr: 0.0.0.0:4040 <https://ngrok.com/docs/agent/config/v2/#web_addr>`_ (the config provisioned in the
+pre-built images already does this).
+
+.. code-block:: shell
+
+    docker run --env-file .env -p 4040:4040 -it alexdlaird/pyngrok
+
+Docker Compose
+""""""""""""""
+
+Here is an example of how you could launch the container using ``docker-compose.yml``, where you also want a given
+Python script to run on startup:
 
 .. code-block:: yaml
 
@@ -232,7 +266,18 @@ Then launch it with:
 
     docker compose up -d
 
-For more usage examples, as well as a breakdown of image tags, head over to `Docker Hub <https://hub.docker.com/r/alexdlaird/pyngrok>`_.
+Command Line Usage
+""""""""""""""""""
+
+``pyngrok`` package puts the default ``ngrok`` binary on your path in the container, so all features of ``ngrok`` are
+also available on the command line.
+
+.. code-block:: shell
+
+    docker run \
+        -e NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN -it alexdlaird/pyngrok ngrok http 80
+
+For details on how to fully leverage ``ngrok`` from the command line, see `ngrok's official documentation <https://ngrok.com/docs/agent/cli/>`_.
 
 Google Colaboratory
 -------------------
