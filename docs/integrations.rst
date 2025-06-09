@@ -209,12 +209,13 @@ To launch the container in to a Python shell, run:
     docker run \
         -e NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN -it alexdlaird/pyngrok
 
-If you want to start in a `bash` shell instead of Python, you can launch the container with:
+If you want to start in a ``bash`` shell instead of Python, you can launch the container with:
 
 .. code-block:: shell
 
     docker run \
-        -e NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN -it alexdlaird/pyngrok /bin/bash
+        -e NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN -it alexdlaird/pyngrok \
+        /bin/bash
 
 The `pyngrok-example-flask repository <https://github.com/alexdlaird/pyngrok-example-flask>`_ also includes a
 ``Dockerfile`` and ``make`` commands to run it, if you would like to see a complete example.
@@ -275,7 +276,8 @@ also available on the command line.
 .. code-block:: shell
 
     docker run \
-        -e NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN -it alexdlaird/pyngrok ngrok http 80
+        -e NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN -it alexdlaird/pyngrok \
+        ngrok http 80
 
 For details on how to fully leverage ``ngrok`` from the command line, see `ngrok's official documentation <https://ngrok.com/docs/agent/cli/>`_.
 
