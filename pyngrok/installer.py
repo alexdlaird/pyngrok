@@ -46,6 +46,9 @@ PLATFORMS_V3 = {
     "linux_i386_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-arm.zip",
     "linux_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-amd64.zip",
     "linux_x86_64_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-arm64.zip",
+    "linux_s390x": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-s390x.zip",
+    "linux_ppc64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-ppc64.zip",
+    "linux_ppc64le": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-ppc64le.zip",
     "freebsd_i386": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-386.zip",
     "freebsd_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-amd64.zip",
     "freebsd_i386_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-arm.zip"
@@ -103,11 +106,16 @@ def get_system() -> str:
 def get_arch() -> str:
     """
     Get the architecture of the current system. This will be ``i386`` for 32-bit systems, ``x86_64`` for 64-bit
-    systems, and have ``_arm`` appended for ARM systems.
+    systems, and have ``_arm`` appended for ARM systems. Special architectures like `s390x` and `ppc64le` will be
+    returned as-is.
 
     :return: The name of the architecture.
     """
     machine = platform.machine().lower()
+
+    if machine in ["s390x", "ppc64", "ppc64le"]:
+        return machine
+
     arch = "x86_64" if machine.endswith("64") else "i386"
     if machine.startswith("arm") or \
             machine.startswith("aarch64"):

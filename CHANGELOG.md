@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.11...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.12...HEAD)
+
+## [7.2.12](https://github.com/alexdlaird/pyngrok/compare/7.2.11...7.2.12) - 2025-07-09
+
+### Added
+
+- Support for `s390x`, `ppc64`, and `ppc64le` architectures.
 
 ## [7.2.11](https://github.com/alexdlaird/pyngrok/compare/7.2.9...7.2.11) - 2025-06-05
 
