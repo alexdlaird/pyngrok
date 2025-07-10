@@ -4,7 +4,8 @@ dynamic = ["version"]
 description = "A Python wrapper for ngrok"
 readme = "README.md"
 license = { file = "LICENSE" }
-keywords = ["tunnel", "webhook", "reverse-proxy", "ngrok", "localhost", "localtunnel", "ingress", "tunneling"]
+keywords = ["tunnel", "webhook", "reverse-proxy", "ngrok", "localhost", "ingress", "tunneling"]
+authors = [{ name = "Alex Laird", email = "contact@alexlaird.com" }]
 maintainers = [{ name = "Alex Laird", email = "contact@alexlaird.com" }]
 requires-python = ">=3.8"
 dependencies = [
