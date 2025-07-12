@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.12...HEAD)
 
+### Removed
+
+- Support for Python 3.8.
+
 ## [7.2.12](https://github.com/alexdlaird/pyngrok/compare/7.2.11...7.2.12) - 2025-07-09
 
 ### Added

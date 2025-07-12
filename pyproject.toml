@@ -3,11 +3,11 @@ name = "pyngrok"
 dynamic = ["version"]
 description = "A Python wrapper for ngrok"
 readme = "README.md"
-license = { file = "LICENSE" }
+license = "MIT"
 keywords = ["tunnel", "webhook", "reverse-proxy", "ngrok", "localhost", "ingress", "tunneling"]
 authors = [{ name = "Alex Laird", email = "contact@alexlaird.com" }]
 maintainers = [{ name = "Alex Laird", email = "contact@alexlaird.com" }]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
     "PyYAML>=5.1"
 ]
@@ -16,7 +16,6 @@ classifiers = [
     "Environment :: Console",
     "Environment :: Web Environment",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: OS Independent",
@@ -25,7 +24,6 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
     "Operating System :: Unix",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
