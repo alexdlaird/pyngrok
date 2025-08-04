@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.2.13...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.3.0...HEAD)
 
-## [7.2.13](https://github.com/alexdlaird/pyngrok/compare/7.2.12...7.2.13) - 2025-08-03
+## [7.3.0](https://github.com/alexdlaird/pyngrok/compare/7.2.12...7.3.0) - 2025-08-04
 
 ### Removed
 
