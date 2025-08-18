@@ -25,7 +25,7 @@ same place.
     from flask import Flask
 
     def init_webhooks(base_url):
-        # ... Implement updates necessary so inbound traffic uses the public-facing ngrok URL
+        # ... Implement updates necessary so webhooks use `public_url` from ngrok
         pass
 
     def create_app():
@@ -123,7 +123,7 @@ to do this is one of your ``apps.py`` by `extending AppConfig <https://docs.djan
 
         @staticmethod
         def init_webhooks(base_url):
-            # ... Implement updates necessary so inbound traffic uses the public-facing ngrok URL
+            # ... Implement updates necessary so webhooks use `public_url` from ngrok
             pass
 
 Now the Django dev server can be started by the usual means, setting ``USE_NGROK`` to open a tunnel.
@@ -163,7 +163,7 @@ you should add a variable that let's you configure from an environment variable 
 
 
     def init_webhooks(base_url):
-        # ... Implement updates necessary so inbound traffic uses the public-facing ngrok URL
+        # ... Implement updates necessary so webhooks use `public_url` from ngrok
         pass
 
 
@@ -345,7 +345,7 @@ assumes you have also added ``!pip install flask`` to your dependency code block
     # Update any base URLs to use the public ngrok URL
     app.config["BASE_URL"] = public_url
 
-    # ... Implement updates necessary so inbound traffic uses the public-facing ngrok URL
+    # ... Implement updates necessary so webhooks use `public_url` from ngrok
 
     # Define Flask routes
     @app.route("/")
@@ -418,7 +418,7 @@ frameworks.
 
             cls.base_url = app.config["BASE_URL"]
 
-            # ... Implement other initializes so you can assert against the inbound traffic through your tunnel
+            # ... Implement other initializations that your tests need for assertions
 
         @classmethod
         def tearDownClass(cls):
