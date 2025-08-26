@@ -1,3 +1,7 @@
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
 name: "Stale Check"
 
 on:
