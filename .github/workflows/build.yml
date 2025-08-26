@@ -2,6 +2,9 @@ name: Build
 
 run-name: Build ${{ github.ref_name }}
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [ main, develop ]
