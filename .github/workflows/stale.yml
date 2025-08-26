@@ -1,12 +1,12 @@
-permissions:
-  contents: read
-  issues: write
-  pull-requests: write
 name: "Stale Check"
 
 on:
   schedule:
     - cron: "0 0 * * *"
+
+permissions:
+  issues: write
+  pull-requests: write
 
 jobs:
   stale:
