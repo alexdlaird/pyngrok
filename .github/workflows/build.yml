@@ -3,7 +3,7 @@ name: Build
 run-name: Build ${{ github.ref_name }}
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   push:
