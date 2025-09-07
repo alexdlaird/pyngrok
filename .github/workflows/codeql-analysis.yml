@@ -8,7 +8,10 @@ on:
 
 permissions:
   security-events: write
+  contents: read
   actions: read
+  issues: none
+  pull-requests: none
 
 jobs:
   analyse:

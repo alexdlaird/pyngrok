@@ -6,6 +6,11 @@ on:
   release:
     types: [ created ]
 
+permissions:
+  contents: read
+  issues: none
+  pull-requests: none
+
 jobs:
   validate-version:
     name: Validate Version
