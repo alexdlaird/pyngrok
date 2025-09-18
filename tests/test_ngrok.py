@@ -652,9 +652,9 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(http_tunnel.name, "http-tunnel-agent")
         self.assertEqual(http_tunnel.config["addr"],
                          f"http://localhost:{config['tunnels']['http-tunnel']['addr']}")
-        self.assertEqual(http_tunnel.proto, config["tunnels"]["http-tunnel"]["proto"])
+        self.assertEqual(http_tunnel.proto, "https")
         self.assertEqual(http_tunnel.public_url,
-                         f"http://{config['tunnels']['http-tunnel']['subdomain']}.ngrok.io")
+                         f"https://{config['tunnels']['http-tunnel']['subdomain']}.ngrok.io")
         self.assertEqual(ssh_tunnel.name, "tcp-tunnel-agent")
         self.assertEqual(ssh_tunnel.config["addr"],
                          f"localhost:{config['tunnels']['tcp-tunnel']['addr']}")
