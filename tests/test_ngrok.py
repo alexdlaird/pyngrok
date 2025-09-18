@@ -629,7 +629,9 @@ class TestNgrok(NgrokTestCase):
                 "http-tunnel": {
                     "proto": "http",
                     "addr": "8000",
-                    "subdomain": subdomain
+                    "subdomain": subdomain,
+                    "inspect": False,
+                    "bind_tls": True
                 },
                 "tcp-tunnel": {
                     "proto": "tcp",
@@ -647,7 +649,7 @@ class TestNgrok(NgrokTestCase):
         ssh_tunnel = ngrok.connect(name="tcp-tunnel", pyngrok_config=pyngrok_config)
 
         # THEN
-        self.assertEqual(http_tunnel.name, "http-tunnel (http)")
+        self.assertEqual(http_tunnel.name, "http-tunnel")
         self.assertEqual(http_tunnel.config["addr"],
                          f"http://localhost:{config['tunnels']['http-tunnel']['addr']}")
         self.assertEqual(http_tunnel.proto, config["tunnels"]["http-tunnel"]["proto"])
