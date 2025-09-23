@@ -195,7 +195,7 @@ circuit breaker.
                                  circuit_breaker=50)
 
 If you already have a tunnel `defined in ngrok's config file <https://ngrok.com/docs/agent/config/v2/#tunnel-configurations>`_,
-you can start it by its ``name``.
+you can start it by its ``name`` (note that "-api" will be appended to its name when started).
 
 .. code-block:: python
 
