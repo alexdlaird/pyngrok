@@ -271,7 +271,7 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
         tunnel_definition.update(options)
         options.clear()
         options.update(tunnel_definition)
-        name += "-agent"
+        name += "-api"
 
     if "labels" in options and not pyngrok_config.api_key:
         raise PyngrokError(
