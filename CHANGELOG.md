@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.3.0...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.4.0...HEAD)
+
+## [7.4.0](https://github.com/alexdlaird/pyngrok/compare/7.3.0...7.4.0) - 2025-09-23
+
+### Changed
+
+- As of [`ngrok` Agent 3.29.0](https://ngrok.com/docs/agent/changelog/#ngrok-agent-3290-2025-09-17), two tunnels cannot have the same name (and this includes tunnel's defined in the config, even if they are not started). As such, when ``name`` is given and matches a tunnel defined in the config, `pyngrok` will append "-api" to the tunnel's name when starting it.
 
 ## [7.3.0](https://github.com/alexdlaird/pyngrok/compare/7.2.12...7.3.0) - 2025-08-04
 

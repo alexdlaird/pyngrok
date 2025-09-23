@@ -271,6 +271,7 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
         tunnel_definition.update(options)
         options.clear()
         options.update(tunnel_definition)
+        name += "-api"
 
     if "labels" in options and not pyngrok_config.api_key:
         raise PyngrokError(
@@ -328,9 +329,10 @@ def connect(addr: Optional[str] = None,
 
     If a `tunnel definition in ngrok's config file
     <https://ngrok.com/docs/agent/config/v2/#tunnel-configurations>`_ matches the given
-    ``name``, it will be loaded and used to start the tunnel. When ``name`` is ``None`` and a "pyngrok-default" tunnel
-    definition exists in ``ngrok``'s config, it will be loaded and used. Any ``kwargs`` passed as ``options`` will
-    override properties from the loaded tunnel definition.
+    ``name``, it will be loaded and used to start the tunnel (note that "-api" will be appended to its name when
+    started). When ``name`` is ``None`` and a "pyngrok-default" tunnel definition exists in ``ngrok``'s config, it
+    will be loaded and used. Any ``kwargs`` passed as ``options`` will override properties from the loaded
+    tunnel definition.
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
