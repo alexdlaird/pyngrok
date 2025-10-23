@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.4.0...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.4.1...HEAD)
+
+## [7.4.1](https://github.com/alexdlaird/pyngrok/compare/7.4.0...7.4.1) - 2025-10-23
+
+### Added
+
+- Support for `XDG_CONFIG_HOME`.
 
 ## [7.4.0](https://github.com/alexdlaird/pyngrok/compare/7.3.0...7.4.0) - 2025-09-23
 
