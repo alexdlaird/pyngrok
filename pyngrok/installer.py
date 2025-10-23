@@ -77,7 +77,7 @@ def get_default_ngrok_dir() -> str:
     elif system == "windows":
         return os.path.join(user_home, "AppData", "Local", "ngrok")
     else:
-        return os.path.join(user_home, ".config", "ngrok")
+        return os.path.join(os.environ.get("XDG_CONFIG_HOME", os.path.join(user_home, ".config")), "ngrok")
 
 
 def get_system() -> str:
