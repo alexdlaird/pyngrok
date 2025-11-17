@@ -27,36 +27,6 @@ def delete_test_resources(temp=False):
     print(f"Deleting test resources from the ngrok API that have the description \"{description}\" ...")
 
     try:
-        response = ngrok.api("edges", "https", "list",
-                             pyngrok_config=pyngrok_config).data
-        for value in response["https_edges"]:
-            if value.get("description") == description:
-                print(f"--> Deleting test Edge for {value['hostports']}")
-                ngrok.api("edges", "https",
-                          "delete", value["id"],
-                          pyngrok_config=pyngrok_config)
-                time.sleep(0.2)
-
-        response = ngrok.api("edges", "tcp", "list",
-                             pyngrok_config=pyngrok_config).data
-        for value in response["tcp_edges"]:
-            if value.get("description") == description:
-                print(f"--> Deleting test Edge for {value['hostports']}")
-                ngrok.api("edges", "tcp",
-                          "delete", value["id"],
-                          pyngrok_config=pyngrok_config)
-                time.sleep(0.2)
-
-        response = ngrok.api("edges", "tls", "list",
-                             pyngrok_config=pyngrok_config).data
-        for value in response["tls_edges"]:
-            if value.get("description") == description:
-                print(f"--> Deleting test Edge for {value['hostports']}")
-                ngrok.api("edges", "tls",
-                          "delete", value["id"],
-                          pyngrok_config=pyngrok_config)
-                time.sleep(0.2)
-
         response = ngrok.api("reserved-domains", "list",
                              pyngrok_config=pyngrok_config).data
         for value in response["reserved_domains"]:
