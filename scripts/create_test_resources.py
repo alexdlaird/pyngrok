@@ -8,7 +8,6 @@ import os
 import shutil
 import subprocess
 import sys
-import time
 from random import randint
 from subprocess import CalledProcessError
 
@@ -50,22 +49,6 @@ def create_test_resources(temp=False):
         subdomain = generate_name_for_subdomain(prefix)
         hostname = f"{subdomain}.{ngrok_hostname}"
         reserved_domain = reserve_ngrok_domain(pyngrok_config, description, hostname)
-
-        tcp_edge_reserved_addr = reserve_ngrok_addr(pyngrok_config, description)
-        time.sleep(0.5)
-        tcp_edge = create_ngrok_edge(pyngrok_config, description, "tcp", *tcp_edge_reserved_addr["addr"].split(":"))
-
-        subdomain = generate_name_for_subdomain(prefix)
-        http_edge_hostname = f"{subdomain}.{ngrok_hostname}"
-        http_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config, description, http_edge_hostname)
-        time.sleep(0.5)
-        http_edge = create_ngrok_edge(pyngrok_config, description, "https", http_edge_hostname, 443)
-
-        subdomain = generate_name_for_subdomain(prefix)
-        tls_edge_hostname = f"{subdomain}.{ngrok_hostname}"
-        tls_edge_reserved_domain = reserve_ngrok_domain(pyngrok_config, description, tls_edge_hostname)
-        time.sleep(0.5)
-        tls_edge = create_ngrok_edge(pyngrok_config, description, "tls", tls_edge_hostname, 443)
     except CalledProcessError as e:
         print("An error occurred: " + e.output.decode("utf-8"))
         sys.exit(1)
@@ -77,12 +60,6 @@ def create_test_resources(temp=False):
     env_vars = {
         "NGROK_HOSTNAME": ngrok_hostname,
         "NGROK_DOMAIN": reserved_domain["domain"],
-        "NGROK_TCP_EDGE_ADDR": tcp_edge_reserved_addr["addr"],
-        "NGROK_TCP_EDGE_ID": tcp_edge["id"],
-        "NGROK_HTTP_EDGE_DOMAIN": http_edge_reserved_domain["domain"],
-        "NGROK_HTTP_EDGE_ID": http_edge["id"],
-        "NGROK_TLS_EDGE_DOMAIN": tls_edge_reserved_domain["domain"],
-        "NGROK_TLS_EDGE_ID": tls_edge["id"],
     }
 
     for key, value in env_vars.items():
@@ -98,9 +75,6 @@ def create_test_resources(temp=False):
 
     # Additional ID vars are needed so a testcase that set up its own resources can also tear them down
     os.environ["NGROK_DOMAIN_ID"] = reserved_domain["id"]
-    os.environ["NGROK_TCP_EDGE_ADDR_ID"] = tcp_edge_reserved_addr["id"]
-    os.environ["NGROK_HTTP_EDGE_DOMAIN_ID"] = http_edge_reserved_domain["id"]
-    os.environ["NGROK_TLS_EDGE_DOMAIN_ID"] = tls_edge_reserved_domain["id"]
 
 
 def ensure_api_key_present():
@@ -136,13 +110,6 @@ def reserve_ngrok_domain(pyngrok_config, description, domain):
 
 def reserve_ngrok_addr(pyngrok_config, description):
     return ngrok.api("reserved-addrs", "create",
-                     "--description", description,
-                     pyngrok_config=pyngrok_config).data
-
-
-def create_ngrok_edge(pyngrok_config, description, proto, domain, port):
-    return ngrok.api("edges", proto,
-                     "create", "--hostports", f"{domain}:{port}",
                      "--description", description,
                      pyngrok_config=pyngrok_config).data
 

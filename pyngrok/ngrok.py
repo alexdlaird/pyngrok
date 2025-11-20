@@ -9,7 +9,6 @@ import os
 import socket
 import sys
 import uuid
-import warnings
 from http import HTTPStatus
 from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.error import HTTPError, URLError
@@ -203,42 +202,6 @@ def get_ngrok_process(pyngrok_config: Optional[PyngrokConfig] = None) -> NgrokPr
     return process.get_process(pyngrok_config)
 
 
-def _apply_edge_to_tunnel(tunnel: NgrokTunnel,
-                          pyngrok_config: PyngrokConfig) -> None:
-    if not tunnel.public_url and pyngrok_config.api_key and tunnel.id:
-        tunnel_response = api_request(f"https://api.ngrok.com/tunnels/{tunnel.id}", method="GET",
-                                      auth=pyngrok_config.api_key)
-        if "labels" not in tunnel_response or "edge" not in tunnel_response["labels"]:
-            raise PyngrokError(
-                f"Tunnel {tunnel.data['ID']} does not have \"labels\", use a Tunnel configured on an Edge.")
-
-        edge = tunnel_response["labels"]["edge"]
-        if edge.startswith("edghts_"):
-            edges_prefix = "https"
-        elif edge.startswith("edgtcp"):
-            edges_prefix = "tcp"
-        elif edge.startswith("edgtls"):
-            edges_prefix = "tls"
-        else:
-            raise PyngrokError(f"Unknown Edge prefix: {edge}.")
-
-        logger.info(f"Applying edge {edge} to tunnel {tunnel.id}")
-
-        edge_response = api_request(f"https://api.ngrok.com/edges/{edges_prefix}/{edge}", method="GET",
-                                    auth=pyngrok_config.api_key)
-
-        if "hostports" not in edge_response or len(edge_response["hostports"]) < 1:
-            raise PyngrokError(
-                f"No Endpoint is attached to your Edge {edge}, login to the ngrok "
-                f"dashboard to attach an Endpoint to your Edge first.")
-
-        tunnel.public_url = f"{edges_prefix}://{edge_response['hostports'][0]}"
-        tunnel.proto = edges_prefix
-
-        warnings.warn("ngrok has deprecated Edges and will sunset Labeled Tunnels on December 31st, 2025. "
-                      "See https://github.com/alexdlaird/pyngrok/issues/145 for more details.")
-
-
 def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
                                    options: Dict[str, Any],
                                    addr: Optional[str] = None,
@@ -262,9 +225,6 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
     if name and name in tunnel_definitions:
         tunnel_definition = tunnel_definitions[name]
 
-        if "labels" in tunnel_definition and "bind_tls" in options:
-            raise PyngrokError("\"bind_tls\" cannot be set when \"labels\" is also on the tunnel definition.")
-
         addr = tunnel_definition.get("addr") if not addr else addr
         proto = tunnel_definition.get("proto") if not proto else proto
         # Use the tunnel definition as the base, but override with any passed in options
@@ -273,13 +233,8 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
         options.update(tunnel_definition)
         name += "-api"
 
-    if "labels" in options and not pyngrok_config.api_key:
-        raise PyngrokError(
-            "\"PyngrokConfig.api_key\" must be set when \"labels\" is on the tunnel definition.")
-
     addr = str(addr) if addr else "80"
-    # Only apply a default proto label if "labels" isn't defined
-    if not proto and "labels" not in options:
+    if not proto:
         proto = "http"
 
     if not name:
@@ -365,9 +320,6 @@ def connect(addr: Optional[str] = None,
     :raises: :class:`~pyngrok.exception.PyngrokError`: When the tunnel definition is invalid, or the response does
         not contain ``public_url``.
     """
-    if "labels" in options:
-        raise PyngrokError("\"labels\" cannot be passed to connect(), define a tunnel definition in the config file.")
-
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
@@ -375,10 +327,6 @@ def connect(addr: Optional[str] = None,
 
     proto = options.get("proto")
     name = options.get("name")
-
-    # Remove proto when "labels" is defined
-    if "labels" in options:
-        options.pop("proto")
 
     _upgrade_legacy_params(pyngrok_config, options)
 
@@ -398,8 +346,6 @@ def connect(addr: Optional[str] = None,
                              pyngrok_config, api_url)
 
         logger.info(f"ngrok v2 opens multiple tunnels, fetching just HTTP tunnel {tunnel.id} for return")
-
-    _apply_edge_to_tunnel(tunnel, pyngrok_config)
 
     if tunnel.public_url is None:
         raise PyngrokError(
@@ -475,7 +421,6 @@ def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTun
     for tunnel in api_request(f"{api_url}/api/tunnels", method="GET",
                               timeout=pyngrok_config.request_timeout)["tunnels"]:
         ngrok_tunnel = NgrokTunnel(tunnel, pyngrok_config, api_url)
-        _apply_edge_to_tunnel(ngrok_tunnel, pyngrok_config)
 
         if ngrok_tunnel.public_url is None:
             raise PyngrokError(
