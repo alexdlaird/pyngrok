@@ -10,7 +10,7 @@ pyngrok - A Python wrapper for ngrok
 
 .. image:: https://img.shields.io/pypi/v/pyngrok
    :target: https://pypi.org/project/pyngrok
-.. image:: https://img.shields.io/pypi/dw/pyngrok
+.. image:: https://img.shields.io/pypi/dm/pyngrok
 .. image:: https://img.shields.io/pypi/pyversions/pyngrok.svg
    :target: https://pypi.org/project/pyngrok
 .. image:: https://img.shields.io/codecov/c/github/alexdlaird/pyngrok
