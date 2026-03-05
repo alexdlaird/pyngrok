@@ -51,7 +51,8 @@ PLATFORMS_V3 = {
     "linux_ppc64le": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-ppc64le.zip",
     "freebsd_i386": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-386.zip",
     "freebsd_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-amd64.zip",
-    "freebsd_i386_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-arm.zip"
+    "freebsd_i386_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-arm.zip",
+    "freebsd_x86_64_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-arm64.zip"
 }
 UNIX_BINARIES = ["darwin", "linux", "freebsd"]
 SUPPORTED_NGROK_VERSIONS = ["v2", "v3"]
