@@ -10,6 +10,7 @@ dist/
 MANIFEST
 *.egg-info
 build
+.env
 
 pyngrok/bin
 tests/.ngrok
