@@ -8,9 +8,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [7.5.1](https://github.com/alexdlaird/pyngrok/compare/7.5.0...7.5.1) - 2026-03-06
 
-### Fixed
+### Changed
 
-- Equinox CDN is being shutdown, updating download URLs to point to `bin.ngrok.com` instead of `bin.equinox.io`.
+- Migrated CDN URLs from `bin.equinox.io` to `bin.ngrok.com`.
 
 ## [7.5.0](https://github.com/alexdlaird/pyngrok/compare/7.4.1...7.5.0) - 2025-11-17
 
