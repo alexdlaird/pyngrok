@@ -22,8 +22,8 @@ from pyngrok.exception import PyngrokError, PyngrokNgrokInstallError, PyngrokSec
 
 logger = logging.getLogger(__name__)
 
-CDN_URL_PREFIX = "https://bin.equinox.io/c/4VmDzA7iaHb/"
-CDN_V3_URL_PREFIX = "https://bin.equinox.io/c/bNyj1mQVY4c/"
+CDN_URL_PREFIX = "https://bin.ngrok.com/c/4VmDzA7iaHb/"
+CDN_V3_URL_PREFIX = "https://bin.ngrok.com/c/bNyj1mQVY4c/"
 PLATFORMS = {
     "darwin_x86_64": CDN_URL_PREFIX + "ngrok-stable-darwin-amd64.zip",
     "darwin_x86_64_arm": CDN_URL_PREFIX + "ngrok-stable-darwin-arm64.zip",
