@@ -77,7 +77,7 @@ class PyngrokConfig:
         self.request_timeout: float = request_timeout
         #: Passed to :py:class:`subprocess.Popen` when launching ``ngrok``. (Python 3 and POSIX only).
         self.start_new_session: bool = start_new_session
-        #: The major version of ``ngrok`` installed.
+        #: The major version of ``ngrok`` installed. Only ``"v3"`` is currently supported.
         self.ngrok_version: str = ngrok_version
         #: A ``ngrok`` API key.
         self.api_key: Optional[str] = api_key or os.environ.get("NGROK_API_KEY")

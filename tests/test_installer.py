@@ -11,35 +11,22 @@ from urllib.error import HTTPError
 from pyngrok import installer, ngrok, conf
 from pyngrok.conf import PyngrokConfig
 from pyngrok.exception import PyngrokError, PyngrokNgrokInstallError, PyngrokSecurityError
-from pyngrok.installer import PLATFORMS_V3
+from pyngrok.installer import PLATFORMS
 from tests.testcase import NgrokTestCase
 
 
 class TestInstaller(NgrokTestCase):
-    def test_installer_v2(self):
+    def test_installer(self):
         # GIVEN
-        self.given_file_doesnt_exist(self.pyngrok_config_v2.ngrok_path)
-        self.assertFalse(os.path.exists(self.pyngrok_config_v2.ngrok_path))
+        self.given_file_doesnt_exist(self.pyngrok_config.ngrok_path)
+        self.assertFalse(os.path.exists(self.pyngrok_config.ngrok_path))
 
         # WHEN
-        installer.install_ngrok(self.pyngrok_config_v2.ngrok_path, self.pyngrok_config_v2.ngrok_version)
-        ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=self.pyngrok_config_v2)
+        installer.install_ngrok(self.pyngrok_config.ngrok_path, self.pyngrok_config.ngrok_version)
+        ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=self.pyngrok_config)
 
         # THEN
-        self.assertTrue(os.path.exists(self.pyngrok_config_v2.ngrok_path))
-        self.assertTrue(ngrok_version.startswith("2"))
-
-    def test_installer_v3(self):
-        # GIVEN
-        self.given_file_doesnt_exist(self.pyngrok_config_v3.ngrok_path)
-        self.assertFalse(os.path.exists(self.pyngrok_config_v3.ngrok_path))
-
-        # WHEN
-        installer.install_ngrok(self.pyngrok_config_v3.ngrok_path, self.pyngrok_config_v3.ngrok_version)
-        ngrok_version, pyngrok_version = ngrok.get_version(pyngrok_config=self.pyngrok_config_v3)
-
-        # THEN
-        self.assertTrue(os.path.exists(self.pyngrok_config_v3.ngrok_path))
+        self.assertTrue(os.path.exists(self.pyngrok_config.ngrok_path))
         self.assertTrue(ngrok_version.startswith("3"))
 
     def test_installer_default(self):
@@ -70,44 +57,44 @@ class TestInstaller(NgrokTestCase):
 
     def test_config_provisioned(self):
         # GIVEN
-        self.given_file_doesnt_exist(self.pyngrok_config_v3.config_path)
+        self.given_file_doesnt_exist(self.pyngrok_config.config_path)
 
         # WHEN
-        installer.install_default_config(self.pyngrok_config_v3.config_path, {}, self.pyngrok_config_v3.ngrok_version)
+        installer.install_default_config(self.pyngrok_config.config_path, {}, self.pyngrok_config.ngrok_version)
 
         # THEN
-        self.assertTrue(os.path.exists(self.pyngrok_config_v3.config_path))
+        self.assertTrue(os.path.exists(self.pyngrok_config.config_path))
 
     def test_get_default_v2_config(self):
         # GIVEN
-        installer.install_default_config(self.pyngrok_config_v3.config_path,
+        installer.install_default_config(self.pyngrok_config.config_path,
                                          {},
-                                         self.pyngrok_config_v3.ngrok_version,
+                                         self.pyngrok_config.ngrok_version,
                                          "2")
 
         # WHEN
-        ngrok_config = installer.get_ngrok_config(self.pyngrok_config_v3.config_path)
+        ngrok_config = installer.get_ngrok_config(self.pyngrok_config.config_path)
 
         # THEN
         self.assertEqual(2, len(ngrok_config))
         self.assertEqual("2", ngrok_config["version"])
         self.assertEqual("us", ngrok_config["region"])
-        self.assertTrue(os.path.exists(self.pyngrok_config_v3.config_path))
+        self.assertTrue(os.path.exists(self.pyngrok_config.config_path))
 
     def test_get_default_v3_config(self):
         # GIVEN
-        installer.install_default_config(self.pyngrok_config_v3.config_path,
+        installer.install_default_config(self.pyngrok_config.config_path,
                                          {},
-                                         self.pyngrok_config_v3.ngrok_version,
+                                         self.pyngrok_config.ngrok_version,
                                          "3")
 
         # WHEN
-        ngrok_config = installer.get_ngrok_config(self.pyngrok_config_v3.config_path)
+        ngrok_config = installer.get_ngrok_config(self.pyngrok_config.config_path)
 
         # THEN
         self.assertEqual(1, len(ngrok_config))
         self.assertEqual("3", ngrok_config["version"])
-        self.assertTrue(os.path.exists(self.pyngrok_config_v3.config_path))
+        self.assertTrue(os.path.exists(self.pyngrok_config.config_path))
 
     ################################################################################
     # Tests below this point don't need to start a long-lived ngrok process, they
@@ -121,31 +108,31 @@ class TestInstaller(NgrokTestCase):
         magic_mock.getcode.return_value = 500
         mock_urlopen.return_value = magic_mock
 
-        self.given_file_doesnt_exist(self.pyngrok_config_v3.ngrok_path)
-        self.assertFalse(os.path.exists(self.pyngrok_config_v3.ngrok_path))
+        self.given_file_doesnt_exist(self.pyngrok_config.ngrok_path)
+        self.assertFalse(os.path.exists(self.pyngrok_config.ngrok_path))
 
         # WHEN
         with self.assertRaises(PyngrokNgrokInstallError):
-            ngrok.connect(pyngrok_config=self.pyngrok_config_v3)
+            ngrok.connect(pyngrok_config=self.pyngrok_config)
 
         # THEN
-        self.assertFalse(os.path.exists(self.pyngrok_config_v3.ngrok_path))
+        self.assertFalse(os.path.exists(self.pyngrok_config.ngrok_path))
 
     @mock.patch("pyngrok.installer.urlopen")
     def test_installer_retry(self, mock_urlopen):
         # GIVEN
         mock_urlopen.side_effect = socket.timeout("The read operation timed out")
 
-        self.given_file_doesnt_exist(self.pyngrok_config_v3.ngrok_path)
-        self.assertFalse(os.path.exists(self.pyngrok_config_v3.ngrok_path))
+        self.given_file_doesnt_exist(self.pyngrok_config.ngrok_path)
+        self.assertFalse(os.path.exists(self.pyngrok_config.ngrok_path))
 
         # WHEN
         with self.assertRaises(PyngrokNgrokInstallError):
-            ngrok.connect(pyngrok_config=self.pyngrok_config_v3)
+            ngrok.connect(pyngrok_config=self.pyngrok_config)
 
         # THEN
         self.assertEqual(mock_urlopen.call_count, 4)
-        self.assertFalse(os.path.exists(self.pyngrok_config_v3.ngrok_path))
+        self.assertFalse(os.path.exists(self.pyngrok_config.ngrok_path))
 
     def test_download_file_security_error(self):
         # WHEN
@@ -155,7 +142,7 @@ class TestInstaller(NgrokTestCase):
     def test_web_addr_false_not_allowed(self):
         # WHEN
         with self.assertRaises(PyngrokError):
-            installer.install_default_config(self.pyngrok_config_v3.config_path, {"web_addr": False})
+            installer.install_default_config(self.pyngrok_config.config_path, {"web_addr": False})
 
     @mock.patch("platform.system")
     def test_get_default_ngrok_dir_mac(self, mock_system):
@@ -279,7 +266,7 @@ class TestInstaller(NgrokTestCase):
         url = installer.get_ngrok_cdn_url("v3")
 
         # THEN
-        self.assertEqual(PLATFORMS_V3["darwin_x86_64_arm"], url)
+        self.assertEqual(PLATFORMS["darwin_x86_64_arm"], url)
 
     @mock.patch("platform.system")
     @mock.patch("platform.machine")
@@ -292,7 +279,7 @@ class TestInstaller(NgrokTestCase):
         url = installer.get_ngrok_cdn_url("v3")
 
         # THEN
-        self.assertEqual(PLATFORMS_V3["windows_i386"], url)
+        self.assertEqual(PLATFORMS["windows_i386"], url)
 
     @mock.patch("platform.system")
     @mock.patch("platform.machine")
@@ -305,7 +292,7 @@ class TestInstaller(NgrokTestCase):
         url = installer.get_ngrok_cdn_url("v3")
 
         # THEN
-        self.assertEqual(PLATFORMS_V3["linux_x86_64_arm"], url)
+        self.assertEqual(PLATFORMS["linux_x86_64_arm"], url)
 
     @mock.patch("platform.system")
     @mock.patch("platform.machine")
@@ -318,7 +305,7 @@ class TestInstaller(NgrokTestCase):
         url = installer.get_ngrok_cdn_url("v3")
 
         # THEN
-        self.assertEqual(PLATFORMS_V3["freebsd_x86_64"], url)
+        self.assertEqual(PLATFORMS["freebsd_x86_64"], url)
 
     @mock.patch("platform.system")
     @mock.patch("platform.machine")
@@ -331,7 +318,7 @@ class TestInstaller(NgrokTestCase):
         url = installer.get_ngrok_cdn_url("v3")
 
         # THEN
-        self.assertEqual(PLATFORMS_V3["windows_x86_64_arm"], url)
+        self.assertEqual(PLATFORMS["windows_x86_64_arm"], url)
 
     @mock.patch("platform.system")
     @mock.patch("platform.machine")
@@ -344,20 +331,10 @@ class TestInstaller(NgrokTestCase):
         url = installer.get_ngrok_cdn_url("v3")
 
         # THEN
-        self.assertEqual(PLATFORMS_V3["windows_i386"], url)
+        self.assertEqual(PLATFORMS["windows_i386"], url)
 
-    def test_ensure_installer_urls_exist_v2(self):
+    def test_ensure_installer_urls_exist(self):
         for key, value in installer.PLATFORMS.items():
-            try:
-                urllib.request.urlopen(urllib.request.Request(value, method="HEAD"))
-            except HTTPError as e:
-                if e.status == 404:
-                    self.fail("Installer URL returned 404: %s" % value)
-                else:
-                    raise e
-
-    def test_ensure_installer_urls_exist_v3(self):
-        for key, value in installer.PLATFORMS_V3.items():
             try:
                 urllib.request.urlopen(urllib.request.Request(value, method="HEAD"))
             except HTTPError as e:

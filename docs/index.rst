@@ -83,13 +83,6 @@ The :func:`~pyngrok.ngrok.connect` method takes ``kwargs`` as well, which allows
 additional tunnel configurations that are supported by ``ngrok`` (or the ``name`` of a tunnel defined in ``ngrok``'s
 config file), `as documented here <#tunnel-configurations>`__.
 
-.. note::
-
-    ``ngrok`` v2's default behavior for ``http`` when no additional properties are passed is to open *two* tunnels,
-    one ``http`` and one ``https``. ``pyngrok``'s :func:`~pyngrok.ngrok.connect` method will return a reference to
-    the ``http`` tunnel in this case. If only a single tunnel is needed, pass ``bind_tls=True`` and a reference to
-    the ``https`` tunnel will be returned.
-
 Get Active Tunnels
 ------------------
 
@@ -400,18 +393,6 @@ by updating the default :class:`~pyngrok.conf.PyngrokConfig`.
 
     # <NgrokTunnel: "https://<public_sub>.ngrok.io" -> "http://localhost:80">
     ngrok_tunnel = ngrok.connect()
-
-``ngrok`` Version Compatibility
--------------------------------
-
-``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install v3. To install v2 instead,
-set ``ngrok_version`` in :class:`~pyngrok.conf.PyngrokConfig`.
-
-.. code-block:: python
-
-    from pyngrok import conf, ngrok
-
-    conf.get_default().ngrok_version = "v2"
 
 Command Line Usage
 ==================

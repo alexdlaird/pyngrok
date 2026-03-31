@@ -292,18 +292,8 @@ def connect(addr: Optional[str] = None,
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
 
-    ``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install v3. To install v2 instead,
-    set ``ngrok_version`` to "v2" in :class:`~pyngrok.conf.PyngrokConfig`:
-
     If ``ngrok`` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
-
-    .. note::
-
-        ``ngrok`` v2's default behavior for ``http`` when no additional properties are passed is to open *two* tunnels,
-        one ``http`` and one ``https``. This method will return a reference to the ``http`` tunnel in this case. If
-        only a single tunnel is needed, pass ``bind_tls=True`` and a reference to the ``https`` tunnel will be
-        returned.
 
     :param addr: The local port to which the tunnel will forward traffic, or a
         `local directory or network address <https://ngrok.com/docs/http/#file-serving>`_,
@@ -339,13 +329,6 @@ def connect(addr: Optional[str] = None,
     tunnel = NgrokTunnel(api_request(f"{api_url}/api/tunnels", method="POST", data=options,
                                      timeout=pyngrok_config.request_timeout),
                          pyngrok_config, api_url)
-
-    if pyngrok_config.ngrok_version == "v2" and proto == "http" and options.get("bind_tls", "both") == "both":
-        tunnel = NgrokTunnel(api_request(f"{api_url}{tunnel.uri}%20%28http%29", method="GET",
-                                         timeout=pyngrok_config.request_timeout),
-                             pyngrok_config, api_url)
-
-        logger.info(f"ngrok v2 opens multiple tunnels, fetching just HTTP tunnel {tunnel.id} for return")
 
     if tunnel.public_url is None:
         raise PyngrokError(

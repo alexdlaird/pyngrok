@@ -16,17 +16,17 @@ class TestAgent(NgrokTestCase):
     def test_captured_requests(self):
         # GIVEN
         tunnel_name = "my-tunnel"
-        current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v3)
+        current_process = ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
         public_url = ngrok.connect(urlparse(current_process.api_url).port, name=tunnel_name,
-                                   pyngrok_config=self.pyngrok_config_v3).public_url
+                                   pyngrok_config=self.pyngrok_config).public_url
         time.sleep(1)
 
         urlopen(f"{public_url}/api/status").read()
         time.sleep(3)
 
         # WHEN
-        response1 = agent.get_requests(pyngrok_config=self.pyngrok_config_v3)
-        response2 = agent.get_requests("unknown-tunnel", self.pyngrok_config_v3)
+        response1 = agent.get_requests(pyngrok_config=self.pyngrok_config)
+        response2 = agent.get_requests("unknown-tunnel", self.pyngrok_config)
 
         # THEN
         self.assertEqual(1, len(response1))
@@ -40,15 +40,15 @@ class TestAgent(NgrokTestCase):
         self.assertEqual(0, len(response2))
 
         # WHEN
-        response3 = agent.get_request(response1[0].id, pyngrok_config=self.pyngrok_config_v3)
+        response3 = agent.get_request(response1[0].id, pyngrok_config=self.pyngrok_config)
 
         # THEN
         self.assertEqual(response1[0].id, response3.id)
         self.assertEqual(tunnel_name, response3.tunnel_name)
 
         # WHEN
-        agent.replay_request(response1[0].id, pyngrok_config=self.pyngrok_config_v3)
-        response4 = sorted(agent.get_requests(pyngrok_config=self.pyngrok_config_v3), key=lambda x: x.id)
+        agent.replay_request(response1[0].id, pyngrok_config=self.pyngrok_config)
+        response4 = sorted(agent.get_requests(pyngrok_config=self.pyngrok_config), key=lambda x: x.id)
 
         # THEN
         self.assertEqual(2, len(response4))
@@ -57,18 +57,18 @@ class TestAgent(NgrokTestCase):
         self.assertEqual(tunnel_name, response4[1].tunnel_name)
 
         # WHEN
-        agent.delete_requests(pyngrok_config=self.pyngrok_config_v3)
-        response5 = agent.get_requests(pyngrok_config=self.pyngrok_config_v3)
+        agent.delete_requests(pyngrok_config=self.pyngrok_config)
+        response5 = agent.get_requests(pyngrok_config=self.pyngrok_config)
 
         self.assertEqual(0, len(response5))
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_get_agent_status(self):
         # GIVEN
-        ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config_v3)
+        ngrok.get_ngrok_process(pyngrok_config=self.pyngrok_config)
         time.sleep(1)
 
-        response = agent.get_agent_status(self.pyngrok_config_v3)
+        response = agent.get_agent_status(self.pyngrok_config)
 
         # THEN
         self.assertEqual("online", response.status)
