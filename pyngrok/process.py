@@ -182,12 +182,10 @@ def set_auth_token(pyngrok_config: PyngrokConfig,
     :raises: :class:`~pyngrok.exception.PyngrokError`: When the ``ngrok_version`` is not supported.
     :raises: :class:`~pyngrok.exception.PyngrokNgrokError`: When ``ngrok`` could not start.
     """
-    if pyngrok_config.ngrok_version == "v2":
-        start = [pyngrok_config.ngrok_path, "authtoken", token, "--log", "stdout"]
-    elif pyngrok_config.ngrok_version == "v3":
-        start = [pyngrok_config.ngrok_path, "config", "add-authtoken", token, "--log", "stdout"]
-    else:
+    if pyngrok_config.ngrok_version not in SUPPORTED_NGROK_VERSIONS:
         raise PyngrokError(f"\"ngrok_version\" must be a supported version: {SUPPORTED_NGROK_VERSIONS}")
+
+    start = [pyngrok_config.ngrok_path, "config", "add-authtoken", token, "--log", "stdout"]
 
     if pyngrok_config.config_path:
         logger.info(f"Updating authtoken for \"config_path\": {pyngrok_config.config_path}")
@@ -214,12 +212,10 @@ def set_api_key(pyngrok_config: PyngrokConfig,
     :raises: :class:`~pyngrok.exception.PyngrokError`: When the ``ngrok_version`` is not supported.
     :raises: :class:`~pyngrok.exception.PyngrokNgrokError`: When ``ngrok`` could not start.
     """
-    if pyngrok_config.ngrok_version == "v2":
-        raise PyngrokError("\"ngrok_version\" v2 does not have this command.")
-    elif pyngrok_config.ngrok_version == "v3":
-        start = [pyngrok_config.ngrok_path, "config", "add-api-key", key, "--log", "stdout"]
-    else:
+    if pyngrok_config.ngrok_version not in SUPPORTED_NGROK_VERSIONS:
         raise PyngrokError(f"\"ngrok_version\" must be a supported version: {SUPPORTED_NGROK_VERSIONS}")
+
+    start = [pyngrok_config.ngrok_path, "config", "add-api-key", key, "--log", "stdout"]
 
     if pyngrok_config.config_path:
         logger.info(f"Updating API key for \"config_path\": {pyngrok_config.config_path}")

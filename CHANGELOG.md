@@ -4,7 +4,18 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.5.1...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/8.0.0...HEAD)
+
+## [8.0.0](https://github.com/alexdlaird/pyngrok/compare/7.5.1...8.0.0) - 2026-03-31
+
+### Breaking
+
+- Removed support for `ngrok` v2, as v2 binaries are no longer distributed by `ngrok`. Only `ngrok` v3 is now supported.
+
+### Changed
+
+- Updated Linux and FreeBSD CDN URLs from `.zip` to `.tgz`.
+- Added `.tgz` archive extraction support alongside existing `.zip` support.
 
 ## [7.5.1](https://github.com/alexdlaird/pyngrok/compare/7.5.0...7.5.1) - 2026-03-06
 
