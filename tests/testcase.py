@@ -26,7 +26,7 @@ class NgrokTestCase(unittest.TestCase):
         config_path = os.path.join(self.config_dir, "config.yml")
 
         conf.DEFAULT_NGROK_CONFIG_PATH = config_path
-        conf.DEFAULT_NGROK_PATH = os.path.join(config_path, installer.get_ngrok_bin())
+        conf.DEFAULT_NGROK_PATH = os.path.join(self.config_dir, installer.get_ngrok_bin())
 
         ngrok_path = os.path.join(self.config_dir, "v3", installer.get_ngrok_bin())
         self.pyngrok_config = PyngrokConfig(ngrok_path=ngrok_path,
