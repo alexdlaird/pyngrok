@@ -6,6 +6,32 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/8.0.0...HEAD)
 
+### Added
+
+- :class:`~pyngrok.ngrok.NgrokEndpoint` class, which inherits from :class:`~pyngrok.ngrok.NgrokTunnel` and
+  wraps ngrok's [Agent Endpoint API](https://ngrok.com/docs/agent/api#create-endpoint) (`/api/endpoints`).
+- :func:`~pyngrok.ngrok.get_endpoints` function to list active endpoints via `/api/endpoints`.
+- `_build_upstream_url` and `_convert_to_endpoint_options` helpers for translating tunnel-style parameters
+  to the endpoint API format.
+
+### Changed
+
+- :func:`~pyngrok.ngrok.connect` now uses `/api/endpoints` and returns a :class:`~pyngrok.ngrok.NgrokEndpoint`
+  when :class:`~pyngrok.conf.PyngrokConfig`'s ``config_version`` is ``"3"``. When ``config_version`` is ``"2"``
+  (the default), the legacy `/api/tunnels` API is used and a :class:`~pyngrok.ngrok.NgrokTunnel` is returned.
+  Since :class:`~pyngrok.ngrok.NgrokEndpoint` inherits from :class:`~pyngrok.ngrok.NgrokTunnel`, existing
+  code is unaffected.
+- :func:`~pyngrok.ngrok.get_tunnels` delegates to :func:`~pyngrok.ngrok.get_endpoints` when
+  ``config_version`` is ``"3"``, returning :class:`~pyngrok.ngrok.NgrokEndpoint` objects via the
+  endpoint API.
+- :func:`~pyngrok.ngrok.disconnect` now handles both tunnels and endpoints, looking up the public URL in
+  both :data:`~pyngrok.ngrok._current_tunnels` and :data:`~pyngrok.ngrok._current_endpoints`.
+- :func:`~pyngrok.ngrok.kill` now clears both :data:`~pyngrok.ngrok._current_tunnels` and
+  :data:`~pyngrok.ngrok._current_endpoints`.
+- :func:`~pyngrok.ngrok._interpolate_tunnel_definition` also checks the ``endpoints`` config file section
+  (alongside ``tunnels``) when ``config_version`` is ``"3"``, enabling v3-style endpoint definitions in
+  the ngrok config.
+
 ## [8.0.0](https://github.com/alexdlaird/pyngrok/compare/7.5.1...8.0.0) - 2026-03-31
 
 ### Breaking
