@@ -10,13 +10,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
-- Support for `endpoints:` definitions in `ngrok`'s config file (including a `pyngrok-default` auto-detected entry), mirroring the existing `tunnels:` block.
-- Support for `NgrokEndpoint`, `ngrok.connect_endpoint()`, `ngrok.disconnect_endpoint()`, and `ngrok.get_endpoints()`.
-
-### Changed
-
-- `ngrok` has deprecated its tunnels API in favor of `endpoints`. `pyngrok` continues to support both, but new integrations should prefer `connect_endpoint`.
-- `ngrok.kill()` now kills both tunnels and endpoints.
+- Support for `ngrok`'s v3 agent config schema. Set `PyngrokConfig.config_version="3"` to route `ngrok.connect()`, `ngrok.disconnect()`, and `ngrok.get_tunnels()` against `/api/endpoints` and to read `endpoints:` definitions (a list-of-objects keyed by `name`) from the config file.
+- New `NgrokTunnel` attributes mirroring v3 endpoint fields: `upstream`, `pooling_enabled`, `traffic_policy`, `bindings`, `description`, `metadata`, and a `url` alias for `public_url`.
+- v2-shaped `addr` / `proto` arguments are translated to a v3 `upstream` block when `config_version="3"`.
 
 ## [8.0.0](https://github.com/alexdlaird/pyngrok/compare/7.5.1...8.0.0) - 2026-03-31
 

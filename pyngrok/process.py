@@ -124,8 +124,8 @@ class NgrokProcess:
         if not self.api_url.lower().startswith("http"):
             raise PyngrokSecurityError(f"URL must start with \"http\": {self.api_url}")
 
-        # Ensure the process is available for requests before registering it as healthy
-        if not self._probe_api_path("/api/tunnels") and not self._probe_api_path("/api/endpoints"):
+        api_path = "/api/endpoints" if self.pyngrok_config.config_version == "3" else "/api/tunnels"
+        if not self._probe_api_path(api_path):
             return False
 
         return self.proc.poll() is None
