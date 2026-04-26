@@ -905,3 +905,179 @@ class TestNgrok(NgrokTestCase):
         # THEN
         mock_api_request.assert_called_with(f"{mock_get_ngrok_process().api_url}/api/tunnels", method="POST",
                                             data=expected_options, timeout=pyngrok_config.request_timeout)
+
+    @mock.patch('pyngrok.ngrok.api_request')
+    @mock.patch('pyngrok.ngrok.get_ngrok_process')
+    def test_config_v3_routes_to_endpoints_api(self, mock_get_ngrok_process, mock_api_request):
+        # GIVEN
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, config_version="3")
+        mock_api_request.return_value = {"name": "my-tunnel", "url": "https://my.ngrok.dev",
+                                         "upstream": {"url": "http://localhost:8000"}}
+
+        # WHEN
+        ngrok.connect("8000", "http", name="my-tunnel", pyngrok_config=pyngrok_config)
+
+        # THEN
+        call_args, call_kwargs = mock_api_request.call_args
+        self.assertEqual(call_args[0], f"{mock_get_ngrok_process().api_url}/api/endpoints")
+        self.assertEqual(call_kwargs["method"], "POST")
+        self.assertEqual(call_kwargs["data"]["upstream"], {"url": "http://localhost:8000"})
+        self.assertEqual(call_kwargs["data"]["name"], "my-tunnel")
+        self.assertNotIn("addr", call_kwargs["data"])
+        self.assertNotIn("proto", call_kwargs["data"])
+
+    @mock.patch('pyngrok.ngrok.api_request')
+    @mock.patch('pyngrok.ngrok.get_ngrok_process')
+    def test_config_v3_translates_tcp_addr(self, mock_get_ngrok_process, mock_api_request):
+        # GIVEN
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, config_version="3")
+        mock_api_request.return_value = {"name": "ssh", "url": "tcp://1.tcp.ngrok.io:12345"}
+
+        # WHEN
+        ngrok.connect("22", "tcp", name="ssh", pyngrok_config=pyngrok_config)
+
+        # THEN
+        _, call_kwargs = mock_api_request.call_args
+        self.assertEqual(call_kwargs["data"]["upstream"], {"url": "tcp://localhost:22"})
+
+    @mock.patch('pyngrok.ngrok.api_request')
+    @mock.patch('pyngrok.ngrok.get_ngrok_process')
+    def test_config_v3_passes_through_explicit_upstream(self, mock_get_ngrok_process, mock_api_request):
+        # GIVEN
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, config_version="3")
+        mock_api_request.return_value = {"name": "my-tunnel", "url": "https://my.ngrok.dev"}
+
+        # WHEN
+        ngrok.connect(name="my-tunnel", pyngrok_config=pyngrok_config,
+                      upstream={"url": "http://localhost:8000", "protocol": "http1"})
+
+        # THEN
+        _, call_kwargs = mock_api_request.call_args
+        self.assertEqual(call_kwargs["data"]["upstream"],
+                         {"url": "http://localhost:8000", "protocol": "http1"})
+
+    def test_config_v2_with_endpoint_only_kwarg_raises(self):
+        # WHEN / THEN
+        with self.assertRaises(PyngrokError):
+            ngrok.connect("8000", "http", upstream={"url": "http://localhost:8000"},
+                          pyngrok_config=self.pyngrok_config)
+
+    def test_config_v2_with_bindings_kwarg_raises(self):
+        # WHEN / THEN
+        with self.assertRaises(PyngrokError):
+            ngrok.connect("8000", "http", bindings=["public"], pyngrok_config=self.pyngrok_config)
+
+    @mock.patch('pyngrok.ngrok.api_request')
+    @mock.patch('pyngrok.ngrok.get_ngrok_process')
+    def test_config_v3_endpoints_definition_interpolated(self, mock_get_ngrok_process, mock_api_request):
+        # GIVEN
+        config = {
+            "endpoints": [
+                {"name": "my-endpoint", "upstream": {"url": "http://localhost:8000"}}
+            ]
+        }
+        config_path = os.path.join(self.config_dir, "config_v3.yml")
+        installer.install_default_config(config_path, config, ngrok_version="v3", config_version="3")
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config,
+                                                config_path=config_path, config_version="3")
+        mock_api_request.return_value = {"name": "my-endpoint-api", "url": "https://my.ngrok.dev"}
+
+        # WHEN
+        ngrok.connect(name="my-endpoint", pyngrok_config=pyngrok_config)
+
+        # THEN
+        _, call_kwargs = mock_api_request.call_args
+        self.assertEqual(call_kwargs["data"]["name"], "my-endpoint-api")
+        self.assertEqual(call_kwargs["data"]["upstream"], {"url": "http://localhost:8000"})
+
+    @mock.patch('pyngrok.ngrok.api_request')
+    @mock.patch('pyngrok.ngrok.get_ngrok_process')
+    def test_config_v3_pyngrok_default_endpoint(self, mock_get_ngrok_process, mock_api_request):
+        # GIVEN
+        config = {
+            "endpoints": [
+                {"name": "pyngrok-default", "upstream": {"url": "http://localhost:8080"}}
+            ]
+        }
+        config_path = os.path.join(self.config_dir, "config_v3.yml")
+        installer.install_default_config(config_path, config, ngrok_version="v3", config_version="3")
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config,
+                                                config_path=config_path, config_version="3")
+        mock_api_request.return_value = {"name": "pyngrok-default-api", "url": "https://my.ngrok.dev"}
+
+        # WHEN
+        ngrok.connect(pyngrok_config=pyngrok_config)
+
+        # THEN
+        _, call_kwargs = mock_api_request.call_args
+        self.assertEqual(call_kwargs["data"]["name"], "pyngrok-default-api")
+        self.assertEqual(call_kwargs["data"]["upstream"], {"url": "http://localhost:8080"})
+
+    @mock.patch('pyngrok.ngrok.api_request')
+    @mock.patch('pyngrok.ngrok.get_ngrok_process')
+    def test_config_v3_matches_tunnels_block(self, mock_get_ngrok_process, mock_api_request):
+        # GIVEN — v3 config with a `tunnels:` block alongside `endpoints:`; ngrok itself supports both there
+        config = {
+            "endpoints": [{"name": "other-endpoint", "upstream": {"url": "http://localhost:9000"}}],
+            "tunnels": {
+                "legacy-tunnel": {"proto": "http", "addr": "7000"}
+            }
+        }
+        config_path = os.path.join(self.config_dir, "config_v3.yml")
+        installer.install_default_config(config_path, config, ngrok_version="v3", config_version="3")
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config,
+                                                config_path=config_path, config_version="3")
+        mock_api_request.return_value = {"name": "legacy-tunnel-api", "url": "https://my.ngrok.dev"}
+
+        # WHEN
+        ngrok.connect(name="legacy-tunnel", pyngrok_config=pyngrok_config)
+
+        # THEN
+        call_args, call_kwargs = mock_api_request.call_args
+        self.assertEqual(call_args[0], f"{mock_get_ngrok_process().api_url}/api/endpoints")
+        self.assertEqual(call_kwargs["data"]["name"], "legacy-tunnel-api")
+        self.assertEqual(call_kwargs["data"]["upstream"], {"url": "http://localhost:7000"})
+
+    @mock.patch('pyngrok.ngrok.api_request')
+    @mock.patch('pyngrok.ngrok.get_ngrok_process')
+    def test_config_v3_get_tunnels_routes_to_endpoints(self, mock_get_ngrok_process, mock_api_request):
+        # GIVEN
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, config_version="3")
+        mock_api_request.return_value = {
+            "endpoints": [
+                {"name": "ep1", "url": "https://a.ngrok.dev",
+                 "upstream": {"url": "http://localhost:8000"}}
+            ]
+        }
+
+        # WHEN
+        tunnels = ngrok.get_tunnels(pyngrok_config=pyngrok_config)
+
+        # THEN
+        call_args, call_kwargs = mock_api_request.call_args
+        self.assertEqual(call_args[0], f"{mock_get_ngrok_process().api_url}/api/endpoints")
+        self.assertEqual(call_kwargs["method"], "GET")
+        self.assertEqual(len(tunnels), 1)
+        self.assertEqual(tunnels[0].name, "ep1")
+        self.assertEqual(tunnels[0].public_url, "https://a.ngrok.dev")
+        self.assertEqual(tunnels[0].url, "https://a.ngrok.dev")
+        self.assertEqual(tunnels[0].upstream.get("url"), "http://localhost:8000")
+
+    def test_ngrok_tunnel_v3_repr_uses_upstream(self):
+        # GIVEN
+        tunnel = ngrok.NgrokTunnel(
+            {"name": "my-tunnel", "url": "https://my.ngrok.dev",
+             "upstream": {"url": "http://localhost:8000"}},
+            self.pyngrok_config, "http://localhost:4040")
+
+        # THEN
+        self.assertIn("my.ngrok.dev", repr(tunnel))
+        self.assertIn("localhost:8000", repr(tunnel))
+
+    def test_ngrok_tunnel_v3_uri_falls_back_to_name(self):
+        # GIVEN
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, config_version="3")
+        tunnel = ngrok.NgrokTunnel({"name": "my-tunnel"}, pyngrok_config, "http://localhost:4040")
+
+        # THEN
+        self.assertEqual(tunnel.uri, "/api/endpoints/my-tunnel")
