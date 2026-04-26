@@ -4,7 +4,19 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/8.0.0...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/8.1.0...HEAD)
+
+## [8.1.0](https://github.com/alexdlaird/pyngrok/compare/8.0.0...8.1.0) - TBD
+
+### Added
+
+- Support for `endpoints:` definitions in `ngrok`'s config file (including a `pyngrok-default` auto-detected entry), mirroring the existing `tunnels:` block.
+- Support for `NgrokEndpoint`, `ngrok.connect_endpoint()`, `ngrok.disconnect_endpoint()`, and `ngrok.get_endpoints()`.
+
+### Changed
+
+- `ngrok` has deprecated its tunnels API in favor of `endpoints`. `pyngrok` continues to support both, but new integrations should prefer `connect_endpoint`.
+- `ngrok.kill()` now kills both tunnels and endpoints.
 
 ## [8.0.0](https://github.com/alexdlaird/pyngrok/compare/7.5.1...8.0.0) - 2026-03-31
 

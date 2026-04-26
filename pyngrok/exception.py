@@ -70,6 +70,12 @@ class PyngrokNgrokHTTPError(PyngrokNgrokError):
         #: The response body from ``ngrok``.
         self.body: str = body
 
+    def __str__(self) -> str:
+        base = super().__str__()
+        if self.status_code == 404 and "/api/endpoints" in self.url:
+            return f"{base} (call NgrokClient.update() to get the latest ngrok binary for Endpoints support)"
+        return base
+
 
 class PyngrokNgrokURLError(PyngrokNgrokError):
     """

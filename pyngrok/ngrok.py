@@ -24,9 +24,82 @@ from pyngrok.process import NgrokProcess
 logger = logging.getLogger(__name__)
 
 
+class NgrokEndpoint:
+    """
+    An object containing information about a ``ngrok`` endpoint.
+    """
+
+    def __init__(self,
+                 data: Dict[str, Any],
+                 pyngrok_config: PyngrokConfig,
+                 api_url: Optional[str]) -> None:
+        #: The original endpoint data.
+        self.data: Dict[str, Any] = data
+        #: The ``pyngrok`` configuration to use when interacting with the ``ngrok``.
+        self.pyngrok_config: PyngrokConfig = pyngrok_config
+        #: The API URL for the ``ngrok`` web interface.
+        self.api_url: Optional[str] = api_url
+
+        #: The ID of the endpoint.
+        self.id: Optional[str] = data.get("ID", data.get("id"))
+        #: The name of the endpoint.
+        self.name: Optional[str] = data.get("name")
+        #: The protocol of the endpoint.
+        self.proto: Optional[str] = data.get("proto")
+        #: The endpoint URI, a relative path that can be used to make requests to the ``ngrok`` web interface.
+        self.uri: Optional[str] = data.get("uri") or (f"/api/endpoints/{data['name']}" if data.get("name") else None)
+        #: The public ``ngrok`` URL of the endpoint.
+        self.url: Optional[str] = data.get("url", data.get("public_url"))
+        #: The upstream definition (e.g. ``{"url": "http://localhost:8000", "protocol": "http1"}``).
+        upstream = data.get("upstream")
+        if not upstream:
+            config = data.get("config") or {}
+            if config.get("addr"):
+                upstream = {"url": config["addr"]}
+        self.upstream: Dict[str, Any] = upstream or {}
+        #: Whether endpoint pooling is enabled.
+        self.pooling_enabled: bool = bool(data.get("pooling_enabled", False))
+        #: The traffic policy attached to the endpoint, if any.
+        self.traffic_policy: Optional[Any] = data.get("traffic_policy")
+        #: Metrics for the endpoint.
+        self.metrics: Dict[str, Any] = data.get("metrics", {})
+
+    def __repr__(self) -> str:
+        upstream_url = self.upstream.get("url") if self.upstream else None
+        return (f"<NgrokEndpoint: \"{self.url}\" -> \"{upstream_url}\">"
+                if upstream_url else "<pending Endpoint>")
+
+    def __str__(self) -> str:  # pragma: no cover
+        upstream_url = self.upstream.get("url") if self.upstream else None
+        return (f"NgrokEndpoint: \"{self.url}\" -> \"{upstream_url}\""
+                if upstream_url else "<pending Endpoint>")
+
+    def refresh_metrics(self) -> None:
+        """
+        Get the latest metrics for the endpoint and update the ``metrics`` variable.
+
+        :raises: :class:`~pyngrok.exception.PyngrokError`: When the API does not return ``metrics``.
+        """
+        logger.info(f"Refreshing metrics for endpoint: {self.url}")
+
+        data = api_request(f"{self.api_url}{self.uri}", method="GET",
+                           timeout=self.pyngrok_config.request_timeout)
+
+        if "metrics" not in data:
+            raise PyngrokError("The ngrok API did not return \"metrics\" in the response")
+
+        self.data["metrics"] = data["metrics"]
+        self.metrics = self.data["metrics"]
+
+
 class NgrokTunnel:
     """
     An object containing information about a ``ngrok`` tunnel.
+
+    .. deprecated::
+        ``ngrok`` has deprecated the ``/api/tunnels`` API in favor of
+        the ``/api/endpoints`` API. New integrations should use
+        :class:`~pyngrok.ngrok.NgrokEndpoint` instead.
     """
 
     def __init__(self,
@@ -111,6 +184,7 @@ class NgrokApiResponse:
 
 
 _current_tunnels: Dict[str, NgrokTunnel] = {}
+_current_endpoints: Dict[str, NgrokEndpoint] = {}
 
 
 def install_ngrok(pyngrok_config: Optional[PyngrokConfig] = None) -> None:
@@ -282,6 +356,10 @@ def connect(addr: Optional[str] = None,
     Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning an object representing
     the connected tunnel.
 
+    .. deprecated::
+        ``ngrok`` has deprecated the ``/api/tunnels`` API in favor of ``/api/endpoints``. ``pyngrok`` continues
+        to support both, but new integrations should prefer :func:`~pyngrok.ngrok.connect_endpoint`.
+
     If a `tunnel definition in ngrok's config file
     <https://ngrok.com/docs/agent/config/v2/#tunnel-configurations>`_ matches the given
     ``name``, it will be loaded and used to start the tunnel (note that "-api" will be appended to its name when
@@ -344,6 +422,10 @@ def disconnect(public_url: str,
     """
     Disconnect the ``ngrok`` tunnel for the given URL, if open.
 
+    .. deprecated::
+        ``ngrok`` has deprecated the ``/api/tunnels`` API in favor of ``/api/endpoints``. ``pyngrok`` continues
+        to support both, but new integrations should prefer :func:`~pyngrok.ngrok.disconnect_endpoint`.
+
     If ``ngrok`` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
 
@@ -383,6 +465,10 @@ def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTun
     """
     Get a list of active ``ngrok`` tunnels for the given config's ``ngrok_path``.
 
+    .. deprecated::
+        ``ngrok`` has deprecated the ``/api/tunnels`` API in favor of ``/api/endpoints``. ``pyngrok`` continues
+        to support both, but new integrations should prefer :func:`~pyngrok.ngrok.get_endpoints`.
+
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
 
@@ -415,6 +501,192 @@ def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTun
     return list(_current_tunnels.values())
 
 
+def _interpolate_endpoint_definition(pyngrok_config: PyngrokConfig,
+                                     options: Dict[str, Any],
+                                     name: Optional[str] = None) -> None:
+    config_path = conf.get_config_path(pyngrok_config)
+
+    with installer.config_file_lock:
+        if os.path.exists(config_path):
+            config = installer.get_ngrok_config(config_path, ngrok_version=pyngrok_config.ngrok_version)
+        else:
+            config = get_default_config(pyngrok_config.ngrok_version, pyngrok_config.config_version)
+
+    endpoint_definitions = config.get("endpoints", []) or []
+
+    matched: Optional[Dict[str, Any]] = None
+    if not name:
+        for definition in endpoint_definitions:
+            if definition.get("name") == "pyngrok-default":
+                logger.info("pyngrok-default found defined in config, using for endpoint definition")
+                matched = definition
+                name = "pyngrok-default"
+                break
+    else:
+        for definition in endpoint_definitions:
+            if definition.get("name") == name:
+                matched = definition
+                break
+
+    if matched:
+        # Use the endpoint definition as the base, but override with any passed in options
+        endpoint_definition = {k: v for k, v in matched.items() if k != "name"}
+        endpoint_definition.update(options)
+        options.clear()
+        options.update(endpoint_definition)
+        name += "-api"
+
+    if not name:
+        name = f"pyngrok-endpoint-{uuid.uuid4()}"
+
+    options["name"] = name
+
+
+def connect_endpoint(upstream: Optional[Union[str, Dict[str, Any]]] = None,
+                     name: Optional[str] = None,
+                     url: Optional[str] = None,
+                     pyngrok_config: Optional[PyngrokConfig] = None,
+                     **options: Any) -> NgrokEndpoint:
+    """
+    Establish a new ``ngrok`` endpoint forwarding traffic to the given ``upstream``, returning an object
+    representing the created endpoint.
+
+    See the `agent endpoint API <https://ngrok.com/docs/agent/api/#create-endpoint>`_ for available options.
+
+    If an ``endpoints:`` definition in ``ngrok``'s config file matches the given ``name``, it will be loaded
+    and used to create the endpoint (note that "-api" will be appended to its name when started). When ``name``
+    is ``None`` and a "pyngrok-default" endpoint definition exists in ``ngrok``'s config, it will be loaded and
+    used. Any ``kwargs`` passed as ``options`` will override properties from the loaded endpoint definition.
+
+    If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
+    will first download and install ``ngrok``.
+
+    If ``ngrok`` is not running, calling this method will first start a process with
+    :class:`~pyngrok.conf.PyngrokConfig`.
+
+    :param upstream: The upstream service to forward traffic to. A string (the upstream URL) is expanded to
+        ``{"url": upstream}``; a dict is passed through as-is (e.g.
+        ``{"url": "http://localhost:8000", "protocol": "http1"}``).
+    :param name: A friendly name for the endpoint, or the name of an ``endpoints:`` definition in ``ngrok``'s
+        config file.
+    :param url: The public URL to assign to the endpoint (e.g. ``https://my-name.ngrok.dev``). If omitted,
+        ``ngrok`` will assign one.
+    :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
+        overriding :func:`~pyngrok.conf.get_default()`.
+    :param options: Remaining ``kwargs`` are passed as endpoint configuration (e.g. ``pooling_enabled``,
+        ``traffic_policy``, ``description``, ``metadata``).
+    :return: The created ``ngrok`` endpoint.
+    :raises: :class:`~pyngrok.exception.PyngrokError`: When the endpoint definition is invalid, or the
+        response does not contain a ``name``.
+    """
+    if pyngrok_config is None:
+        pyngrok_config = conf.get_default()
+
+    if upstream is not None:
+        options["upstream"] = {"url": upstream} if isinstance(upstream, str) else upstream
+    if url is not None:
+        options["url"] = url
+
+    _interpolate_endpoint_definition(pyngrok_config, options, name)
+
+    name = options.get("name")
+
+    logger.info(f"Creating endpoint named: {name}")
+
+    api_url = get_ngrok_process(pyngrok_config).api_url
+
+    logger.debug(f"Creating endpoint with options: {options}")
+
+    endpoint = NgrokEndpoint(api_request(f"{api_url}/api/endpoints", method="POST", data=options,
+                                         timeout=pyngrok_config.request_timeout),
+                             pyngrok_config, api_url)
+
+    if endpoint.name is None:
+        raise PyngrokError(
+            f"\"name\" was not populated for endpoint {endpoint}, but is required for pyngrok to function.")
+
+    _current_endpoints[endpoint.name] = endpoint
+
+    return endpoint
+
+
+def disconnect_endpoint(name: str,
+                        pyngrok_config: Optional[PyngrokConfig] = None) -> None:
+    """
+    Stop the ``ngrok`` endpoint with the given ``name``, if it exists.
+
+    If ``ngrok`` is not running, calling this method will do nothing.
+
+    :param name: The name of the endpoint to stop.
+    :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
+        overriding :func:`~pyngrok.conf.get_default()`.
+    """
+    if pyngrok_config is None:
+        pyngrok_config = conf.get_default()
+
+    # If ngrok is not running, there are no endpoints to disconnect
+    if not process.is_process_running(pyngrok_config.ngrok_path):
+        logger.debug(f"\"ngrok_path\" {pyngrok_config.ngrok_path} is not running a process")
+
+        return
+
+    api_url = get_ngrok_process(pyngrok_config).api_url
+
+    if name not in _current_endpoints:
+        get_endpoints(pyngrok_config)
+
+        # One more check, if the given name is still not in the list of endpoints, it is not active
+        if name not in _current_endpoints:
+            return
+
+    endpoint = _current_endpoints[name]
+
+    logger.info(f"Disconnecting endpoint: {endpoint.name}")
+
+    api_request(f"{api_url}{endpoint.uri}", method="DELETE",
+                timeout=pyngrok_config.request_timeout)
+
+    _current_endpoints.pop(name, None)
+
+
+def get_endpoints(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokEndpoint]:
+    """
+    Get a list of active ``ngrok`` endpoints for the given config's ``ngrok_path``.
+
+    If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
+    will first download and install ``ngrok``.
+
+    If ``ngrok`` is not running, calling this method will first start a process with
+    :class:`~pyngrok.conf.PyngrokConfig`.
+
+    :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
+        overriding :func:`~pyngrok.conf.get_default()`.
+    :return: The active ``ngrok`` endpoints.
+    :raises: :class:`~pyngrok.exception.PyngrokError`: When the response was invalid or an endpoint is missing
+        a ``name``.
+    """
+    if pyngrok_config is None:
+        pyngrok_config = conf.get_default()
+
+    api_url = get_ngrok_process(pyngrok_config).api_url
+
+    response = api_request(f"{api_url}/api/endpoints", method="GET",
+                           timeout=pyngrok_config.request_timeout)
+
+    _current_endpoints.clear()
+    for endpoint_data in response.get("endpoints", []):
+        ngrok_endpoint = NgrokEndpoint(endpoint_data, pyngrok_config, api_url)
+
+        if ngrok_endpoint.name is None:
+            raise PyngrokError(
+                f"\"name\" was not populated for endpoint {ngrok_endpoint}, "
+                f"but is required for pyngrok to function.")
+
+        _current_endpoints[ngrok_endpoint.name] = ngrok_endpoint
+
+    return list(_current_endpoints.values())
+
+
 def kill(pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     """
     Terminate the ``ngrok`` processes, if running, for the given config's ``ngrok_path``. This method will not
@@ -429,6 +701,7 @@ def kill(pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     process.kill_process(pyngrok_config.ngrok_path)
 
     _current_tunnels.clear()
+    _current_endpoints.clear()
 
 
 def api(*args: Any, pyngrok_config: Optional[PyngrokConfig] = None) -> NgrokApiResponse:

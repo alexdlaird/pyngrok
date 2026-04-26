@@ -9,6 +9,7 @@ import threading
 import time
 from http import HTTPStatus
 from typing import Any, Dict, List, Optional
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 import yaml
@@ -124,12 +125,17 @@ class NgrokProcess:
             raise PyngrokSecurityError(f"URL must start with \"http\": {self.api_url}")
 
         # Ensure the process is available for requests before registering it as healthy
-        request = Request(f"{self.api_url}/api/tunnels")
-        response = urlopen(request)
-        if response.getcode() != HTTPStatus.OK:
+        if not self._probe_api_path("/api/tunnels") and not self._probe_api_path("/api/endpoints"):
             return False
 
         return self.proc.poll() is None
+
+    def _probe_api_path(self, path: str) -> bool:
+        try:
+            response = urlopen(Request(f"{self.api_url}{path}"))
+            return response.getcode() == HTTPStatus.OK
+        except (HTTPError, URLError, OSError):
+            return False
 
     def _monitor_process(self) -> None:
         self._monitor_thread_alive = True
