@@ -50,7 +50,7 @@ class PyngrokConfig:
                  max_logs: int = 100,
                  request_timeout: float = 4,
                  start_new_session: bool = False,
-                 ngrok_version: str = "v3",
+                 ngrok_version: str = "3",
                  api_key: Optional[str] = None,
                  config_version: str = "2") -> None:
         #: The path to the ``ngrok`` binary, defaults to being placed in the same directory as
@@ -77,8 +77,8 @@ class PyngrokConfig:
         self.request_timeout: float = request_timeout
         #: Passed to :py:class:`subprocess.Popen` when launching ``ngrok``. (Python 3 and POSIX only).
         self.start_new_session: bool = start_new_session
-        #: The major version of ``ngrok`` installed.
-        self.ngrok_version: str = ngrok_version
+        #: The major version of ``ngrok`` installed. The only version currently supported is ``3``.
+        self.ngrok_version: str = ngrok_version.removeprefix("v") if ngrok_version else ngrok_version
         #: A ``ngrok`` API key.
         self.api_key: Optional[str] = api_key or os.environ.get("NGROK_API_KEY")
         #: The ``ngrok`` config version.

@@ -41,27 +41,42 @@ class NgrokTunnel:
         self.api_url: Optional[str] = api_url
 
         #: The ID of the tunnel.
-        self.id: Optional[str] = data.get("ID", None)
+        self.id: Optional[str] = data.get("ID", data.get("id"))
         #: The name of the tunnel.
         self.name: Optional[str] = data.get("name")
         #: The protocol of the tunnel.
         self.proto: Optional[str] = data.get("proto")
         #: The tunnel URI, a relative path that can be used to make requests to the ``ngrok`` web interface.
-        self.uri: Optional[str] = data.get("uri")
+        if data.get("uri"):
+            self.uri: Optional[str] = data["uri"]
+        elif data.get("name"):
+            api_segment = "endpoints" if pyngrok_config.config_version == "3" else "tunnels"
+            self.uri = f"/api/{api_segment}/{data['name']}"
+        else:
+            self.uri = None
         #: The public ``ngrok`` URL.
-        self.public_url: Optional[str] = data.get("public_url")
-        #: The config for the tunnel.
+        self.public_url: Optional[str] = data.get("public_url", data.get("url"))
+        #: The ``config`` block specific to v2 tunnels (e.g. ``{"addr": ..., "inspect": ...}``);
+        #: empty for v3 endpoints.
         self.config: Dict[str, Any] = data.get("config", {})
+        #: The upstream definition (e.g. ``{"url": "http://localhost:8000", "protocol": "http1"}``).
+        upstream = data.get("upstream")
+        if not upstream and self.config.get("addr"):
+            upstream = {"url": self.config["addr"]}
+        self.upstream: Dict[str, Any] = upstream or {}
         #: Metrics for `the tunnel <https://ngrok.com/docs/agent/api/#list-tunnels>`_.
         self.metrics: Dict[str, Any] = data.get("metrics", {})
 
+    def _upstream_repr(self) -> Optional[str]:
+        return self.upstream.get("url") if self.upstream else self.config.get("addr")
+
     def __repr__(self) -> str:
-        return f"<NgrokTunnel: \"{self.public_url}\" -> \"{self.config['addr']}\">" if self.config.get(
-            "addr", None) else "<pending Tunnel>"
+        upstream = self._upstream_repr()
+        return f"<NgrokTunnel: \"{self.public_url}\" -> \"{upstream}\">" if upstream else "<pending Tunnel>"
 
     def __str__(self) -> str:  # pragma: no cover
-        return f"NgrokTunnel: \"{self.public_url}\" -> \"{self.config['addr']}\"" if self.config.get(
-            "addr", None) else "<pending Tunnel>"
+        upstream = self._upstream_repr()
+        return f"NgrokTunnel: \"{self.public_url}\" -> \"{upstream}\"" if upstream else "<pending Tunnel>"
 
     def refresh_metrics(self) -> None:
         """
@@ -207,6 +222,10 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
                                    addr: Optional[str] = None,
                                    proto: Optional[Union[str, int]] = None,
                                    name: Optional[str] = None) -> None:
+    addr_provided = addr is not None
+    proto_provided = proto is not None
+    user_upstream_provided = "upstream" in options
+
     config_path = conf.get_config_path(pyngrok_config)
 
     with installer.config_file_lock:
@@ -215,22 +234,42 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
         else:
             config = get_default_config(pyngrok_config.ngrok_version, pyngrok_config.config_version)
 
-    tunnel_definitions = config.get("tunnels", {})
-    # If a "pyngrok-default" tunnel definition exists in the ngrok config, use that
-    if not name and "pyngrok-default" in tunnel_definitions:
-        logger.info("pyngrok-default found defined in config, using for tunnel definition")
-        name = "pyngrok-default"
+    matched: Optional[Dict[str, Any]] = None
 
-    # Use a tunnel definition for the given name, if it exists
-    if name and name in tunnel_definitions:
-        tunnel_definition = tunnel_definitions[name]
+    # v3 represents `endpoints` as a list of objects (each with a `name` field)
+    if pyngrok_config.config_version == "3":
+        endpoint_definitions = config.get("endpoints") or []
+        if not name:
+            for definition in endpoint_definitions:
+                if definition.get("name") == "pyngrok-default":
+                    logger.info("pyngrok-default found defined in config, using for tunnel definition")
+                    matched = definition
+                    name = "pyngrok-default"
+                    break
+        else:
+            for definition in endpoint_definitions:
+                if definition.get("name") == name:
+                    matched = definition
+                    break
 
-        addr = tunnel_definition.get("addr") if not addr else addr
-        proto = tunnel_definition.get("proto") if not proto else proto
-        # Use the tunnel definition as the base, but override with any passed in options
-        tunnel_definition.update(options)
+    # `tunnels` is the v2 block, but ngrok also allows it in v3 configs alongside `endpoints`
+    if not matched:
+        tunnel_definitions = config.get("tunnels", {}) or {}
+        if not name and "pyngrok-default" in tunnel_definitions:
+            logger.info("pyngrok-default found defined in config, using for tunnel definition")
+            name = "pyngrok-default"
+        if name and name in tunnel_definitions:
+            matched = tunnel_definitions[name]
+
+    if matched:
+        addr = matched.get("addr") if not addr else addr
+        proto = matched.get("proto") if not proto else proto
+        # Use the matched definition as the base, but override with any passed in options
+        merged = {k: v for k, v in matched.items() if k != "name"}
+        merged.update(options)
         options.clear()
-        options.update(tunnel_definition)
+        options.update(merged)
+        assert name is not None
         name += "-api"
 
     addr = str(addr) if addr else "80"
@@ -243,16 +282,25 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
         else:
             name = f"{proto}-file-{uuid.uuid4()}"
 
-    options.update({
-        "name": name,
-        "addr": addr,
-        "proto": proto
-    })
+    options["name"] = name
+
+    if pyngrok_config.config_version == "3":
+        override_from_addr = (addr_provided or proto_provided) and not user_upstream_provided
+        if override_from_addr or "upstream" not in options:
+            url = addr if "://" in addr else (
+                f"tcp://localhost:{addr}" if proto == "tcp" else f"http://localhost:{addr}"
+            )
+            options["upstream"] = {"url": url}
+        options.pop("addr", None)
+        options.pop("proto", None)
+    else:
+        options["addr"] = addr
+        options["proto"] = proto
 
 
 def _upgrade_legacy_params(pyngrok_config: PyngrokConfig,
                            options: Dict[str, Any]) -> None:
-    if pyngrok_config.ngrok_version == "v3":
+    if pyngrok_config.ngrok_version == "3":
         if "bind_tls" in options:
             if options.get("bind_tls") is True or options.get("bind_tls") == "true":
                 options["schemes"] = ["https"]
@@ -282,53 +330,57 @@ def connect(addr: Optional[str] = None,
     Establish a new ``ngrok`` tunnel for the given protocol to the given port, returning an object representing
     the connected tunnel.
 
-    If a `tunnel definition in ngrok's config file
-    <https://ngrok.com/docs/agent/config/v2/#tunnel-configurations>`_ matches the given
-    ``name``, it will be loaded and used to start the tunnel (note that "-api" will be appended to its name when
-    started). When ``name`` is ``None`` and a "pyngrok-default" tunnel definition exists in ``ngrok``'s config, it
-    will be loaded and used. Any ``kwargs`` passed as ``options`` will override properties from the loaded
-    tunnel definition.
+    Routing is driven by :attr:`~pyngrok.conf.PyngrokConfig.config_version`: ``"2"`` uses ``ngrok``'s Tunnels
+    and reads the v2 ``tunnels`` config block; ``"3"`` uses Endpoints and reads the v3
+    ``endpoints`` block (and a ``tunnels`` block if also present, since ``ngrok`` allows both there).
+
+    If a tunnel definition in ``ngrok``'s config file matches the given ``name``, it will be loaded and used to
+    start the tunnel (note that "-api" will be appended to its name when started). When ``name`` is ``None`` and
+    a "pyngrok-default" definition exists in ``ngrok``'s config, it will be loaded and used. Any ``kwargs``
+    passed as ``options`` will override properties from the loaded definition.
+
+    In v3 mode, v2 arguments (``addr`` / ``proto``) are translated into the equivalent ``upstream``
+    block. Passing v3-only arguments such as ``upstream`` or ``bindings`` while ``config_version`` is ``"2"``
+    raises :class:`~pyngrok.exception.PyngrokError`.
 
     If ``ngrok`` is not installed at :class:`~pyngrok.conf.PyngrokConfig`'s ``ngrok_path``, calling this method
     will first download and install ``ngrok``.
 
-    ``pyngrok`` is compatible with ``ngrok`` v2 and v3, but by default it will install v3. To install v2 instead,
-    set ``ngrok_version`` to "v2" in :class:`~pyngrok.conf.PyngrokConfig`:
-
     If ``ngrok`` is not running, calling this method will first start a process with
     :class:`~pyngrok.conf.PyngrokConfig`.
-
-    .. note::
-
-        ``ngrok`` v2's default behavior for ``http`` when no additional properties are passed is to open *two* tunnels,
-        one ``http`` and one ``https``. This method will return a reference to the ``http`` tunnel in this case. If
-        only a single tunnel is needed, pass ``bind_tls=True`` and a reference to the ``https`` tunnel will be
-        returned.
 
     :param addr: The local port to which the tunnel will forward traffic, or a
         `local directory or network address <https://ngrok.com/docs/http/#file-serving>`_,
         defaults to "80".
-    :param proto: A valid `tunnel protocol
-        <https://ngrok.com/docs/agent/config/v2/#tunnel-configurations>`_, defaults to "http".
-    :param name: A friendly name for the tunnel, or the name of a `ngrok tunnel definition
-        <https://ngrok.com/docs/agent/config/v2/#tunnel-configurations>`_ defined in ``ngrok``'s config file.
+    :param proto: A valid tunnel protocol, defaults to "http".
+    :param name: A friendly name for the tunnel, or the name of a definition in ``ngrok``'s config file.
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
-    :param options: Remaining ``kwargs`` are passed as `configuration for the ngrok
-        tunnel <https://ngrok.com/docs/agent/config/v2/#tunnel-configurations>`_.
+    :param options: Remaining ``kwargs`` are passed as configuration for the ``ngrok`` agent
+        (see the `v2 <https://ngrok.com/docs/agent/config/v2/>`_ or
+        `v3 <https://ngrok.com/docs/agent/config/v3/>`_ schema).
     :return: The created ``ngrok`` tunnel.
-    :raises: :class:`~pyngrok.exception.PyngrokError`: When the tunnel definition is invalid, or the response does
-        not contain ``public_url``.
+    :raises: :class:`~pyngrok.exception.PyngrokError`: When the tunnel definition is invalid, the requested
+        options are incompatible with the configured ``config_version``, or the response does not contain
+        ``public_url``.
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()
 
+    if pyngrok_config.config_version != "3":
+        v3_only = sorted(k for k in ("upstream", "bindings") if k in options)
+        if v3_only:
+            raise PyngrokError(
+                f"Options {v3_only} require config_version=\"3\". Set "
+                f"PyngrokConfig.config_version=\"3\" to use these.")
+
     _interpolate_tunnel_definition(pyngrok_config, options, addr, proto, name)
 
-    proto = options.get("proto")
     name = options.get("name")
 
     _upgrade_legacy_params(pyngrok_config, options)
+
+    api_path = "/api/endpoints" if pyngrok_config.config_version == "3" else "/api/tunnels"
 
     logger.info(f"Opening tunnel named: {name}")
 
@@ -336,16 +388,9 @@ def connect(addr: Optional[str] = None,
 
     logger.debug(f"Creating tunnel with options: {options}")
 
-    tunnel = NgrokTunnel(api_request(f"{api_url}/api/tunnels", method="POST", data=options,
+    tunnel = NgrokTunnel(api_request(f"{api_url}{api_path}", method="POST", data=options,
                                      timeout=pyngrok_config.request_timeout),
                          pyngrok_config, api_url)
-
-    if pyngrok_config.ngrok_version == "v2" and proto == "http" and options.get("bind_tls", "both") == "both":
-        tunnel = NgrokTunnel(api_request(f"{api_url}{tunnel.uri}%20%28http%29", method="GET",
-                                         timeout=pyngrok_config.request_timeout),
-                             pyngrok_config, api_url)
-
-        logger.info(f"ngrok v2 opens multiple tunnels, fetching just HTTP tunnel {tunnel.id} for return")
 
     if tunnel.public_url is None:
         raise PyngrokError(
@@ -417,9 +462,20 @@ def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTun
 
     api_url = get_ngrok_process(pyngrok_config).api_url
 
+    list_keys: Tuple[str, ...]
+    if pyngrok_config.config_version == "3":
+        api_path = "/api/endpoints"
+        list_keys = ("endpoints", "tunnels")
+    else:
+        api_path = "/api/tunnels"
+        list_keys = ("tunnels",)
+
+    response = api_request(f"{api_url}{api_path}", method="GET",
+                           timeout=pyngrok_config.request_timeout)
+    items: List[Dict[str, Any]] = next((response[k] for k in list_keys if response.get(k) is not None), [])
+
     _current_tunnels.clear()
-    for tunnel in api_request(f"{api_url}/api/tunnels", method="GET",
-                              timeout=pyngrok_config.request_timeout)["tunnels"]:
+    for tunnel in items:
         ngrok_tunnel = NgrokTunnel(tunnel, pyngrok_config, api_url)
 
         if ngrok_tunnel.public_url is None:
@@ -589,7 +645,7 @@ def api_request(url: str,
     except HTTPError as e:
         response_data = e.read().decode("utf-8")
 
-        status_code = e.getcode()
+        status_code = e.code
         logger.debug(f"Response {status_code}: {response_data.strip()}")
 
         raise PyngrokNgrokHTTPError(f"ngrok client exception, API returned {status_code}: {response_data}",

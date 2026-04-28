@@ -10,6 +10,7 @@ import sys
 import tempfile
 import threading
 import time
+import tarfile
 import zipfile
 from http import HTTPStatus
 from typing import Any, Dict, Optional
@@ -22,40 +23,27 @@ from pyngrok.exception import PyngrokError, PyngrokNgrokInstallError, PyngrokSec
 
 logger = logging.getLogger(__name__)
 
-CDN_URL_PREFIX = "https://bin.ngrok.com/c/4VmDzA7iaHb/"
-CDN_V3_URL_PREFIX = "https://bin.ngrok.com/c/bNyj1mQVY4c/"
+CDN_URL_PREFIX = "https://bin.ngrok.com/c/bNyj1mQVY4c/"
 PLATFORMS = {
-    "darwin_x86_64": CDN_URL_PREFIX + "ngrok-stable-darwin-amd64.zip",
-    "darwin_x86_64_arm": CDN_URL_PREFIX + "ngrok-stable-darwin-arm64.zip",
-    "windows_i386": CDN_URL_PREFIX + "ngrok-stable-windows-386.zip",
-    "windows_x86_64": CDN_URL_PREFIX + "ngrok-stable-windows-amd64.zip",
-    "linux_i386": CDN_URL_PREFIX + "ngrok-stable-linux-386.zip",
-    "linux_i386_arm": CDN_URL_PREFIX + "ngrok-stable-linux-arm.zip",
-    "linux_x86_64": CDN_URL_PREFIX + "ngrok-stable-linux-amd64.zip",
-    "linux_x86_64_arm": CDN_URL_PREFIX + "ngrok-stable-linux-arm64.zip",
-    "freebsd_i386": CDN_URL_PREFIX + "ngrok-stable-freebsd-386.zip",
-    "freebsd_x86_64": CDN_URL_PREFIX + "ngrok-stable-freebsd-amd64.zip"
-}
-PLATFORMS_V3 = {
-    "darwin_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-darwin-amd64.zip",
-    "darwin_x86_64_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-darwin-arm64.zip",
-    "windows_i386": CDN_V3_URL_PREFIX + "ngrok-v3-stable-windows-386.zip",
-    "windows_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-windows-amd64.zip",
-    "windows_x86_64_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-windows-arm64.zip",
-    "linux_i386": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-386.zip",
-    "linux_i386_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-arm.zip",
-    "linux_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-amd64.zip",
-    "linux_x86_64_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-arm64.zip",
-    "linux_s390x": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-s390x.zip",
-    "linux_ppc64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-ppc64.zip",
-    "linux_ppc64le": CDN_V3_URL_PREFIX + "ngrok-v3-stable-linux-ppc64le.zip",
-    "freebsd_i386": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-386.zip",
-    "freebsd_x86_64": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-amd64.zip",
-    "freebsd_i386_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-arm.zip",
+    "darwin_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-darwin-amd64.zip",
+    "darwin_x86_64_arm": CDN_URL_PREFIX + "ngrok-v3-stable-darwin-arm64.zip",
+    "windows_i386": CDN_URL_PREFIX + "ngrok-v3-stable-windows-386.zip",
+    "windows_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-windows-amd64.zip",
+    "windows_x86_64_arm": CDN_URL_PREFIX + "ngrok-v3-stable-windows-arm64.zip",
+    "linux_i386": CDN_URL_PREFIX + "ngrok-v3-stable-linux-386.tgz",
+    "linux_i386_arm": CDN_URL_PREFIX + "ngrok-v3-stable-linux-arm.tgz",
+    "linux_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-linux-amd64.tgz",
+    "linux_x86_64_arm": CDN_URL_PREFIX + "ngrok-v3-stable-linux-arm64.tgz",
+    "linux_s390x": CDN_URL_PREFIX + "ngrok-v3-stable-linux-s390x.tgz",
+    "linux_ppc64": CDN_URL_PREFIX + "ngrok-v3-stable-linux-ppc64.tgz",
+    "linux_ppc64le": CDN_URL_PREFIX + "ngrok-v3-stable-linux-ppc64le.tgz",
+    "freebsd_i386": CDN_URL_PREFIX + "ngrok-v3-stable-freebsd-386.tgz",
+    "freebsd_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-freebsd-amd64.tgz",
+    "freebsd_i386_arm": CDN_URL_PREFIX + "ngrok-v3-stable-freebsd-arm.tgz",
     "freebsd_x86_64_arm": CDN_V3_URL_PREFIX + "ngrok-v3-stable-freebsd-arm64.zip"
 }
 UNIX_BINARIES = ["darwin", "linux", "freebsd"]
-SUPPORTED_NGROK_VERSIONS = ["v2", "v3"]
+SUPPORTED_NGROK_VERSIONS = ["3"]
 DEFAULT_DOWNLOAD_TIMEOUT = 6
 DEFAULT_RETRY_COUNT = 0
 
@@ -145,23 +133,24 @@ def get_ngrok_cdn_url(ngrok_version: Optional[str]) -> str:
     :param ngrok_version: The major version of ``ngrok`` to be installed.
     :return: The ``ngrok`` CDN URL.
     """
+    if ngrok_version:
+        ngrok_version = ngrok_version.removeprefix("v")
+
     plat = "{system}_{arch}".format(system=get_system(), arch=get_arch())
 
     logger.debug(f"Platform to download: {plat}")
 
+    if ngrok_version not in SUPPORTED_NGROK_VERSIONS:
+        raise PyngrokError(f"\"ngrok_version\" must be a supported version: {SUPPORTED_NGROK_VERSIONS}")
+
     try:
-        if ngrok_version == "v2":
-            return PLATFORMS[plat]
-        elif ngrok_version == "v3":
-            return PLATFORMS_V3[plat]
-        else:
-            raise PyngrokError(f"\"ngrok_version\" must be a supported version: {SUPPORTED_NGROK_VERSIONS}")
+        return PLATFORMS[plat]
     except KeyError:
         raise PyngrokNgrokInstallError(f"\"{plat}\" is not a supported platform")
 
 
 def install_ngrok(ngrok_path: str,
-                  ngrok_version: Optional[str] = "v3",
+                  ngrok_version: Optional[str] = "3",
                   **kwargs: Any) -> None:
     """
     Download and install the latest ``ngrok`` for the current system, overwriting any existing contents
@@ -173,6 +162,9 @@ def install_ngrok(ngrok_path: str,
     :raises: :class:`~pyngrok.exception.PyngrokError`: When the ``ngrok_version`` is not supported.
     :raises: :class:`~pyngrok.exception.PyngrokNgrokInstallError`: When an error occurs installing ``ngrok``.
     """
+    if ngrok_version:
+        ngrok_version = ngrok_version.removeprefix("v")
+
     logger.debug(
         "Installing ngrok {ngrok_version} to "
         "{ngrok_path}{optional_overwrite} ...".format(ngrok_version=ngrok_version,
@@ -190,24 +182,33 @@ def install_ngrok(ngrok_path: str,
     try:
         download_path = _download_file(url, **kwargs)
 
-        _install_ngrok_zip(ngrok_path, download_path)
+        _install_ngrok_archive(ngrok_path, download_path)
     except Exception as e:
         raise PyngrokNgrokInstallError(f"An error occurred while downloading ngrok from {url}: {e}")
 
 
-def _install_ngrok_zip(ngrok_path: str,
-                       zip_path: str) -> None:
+def _install_ngrok_archive(ngrok_path: str,
+                           archive_path: str) -> None:
     """
-    Extract the ``ngrok`` zip file to the given path.
+    Extract the ``ngrok`` archive to the given path. Supports both ``.zip`` and ``.tgz`` archives.
 
     :param ngrok_path: The path where ``ngrok`` will be installed.
-    :param zip_path: The path to the ``ngrok`` zip file to be extracted.
+    :param archive_path: The path to the ``ngrok`` archive file to be extracted.
     """
     _print_progress("Installing ngrok ... ")
 
-    with zipfile.ZipFile(zip_path, "r") as zip_ref:
-        logger.debug(f"Extracting ngrok binary from {zip_path} to {ngrok_path} ...")
-        zip_ref.extractall(os.path.dirname(ngrok_path))
+    ngrok_dir = os.path.dirname(ngrok_path)
+
+    logger.debug(f"Extracting ngrok binary from {archive_path} to {ngrok_path} ...")
+
+    if archive_path.endswith(".zip"):
+        with zipfile.ZipFile(archive_path, "r") as zip_ref:
+            zip_ref.extractall(ngrok_dir)
+    elif archive_path.endswith(".tgz") or archive_path.endswith(".tar.gz"):
+        with tarfile.open(archive_path, "r:gz") as tar_ref:
+            tar_ref.extractall(ngrok_dir)
+    else:
+        raise PyngrokNgrokInstallError(f"Unsupported archive format: {archive_path}")
 
     os.chmod(ngrok_path, int("700", 8))
 
@@ -216,7 +217,7 @@ def _install_ngrok_zip(ngrok_path: str,
 
 def get_ngrok_config(config_path: str,
                      use_cache: bool = True,
-                     ngrok_version: Optional[str] = "v3",
+                     ngrok_version: Optional[str] = "3",
                      config_version: Optional[str] = "2") -> Dict[str, Any]:
     """
     Get the ``ngrok`` config from the given path.
@@ -227,6 +228,9 @@ def get_ngrok_config(config_path: str,
     :param config_version: The ``ngrok`` config version.
     :return: The ``ngrok`` config.
     """
+    if ngrok_version:
+        ngrok_version = ngrok_version.removeprefix("v")
+
     with config_file_lock:
         if config_path not in _config_cache or not use_cache:
             with open(config_path, "r") as config_file:
@@ -249,20 +253,21 @@ def get_default_config(ngrok_version: Optional[str],
     :return: The default config.
     :raises: :class:`~pyngrok.exception.PyngrokError`: When the ``ngrok_version`` is not supported.
     """
-    if ngrok_version == "v2":
-        return {}
-    elif ngrok_version == "v3":
-        config = {"version": config_version}
-        if str(config_version) == "2":
-            config["region"] = "us"
-        return config
-    else:
+    if ngrok_version:
+        ngrok_version = ngrok_version.removeprefix("v")
+
+    if ngrok_version not in SUPPORTED_NGROK_VERSIONS:
         raise PyngrokError(f"\"ngrok_version\" must be a supported version: {SUPPORTED_NGROK_VERSIONS}")
+
+    config = {"version": config_version}
+    if str(config_version) == "2":
+        config["region"] = "us"
+    return config
 
 
 def install_default_config(config_path: str,
                            data: Optional[Dict[str, Any]] = None,
-                           ngrok_version: Optional[str] = "v3",
+                           ngrok_version: Optional[str] = "3",
                            config_version: Optional[str] = "2") -> None:
     """
     Install the given data to the ``ngrok`` config. If a config is not already present for the given path, create one.
@@ -273,13 +278,17 @@ def install_default_config(config_path: str,
     :param ngrok_version: The major version of ``ngrok`` installed.
     :param config_version: The ``ngrok`` config version.
     """
+    if ngrok_version:
+        ngrok_version = ngrok_version.removeprefix("v")
+
     with config_file_lock:
         if data is None:
             data = {}
         else:
             data = copy.deepcopy(data)
 
-        data.update(get_default_config(ngrok_version, config_version))
+        for key, value in get_default_config(ngrok_version, config_version).items():
+            data.setdefault(key, value)
 
         config_dir = os.path.dirname(config_path)
         if not os.path.exists(config_dir):
@@ -309,11 +318,18 @@ def validate_config(data: Dict[str, Any]) -> None:
     :param data: A dictionary of things to be validated as config items.
     :raises: :class:`~pyngrok.exception.PyngrokError`: When a key or value fails validation.
     """
-    if data.get("web_addr", None) is False:
+    if str(data.get("version")) == "3":
+        _validate_config_values(data.get("agent", {}))
+    else:
+        _validate_config_values(data)
+
+
+def _validate_config_values(values: Dict[str, Any]) -> None:
+    if values.get("web_addr", None) is False:
         raise PyngrokError("\"web_addr\" cannot be False, as the ngrok API is a dependency for pyngrok")
-    elif data.get("log_format") == "json":
+    elif values.get("log_format") == "json":
         raise PyngrokError("\"log_format\" must be \"term\" to be compatible with pyngrok")
-    elif data.get("log_level", "info") not in ["info", "debug"]:
+    elif values.get("log_level", "info") not in ["info", "debug"]:
         raise PyngrokError("\"log_level\" must be \"info\" to be compatible with pyngrok")
 
 

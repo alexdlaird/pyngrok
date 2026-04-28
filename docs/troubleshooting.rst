@@ -137,4 +137,5 @@ via a web browser. If so, this at least means ``ngrok`` is able to start before 
 ---------------------------
 
 Familiarize yourself with the `ngrok documentation <https://ngrok.com/docs>`_, especially the sections pertaining to
-`the config file <https://ngrok.com/docs/agent/config/v2>`_ and `the client API <https://ngrok.com/docs/agent/api>`_.
+the config file (`v2 <https://ngrok.com/docs/agent/config/v2>`_ /
+`v3 <https://ngrok.com/docs/agent/config/v3>`_) and `the client API <https://ngrok.com/docs/agent/api>`_.

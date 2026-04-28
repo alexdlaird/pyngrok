@@ -5,23 +5,9 @@ on:
     types:
       - labeled
 
-permissions:
-  issues: write
-  pull-requests: write
-  contents: none
-
 jobs:
-  comment:
+  label-commenter:
+    uses: alexdlaird/.github/.github/workflows/label-commenter.yml@main
     permissions:
       issues: write
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: main
-      - name: Label Commenter
-        uses: peaceiris/actions-label-commenter@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          config_file: .github/label-commenter-config.yml
+      pull-requests: write

@@ -4,7 +4,37 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/7.5.1...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/8.1.1...HEAD)
+
+## [8.1.1](https://github.com/alexdlaird/pyngrok/compare/8.1.0...8.1.1) - 2026-04-27
+
+### Fixed
+
+- Build and stability improvements.
+
+## [8.1.0](https://github.com/alexdlaird/pyngrok/compare/8.0.0...8.1.0) - 2026-04-26
+
+### Added
+
+- Full support for `ngrok`'s v3 config schema. Set `PyngrokConfig.config_version="3"` to have `ngrok.connect()` and other methods use `ngrok`'s Endpoints instead of Tunnels.
+- `NgrokTunnel.upstream` attribute, populated from the v3 endpoint response (or synthesized from `config.addr` for v2). Raw v3 fields like `traffic_policy` and `bindings` remain accessible via `NgrokTunnel.data`.
+- v2 `addr` / `proto` args are interpolated to a v3 `upstream` block when `config_version="3"` is set.
+- Documentation updates.
+
+### Changed
+
+- Renamed the `ngrok_version` parameter default from `"v3"` to `"3"`. A leading `"v"` is stripped where this value is consumed, so `"v3"` continues to be accepted.
+
+## [8.0.0](https://github.com/alexdlaird/pyngrok/compare/7.5.1...8.0.0) - 2026-03-31
+
+### Breaking
+
+- Removed support for `ngrok` v2, as v2 binaries are no longer distributed by `ngrok`. Only `ngrok` v3 is now supported.
+
+### Changed
+
+- Updated Linux and FreeBSD CDN URLs from `.zip` to `.tgz`.
+- Added `.tgz` archive extraction support alongside existing `.zip` support.
 
 ## [7.5.1](https://github.com/alexdlaird/pyngrok/compare/7.5.0...7.5.1) - 2026-03-06
 
