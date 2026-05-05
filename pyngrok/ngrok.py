@@ -262,6 +262,9 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
             matched = tunnel_definitions[name]
 
     if matched:
+        if name is None:
+            raise PyngrokError("Tunnel definition matched but no name was resolved")
+
         addr = matched.get("addr") if not addr else addr
         proto = matched.get("proto") if not proto else proto
         # Use the matched definition as the base, but override with any passed in options
@@ -269,7 +272,6 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
         merged.update(options)
         options.clear()
         options.update(merged)
-        assert name is not None
         name += "-api"
 
     addr = str(addr) if addr else "80"

@@ -1,5 +1,7 @@
 name: "Stale Check"
 
+run-name: Stale Check
+
 on:
   schedule:
     - cron: "0 0 * * *"

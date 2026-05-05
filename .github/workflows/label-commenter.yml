@@ -1,5 +1,7 @@
 name: "Label Commenter"
 
+run-name: Label Commenter #${{ github.event.issue.number }}
+
 on:
   issues:
     types:

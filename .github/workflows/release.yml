@@ -1,67 +1,98 @@
 name: Release
 
-run-name: Release ${{ github.ref_name }}
+run-name: Release ${{ inputs.bump_type }}
 
 on:
-  release:
-    types: [ created ]
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type'
+        required: true
+        type: choice
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
 
 permissions:
-  contents: read
-  issues: none
-  pull-requests: none
+  contents: write
 
 jobs:
-  validate-version:
-    name: Validate Version
-
-    env:
-      FORCE_COLOR: 1
-      PYTHONUNBUFFERED: 1
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v6
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-      - name: Validate version
-        run: make validate-release VERSION=${GITHUB_REF#refs/tags/}
+  prereq:
+    uses: alexdlaird/.github/.github/workflows/release-prereq.yml@main
+    with:
+      bump_type: ${{ inputs.bump_type }}
+      version_file: 'pyngrok/__init__.py'
+      version_pattern: 's/^__version__ = ".*"/__version__ = "${VERSION}"/'
+      repo_slug: alexdlaird/pyngrok
+    secrets:
+      bot_app_id: ${{ secrets.RELEASE_BOT_APP_ID }}
+      bot_private_key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
 
   build:
-    name: Build
+    needs: prereq
     uses: alexdlaird/pyngrok/.github/workflows/build.yml@main
     secrets: inherit
 
   release:
-    name: Release
-    needs: [build, validate-version]
+    needs: [prereq, build]
+    runs-on: ubuntu-latest
 
     env:
       FORCE_COLOR: 1
       PYTHONUNBUFFERED: 1
       PYNGROK_DOCKER_GITHUB_TOKEN: ${{ secrets.PYNGROK_DOCKER_GITHUB_TOKEN }}
 
-    runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.prereq.outputs.squash_commit_sha }}
+
       - name: Set up Python 3.13
         uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-      - name: Publish
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.RELEASE_BOT_APP_ID }}
+          private-key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          VERSION: ${{ needs.prereq.outputs.version }}
+          SHA: ${{ needs.prereq.outputs.squash_commit_sha }}
+          RELEASE_NOTES: ${{ needs.prereq.outputs.release_notes }}
+        run: |
+          gh release create "$VERSION" \
+            --target "$SHA" \
+            --title "$VERSION" \
+            --notes "$RELEASE_NOTES"
+
+      - name: Publish to PyPI
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: make upload
+
       - name: Trigger pyngrok-docker Release
         if: ${{ env.PYNGROK_DOCKER_GITHUB_TOKEN != '' }}
-        run: |
-          gh release create \
-          -R alexdlaird/pyngrok-docker ${GITHUB_REF#refs/tags/}.0 \
-          --notes "Pre-built containers for [pyngrok==${GITHUB_REF#refs/tags/}](https://pypi.org/project/pyngrok/${GITHUB_REF#refs/tags/})."
         env:
           GH_TOKEN: ${{ env.PYNGROK_DOCKER_GITHUB_TOKEN }}
+          VERSION: ${{ needs.prereq.outputs.version }}
+        run: |
+          gh release create \
+            -R alexdlaird/pyngrok-docker "${VERSION}.0" \
+            --notes "Pre-built containers for [pyngrok==${VERSION}](https://pypi.org/project/pyngrok/${VERSION})."
+
+  cleanup:
+    needs: [prereq, release]
+    if: always() && needs.prereq.result == 'success'
+    uses: alexdlaird/.github/.github/workflows/release-cleanup.yml@main
+    secrets:
+      bot_app_id: ${{ secrets.RELEASE_BOT_APP_ID }}
+      bot_private_key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}

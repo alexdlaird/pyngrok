@@ -1,5 +1,7 @@
 name: Auto-Merge Dependabot PRs
 
+run-name: Auto-Merge PR #${{ github.event.pull_request.number }}
+
 on:
   pull_request:
 

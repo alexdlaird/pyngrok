@@ -71,6 +71,11 @@ validate-release:
 
 	@if [[ $$(grep "__version__ = \"${VERSION}\"" pyngrok/__init__.py) == "" ]] ; then echo "Version not bumped in pyngrok/__init__.py" & exit 1 ; fi
 
+	@if [ -f SECURITY.md ]; then \
+		MAJOR_MINOR=$$(echo "${VERSION}" | cut -d. -f1-2); \
+		if [[ $$(grep "| $${MAJOR_MINOR}\.x" SECURITY.md) == "" ]] ; then echo "SECURITY.md missing supported-versions entry for $${MAJOR_MINOR}.x" & exit 1 ; fi; \
+	fi
+
 test-downstream:
 	@( \
 		git clone https://github.com/alexdlaird/pyngrok-example-flask.git; \
