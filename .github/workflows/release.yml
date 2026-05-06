@@ -92,6 +92,7 @@ jobs:
   cleanup:
     needs: [prereq, release]
     if: always() && needs.prereq.result == 'success'
+    continue-on-error: true
     uses: alexdlaird/.github/.github/workflows/release-cleanup.yml@main
     secrets:
       bot_app_id: ${{ secrets.RELEASE_BOT_APP_ID }}
