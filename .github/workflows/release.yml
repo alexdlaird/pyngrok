@@ -32,7 +32,7 @@ jobs:
 
   build:
     needs: prereq
-    uses: alexdlaird/pyngrok/.github/workflows/build.yml@main
+    uses: ./.github/workflows/build.yml
     secrets: inherit
 
   release:
