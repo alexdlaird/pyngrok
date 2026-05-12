@@ -44,7 +44,8 @@ extensions = [
     "sphinx.ext.viewcode",
     "notfound.extension",
     "sphinx_autodoc_typehints",
-    "sphinx_substitution_extensions"
+    "sphinx_substitution_extensions",
+    "sphinx_sitemap"
 ]
 autodoc_member_order = "bysource"
 
@@ -73,6 +74,9 @@ add_function_parentheses = False
 pygments_style = "sphinx"
 
 # -- Options for HTML output -------------------------------------------------
+
+html_baseurl = "https://pyngrok.readthedocs.io/en/stable/"
+sitemap_url_scheme = "{link}"
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
