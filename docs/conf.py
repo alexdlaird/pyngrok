@@ -45,7 +45,8 @@ extensions = [
     "notfound.extension",
     "sphinx_autodoc_typehints",
     "sphinx_substitution_extensions",
-    "sphinx_sitemap"
+    "sphinx_sitemap",
+    "sphinxext.opengraph",
 ]
 autodoc_member_order = "bysource"
 
@@ -77,6 +78,12 @@ pygments_style = "sphinx"
 
 html_baseurl = "https://pyngrok.readthedocs.io/en/stable/"
 sitemap_url_scheme = "{link}"
+
+ogp_site_url = html_baseurl
+ogp_image = f"{html_baseurl}logo.png"
+ogp_image_alt = "pyngrok - a Python wrapper for ngrok"
+ogp_type = "website"
+ogp_social_cards = {"enable": False}
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.

@@ -57,6 +57,7 @@ docs = [
     "sphinx_autodoc_typehints==1.25.2",
     "sphinx-substitution-extensions",
     "sphinx-sitemap",
+    "sphinxext-opengraph",
     "mypy",
     "types-PyYAML"
 ]
