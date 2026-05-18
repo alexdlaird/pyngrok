@@ -39,7 +39,8 @@ PLATFORMS = {
     "linux_ppc64le": CDN_URL_PREFIX + "ngrok-v3-stable-linux-ppc64le.tgz",
     "freebsd_i386": CDN_URL_PREFIX + "ngrok-v3-stable-freebsd-386.tgz",
     "freebsd_x86_64": CDN_URL_PREFIX + "ngrok-v3-stable-freebsd-amd64.tgz",
-    "freebsd_i386_arm": CDN_URL_PREFIX + "ngrok-v3-stable-freebsd-arm.tgz"
+    "freebsd_i386_arm": CDN_URL_PREFIX + "ngrok-v3-stable-freebsd-arm.tgz",
+    "freebsd_x86_64_arm": CDN_URL_PREFIX + "ngrok-v3-stable-freebsd-arm64.zip"
 }
 UNIX_BINARIES = ["darwin", "linux", "freebsd"]
 SUPPORTED_NGROK_VERSIONS = ["3"]
