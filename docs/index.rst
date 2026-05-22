@@ -1,11 +1,11 @@
 .. rst-class:: hide-me
 
-************************************
-pyngrok - A Python wrapper for ngrok
-************************************
+******************************************************************************
+pyngrok - A Python wrapper for ngrok; programmatic tunnels and webhook testing
+******************************************************************************
 
 .. image:: _html/logo.png
-   :alt: pyngrok - a Python wrapper for ngrok
+   :alt: pyngrok - A Python wrapper for ngrok; programmatic tunnels and webhook testing
    :align: center
 
 .. image:: https://img.shields.io/pypi/v/pyngrok
