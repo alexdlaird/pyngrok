@@ -1,7 +1,7 @@
 [project]
 name = "pyngrok"
 dynamic = ["version"]
-description = "A Python wrapper for ngrok"
+description = "A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, and APIs"
 readme = "README.md"
 license = "MIT"
 keywords = ["tunnel", "webhook", "reverse-proxy", "ngrok", "localhost", "ingress", "tunneling"]

@@ -1,11 +1,11 @@
 .. rst-class:: hide-me
 
-******************************************************************************
-pyngrok - A Python wrapper for ngrok; programmatic tunnels and webhook testing
-******************************************************************************
+******************************************************************************************
+pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, and APIs
+******************************************************************************************
 
 .. image:: _html/logo.png
-   :alt: pyngrok - A Python wrapper for ngrok; programmatic tunnels and webhook testing
+   :alt: pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, and APIs
    :align: center
 
 .. image:: https://img.shields.io/pypi/v/pyngrok

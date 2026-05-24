@@ -81,7 +81,7 @@ sitemap_url_scheme = "{link}"
 
 ogp_site_url = html_baseurl
 ogp_image = f"{html_baseurl}logo.png"
-ogp_image_alt = "pyngrok - A Python wrapper for ngrok; programmatic tunnels and webhook testing"
+ogp_image_alt = "pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, and APIs"
 ogp_type = "website"
 ogp_social_cards = {"enable": False}
 
@@ -184,7 +184,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, "pyngrok", "pyngrok Documentation",
-     author, "pyngrok", "A Python wrapper for ngrok; programmatic tunnels and webhook testing",
+     author, "pyngrok", "A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, and APIs",
      "Miscellaneous"),
 ]
 
