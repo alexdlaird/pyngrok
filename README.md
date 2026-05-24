@@ -1,4 +1,4 @@
-<p align="center"><img alt="pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, and APIs" src="https://pyngrok.readthedocs.io/en/latest/_images/logo.png" /></p>
+<p align="center"><img alt="pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, demos, and APIs" src="https://pyngrok.readthedocs.io/en/latest/_images/logo.png" /></p>
 
 [![Version](https://img.shields.io/pypi/v/pyngrok)](https://pypi.org/project/pyngrok)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/pyngrok)
