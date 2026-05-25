@@ -9,7 +9,7 @@ authors = [{ name = "Alex Laird", email = "contact@alexlaird.com" }]
 maintainers = [{ name = "Alex Laird", email = "contact@alexlaird.com" }]
 requires-python = ">=3.9"
 dependencies = [
-    "PyYAML>=5.1"
+    "PyYAML>=6.0.3"
 ]
 classifiers = [
     "Development Status :: 6 - Mature",
