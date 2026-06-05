@@ -25,5 +25,5 @@ jobs:
           exempt-issue-labels: "ready,help wanted,wip,security"
           stale-pr-label: "stale"
           exempt-pr-labels: "wip,security"
-          days-before-stale: 7
+          days-before-stale: 30
           days-before-close: 7
