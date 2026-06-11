@@ -617,7 +617,7 @@ An [integration example for Google Colab](https://pyngrok.readthedocs.io/en/4.1.
 
 ### Fixed
 
-- Inconsistent support for a local directory (ex. `file:///`) being passed as `ngrok.connect()`'s `port`. This is valid,
+- Inconsistent support for a local directory (e.g. `file:///`) being passed as `ngrok.connect()`'s `port`. This is valid,
   and `ngrok` will use its built-in fileserver for the tunnel.
 
 ## [4.1.3](https://github.com/alexdlaird/pyngrok/compare/4.1.2...4.1.3) - 2020-06-21
