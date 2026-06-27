@@ -1,7 +1,7 @@
 <p align="center"><img alt="pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, demos, and APIs" src="https://pyngrok.readthedocs.io/en/latest/_images/logo.png" /></p>
 
 [![Version](https://img.shields.io/pypi/v/pyngrok)](https://pypi.org/project/pyngrok)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/pyngrok)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/pyngrok)](https://pypistats.org/packages/pyngrok)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pyngrok.svg)](https://pypi.org/project/pyngrok)
 [![Coverage](https://img.shields.io/codecov/c/github/alexdlaird/pyngrok)](https://codecov.io/gh/alexdlaird/pyngrok)
 [![Build](https://img.shields.io/github/actions/workflow/status/alexdlaird/pyngrok/build.yml)](https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml)

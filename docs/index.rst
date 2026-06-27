@@ -11,6 +11,7 @@ pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks
 .. image:: https://img.shields.io/pypi/v/pyngrok
    :target: https://pypi.org/project/pyngrok
 .. image:: https://img.shields.io/pypi/dm/pyngrok
+   :target: https://pypistats.org/packages/pyngrok
 .. image:: https://img.shields.io/pypi/pyversions/pyngrok.svg
    :target: https://pypi.org/project/pyngrok
 .. image:: https://img.shields.io/codecov/c/github/alexdlaird/pyngrok
