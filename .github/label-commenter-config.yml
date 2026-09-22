@@ -19,3 +19,13 @@ labels:
 
           If you [support the project](https://github.com/sponsors/alexdlaird), contact me directly and I'd be happy to help you troubleshoot.
         action: close
+  - name: too-long
+    labeled:
+      issue:
+        body: |
+          This issue is too long to review as written, so it has not been read.
+
+          A report is only useful if it can be understood quickly, so please edit this one down to the essentials. If an AI tool helped write it, that's fine, but verify it and trim it yourself first. If you haven't read it in full, it's simply not reasonable to expect us to.
+
+          This issue will be reopened once it is evident it has had a human touch.
+        action: close
