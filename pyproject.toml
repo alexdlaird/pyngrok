@@ -119,6 +119,9 @@ output = "build/coverage/coverage.xml"
 title = "Coverage Report"
 directory = "build/coverage"
 
+[tool.mypy]
+strict = true
+
 [tool.flake8]
 max-line-length = 119
 statistics = true
