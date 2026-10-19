@@ -203,9 +203,10 @@ A `Model Context Protocol <https://modelcontextprotocol.io>`_ (MCP) server can b
 for instance cloud AI assistants, by using ``pyngrok`` to tunnel to its Streamable HTTP transport. This example uses
 the `MCP Python SDK <https://github.com/modelcontextprotocol/python-sdk>`_.
 
-The SDK rejects requests that aren't addressed to ``localhost``, so the tunnel rewrites the ``Host`` header. A
-`Traffic Policy <https://ngrok.com/docs/traffic-policy/>`_ on the tunnel also requires a bearer token, so only clients you've shared
-the token with can reach the server. Create ``server.py`` with the following code:
+The SDK rejects requests that aren't addressed to ``localhost``, so a
+`Traffic Policy <https://ngrok.com/docs/traffic-policy/>`_ on the tunnel rewrites the ``Host`` header. The policy also
+requires a bearer token, so only clients you've shared the token with can reach the server. Create ``server.py`` with
+the following code:
 
 .. code-block:: python
 
@@ -225,18 +226,18 @@ the token with can reach the server. Create ``server.py`` with the following cod
 
     # ... Implement the rest of your MCP tools
 
-    # Require a bearer token on requests to the tunnel
+    # Require a bearer token on requests to the tunnel, and rewrite the Host header to localhost
     traffic_policy = {
         "on_http_request": [{
             "expressions": [f"!hasReqHeader('Authorization') || getReqHeader('Authorization')[0] != 'Bearer {token}'"],
             "actions": [{"type": "deny", "config": {"status_code": 401}}]
+        }, {
+            "actions": [{"type": "add-headers", "config": {"headers": {"host": f"localhost:{port}"}}}]
         }]
     }
 
-    # Open a ngrok tunnel to the MCP server, rewriting the Host header to localhost
-    public_url = ngrok.connect(port,
-                               host_header=f"localhost:{port}",
-                               traffic_policy=traffic_policy).public_url
+    # Open a ngrok tunnel to the MCP server
+    public_url = ngrok.connect(port, traffic_policy=traffic_policy).public_url
     print(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\"")
 
     mcp.run(transport="streamable-http", port=int(port))
@@ -292,7 +293,7 @@ Web Inspector
 """""""""""""
 
 If you want to use ``ngrok``'s web inspector, be sure to expose its port. Be sure whatever config file you use
-`sets web_addr: 0.0.0.0:4040 <https://ngrok.com/docs/agent/config/v2/#web_addr>`_ (the config provisioned in the
+`sets web_addr: 0.0.0.0:4040 <https://ngrok.com/docs/agent/config/v3/#web_addr>`_ (the config provisioned in the
 pre-built images already does this).
 
 .. code-block:: shell
@@ -419,7 +420,8 @@ Colab Ollama Example
 
 It can also be useful to serve models with `Ollama <https://ollama.com>`_ from your Notebook. This code block assumes
 you have also added ``!curl -fsSL https://ollama.com/install.sh | sh`` to your dependency code block. Ollama rejects
-requests that aren't addressed to ``localhost`` with a ``403``, so the tunnel rewrites the ``Host`` header.
+requests that aren't addressed to ``localhost`` with a ``403``, so a
+`Traffic Policy <https://ngrok.com/docs/traffic-policy/>`_ on the tunnel rewrites the ``Host`` header.
 
 .. code-block:: python
 
@@ -435,7 +437,12 @@ requests that aren't addressed to ``localhost`` with a ``403``, so the tunnel re
     # ... Pull the models you want to serve with `ollama pull`
 
     # Open a ngrok tunnel to the Ollama server, rewriting the Host header to localhost
-    public_url = ngrok.connect(port, host_header=f"localhost:{port}").public_url
+    traffic_policy = {
+        "on_http_request": [{
+            "actions": [{"type": "add-headers", "config": {"headers": {"host": f"localhost:{port}"}}}]
+        }]
+    }
+    public_url = ngrok.connect(port, traffic_policy=traffic_policy).public_url
     print(f" * ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\"")
 
 End-to-End Testing
@@ -614,7 +621,7 @@ Now create ``server.py`` with the following code:
     sock.listen(1)
 
     # Open a ngrok tunnel to the socket
-    public_url = ngrok.connect(port, "tcp", remote_addr=f"{host}:{port}").public_url
+    public_url = ngrok.connect(port, "tcp", url=f"tcp://{host}:{port}").public_url
     print(f"ngrok tunnel \"{public_url}\" -> \"tcp://127.0.0.1:{port}\"")
 
     while True:

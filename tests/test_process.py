@@ -47,7 +47,8 @@ class TestProcess(NgrokTestCase):
                                                   ngrok_path=ngrok_path_2)
         self.given_ngrok_installed(pyngrok_config_2)
         config_path_2 = os.path.join(self.config_dir, "config_2.yml")
-        installer.install_default_config(config_path_2, {"web_addr": ngrok_process.api_url.lstrip("http://")})
+        installer.install_default_config(config_path_2, {"web_addr": ngrok_process.api_url.lstrip("http://")},
+                                         config_version="2")
         pyngrok_config_2 = self.copy_with_updates(self.pyngrok_config,
                                                   config_path=config_path_2,
                                                   ngrok_path=ngrok_path_2)
@@ -110,7 +111,7 @@ class TestProcess(NgrokTestCase):
 
         self.given_ngrok_installed(self.pyngrok_config)
         config_path_1 = os.path.join(self.config_dir, "config_1.yml")
-        installer.install_default_config(config_path_1, {"web_addr": "localhost:4040"})
+        installer.install_default_config(config_path_1, {"web_addr": "localhost:4040"}, config_version="2")
         pyngrok_config_1 = self.copy_with_updates(self.pyngrok_config,
                                                   config_path=config_path_1,
                                                   ngrok_path=self.pyngrok_config.ngrok_path)
@@ -120,7 +121,7 @@ class TestProcess(NgrokTestCase):
                                                   ngrok_path=ngrok_path_2)
         self.given_ngrok_installed(pyngrok_config_2)
         config_path_2 = os.path.join(self.config_dir, "config_2.yml")
-        installer.install_default_config(config_path_2, {"web_addr": "localhost:4041"})
+        installer.install_default_config(config_path_2, {"web_addr": "localhost:4041"}, config_version="2")
         pyngrok_config_2 = self.copy_with_updates(self.pyngrok_config,
                                                   config_path=config_path_2,
                                                   ngrok_path=ngrok_path_2)

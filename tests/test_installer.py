@@ -142,7 +142,7 @@ class TestInstaller(NgrokTestCase):
     def test_web_addr_false_not_allowed(self):
         # WHEN
         with self.assertRaises(PyngrokError):
-            installer.install_default_config(self.pyngrok_config.config_path, {"web_addr": False})
+            installer.install_default_config(self.pyngrok_config.config_path, {"web_addr": False}, config_version="2")
 
     @mock.patch("platform.system")
     def test_get_default_ngrok_dir_mac(self, mock_system):

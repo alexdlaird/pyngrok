@@ -62,7 +62,7 @@ named_tunnel = ngrok.connect(name="my-config-file-tunnel")
 # Open an Internal Endpoint that's load balanced
 # <NgrokTunnel: "https://some-endpoint.internal" -> "http://localhost:9000">
 internal_endpoint = ngrok.connect(addr="9000",
-                                  domain="some-endpoint.internal",
+                                  url="https://some-endpoint.internal",
                                   pooling_enabled=True)
 ```
 
@@ -117,6 +117,7 @@ on [Read the Docs](https://pyngrok.readthedocs.io).
 
 - [Flask](https://pyngrok.readthedocs.io/en/latest/integrations.html#flask)
 - [Django](https://pyngrok.readthedocs.io/en/latest/integrations.html#django)
+- [MCP Servers](https://pyngrok.readthedocs.io/en/latest/integrations.html#mcp-servers)
 - [Docker](https://pyngrok.readthedocs.io/en/latest/integrations.html#docker)
 - [Google Colab](https://pyngrok.readthedocs.io/en/latest/integrations.html#google-colaboratory)
 - [End-to-End Testing](https://pyngrok.readthedocs.io/en/latest/integrations.html#end-to-end-testing)

@@ -217,7 +217,7 @@ def _install_ngrok_archive(ngrok_path: str,
 def get_ngrok_config(config_path: str,
                      use_cache: bool = True,
                      ngrok_version: Optional[str] = "3",
-                     config_version: Optional[str] = "2") -> Dict[str, Any]:
+                     config_version: Optional[str] = "3") -> Dict[str, Any]:
     """
     Get the ``ngrok`` config from the given path.
 
@@ -267,7 +267,7 @@ def get_default_config(ngrok_version: Optional[str],
 def install_default_config(config_path: str,
                            data: Optional[Dict[str, Any]] = None,
                            ngrok_version: Optional[str] = "3",
-                           config_version: Optional[str] = "2") -> None:
+                           config_version: Optional[str] = "3") -> None:
     """
     Install the given data to the ``ngrok`` config. If a config is not already present for the given path, create one.
     Before saving new data to the default config, validate that they are compatible with ``pyngrok``.
