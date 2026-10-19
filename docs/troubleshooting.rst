@@ -76,6 +76,23 @@ ensure you have a handler streaming logs and your level is set to ``DEBUG``. Her
     ngrok.connect()
 
 
+Quiet the Logs
+--------------
+
+``pyngrok`` logs through Python's ``logging`` module, and ``ngrok``'s own output is logged by the
+``pyngrok.process.ngrok`` logger. To quiet it, raise that logger's level.
+
+.. code-block:: python
+
+    import logging
+
+    # Quiet ngrok's own output
+    logging.getLogger("pyngrok.process.ngrok").setLevel(logging.WARNING)
+
+    # Or quiet all pyngrok output
+    logging.getLogger("pyngrok").setLevel(logging.WARNING)
+
+
 Programmatically Inspect the Logs
 ---------------------------------
 

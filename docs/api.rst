@@ -12,6 +12,13 @@ Main ``ngrok`` Interface
     :private-members:
     :show-inheritance:
 
+Async Interface
+---------------
+
+.. automodule:: pyngrok.aio
+    :members:
+    :show-inheritance:
+
 Process Management
 ------------------
 

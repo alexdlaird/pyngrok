@@ -6,6 +6,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/8.1.2...HEAD)
 
+### Added
+
+- `ngrok.connect_all()`, to start every tunnel defined in `ngrok`'s config file.
+- `PyngrokNgrokError.ngrok_error_code`, the `ngrok` error code parsed from `ngrok_error`.
+- `pyngrok.aio`, async versions of the `pyngrok.ngrok` methods.
+
 ## [8.1.2](https://github.com/alexdlaird/pyngrok/compare/8.1.1...8.1.2) - 2026-04-29
 
 ### Added

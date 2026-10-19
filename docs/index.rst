@@ -37,7 +37,7 @@ pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks
 
 ``pyngrok`` is a Python wrapper for ``ngrok`` that provides programmatic tunnels for ingress, webhooks, demos, and APIs.
 It downloads and manages the ``ngrok`` agent for you, making it available through a Python API and the command line.
-The library is mature and stable, and it tracks new ``ngrok`` releases.
+It runs anywhere the ``ngrok`` agent does. The library is mature and stable, and it tracks new ``ngrok`` releases.
 
 `ngrok <https://ngrok.com>`_ is a reverse proxy that opens secure tunnels from public URLs to localhost. It's perfect for rapid
 development (test webhooks, demo local websites, enable SSH access), establishing ingress to external

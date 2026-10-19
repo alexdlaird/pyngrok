@@ -78,6 +78,9 @@ Sponsor = "https://github.com/sponsors/alexdlaird"
 [tool.setuptools]
 package-dir = { pyngrok = "pyngrok" }
 
+[tool.setuptools.package-data]
+pyngrok = ["py.typed"]
+
 [tool.setuptools.dynamic]
 version = { attr = "pyngrok.__version__" }
 

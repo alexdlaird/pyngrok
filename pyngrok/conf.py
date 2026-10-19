@@ -54,8 +54,10 @@ class PyngrokConfig:
                  api_key: Optional[str] = None,
                  config_version: str = "2") -> None:
         #: The path to the ``ngrok`` binary, defaults to being placed in the same directory as
-        #: `ngrok's configs <https://ngrok.com/docs/agent/config/v2>`_.
-        self.ngrok_path: str = DEFAULT_NGROK_PATH if ngrok_path is None else ngrok_path
+        #: `ngrok's configs <https://ngrok.com/docs/agent/config/v2>`_. If a value is not passed, will attempt to use
+        #: the environment variable ``PYNGROK_NGROK_PATH`` if it is set.
+        self.ngrok_path: str = os.environ.get("PYNGROK_NGROK_PATH", DEFAULT_NGROK_PATH) if ngrok_path is None \
+            else ngrok_path
         #: The path to the ``ngrok`` config, defaults to ``None`` and ``ngrok`` manages it.
         self.config_path: Optional[str] = DEFAULT_CONFIG_PATH if config_path is None else config_path
         #: A ``ngrok`` authtoken to pass to commands (overrides what is in the config). If a value is not passed, will
@@ -66,8 +68,8 @@ class PyngrokConfig:
         #: Whether ``ngrok`` should continue to be monitored (for logs, etc.) after startup is complete.
         self.monitor_thread: bool = monitor_thread
         #: A callback that will be invoked each time ``ngrok`` emits a log. The function should take
-        #: one argument of type :py:class:`str`. ``monitor_thread`` must be set to ``True`` or the function will
-        #: stop being called after ``ngrok`` finishes starting.
+        #: one argument of type :class:`~pyngrok.log.NgrokLog`. ``monitor_thread`` must be set to ``True`` or the
+        #: function will stop being called after ``ngrok`` finishes starting.
         self.log_event_callback: Optional[Callable[[NgrokLog], None]] = log_event_callback
         #: The max timeout, in seconds, to wait for ``ngrok`` to start.
         self.startup_timeout: int = startup_timeout
@@ -116,7 +118,7 @@ def set_default(pyngrok_config: PyngrokConfig) -> None:
 
 def get_config_path(pyngrok_config: PyngrokConfig) -> str:
     """
-    Return the ``config_path`` if set on the given ``pyngrok_configg``, otherwise return ``ngrok``'s default path.
+    Return the ``config_path`` if set on the given ``pyngrok_config``, otherwise return ``ngrok``'s default path.
 
     :param pyngrok_config: The ``pyngrok`` configuration to first check for a ``config_path``.
     :return: The path to the config file.

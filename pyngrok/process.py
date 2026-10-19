@@ -2,9 +2,11 @@ __copyright__ = "Copyright (c) 2018-2025 Alex Laird"
 __license__ = "MIT"
 
 import atexit
+import ctypes
 import logging
 import os
 import subprocess
+import sys
 import threading
 import time
 from http import HTTPStatus
@@ -267,10 +269,11 @@ def get_process(pyngrok_config: PyngrokConfig) -> NgrokProcess:
     :param pyngrok_config: The ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary.
     :return: The ``ngrok`` process.
     """
-    if is_process_running(pyngrok_config.ngrok_path):
-        return _current_processes[pyngrok_config.ngrok_path]
+    with _current_processes_lock:
+        if is_process_running(pyngrok_config.ngrok_path):
+            return _current_processes[pyngrok_config.ngrok_path]
 
-    return _start_process(pyngrok_config)
+        return _start_process(pyngrok_config)
 
 
 def kill_process(ngrok_path: str) -> None:
@@ -280,22 +283,23 @@ def kill_process(ngrok_path: str) -> None:
 
     :param ngrok_path: The path to the ``ngrok`` binary.
     """
-    if is_process_running(ngrok_path):
-        ngrok_process = _current_processes[ngrok_path]
+    with _current_processes_lock:
+        if is_process_running(ngrok_path):
+            ngrok_process = _current_processes[ngrok_path]
 
-        logger.info(f"Killing ngrok process: {ngrok_process.proc.pid}")
+            logger.info(f"Killing ngrok process: {ngrok_process.proc.pid}")
 
-        try:
-            ngrok_process.proc.kill()
-            ngrok_process.proc.wait()
-        except OSError as e:  # pragma: no cover
-            # If the process was already killed, nothing to do but cleanup state
-            if e.errno != 3:
-                raise e
+            try:
+                ngrok_process.proc.kill()
+                ngrok_process.proc.wait()
+            except OSError as e:  # pragma: no cover
+                # If the process was already killed, nothing to do but cleanup state
+                if e.errno != 3:
+                    raise e
 
-        _current_processes.pop(ngrok_path, None)
-    else:
-        logger.debug(f"\"ngrok_path\" {ngrok_path} is not running a process")
+            _current_processes.pop(ngrok_path, None)
+        else:
+            logger.debug(f"\"ngrok_path\" {ngrok_path} is not running a process")
 
 
 def run_process(ngrok_path: str, args: List[str]) -> None:
@@ -380,6 +384,12 @@ def _terminate_process(process: subprocess.Popen) -> None:  # type: ignore
         logger.debug(f"ngrok process already terminated: {process.pid}")
 
 
+def _has_console() -> bool:
+    if sys.platform == "win32":
+        return bool(ctypes.windll.kernel32.GetConsoleWindow())
+    return True
+
+
 def _start_process(pyngrok_config: PyngrokConfig) -> NgrokProcess:
     """
     Start a ``ngrok`` process with no tunnels. This will start the ``ngrok`` web interface, against
@@ -413,6 +423,8 @@ def _start_process(pyngrok_config: PyngrokConfig) -> NgrokProcess:
         popen_kwargs.update(start_new_session=pyngrok_config.start_new_session)
     elif pyngrok_config.start_new_session:
         logger.warning("Ignoring start_new_session=True, which requires POSIX")
+    if sys.platform == "win32" and not _has_console():
+        popen_kwargs.update(creationflags=subprocess.CREATE_NO_WINDOW)
     proc = subprocess.Popen(start, **popen_kwargs)
     atexit.register(_terminate_process, proc)
 
@@ -456,3 +468,4 @@ def _start_process(pyngrok_config: PyngrokConfig) -> NgrokProcess:
 
 
 _current_processes: Dict[str, NgrokProcess] = {}
+_current_processes_lock = threading.RLock()
