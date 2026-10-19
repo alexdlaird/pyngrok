@@ -6,6 +6,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/8.2.0...HEAD)
 
+### Breaking
+
+- `PyngrokConfig.config_version` now defaults to `"3"`, as `ngrok` has deprecated `tunnels` in favor of [Endpoints](https://ngrok.com/docs/agent/config/v3/). v2-only options (like `subdomain`, `remote_addr`, `auth`, and `host_header`) aren't supported by Endpoints, so use `url` and [Traffic Policy](https://ngrok.com/docs/traffic-policy/) actions instead, or set `config_version="2"` to keep the previous behavior.
+- `installer.get_ngrok_config()` and `installer.install_default_config()` now default `config_version` to `"3"`.
+
+### Fixed
+
+- Build and stability improvements.
+
 ## [8.2.0](https://github.com/alexdlaird/pyngrok/compare/8.1.2...8.2.0) - 2026-10-19
 
 ### Added

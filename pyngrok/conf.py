@@ -52,9 +52,9 @@ class PyngrokConfig:
                  start_new_session: bool = False,
                  ngrok_version: str = "3",
                  api_key: Optional[str] = None,
-                 config_version: str = "2") -> None:
+                 config_version: str = "3") -> None:
         #: The path to the ``ngrok`` binary, defaults to being placed in the same directory as
-        #: `ngrok's configs <https://ngrok.com/docs/agent/config/v2>`_. If a value is not passed, will attempt to use
+        #: `ngrok's configs <https://ngrok.com/docs/agent/config/v3>`_. If a value is not passed, will attempt to use
         #: the environment variable ``PYNGROK_NGROK_PATH`` if it is set.
         self.ngrok_path: str = os.environ.get("PYNGROK_NGROK_PATH", DEFAULT_NGROK_PATH) if ngrok_path is None \
             else ngrok_path

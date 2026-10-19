@@ -56,6 +56,8 @@ class NgrokTunnel:
             self.uri = None
         #: The public ``ngrok`` URL.
         self.public_url: Optional[str] = data.get("public_url", data.get("url"))
+        if self.proto is None and self.public_url and "://" in self.public_url:
+            self.proto = self.public_url.split("://")[0]
         #: The ``config`` block specific to v2 tunnels (e.g. ``{"addr": ..., "inspect": ...}``);
         #: empty for v3 endpoints.
         self.config: Dict[str, Any] = data.get("config", {})
@@ -290,9 +292,12 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
         override_from_addr = (addr_provided or proto_provided) and not user_upstream_provided
         if override_from_addr or "upstream" not in options:
             url = addr if "://" in addr else (
-                f"tcp://localhost:{addr}" if proto == "tcp" else f"http://localhost:{addr}"
+                f"localhost:{addr}" if proto in ["tcp", "tls"] else f"http://localhost:{addr}"
             )
             options["upstream"] = {"url": url}
+        if proto in ["tcp", "tls"]:
+            options.setdefault("url", f"{proto}://")
+            options.setdefault("inspect", False)
         options.pop("addr", None)
         options.pop("proto", None)
     else:
