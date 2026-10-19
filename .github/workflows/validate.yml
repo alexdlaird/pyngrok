@@ -2,6 +2,13 @@ name: Validate
 
 on:
   workflow_call:
+    inputs:
+      checkout-repository:
+        required: false
+        type: string
+      checkout-ref:
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -24,6 +31,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          repository: ${{ inputs.checkout-repository || github.repository }}
+          ref: ${{ inputs.checkout-ref || github.sha }}
       - name: Set up Python 3.13
         uses: actions/setup-python@v6
         with:

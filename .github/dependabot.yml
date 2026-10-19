@@ -7,3 +7,8 @@ updates:
       day: "monday"
       time: "05:00"
       timezone: "America/Chicago"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"

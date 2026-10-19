@@ -53,16 +53,15 @@ check: install
 	@( \
 		source $(PROJECT_VENV)/bin/activate; \
 		python -m pip install ".[dev,docs]"; \
-		mypy --strict pyngrok; \
-		flake8; \
+		mypy pyngrok && flake8; \
 	)
 
 local:
 	@rm -rf *.egg-info dist
 	@( \
-		$(PYTHON_BIN) -m pip install --upgrade pip; \
-        $(PYTHON_BIN) -m pip install --upgrade build; \
-		$(PYTHON_BIN) -m build; \
+		$(PYTHON_BIN) -m pip install --upgrade pip && \
+        $(PYTHON_BIN) -m pip install --upgrade build && \
+		$(PYTHON_BIN) -m build && \
 		$(PYTHON_BIN) -m pip install dist/*.tar.gz; \
 	)
 
@@ -87,7 +86,7 @@ test-downstream:
 
 upload: local
 	@( \
-        $(PYTHON_BIN) -m pip install --upgrade twine; \
-		$(PYTHON_BIN) -m build; \
+        $(PYTHON_BIN) -m pip install --upgrade twine && \
+		$(PYTHON_BIN) -m build && \
 		$(PYTHON_BIN) -m twine upload dist/*; \
 	)

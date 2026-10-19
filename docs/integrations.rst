@@ -196,6 +196,63 @@ Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicor
     USE_NGROK=True NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN \
         uvicorn server:app
 
+MCP Servers
+-----------
+
+A `Model Context Protocol <https://modelcontextprotocol.io>`_ (MCP) server can be made available to remote MCP clients,
+for instance cloud AI assistants, by using ``pyngrok`` to tunnel to its Streamable HTTP transport. This example uses
+the `MCP Python SDK <https://github.com/modelcontextprotocol/python-sdk>`_.
+
+The SDK rejects requests that aren't addressed to ``localhost``, so the tunnel rewrites the ``Host`` header. A
+`Traffic Policy <https://ngrok.com/docs/traffic-policy/>`_ on the tunnel also requires a bearer token, so only clients you've shared
+the token with can reach the server. Create ``server.py`` with the following code:
+
+.. code-block:: python
+
+    import os
+
+    from mcp.server.mcpserver import MCPServer
+    from pyngrok import ngrok
+
+    port = os.environ.get("PORT", "8000")
+    token = os.environ.get("MCP_TOKEN")
+
+    mcp = MCPServer("demo")
+
+    @mcp.tool()
+    def add(a: int, b: int) -> int:
+        return a + b
+
+    # ... Implement the rest of your MCP tools
+
+    # Require a bearer token on requests to the tunnel
+    traffic_policy = {
+        "on_http_request": [{
+            "expressions": [f"!hasReqHeader('Authorization') || getReqHeader('Authorization')[0] != 'Bearer {token}'"],
+            "actions": [{"type": "deny", "config": {"status_code": 401}}]
+        }]
+    }
+
+    # Open a ngrok tunnel to the MCP server, rewriting the Host header to localhost
+    public_url = ngrok.connect(port,
+                               host_header=f"localhost:{port}",
+                               traffic_policy=traffic_policy).public_url
+    print(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\"")
+
+    mcp.run(transport="streamable-http", port=int(port))
+
+You can then run this script to start the server.
+
+.. code-block:: sh
+
+    NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN MCP_TOKEN=<SECRET_TOKEN> \
+        python server.py
+
+MCP clients can now connect to ``<public_url>/mcp``, sending the header ``Authorization: Bearer <SECRET_TOKEN>``. If
+you're using ``mcp`` 1.x, use ``FastMCP`` (from ``mcp.server.fastmcp``) instead, passing ``port`` to its constructor
+rather than to ``run()``. For MCP clients that can't send custom headers, see
+`ngrok's MCP guide <https://ngrok.com/docs/gateway/api-gateway/mcp-gateway>`_ for other ways to protect the server.
+
 Docker
 ------
 
@@ -354,6 +411,32 @@ assumes you have also added ``!pip install flask`` to your dependency code block
 
     # Start the Flask server in a new thread
     threading.Thread(target=app.run, kwargs={"use_reloader": False}).start()
+
+The same approach works for any web server you run in your Notebook, for instance a Streamlit or Gradio app.
+
+Colab Ollama Example
+""""""""""""""""""""
+
+It can also be useful to serve models with `Ollama <https://ollama.com>`_ from your Notebook. This code block assumes
+you have also added ``!curl -fsSL https://ollama.com/install.sh | sh`` to your dependency code block. Ollama rejects
+requests that aren't addressed to ``localhost`` with a ``403``, so the tunnel rewrites the ``Host`` header.
+
+.. code-block:: python
+
+    import subprocess
+
+    from pyngrok import ngrok
+
+    port = "11434"
+
+    # Start the Ollama server in the background
+    subprocess.Popen(["ollama", "serve"])
+
+    # ... Pull the models you want to serve with `ollama pull`
+
+    # Open a ngrok tunnel to the Ollama server, rewriting the Host header to localhost
+    public_url = ngrok.connect(port, host_header=f"localhost:{port}").public_url
+    print(f" * ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\"")
 
 End-to-End Testing
 ------------------

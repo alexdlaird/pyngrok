@@ -1,0 +1,18 @@
+name: Validate Fork PR on Approval
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  validate-fork-pr:
+    name: Validate Fork PR
+    if: |
+      github.event.review.state == 'approved' &&
+      github.event.review.author_association == 'OWNER' &&
+      github.event.pull_request.head.repo.full_name != github.repository
+    uses: ./.github/workflows/validate.yml
+    with:
+      checkout-repository: ${{ github.event.pull_request.head.repo.full_name }}
+      checkout-ref: ${{ github.event.pull_request.head.sha }}
+    secrets: inherit

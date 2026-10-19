@@ -1,6 +1,7 @@
 __copyright__ = "Copyright (c) 2018-2024 Alex Laird"
 __license__ = "MIT"
 
+import re
 from typing import Any, List, Optional, Union, Dict, MutableMapping
 
 from pyngrok.log import NgrokLog
@@ -42,6 +43,14 @@ class PyngrokNgrokError(PyngrokError):
         self.ngrok_logs: List[NgrokLog] = ngrok_logs if ngrok_logs else []
         #: The error that caused the ``ngrok`` process to fail.
         self.ngrok_error: Optional[str] = ngrok_error
+        #: The ``ngrok`` error code parsed from ``ngrok_error``, if present. See
+        #: `ngrok's error code reference <https://ngrok.com/docs/errors/>`_ for details on each code.
+        self.ngrok_error_code: Optional[str] = self._parse_ngrok_error_code(ngrok_error)
+
+    @staticmethod
+    def _parse_ngrok_error_code(ngrok_error: Optional[str]) -> Optional[str]:
+        match = re.search(r"ERR_NGROK_\d+", ngrok_error) if ngrok_error else None
+        return match.group(0) if match else None
 
 
 class PyngrokNgrokHTTPError(PyngrokNgrokError):

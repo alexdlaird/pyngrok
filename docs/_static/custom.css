@@ -1,4 +1,4 @@
-.hide-me > :first-child {
+.hide-header > h1:first-child {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -7,4 +7,9 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+}
+
+.hero-logo {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }

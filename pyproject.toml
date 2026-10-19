@@ -1,7 +1,7 @@
 [project]
 name = "pyngrok"
 dynamic = ["version"]
-description = "A Python wrapper for ngrok"
+description = "A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, demos, and APIs"
 readme = "README.md"
 license = "MIT"
 keywords = ["tunnel", "webhook", "reverse-proxy", "ngrok", "localhost", "ingress", "tunneling"]
@@ -9,12 +9,13 @@ authors = [{ name = "Alex Laird", email = "contact@alexlaird.com" }]
 maintainers = [{ name = "Alex Laird", email = "contact@alexlaird.com" }]
 requires-python = ">=3.9"
 dependencies = [
-    "PyYAML>=5.1"
+    "PyYAML>=6.0.3"
 ]
 classifiers = [
     "Development Status :: 6 - Mature",
     "Environment :: Console",
     "Environment :: Web Environment",
+    "Framework :: AsyncIO",
     "Intended Audience :: Developers",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
@@ -31,13 +32,13 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
-    "Topic :: Database :: Database Engines/Servers",
     "Topic :: Internet :: Proxy Servers",
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
     "Topic :: Software Development :: Build Tools",
     "Topic :: Software Development :: Testing",
     "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Networking",
 ]
 
 [project.optional-dependencies]
@@ -56,6 +57,10 @@ docs = [
     # Pinned back until prolog bug is resolved: https://github.com/tox-dev/sphinx-autodoc-typehints/issues/425
     "sphinx_autodoc_typehints==1.25.2",
     "sphinx-substitution-extensions",
+    "sphinx-sitemap",
+    "sphinxext-opengraph",
+    "furo",
+    "sphinxcontrib-googleanalytics",
     "mypy",
     "types-PyYAML"
 ]
@@ -72,6 +77,9 @@ Sponsor = "https://github.com/sponsors/alexdlaird"
 
 [tool.setuptools]
 package-dir = { pyngrok = "pyngrok" }
+
+[tool.setuptools.package-data]
+pyngrok = ["py.typed"]
 
 [tool.setuptools.dynamic]
 version = { attr = "pyngrok.__version__" }
@@ -113,6 +121,9 @@ output = "build/coverage/coverage.xml"
 [tool.coverage.html]
 title = "Coverage Report"
 directory = "build/coverage"
+
+[tool.mypy]
+strict = true
 
 [tool.flake8]
 max-line-length = 119

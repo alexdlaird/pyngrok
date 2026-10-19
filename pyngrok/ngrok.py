@@ -403,6 +403,40 @@ def connect(addr: Optional[str] = None,
     return tunnel
 
 
+def connect_all(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTunnel]:
+    """
+    Establish a ``ngrok`` tunnel for each tunnel definition in ``ngrok``'s config file, returning a list of objects
+    representing the connected tunnels. Each is started with :func:`~pyngrok.ngrok.connect` by its ``name``.
+
+    Routing is driven by :attr:`~pyngrok.conf.PyngrokConfig.config_version`: ``"2"`` reads the v2 ``tunnels``
+    config block; ``"3"`` reads the v3 ``endpoints`` block (and a ``tunnels`` block if also present).
+
+    The "pyngrok-default" definition is not started, since it is the definition :func:`~pyngrok.ngrok.connect`
+    uses when no ``name`` is given.
+
+    :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
+        overriding :func:`~pyngrok.conf.get_default()`.
+    :return: The created ``ngrok`` tunnels.
+    :raises: :class:`~pyngrok.exception.PyngrokError`: When a tunnel definition is invalid, or the response does
+        not contain ``public_url``.
+    """
+    if pyngrok_config is None:
+        pyngrok_config = conf.get_default()
+
+    config_path = conf.get_config_path(pyngrok_config)
+    if not os.path.exists(config_path):
+        return []
+
+    with installer.config_file_lock:
+        config = installer.get_ngrok_config(config_path, ngrok_version=pyngrok_config.ngrok_version)
+
+    names = list((config.get("tunnels") or {}).keys())
+    if pyngrok_config.config_version == "3":
+        names = [definition.get("name") for definition in config.get("endpoints") or []] + names
+
+    return [connect(name=name, pyngrok_config=pyngrok_config) for name in names if name and name != "pyngrok-default"]
+
+
 def disconnect(public_url: str,
                pyngrok_config: Optional[PyngrokConfig] = None) -> None:
     """

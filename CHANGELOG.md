@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/8.1.2...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/8.2.0...HEAD)
+
+## [8.2.0](https://github.com/alexdlaird/pyngrok/compare/8.1.2...8.2.0) - 2026-10-19
+
+### Added
+
+- `ngrok.connect_all()`, to start every tunnel defined in `ngrok`'s config file.
+- `PyngrokNgrokError.ngrok_error_code`, the `ngrok` error code parsed from `ngrok_error`.
+- `pyngrok.aio`, async versions of the `pyngrok.ngrok` methods.
 
 ## [8.1.2](https://github.com/alexdlaird/pyngrok/compare/8.1.1...8.1.2) - 2026-04-29
 
@@ -617,7 +625,7 @@ An [integration example for Google Colab](https://pyngrok.readthedocs.io/en/4.1.
 
 ### Fixed
 
-- Inconsistent support for a local directory (ex. `file:///`) being passed as `ngrok.connect()`'s `port`. This is valid,
+- Inconsistent support for a local directory (e.g. `file:///`) being passed as `ngrok.connect()`'s `port`. This is valid,
   and `ngrok` will use its built-in fileserver for the tunnel.
 
 ## [4.1.3](https://github.com/alexdlaird/pyngrok/compare/4.1.2...4.1.3) - 2020-06-21
