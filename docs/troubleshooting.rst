@@ -122,26 +122,29 @@ enabling logging, `as shown above <#enable-logging-to-the-console>`_, so you can
     >>> handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
     >>> logger.addHandler(handler)
     >>> ngrok.connect()
-    2023-09-14 08:33:24,465 - pyngrok.ngrok - INFO - Opening tunnel named: http-80-7ce9805f-b438-48d0-92ab-ac305ba14869
-    2023-09-14 08:33:24,480 - pyngrok.process - DEBUG - ngrok process starting with PID: 93822
-    2023-09-14 08:33:25,165 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="no configuration paths supplied"
-    2023-09-14 08:33:25,165 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="using configuration at default config path" path=/Users/alexdlaird/Library/Application Support/ngrok/ngrok.yml
-    2023-09-14 08:33:25,165 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="open config file" path=/Users/alexdlaird/Library/Application Support/ngrok/ngrok.yml err=nil
-    2023-09-14 08:33:25,166 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="starting web service" obj=web addr=127.0.0.1:4040 allow_hosts=[]
-    2023-09-14 08:33:25,516 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="client session established" obj=tunnels.session obj=csess id=4b243123afe2
-    2023-09-14 08:33:25,517 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="tunnel session started" obj=tunnels.session
-    2023-09-14 08:33:25,539 - pyngrok.process - DEBUG - ngrok process has started with API URL: http://127.0.0.1:4040
-    2023-09-14 08:33:25,539 - pyngrok.process - DEBUG - Monitor thread will be started
-    2023-09-14 08:33:25,539 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg=start pg=/api/tunnels id=96fc3b90b80174d0
-    2023-09-14 08:33:25,539 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg=end pg=/api/tunnels id=96fc3b90b80174d0 status=200 dur=286.042µs
-    2023-09-14 08:33:25,540 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg=start pg=/api/tunnels id=394a97d2d43ba05b
-    2023-09-14 08:33:25,540 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg=end pg=/api/tunnels id=394a97d2d43ba05b status=200 dur=115.208µs
-    2023-09-14 08:33:25,540 - pyngrok.ngrok - DEBUG - Creating tunnel with options: {'name': 'http-80-7ce9805f-b438-48d0-92ab-ac305ba14869', 'addr': '80', 'proto': 'http'}
-    2023-09-14 08:33:25,541 - pyngrok.ngrok - DEBUG - Making POST request to http://127.0.0.1:4040/api/tunnels with data: b'{"name": "http-80-7ce9805f-b438-48d0-92ab-ac305ba14869", "addr": "80", "proto": "http"}'
-    2023-09-14 08:33:25,541 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg=start pg=/api/tunnels id=a3d58985a01eb3b4
-    2023-09-14 08:33:25,594 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg="started tunnel" obj=tunnels name=http-80-7ce9805f-b438-48d0-92ab-ac305ba14869 addr=http://localhost:80 url=https://<pub_sub>.ngrok.app
-    2023-09-14 08:33:25,594 - pyngrok.process.ngrok - INFO - t=2023-09-14T08:33:25-0500 lvl=info msg=end pg=/api/tunnels id=a3d58985a01eb3b4 status=201 dur=53.108ms
-    2023-09-14 08:33:25,595 - pyngrok.ngrok - DEBUG - Response 201: {"name":"http-80-7ce9805f-b438-48d0-92ab-ac305ba14869","ID":"d18a9e4a6237ca6ceb58d96fc9f330fc","uri":"/api/tunnels/http-80-7ce9805f-b438-48d0-92ab-ac305ba14869","public_url":"https://<pub_sub>.ngrok.app","proto":"https","config":{"addr":"http://localhost:80","inspect":true},"metrics":{"conns":{"count":0,"gauge":0,"rate1":0,"rate5":0,"rate15":0,"p50":0,"p90":0,"p95":0,"p99":0},"http":{"count":0,"rate1":0,"rate5":0,"rate15":0,"p50":0,"p90":0,"p95":0,"p99":0}}}
+    2026-10-19 18:25:27,987 - pyngrok.ngrok - INFO - Opening tunnel named: http-80-ba26ecb6-fc9a-4411-9d62-3603c03076b1
+    2026-10-19 18:25:27,989 - pyngrok.process - DEBUG - ngrok process starting with PID: 14228
+    2026-10-19 18:25:28,047 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg="no configuration paths supplied"
+    2026-10-19 18:25:28,047 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg="using configuration at default config path" path="/Users/alexdlaird/Library/Application Support/ngrok/ngrok.yml"
+    2026-10-19 18:25:28,047 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg="open config file" path="/Users/alexdlaird/Library/Application Support/ngrok/ngrok.yml" err=<nil>
+    2026-10-19 18:25:28,048 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg="FIPS 140 mode" enabled=false
+    2026-10-19 18:25:28,078 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg="starting web service" obj=web addr=127.0.0.1:4040 allow_hosts=[]
+    2026-10-19 18:25:28,474 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg="client session established" obj=tunnels.session
+    2026-10-19 18:25:28,475 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg="tunnel session started" obj=tunnels.session
+    2026-10-19 18:25:28,507 - pyngrok.process - DEBUG - ngrok process has started with API URL: http://127.0.0.1:4040
+    2026-10-19 18:25:28,507 - pyngrok.process - DEBUG - Monitor thread will be started
+    2026-10-19 18:25:28,507 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg=start pg=/api/endpoints id=422c93246b2ac3e8
+    2026-10-19 18:25:28,507 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg=end pg=/api/endpoints id=422c93246b2ac3e8 status=200 dur=214.5µs
+    2026-10-19 18:25:28,508 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg=start pg=/api/endpoints id=b044415fba0a73ea
+    2026-10-19 18:25:28,508 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg=end pg=/api/endpoints id=b044415fba0a73ea status=200 dur=13.625µs
+    2026-10-19 18:25:28,509 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg=start pg=/api/endpoints id=92d59770d0cb3acb
+    2026-10-19 18:25:28,510 - pyngrok.ngrok - DEBUG - Creating tunnel with options: {'name': 'http-80-ba26ecb6-fc9a-4411-9d62-3603c03076b1', 'upstream': {'url': 'http://localhost:80'}}
+    2026-10-19 18:25:28,510 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg=end pg=/api/endpoints id=92d59770d0cb3acb status=200 dur=13.792µs
+    2026-10-19 18:25:28,510 - pyngrok.ngrok - DEBUG - Making POST request to http://127.0.0.1:4040/api/endpoints with data: {'name': 'http-80-ba26ecb6-fc9a-4411-9d62-3603c03076b1', 'upstream': {'url': 'http://localhost:80'}}
+    2026-10-19 18:25:28,511 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg=start pg=/api/endpoints id=6ba5f589e6b0f876
+    2026-10-19 18:25:28,622 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg="started tunnel" obj=tunnels name=http-80-ba26ecb6-fc9a-4411-9d62-3603c03076b1 addr=http://localhost:80 url=https://<pub_sub>.ngrok.app
+    2026-10-19 18:25:28,623 - pyngrok.process.ngrok - INFO - t=2026-10-19T18:25:28-0500 lvl=info msg=end pg=/api/endpoints id=6ba5f589e6b0f876 status=201 dur=110.798792ms
+    2026-10-19 18:25:28,623 - pyngrok.ngrok - DEBUG - Response 201: {"name":"http-80-ba26ecb6-fc9a-4411-9d62-3603c03076b1","ID":"e088a704934b6b4f94a71285edb480f8","uri":"/api/tunnels/http-80-ba26ecb6-fc9a-4411-9d62-3603c03076b1","public_url":"https://<pub_sub>.ngrok.app","proto":"https","config":{"addr":"http://localhost:80","inspect":true},"metrics":{"conns":{"count":0,"gauge":0,"rate1":0,"rate5":0,"rate15":0,"p50":0,"p90":0,"p95":0,"p99":0},"http":{"count":0,"rate1":0,"rate5":0,"rate15":0,"p50":0,"p90":0,"p95":0,"p99":0}}}
     <NgrokTunnel: "https://<pub_sub>.ngrok.app" -> "http://localhost:80">
 
 Check the Inspector at http://localhost:4040

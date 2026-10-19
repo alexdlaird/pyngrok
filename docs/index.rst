@@ -420,7 +420,7 @@ to define them in code.
 Setting the ``region``
 ----------------------
 
-By default, ``ngrok`` will open a tunnel in the ``us`` region. To override this, use
+By default, ``ngrok`` chooses the best region for you. To override this, use
 the ``region`` parameter in :class:`~pyngrok.conf.PyngrokConfig`.
 
 .. code-block:: python
