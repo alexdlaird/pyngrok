@@ -31,7 +31,7 @@ pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks
 .. image:: https://app.codacy.com/project/badge/Grade/b055cf6e3f1745098fab86a2923730b3
    :target: https://app.codacy.com/gh/alexdlaird/pyngrok/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade
 .. image:: https://img.shields.io/readthedocs/pyngrok
-   :target: https://pyngrok.readthedocs.io/en/latest
+   :target: https://pyngrok.readthedocs.io/en/stable
 .. image:: https://img.shields.io/github/license/alexdlaird/pyngrok
    :target: https://github.com/alexdlaird/pyngrok
 
@@ -232,9 +232,9 @@ You can also open a v3 endpoint without defining it in a config file:
 ``ngrok``'s API
 ===============
 
-The `api <https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.api>`_ method allows you to use the local
+The :func:`~pyngrok.ngrok.api` method allows you to use the local
 ``ngrok`` agent to make requests against `the ngrok API <https://ngrok.com/docs/agent/cli-api/>`_, if you have
-`set an API key <https://pyngrok.readthedocs.io/en/latest/#setting-the-authtoken-or-api-key>`_.
+`set an API key <#setting-the-authtoken-or-api-key>`__.
 For example, here's how you would reserve a ``ngrok`` domain, then create a Cloud Endpoint with an associated traffic
 policy:
 
