@@ -60,7 +60,6 @@ docs = [
     "sphinx-sitemap",
     "sphinxext-opengraph",
     "furo",
-    "sphinxcontrib-googleanalytics",
     "mypy",
     "types-PyYAML"
 ]
