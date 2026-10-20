@@ -477,8 +477,8 @@ For details on how to fully leverage ``ngrok`` from the command line, see `ngrok
 Dive Deeper
 ===========
 
-For more advanced usage, integration examples, and tips to troubleshoot common issues, dive deeper in to the rest of
-the documentation. To securely expose a local MCP server to remote AI clients, see :doc:`mcp`.
+For more advanced usage, integration examples, :doc:`securely exposing a local MCP server to remote AI clients <mcp>`,
+and tips to troubleshoot common issues, dive deeper in to the rest of the documentation.
 
 .. toctree::
    :maxdepth: 2
