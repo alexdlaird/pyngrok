@@ -9,8 +9,8 @@ give you some useful tips to debug these issues.
 Test on the Command Line
 ------------------------
 
-When you install ``pyngrok`` with ``pip install pyngrok``, ``ngrok`` should available from the command
-line. First ensure this is true by checking to see if ``pyngrok``'s version of ``ngrok`` is properly setup in
+When you install ``pyngrok`` with ``pip install pyngrok``, ``ngrok`` should be available from the command
+line. First ensure this is true by checking to see if ``pyngrok``'s version of ``ngrok`` is properly set up in
 your path. Running ``ngrok`` with no args from the command line should show the ``pyngrok`` version at the very
 end of the output.
 
@@ -36,7 +36,7 @@ end of the output.
     `reorder things in your $PATH <https://stackoverflow.com/a/32170849/1128413>`_ to fix this, then you can continue
     troubleshooting on the command line.
 
-With ``PYNGROK VERSION`` shown in your output here, you know things are setup properly. Next try starting
+With ``PYNGROK VERSION`` shown in your output here, you know things are set up properly. Next try starting
 ``ngrok`` headless:
 
 .. code-block:: shell

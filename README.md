@@ -117,7 +117,7 @@ on [Read the Docs](https://pyngrok.readthedocs.io).
 
 - [Flask](https://pyngrok.readthedocs.io/en/latest/integrations.html#flask)
 - [Django](https://pyngrok.readthedocs.io/en/latest/integrations.html#django)
-- [MCP Servers](https://pyngrok.readthedocs.io/en/latest/integrations.html#mcp-servers)
+- [MCP Servers](https://pyngrok.readthedocs.io/en/latest/mcp.html)
 - [Docker](https://pyngrok.readthedocs.io/en/latest/integrations.html#docker)
 - [Google Colab](https://pyngrok.readthedocs.io/en/latest/integrations.html#google-colaboratory)
 - [End-to-End Testing](https://pyngrok.readthedocs.io/en/latest/integrations.html#end-to-end-testing)

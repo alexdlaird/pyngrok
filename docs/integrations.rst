@@ -13,7 +13,7 @@ Flask
 The Flask example includes a ``Dockerfile`` to highlight a `containerized use case <#docker>`_.
 
 In ``server.py``, `where your Flask app is initialized <https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/#the-application-factory>`_,
-you should add a variable that let's you configure from an environment variable whether you want to open a tunnel
+you should add a variable that lets you configure from an environment variable whether you want to open a tunnel
 to ``localhost`` with ``ngrok`` when the dev server starts. You can initialize the ``pyngrok`` tunnel in this
 same place.
 
@@ -72,7 +72,7 @@ Django
 
 In `settings.py <https://docs.djangoproject.com/en/3.0/topics/settings/>`_ of
 `your Django project <https://docs.djangoproject.com/en/3.0/intro/tutorial01/#creating-a-project>`_, you should add a
-variable that let's you configure from an environment variable whether you want to open a tunnel to
+variable that lets you configure from an environment variable whether you want to open a tunnel to
 ``localhost`` with ``ngrok`` when the dev server starts.
 
 .. code-block:: python
@@ -139,7 +139,7 @@ FastAPI
    :target: https://github.com/alexdlaird/pyngrok-example-fastapi
 
 In ``server.py``, `where your FastAPI app is initialized <https://fastapi.tiangolo.com/tutorial/first-steps/>`_,
-you should add a variable that let's you configure from an environment variable whether you want to tunnel to
+you should add a variable that lets you configure from an environment variable whether you want to tunnel to
 ``localhost`` with ``ngrok``. You can initialize the ``pyngrok`` tunnel in this same place.
 
 .. code-block:: python
@@ -195,64 +195,6 @@ Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicor
 
     USE_NGROK=True NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN \
         uvicorn server:app
-
-MCP Servers
------------
-
-A `Model Context Protocol <https://modelcontextprotocol.io>`_ (MCP) server can be made available to remote MCP clients,
-for instance cloud AI assistants, by using ``pyngrok`` to tunnel to its Streamable HTTP transport. This example uses
-the `MCP Python SDK <https://github.com/modelcontextprotocol/python-sdk>`_.
-
-The SDK rejects requests that aren't addressed to ``localhost``, so a
-`Traffic Policy <https://ngrok.com/docs/traffic-policy/>`_ on the tunnel rewrites the ``Host`` header. The policy also
-requires a bearer token, so only clients you've shared the token with can reach the server. Create ``server.py`` with
-the following code:
-
-.. code-block:: python
-
-    import os
-
-    from mcp.server.mcpserver import MCPServer
-    from pyngrok import ngrok
-
-    port = os.environ.get("PORT", "8000")
-    token = os.environ.get("MCP_TOKEN")
-
-    mcp = MCPServer("demo")
-
-    @mcp.tool()
-    def add(a: int, b: int) -> int:
-        return a + b
-
-    # ... Implement the rest of your MCP tools
-
-    # Require a bearer token on requests to the tunnel, and rewrite the Host header to localhost
-    traffic_policy = {
-        "on_http_request": [{
-            "expressions": [f"!hasReqHeader('Authorization') || getReqHeader('Authorization')[0] != 'Bearer {token}'"],
-            "actions": [{"type": "deny", "config": {"status_code": 401}}]
-        }, {
-            "actions": [{"type": "add-headers", "config": {"headers": {"host": f"localhost:{port}"}}}]
-        }]
-    }
-
-    # Open a ngrok tunnel to the MCP server
-    public_url = ngrok.connect(port, traffic_policy=traffic_policy).public_url
-    print(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\"")
-
-    mcp.run(transport="streamable-http", port=int(port))
-
-You can then run this script to start the server.
-
-.. code-block:: sh
-
-    NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN MCP_TOKEN=<SECRET_TOKEN> \
-        python server.py
-
-MCP clients can now connect to ``<public_url>/mcp``, sending the header ``Authorization: Bearer <SECRET_TOKEN>``. If
-you're using ``mcp`` 1.x, use ``FastMCP`` (from ``mcp.server.fastmcp``) instead, passing ``port`` to its constructor
-rather than to ``run()``. For MCP clients that can't send custom headers, see
-`ngrok's MCP guide <https://ngrok.com/docs/gateway/api-gateway/mcp-gateway>`_ for other ways to protect the server.
 
 Docker
 ------

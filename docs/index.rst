@@ -134,7 +134,7 @@ also close them manually with :func:`~pyngrok.ngrok.disconnect`.
 Expose Other Services
 ---------------------
 
-Using ``ngrok`` you can expose any number of non-HTTP services, for instances databases, game servers, etc. This
+Using ``ngrok`` you can expose any number of non-HTTP services, for instance, databases, game servers, etc. This
 can be accomplished by using ``pyngrok`` to open a ``tcp`` tunnel to the desired service.
 
 .. code-block:: python
@@ -478,13 +478,14 @@ Dive Deeper
 ===========
 
 For more advanced usage, integration examples, and tips to troubleshoot common issues, dive deeper in to the rest of
-the documentation.
+the documentation. To securely expose a local MCP server to remote AI clients, see :doc:`mcp`.
 
 .. toctree::
    :maxdepth: 2
 
    api
    integrations
+   mcp
    troubleshooting
 
 .. include:: ../CONTRIBUTING.rst
