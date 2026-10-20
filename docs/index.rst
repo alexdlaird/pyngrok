@@ -420,17 +420,25 @@ to define them in code.
 Setting the ``region``
 ----------------------
 
-By default, ``ngrok`` chooses the best region for you. To override this, use
-the ``region`` parameter in :class:`~pyngrok.conf.PyngrokConfig`.
+By default, ``ngrok`` chooses the region with the lowest latency for you. To pick a region instead, set
+`connect_url <https://ngrok.com/docs/agent/connect-url>`_ in ``ngrok``'s config file to that region's address. The
+region is set when the ``ngrok`` agent starts, so it applies to every tunnel that agent opens.
 
 .. code-block:: python
 
-    from pyngrok import conf, ngrok
+    from pyngrok import conf, installer, ngrok
 
-    conf.get_default().region = "au"
+    config_path = "/opt/ngrok/au.yml"
+    installer.install_default_config(config_path,
+                                     {"agent": {"connect_url": "connect.au.ngrok-agent.com:443"}})
+    conf.get_default().config_path = config_path
 
     # <NgrokTunnel: "https://<public_sub>.au.ngrok.io" -> "http://localhost:80">
     ngrok_tunnel = ngrok.connect()
+
+To use more than one region at the same time, start a separate agent for each by giving each
+:class:`~pyngrok.conf.PyngrokConfig` its own ``ngrok_path`` and ``config_path`` (:mod:`pyngrok.aio` can start them
+concurrently).
 
 Config File
 -----------

@@ -63,7 +63,8 @@ class PyngrokConfig:
         #: A ``ngrok`` authtoken to pass to commands (overrides what is in the config). If a value is not passed, will
         #: attempt to use the environment variable ``NGROK_AUTHTOKEN`` if it is set.
         self.auth_token: Optional[str] = auth_token or os.environ.get("NGROK_AUTHTOKEN")
-        #: The region in which ``ngrok`` should start.
+        #: The region the ``ngrok`` agent connects to when it starts, which applies to all of its tunnels. If not set,
+        #: ``ngrok`` chooses the region with the lowest latency.
         self.region: Optional[str] = region
         #: Whether ``ngrok`` should continue to be monitored (for logs, etc.) after startup is complete.
         self.monitor_thread: bool = monitor_thread
