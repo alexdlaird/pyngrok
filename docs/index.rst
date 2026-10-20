@@ -134,7 +134,7 @@ also close them manually with :func:`~pyngrok.ngrok.disconnect`.
 Expose Other Services
 ---------------------
 
-Using ``ngrok`` you can expose any number of non-HTTP services, for instances databases, game servers, etc. This
+Using ``ngrok`` you can expose any number of non-HTTP services, for instance, databases, game servers, etc. This
 can be accomplished by using ``pyngrok`` to open a ``tcp`` tunnel to the desired service.
 
 .. code-block:: python
@@ -420,7 +420,7 @@ to define them in code.
 Setting the ``region``
 ----------------------
 
-By default, ``ngrok`` will open a tunnel in the ``us`` region. To override this, use
+By default, ``ngrok`` chooses the best region for you. To override this, use
 the ``region`` parameter in :class:`~pyngrok.conf.PyngrokConfig`.
 
 .. code-block:: python
@@ -477,14 +477,15 @@ For details on how to fully leverage ``ngrok`` from the command line, see `ngrok
 Dive Deeper
 ===========
 
-For more advanced usage, integration examples, and tips to troubleshoot common issues, dive deeper in to the rest of
-the documentation.
+For more advanced usage, integration examples, :doc:`securely exposing a local MCP server to remote AI clients <mcp>`,
+and tips to troubleshoot common issues, dive deeper in to the rest of the documentation.
 
 .. toctree::
    :maxdepth: 2
 
    api
    integrations
+   mcp
    troubleshooting
 
 .. include:: ../CONTRIBUTING.rst
