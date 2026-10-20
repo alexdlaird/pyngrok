@@ -4,5 +4,6 @@ Disallow: /
 
 Allow: /en/stable
 Allow: /en/latest
+Allow: /sitemap.xml
 
 Sitemap: https://pyngrok.readthedocs.io/sitemap.xml

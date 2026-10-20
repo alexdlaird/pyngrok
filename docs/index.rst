@@ -31,7 +31,7 @@ pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks
 .. image:: https://app.codacy.com/project/badge/Grade/b055cf6e3f1745098fab86a2923730b3
    :target: https://app.codacy.com/gh/alexdlaird/pyngrok/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade
 .. image:: https://img.shields.io/readthedocs/pyngrok
-   :target: https://pyngrok.readthedocs.io/en/latest
+   :target: https://pyngrok.readthedocs.io/en/stable
 .. image:: https://img.shields.io/github/license/alexdlaird/pyngrok
    :target: https://github.com/alexdlaird/pyngrok
 
@@ -232,9 +232,9 @@ You can also open a v3 endpoint without defining it in a config file:
 ``ngrok``'s API
 ===============
 
-The `api <https://pyngrok.readthedocs.io/en/latest/api.html#pyngrok.ngrok.api>`_ method allows you to use the local
+The :func:`~pyngrok.ngrok.api` method allows you to use the local
 ``ngrok`` agent to make requests against `the ngrok API <https://ngrok.com/docs/agent/cli-api/>`_, if you have
-`set an API key <https://pyngrok.readthedocs.io/en/latest/#setting-the-authtoken-or-api-key>`_.
+`set an API key <#setting-the-authtoken-or-api-key>`__.
 For example, here's how you would reserve a ``ngrok`` domain, then create a Cloud Endpoint with an associated traffic
 policy:
 
@@ -420,17 +420,25 @@ to define them in code.
 Setting the ``region``
 ----------------------
 
-By default, ``ngrok`` chooses the best region for you. To override this, use
-the ``region`` parameter in :class:`~pyngrok.conf.PyngrokConfig`.
+By default, ``ngrok`` chooses the region with the lowest latency for you. To pick a region instead, set
+`connect_url <https://ngrok.com/docs/agent/connect-url>`_ in ``ngrok``'s config file to that region's address. The
+region is set when the ``ngrok`` agent starts, so it applies to every tunnel that agent opens.
 
 .. code-block:: python
 
-    from pyngrok import conf, ngrok
+    from pyngrok import conf, installer, ngrok
 
-    conf.get_default().region = "au"
+    config_path = "/opt/ngrok/au.yml"
+    installer.install_default_config(config_path,
+                                     {"agent": {"connect_url": "connect.au.ngrok-agent.com:443"}})
+    conf.get_default().config_path = config_path
 
     # <NgrokTunnel: "https://<public_sub>.au.ngrok.io" -> "http://localhost:80">
     ngrok_tunnel = ngrok.connect()
+
+To use more than one region at the same time, start a separate agent for each by giving each
+:class:`~pyngrok.conf.PyngrokConfig` its own ``ngrok_path`` and ``config_path`` (:mod:`pyngrok.aio` can start them
+concurrently).
 
 Config File
 -----------

@@ -65,6 +65,20 @@ class TestInstaller(NgrokTestCase):
         # THEN
         self.assertTrue(os.path.exists(self.pyngrok_config.config_path))
 
+    def test_install_default_config_merges_nested_data(self):
+        # GIVEN
+        self.given_file_doesnt_exist(self.pyngrok_config.config_path)
+        installer.install_default_config(self.pyngrok_config.config_path, {"agent": {"authtoken": "some-token"}})
+
+        # WHEN
+        installer.install_default_config(self.pyngrok_config.config_path,
+                                         {"agent": {"connect_url": "connect.au.ngrok-agent.com:443"}})
+
+        # THEN
+        ngrok_config = installer.get_ngrok_config(self.pyngrok_config.config_path, use_cache=False)
+        self.assertEqual({"authtoken": "some-token", "connect_url": "connect.au.ngrok-agent.com:443"},
+                         ngrok_config["agent"])
+
     def test_get_default_v2_config(self):
         # GIVEN
         installer.install_default_config(self.pyngrok_config.config_path,
@@ -76,9 +90,9 @@ class TestInstaller(NgrokTestCase):
         ngrok_config = installer.get_ngrok_config(self.pyngrok_config.config_path)
 
         # THEN
-        self.assertEqual(2, len(ngrok_config))
+        self.assertEqual(1, len(ngrok_config))
         self.assertEqual("2", ngrok_config["version"])
-        self.assertEqual("us", ngrok_config["region"])
+        self.assertNotIn("region", ngrok_config)
         self.assertTrue(os.path.exists(self.pyngrok_config.config_path))
 
     def test_get_default_v3_config(self):

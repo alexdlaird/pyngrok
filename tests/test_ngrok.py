@@ -421,6 +421,20 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(process._current_processes.keys()), 1)
 
     @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    def test_regional_connect_url(self):
+        # GIVEN
+        installer.install_default_config(self.pyngrok_config.config_path,
+                                         {"agent": {"connect_url": "connect.au.ngrok-agent.com:443"}})
+
+        # WHEN
+        ngrok.connect("5000", pyngrok_config=self.pyngrok_config)
+        current_process = ngrok.get_ngrok_process(self.pyngrok_config)
+        status = ngrok.api_request(f"{current_process.api_url}/api/status", "GET")
+
+        # THEN
+        self.assertEqual(["au"], [leg["region"] for leg in status["session"]["legs"]])
+
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
     def test_connect_fileserver(self):
         # GIVEN
         self.assertEqual(len(process._current_processes.keys()), 0)

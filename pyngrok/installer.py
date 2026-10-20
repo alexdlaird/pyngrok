@@ -258,10 +258,7 @@ def get_default_config(ngrok_version: Optional[str],
     if ngrok_version not in SUPPORTED_NGROK_VERSIONS:
         raise PyngrokError(f"\"ngrok_version\" must be a supported version: {SUPPORTED_NGROK_VERSIONS}")
 
-    config = {"version": config_version}
-    if str(config_version) == "2":
-        config["region"] = "us"
-    return config
+    return {"version": config_version}
 
 
 def install_default_config(config_path: str,
@@ -300,7 +297,7 @@ def install_default_config(config_path: str,
                                   ngrok_version=ngrok_version,
                                   config_version=config_version)
 
-        config.update(data)
+        _merge_config(config, data)
 
         validate_config(config)
 
@@ -330,6 +327,14 @@ def _validate_config_values(values: Dict[str, Any]) -> None:
         raise PyngrokError("\"log_format\" must be \"term\" to be compatible with pyngrok")
     elif values.get("log_level", "info") not in ["info", "debug"]:
         raise PyngrokError("\"log_level\" must be \"info\" to be compatible with pyngrok")
+
+
+def _merge_config(config: Dict[str, Any], data: Dict[str, Any]) -> None:
+    for key, value in data.items():
+        if isinstance(value, dict) and isinstance(config.get(key), dict):
+            _merge_config(config[key], value)
+        else:
+            config[key] = value
 
 
 def _download_file(url: str,
