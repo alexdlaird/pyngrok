@@ -1016,6 +1016,18 @@ class TestNgrok(NgrokTestCase):
         with self.assertRaises(PyngrokSecurityError):
             ngrok.api_request(f"file:{__file__}")
 
+    @mock.patch("pyngrok.ngrok.urlopen")
+    def test_api_request_query_params_appended_to_existing_query(self, mock_urlopen):
+        # GIVEN
+        self.given_api_response(mock_urlopen)
+
+        # WHEN
+        ngrok.api_request("https://example.test/api?limit=2#frag", params={"tunnel_name": "demo"})
+
+        # THEN
+        self.assertEqual("https://example.test/api?limit=2&tunnel_name=demo#frag",
+                         mock_urlopen.call_args[0][0].full_url)
+
     @mock.patch("pyngrok.process.capture_run_process")
     def test_update(self, mock_capture_run_process):
         ngrok.update(pyngrok_config=self.pyngrok_config)
@@ -1332,3 +1344,8 @@ class TestNgrok(NgrokTestCase):
         # THEN
         self.assertEqual(https_tunnel.proto, "https")
         self.assertEqual(tcp_tunnel.proto, "tcp")
+
+    @staticmethod
+    def given_api_response(mock_urlopen):
+        mock_urlopen.return_value.read.return_value = b"{}"
+        mock_urlopen.return_value.getcode.return_value = HTTPStatus.OK.value

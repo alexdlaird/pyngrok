@@ -50,7 +50,6 @@ extensions = [
     "sphinx_substitution_extensions",
     "sphinx_sitemap",
     "sphinxext.opengraph",
-    "sphinxcontrib.googleanalytics",
 ]
 autodoc_member_order = "bysource"
 
@@ -91,7 +90,7 @@ ogp_custom_meta_tags = [
     '<meta name="yandex-verification" content="ac8f18b56add6591">',
 ]
 
-googleanalytics_id = "G-98DG8TRJJP"
+google_analytics_id = "G-98DG8TRJJP"
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -127,6 +126,13 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+html_js_files = [
+    (f"https://www.googletagmanager.com/gtag/js?id={google_analytics_id}", {"async": "async"}),
+    (None, {"body": "window.dataLayer = window.dataLayer || [];"
+                    "function gtag(){dataLayer.push(arguments);}"
+                    "gtag('js', new Date());"
+                    f"gtag('config', '{google_analytics_id}');"}),
+]
 html_extra_path = ["_html"]
 
 html_css_files = [

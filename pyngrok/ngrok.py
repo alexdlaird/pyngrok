@@ -12,7 +12,7 @@ import uuid
 from http import HTTPStatus
 from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
 from pyngrok import __version__, conf, installer, process
@@ -657,7 +657,9 @@ def api_request(url: str,
     encoded_data = json.dumps(data).encode("utf-8") if data else None
 
     if params:
-        url += f"?{urlencode([(x, params[x]) for x in params])}"
+        url_parts = urlsplit(url)
+        query = "&".join(q for q in (url_parts.query, urlencode([(x, params[x]) for x in params])) if q)
+        url = urlunsplit(url_parts._replace(query=query))
 
     request = Request(url, method=method.upper())
     request.add_header("Content-Type", "application/json")

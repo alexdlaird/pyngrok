@@ -51,16 +51,13 @@ dev = [
     "pep8-naming"
 ]
 docs = [
-    # Pinned back until sphinx_autodoc_typehints>=3.1.0
-    "Sphinx<8.2",
+    "Sphinx",
     "sphinx-notfound-page",
-    # Pinned back until prolog bug is resolved: https://github.com/tox-dev/sphinx-autodoc-typehints/issues/425
-    "sphinx_autodoc_typehints==1.25.2",
+    "sphinx_autodoc_typehints",
     "sphinx-substitution-extensions",
     "sphinx-sitemap",
     "sphinxext-opengraph",
     "furo",
-    "sphinxcontrib-googleanalytics",
     "mypy",
     "types-PyYAML"
 ]
