@@ -1348,4 +1348,4 @@ class TestNgrok(NgrokTestCase):
     @staticmethod
     def given_api_response(mock_urlopen):
         mock_urlopen.return_value.read.return_value = b"{}"
-        mock_urlopen.return_value.getcode.return_value = HTTPStatus.OK
+        mock_urlopen.return_value.getcode.return_value = HTTPStatus.OK.value
