@@ -2,7 +2,7 @@
 Troubleshooting
 ===============
 
-``pyngrok`` is a Python wrapper for `ngrok <https://ngrok.com/>`_, so often errors that occur (especially during
+``pyngrok`` runs the `ngrok <https://ngrok.com/>`_ agent, so often errors that occur (especially during
 startup) are a result of a ``ngrok`` configuration error and not a bug in ``pyngrok``. Hopefully this page can
 give you some useful tips to debug these issues.
 
@@ -101,7 +101,7 @@ its ``logs`` variable or giving it a `log_event_callback <index.html#event-logs>
 
 If you're seeing the :class:`~pyngrok.process.NgrokProcess` fail with a :class:`~pyngrok.exception.PyngrokNgrokError`
 exception, these logs are also available on the exception itself. Catch the exception and inspect ``ngrok_logs``
-and ``ngrok_error`` for more insight in to where ``ngrok`` is failing.
+and ``ngrok_error`` for more insight into where ``ngrok`` is failing.
 
 Test in the Python Console
 --------------------------

@@ -1,7 +1,7 @@
 [project]
 name = "pyngrok"
 dynamic = ["version"]
-description = "A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, demos, and APIs"
+description = "The complete ngrok agent for Python: programmatic tunnels for ingress, inspection, webhooks, demos, and APIs"
 readme = "README.md"
 license = "MIT"
 keywords = ["tunnel", "webhook", "reverse-proxy", "ngrok", "localhost", "ingress", "tunneling", "mcp"]
@@ -25,11 +25,11 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
     "Operating System :: Unix",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Internet :: Proxy Servers",
