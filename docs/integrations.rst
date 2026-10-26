@@ -70,8 +70,8 @@ Django
 .. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
    :target: https://github.com/alexdlaird/pyngrok-example-django
 
-In `settings.py <https://docs.djangoproject.com/en/3.0/topics/settings/>`_ of
-`your Django project <https://docs.djangoproject.com/en/3.0/intro/tutorial01/#creating-a-project>`_, you should add a
+In `settings.py <https://docs.djangoproject.com/en/stable/topics/settings/>`_ of
+`your Django project <https://docs.djangoproject.com/en/stable/intro/tutorial01/#creating-a-project>`_, you should add a
 variable that lets you configure from an environment variable whether you want to open a tunnel to
 ``localhost`` with ``ngrok`` when the dev server starts.
 
@@ -79,15 +79,19 @@ variable that lets you configure from an environment variable whether you want t
 
     import os
     import sys
+    from urllib.parse import urlparse
 
     # ... Implement the rest of your Django settings
 
-    BASE_URL = "http://localhost:8000"
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
+
+    BASE_URL = os.environ.get("NGROK_PUBLIC_URL", "http://localhost:8000")
+    ALLOWED_HOSTS.append(urlparse(BASE_URL).hostname)
 
     USE_NGROK = os.environ.get("USE_NGROK", "False") == "True" and os.environ.get("RUN_MAIN", None) != "true"
 
 If this flag is set, you want to initialize ``pyngrok`` when Django is booting from its dev server. An easy place
-to do this is one of your ``apps.py`` by `extending AppConfig <https://docs.djangoproject.com/en/3.0/ref/applications/#django.apps.AppConfig.ready>`_.
+to do this is one of your ``apps.py`` by `extending AppConfig <https://docs.djangoproject.com/en/stable/ref/applications/#django.apps.AppConfig.ready>`_.
 
 .. code-block:: python
 
@@ -99,9 +103,9 @@ to do this is one of your ``apps.py`` by `extending AppConfig <https://docs.djan
     from django.conf import settings
 
 
-    class CommonConfig(AppConfig):
-        name = "myproject.common"
-        verbose_name = "Common"
+    class MyAppConfig(AppConfig):
+        name = "pyngrokexampledjango.myapp"
+        verbose_name = "My App"
 
         def ready(self):
             if settings.USE_NGROK:
@@ -110,8 +114,8 @@ to do this is one of your ``apps.py`` by `extending AppConfig <https://docs.djan
 
                 # Get the dev server port (defaults to 8000 for Django, can be overridden with the
                 # last arg when calling `runserver`)
-                addrport = urlparse(f"http://{sys.argv[-1]}")
-                port = addrport.port if addrport.netloc and addrport.port else "8000"
+                addrport = sys.argv[-1].rsplit(":", 1)[-1]
+                port = addrport if addrport.isdigit() else "8000"
 
                 # Open a ngrok tunnel to the dev server
                 public_url = ngrok.connect(port).public_url
@@ -119,7 +123,11 @@ to do this is one of your ``apps.py`` by `extending AppConfig <https://docs.djan
 
                 # Update any base URLs or webhooks to use the public ngrok URL
                 settings.BASE_URL = public_url
-                CommonConfig.init_webhooks(public_url)
+                settings.ALLOWED_HOSTS.append(urlparse(public_url).hostname)
+                MyAppConfig.init_webhooks(public_url)
+
+                # The dev server's autoreloader serves requests from a child process, which inherits this
+                os.environ["NGROK_PUBLIC_URL"] = public_url
 
         @staticmethod
         def init_webhooks(base_url):
@@ -148,18 +156,14 @@ you should add a variable that lets you configure from an environment variable w
     import sys
 
     from fastapi import FastAPI
-    from fastapi.logger import logger
-    from pydantic import BaseSettings
+    from pydantic_settings import BaseSettings
 
 
     class Settings(BaseSettings):
         # ... Implement the rest of your FastAPI settings
 
-        BASE_URL = "http://localhost:8000"
-        USE_NGROK = os.environ.get("USE_NGROK", "False") == "True"
-
-
-    settings = Settings()
+        BASE_URL: str = "http://localhost:8000"
+        USE_NGROK: bool = os.environ.get("USE_NGROK", "False") == "True"
 
 
     def init_webhooks(base_url):
@@ -167,34 +171,38 @@ you should add a variable that lets you configure from an environment variable w
         pass
 
 
-    # Initialize the FastAPI app for a simple web server
-    app = FastAPI()
+    def create_app():
+        # Initialize the FastAPI app for a simple web server
+        app = FastAPI()
+        app.settings = Settings()
 
-    if settings.USE_NGROK:
-        # Only import pyngrok and install if we're actually going to use it
-        from pyngrok import ngrok
+        if app.settings.USE_NGROK:
+            # Only import pyngrok and install if we're actually going to use it
+            from pyngrok import ngrok
 
-        # Get the dev server port (defaults to 8000 for Uvicorn, can be overridden with `--port`
-        # when starting the server
-        port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else "8000"
+            # Get the dev server port (defaults to 8000 for Uvicorn, can be overridden with `--port`
+            # when starting the server
+            port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else "8000"
 
-        # Open a ngrok tunnel to the dev server
-        public_url = ngrok.connect(port).public_url
-        logger.info(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\"")
+            # Open a ngrok tunnel to the dev server
+            public_url = ngrok.connect(port).public_url
+            print(f"ngrok tunnel \"{public_url}\" -> \"http://127.0.0.1:{port}\"")
 
-        # Update any base URLs or webhooks to use the public ngrok URL
-        settings.BASE_URL = public_url
-        init_webhooks(public_url)
+            # Update any base URLs or webhooks to use the public ngrok URL
+            app.settings.BASE_URL = public_url
+            init_webhooks(public_url)
 
-    # ... Implement routers and the rest of your app
+        # ... Implement routers and the rest of your app
 
-Now FastAPI can be started by the usual means, with `Uvicorn <https://www.uvicorn.org/#usage>`_, setting
+        return app
+
+Now FastAPI can be started by the usual means, with `Uvicorn <https://uvicorn.dev/#usage>`_, setting
 ``USE_NGROK`` to open a tunnel.
 
 .. code-block:: sh
 
     USE_NGROK=True NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN \
-        uvicorn server:app
+        uvicorn server:create_app --factory
 
 Docker
 ------
