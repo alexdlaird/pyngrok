@@ -38,8 +38,7 @@ pyngrok - The complete ngrok agent for Python: programmatic tunnels for ingress,
 ``pyngrok`` gives Python the complete ``ngrok`` agent, with programmatic tunnels for ingress, inspection, webhooks,
 demos, and APIs. `ngrok <https://ngrok.com>`_ is a reverse proxy that opens secure tunnels from public URLs to
 localhost, and because ``pyngrok`` runs the real agent, you get everything it offers, from traffic policies and OAuth to
-its web inspector, request replay, and ``ngrok.yml`` config, all callable from Python. It downloads and manages the
-agent for you, runs on Python 3.9+ (including PyPy), and tracks new ``ngrok`` releases.
+its web inspector, request replay, and ``ngrok.yml`` config, all callable from Python.
 
 Installation
 ============
