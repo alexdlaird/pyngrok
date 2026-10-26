@@ -9,10 +9,10 @@
 [![Docs](https://img.shields.io/readthedocs/pyngrok)](https://pyngrok.readthedocs.io/en/stable)
 [![GitHub License](https://img.shields.io/github/license/alexdlaird/pyngrok)](https://github.com/alexdlaird/pyngrok/blob/main/LICENSE)
 
-`pyngrok` gives Python the complete `ngrok` agent, with programmatic tunnels for ingress, inspection, webhooks, demos,
-and APIs. [`ngrok`](https://ngrok.com) is a reverse proxy that opens secure tunnels from public URLs to localhost, and
-because `pyngrok` runs the real agent, you get everything it offers, from traffic policies and OAuth to its web
-inspector, request replay, and `ngrok.yml` config, all callable from Python.
+`pyngrok` gives Python the complete [`ngrok` agent](https://ngrok.com/docs/gateway/agent), with programmatic tunnels for
+ingress, inspection, webhooks, demos, and APIs. [`ngrok`](https://ngrok.com) is a reverse proxy that opens secure
+tunnels from public URLs to localhost, and because `pyngrok` runs the real agent, you get everything it offers, from
+traffic policies and OAuth to its web inspector and request replay, all callable from Python.
 
 ## Installation
 
