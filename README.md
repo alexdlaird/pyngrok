@@ -1,4 +1,4 @@
-<p align="center"><img alt="pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, demos, and APIs" src="https://pyngrok.readthedocs.io/en/stable/_images/logo.png" /></p>
+<p align="center"><img alt="pyngrok - The complete ngrok agent for Python: programmatic tunnels for ingress, inspection, webhooks, demos, and APIs" src="https://pyngrok.readthedocs.io/en/stable/_images/logo.png" /></p>
 
 [![Version](https://img.shields.io/pypi/v/pyngrok)](https://pypi.org/project/pyngrok)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/pyngrok)](https://pypistats.org/packages/pyngrok)
@@ -9,14 +9,11 @@
 [![Docs](https://img.shields.io/readthedocs/pyngrok)](https://pyngrok.readthedocs.io/en/stable)
 [![GitHub License](https://img.shields.io/github/license/alexdlaird/pyngrok)](https://github.com/alexdlaird/pyngrok/blob/main/LICENSE)
 
-`pyngrok` is a Python wrapper for `ngrok` that provides programmatic tunnels for ingress, webhooks, demos, and APIs. It
-downloads and manages the `ngrok` agent for you, making it available through a Python API and the command line. It
-runs anywhere the `ngrok` agent does. The library is mature and stable, and it tracks new `ngrok` releases.
-
-[`ngrok`](https://ngrok.com) is a reverse proxy that opens secure tunnels from public URLs to localhost. It's perfect
-for rapid development (test webhooks, demo local websites, enable SSH access), establishing ingress to external
-networks and devices, building production APIs (traffic policies, OAuth, load balancing), and more. And
-it's made even more powerful with native Python integration through the `pyngrok` client.
+`pyngrok` gives Python the complete `ngrok` agent, with programmatic tunnels for ingress, inspection, webhooks, demos,
+and APIs. [`ngrok`](https://ngrok.com) is a reverse proxy that opens secure tunnels from public URLs to localhost, and
+because `pyngrok` runs the real agent, you get everything it offers, from traffic policies and OAuth to its web
+inspector, request replay, and `ngrok.yml` config, all callable from Python. It downloads and manages the agent for you,
+runs on Python 3.9+ (including PyPy), and tracks new `ngrok` releases.
 
 ## Installation
 

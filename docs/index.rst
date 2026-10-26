@@ -1,13 +1,13 @@
 .. rst-class:: hide-header
 
-*************************************************************************************************
-pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, demos, and APIs
-*************************************************************************************************
+**********************************************************************************************************************
+pyngrok - The complete ngrok agent for Python: programmatic tunnels for ingress, inspection, webhooks, demos, and APIs
+**********************************************************************************************************************
 
 .. only:: html
 
    .. image:: _static/logo-transparent.png
-      :alt: pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, demos, and APIs
+      :alt: pyngrok - The complete ngrok agent for Python: programmatic tunnels for ingress, inspection, webhooks, demos, and APIs
       :align: center
       :width: 360px
       :class: hero-logo
@@ -15,7 +15,7 @@ pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks
 .. only:: not html
 
    .. image:: _html/_images/logo.png
-      :alt: pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, demos, and APIs
+      :alt: pyngrok - The complete ngrok agent for Python: programmatic tunnels for ingress, inspection, webhooks, demos, and APIs
       :align: center
 
 .. image:: https://img.shields.io/pypi/v/pyngrok
@@ -35,14 +35,11 @@ pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks
 .. image:: https://img.shields.io/github/license/alexdlaird/pyngrok
    :target: https://github.com/alexdlaird/pyngrok
 
-``pyngrok`` is a Python wrapper for ``ngrok`` that provides programmatic tunnels for ingress, webhooks, demos, and APIs.
-It downloads and manages the ``ngrok`` agent for you, making it available through a Python API and the command line.
-It runs anywhere the ``ngrok`` agent does. The library is mature and stable, and it tracks new ``ngrok`` releases.
-
-`ngrok <https://ngrok.com>`_ is a reverse proxy that opens secure tunnels from public URLs to localhost. It's perfect for rapid
-development (test webhooks, demo local websites, enable SSH access), establishing ingress to external
-networks and devices, building production APIs (traffic policies, OAuth, load balancing), and more. And
-it's made even more powerful with native Python integration through the ``pyngrok`` client.
+``pyngrok`` gives Python the complete ``ngrok`` agent, with programmatic tunnels for ingress, inspection, webhooks,
+demos, and APIs. `ngrok <https://ngrok.com>`_ is a reverse proxy that opens secure tunnels from public URLs to
+localhost, and because ``pyngrok`` runs the real agent, you get everything it offers, from traffic policies and OAuth to
+its web inspector, request replay, and ``ngrok.yml`` config, all callable from Python. It downloads and manages the
+agent for you, runs on Python 3.9+ (including PyPy), and tracks new ``ngrok`` releases.
 
 Installation
 ============

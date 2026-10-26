@@ -19,8 +19,8 @@ from pyngrok import __version__
 # -- Project information -----------------------------------------------------
 
 project = "pyngrok"
-description = ("A Python wrapper for ngrok that manages its own binary, making ngrok available via a convenient "
-               "Python API and the command line.")
+description = ("The complete ngrok agent for Python, with programmatic tunnels for ingress, inspection, webhooks, demos, and APIs. "
+               "It downloads and manages the agent for you.")
 github_url = "https://github.com/alexdlaird/pyngrok"
 copyright = f"2018-{datetime.date.today().year}, Alex Laird"
 author = "Alex Laird"
@@ -79,7 +79,7 @@ sitemap_excludes = ["search.html", "404.html"]
 
 ogp_site_url = html_baseurl
 ogp_image = f"{html_baseurl}_images/logo.png"
-ogp_image_alt = "pyngrok - A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, demos, and APIs"
+ogp_image_alt = "pyngrok - The complete ngrok agent for Python: programmatic tunnels for ingress, inspection, webhooks, demos, and APIs"
 ogp_type = "website"
 ogp_social_cards = {"enable": False}
 ogp_enable_meta_description = False
@@ -208,7 +208,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, "pyngrok", "pyngrok Documentation",
-     author, "pyngrok", "A Python wrapper for ngrok; programmatic tunnels for ingress, webhooks, demos, and APIs",
+     author, "pyngrok", "The complete ngrok agent for Python: programmatic tunnels for ingress, inspection, webhooks, demos, and APIs",
      "Miscellaneous"),
 ]
 

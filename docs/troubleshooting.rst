@@ -2,7 +2,7 @@
 Troubleshooting
 ===============
 
-``pyngrok`` is a Python wrapper for `ngrok <https://ngrok.com/>`_, so often errors that occur (especially during
+``pyngrok`` runs the `ngrok <https://ngrok.com/>`_ agent, so often errors that occur (especially during
 startup) are a result of a ``ngrok`` configuration error and not a bug in ``pyngrok``. Hopefully this page can
 give you some useful tips to debug these issues.
 
