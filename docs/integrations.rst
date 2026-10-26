@@ -12,7 +12,7 @@ Flask
 
 The Flask example includes a ``Dockerfile`` to highlight a `containerized use case <#docker>`_.
 
-In ``server.py``, `where your Flask app is initialized <https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/#the-application-factory>`_,
+In ``server.py``, `where your Flask app is initialized <https://flask.palletsprojects.com/en/stable/tutorial/factory/#the-application-factory>`_,
 you should add a variable that lets you configure from an environment variable whether you want to open a tunnel
 to ``localhost`` with ``ngrok`` when the dev server starts. You can initialize the ``pyngrok`` tunnel in this
 same place.
@@ -33,7 +33,7 @@ same place.
 
         # Initialize your ngrok settings into Flask
         app.config.from_mapping(
-            BASE_URL="http://localhost:5000",
+            BASE_URL="http://localhost:8000",
             USE_NGROK=os.environ.get("USE_NGROK", "False") == "True" and os.environ.get("WERKZEUG_RUN_MAIN") != "true"
         )
 
@@ -41,9 +41,9 @@ same place.
             # Only import pyngrok and install if we're actually going to use it
             from pyngrok import ngrok
 
-            # Get the dev server port (defaults to 5000 for Flask, can be overridden with `--port`
+            # Get the dev server port (can be overridden with `--port`
             # when starting the server
-            port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else "5000"
+            port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else "8000"
 
             # Open a ngrok tunnel to the dev server
             public_url = ngrok.connect(port).public_url
@@ -63,7 +63,7 @@ Now Flask can be started in development by the usual means, setting ``USE_NGROK`
 
     USE_NGROK=True NGROK_AUTHTOKEN=$NGROK_AUTHTOKEN \
         FLASK_APP=server.py \
-        flask run
+        flask run --port 8000
 
 Django
 ------
@@ -202,7 +202,7 @@ Docker
 ``pyngrok`` provides `pre-built container images on Docker Hub <https://hub.docker.com/r/alexdlaird/pyngrok>`_, where
 you'll also find usage examples and a breakdown of the image tags available.
 
-To launch the container in to a Python shell, run:
+To launch the container into a Python shell, run:
 
 .. code-block:: shell
 
@@ -240,7 +240,7 @@ pre-built images already does this).
 
 .. code-block:: shell
 
-    docker run --env-file .env -p 4040:4040 -it alexdlaird/pyngrok
+    docker run --env-file .env -p 127.0.0.1:4040:4040 -it alexdlaird/pyngrok
 
 Docker Compose
 """"""""""""""
@@ -254,12 +254,11 @@ Python script to run on startup:
       ngrok:
         image: alexdlaird/pyngrok
         env_file: ".env"
-        command:
-          - "python /root/my-script.py"
+        command: [ "python", "/root/my-script.py" ]
         volumes:
           - ./my-script.py:/root/my-script.py
         ports:
-          - 4040:4040
+          - "127.0.0.1:4040:4040"
 
 Then launch it with:
 
@@ -402,13 +401,11 @@ frameworks.
 .. code-block:: python
 
     import os
-    import signal
-    import unittest
     import threading
+    import unittest
 
-    from flask import request
     from pyngrok import ngrok
-    from urllib import request
+    from werkzeug.serving import make_server
 
     from server import create_app
 
@@ -418,33 +415,20 @@ frameworks.
         def start_dev_server(cls):
             app = create_app()
 
-            def shutdown():
-                # Newer versions of Werkzeug and Flask don't provide this environment variable
-                if "werkzeug.server.shutdown" in request.environ:
-                    request.environ.get("werkzeug.server.shutdown")()
-                else:
-                    # Windows does not provide SIGKILL, go with SIGTERM then
-                    sig = getattr(signal, "SIGKILL", signal.SIGTERM)
-                    os.kill(os.getpid(), sig)
-
-            @app.route("/shutdown", methods=["POST"])
-            def route_shutdown():
-                shutdown()
-                return "", 204
-
-            threading.Thread(target=app.run).start()
+            cls.server = make_server("localhost", 8000, app)
+            threading.Thread(target=cls.server.serve_forever).start()
 
             return app
 
         @classmethod
         def stop_dev_server(cls):
-            req = request.Request("http://localhost:5000/shutdown", method="POST")
-            request.urlopen(req)
+            cls.server.shutdown()
+            cls.server.server_close()
 
         @classmethod
         def setUpClass(cls):
             # Ensure a tunnel is opened and webhooks initialized when the dev server is started
-            os.environ["USE_NGROK"] = True
+            os.environ["USE_NGROK"] = "True"
 
             app = cls.start_dev_server()
 
