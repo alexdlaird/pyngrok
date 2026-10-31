@@ -11,8 +11,8 @@ on:
         type: choice
         default: minor
         options:
-          - minor
           - major
+          - minor
           - patch
   workflow_call:
     inputs:
