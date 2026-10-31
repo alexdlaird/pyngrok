@@ -78,6 +78,8 @@ jobs:
     needs: [prereq, release]
     if: always() && needs.prereq.result == 'success'
     uses: alexdlaird/.github/.github/workflows/release-cleanup.yml@main
+    with:
+      skip_ci: ${{ needs.release.result == 'success' }}
     secrets:
       bot_app_id: ${{ secrets.RELEASE_BOT_APP_ID }}
       bot_private_key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
