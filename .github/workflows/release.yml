@@ -1,19 +1,9 @@
 name: Release
 
-run-name: Release ${{ inputs.bump_type }}
+run-name: Release
 
 on:
   workflow_dispatch:
-    inputs:
-      bump_type:
-        description: 'Version bump type'
-        required: true
-        type: choice
-        default: patch
-        options:
-          - patch
-          - minor
-          - major
 
 permissions:
   contents: write
@@ -22,21 +12,16 @@ jobs:
   prereq:
     uses: alexdlaird/.github/.github/workflows/release-prereq.yml@main
     with:
-      bump_type: ${{ inputs.bump_type }}
       version_file: 'pyngrok/__init__.py'
       version_pattern: 's/^__version__ = ".*"/__version__ = "${VERSION}"/'
       repo_slug: alexdlaird/pyngrok
+      changelog: true
     secrets:
       bot_app_id: ${{ secrets.RELEASE_BOT_APP_ID }}
       bot_private_key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
 
-  build:
-    needs: prereq
-    uses: ./.github/workflows/build.yml
-    secrets: inherit
-
   release:
-    needs: [prereq, build]
+    needs: [prereq]
     runs-on: ubuntu-latest
 
     env:
@@ -96,3 +81,11 @@ jobs:
     secrets:
       bot_app_id: ${{ secrets.RELEASE_BOT_APP_ID }}
       bot_private_key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
+
+  bump:
+    needs: [release, cleanup]
+    if: always() && needs.release.result == 'success'
+    uses: ./.github/workflows/bump-version.yml
+    with:
+      bump_type: next
+    secrets: inherit
