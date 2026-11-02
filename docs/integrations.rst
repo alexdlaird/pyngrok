@@ -7,8 +7,10 @@ anything. Below are some common usage examples.
 
 Flask
 -----
-.. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
-   :target: https://github.com/alexdlaird/pyngrok-example-flask
+.. only:: builder_html
+
+   .. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
+      :target: https://github.com/alexdlaird/pyngrok-example-flask
 
 The Flask example includes a ``Dockerfile`` to highlight a `containerized use case <#docker>`_.
 
@@ -67,8 +69,10 @@ Now Flask can be started in development by the usual means, setting ``USE_NGROK`
 
 Django
 ------
-.. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
-   :target: https://github.com/alexdlaird/pyngrok-example-django
+.. only:: builder_html
+
+   .. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
+      :target: https://github.com/alexdlaird/pyngrok-example-django
 
 In `settings.py <https://docs.djangoproject.com/en/stable/topics/settings/>`_ of
 `your Django project <https://docs.djangoproject.com/en/stable/intro/tutorial01/#creating-a-project>`_, you should add a
@@ -143,8 +147,10 @@ Now the Django dev server can be started by the usual means, setting ``USE_NGROK
 
 FastAPI
 -------
-.. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
-   :target: https://github.com/alexdlaird/pyngrok-example-fastapi
+.. only:: builder_html
+
+   .. image:: https://img.shields.io/badge/Clone_on_GitHub-black?logo=github
+      :target: https://github.com/alexdlaird/pyngrok-example-fastapi
 
 In ``server.py``, `where your FastAPI app is initialized <https://fastapi.tiangolo.com/tutorial/first-steps/>`_,
 you should add a variable that lets you configure from an environment variable whether you want to tunnel to
@@ -302,9 +308,11 @@ block like this:
 Colab SSH Example
 """""""""""""""""
 
-.. image:: https://colab.research.google.com/assets/colab-badge.svg
-   :target: https://colab.research.google.com/drive/1_ZDG69zjD-6j1dbGbrzAQkyrtlUfdr88?usp=sharing
-   :alt: Open SSH Example in Colab
+.. only:: builder_html
+
+   .. image:: https://colab.research.google.com/assets/colab-badge.svg
+      :target: https://colab.research.google.com/drive/1_ZDG69zjD-6j1dbGbrzAQkyrtlUfdr88?usp=sharing
+      :alt: Open SSH Example in Colab
 
 With an SSH server setup and running (as shown fully in the linked example), all you need to do is create another code
 cell that uses ``pyngrok`` to open a tunnel to that server.
@@ -327,9 +335,11 @@ cell that uses ``pyngrok`` to open a tunnel to that server.
 Colab HTTP Example
 """"""""""""""""""
 
-.. image:: https://colab.research.google.com/assets/colab-badge.svg
-   :target: https://colab.research.google.com/drive/1F-b8Vv_jaThi55_z0VLYLw3DDVnPYZMp?usp=sharing
-   :alt: Open HTTP Example in Colab
+.. only:: builder_html
+
+   .. image:: https://colab.research.google.com/assets/colab-badge.svg
+      :target: https://colab.research.google.com/drive/1F-b8Vv_jaThi55_z0VLYLw3DDVnPYZMp?usp=sharing
+      :alt: Open HTTP Example in Colab
 
 It can also be useful to expose a web server, process HTTP requests, etc. from within your Notebook. This code block
 assumes you have also added ``!pip install flask`` to your dependency code block.
