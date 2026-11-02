@@ -18,22 +18,24 @@ pyngrok - The complete ngrok agent for Python: programmatic tunnels for ingress,
       :alt: pyngrok - The complete ngrok agent for Python: programmatic tunnels for ingress, inspection, webhooks, demos, and APIs
       :align: center
 
-.. image:: https://img.shields.io/pypi/v/pyngrok
-   :target: https://pypi.org/project/pyngrok
-.. image:: https://img.shields.io/pypi/dm/pyngrok
-   :target: https://pypistats.org/packages/pyngrok
-.. image:: https://img.shields.io/pypi/pyversions/pyngrok.svg
-   :target: https://pypi.org/project/pyngrok
-.. image:: https://img.shields.io/codecov/c/github/alexdlaird/pyngrok
-   :target: https://codecov.io/gh/alexdlaird/pyngrok
-.. image:: https://img.shields.io/github/actions/workflow/status/alexdlaird/pyngrok/build.yml
-   :target: https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml
-.. image:: https://app.codacy.com/project/badge/Grade/b055cf6e3f1745098fab86a2923730b3
-   :target: https://app.codacy.com/gh/alexdlaird/pyngrok/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade
-.. image:: https://img.shields.io/readthedocs/pyngrok
-   :target: https://pyngrok.readthedocs.io/en/stable
-.. image:: https://img.shields.io/github/license/alexdlaird/pyngrok
-   :target: https://github.com/alexdlaird/pyngrok
+.. only:: builder_html
+
+   .. image:: https://img.shields.io/pypi/v/pyngrok
+      :target: https://pypi.org/project/pyngrok
+   .. image:: https://img.shields.io/pypi/dm/pyngrok
+      :target: https://pypistats.org/packages/pyngrok
+   .. image:: https://img.shields.io/pypi/pyversions/pyngrok.svg
+      :target: https://pypi.org/project/pyngrok
+   .. image:: https://img.shields.io/codecov/c/github/alexdlaird/pyngrok
+      :target: https://codecov.io/gh/alexdlaird/pyngrok
+   .. image:: https://img.shields.io/github/actions/workflow/status/alexdlaird/pyngrok/build.yml
+      :target: https://github.com/alexdlaird/pyngrok/actions/workflows/build.yml
+   .. image:: https://app.codacy.com/project/badge/Grade/b055cf6e3f1745098fab86a2923730b3
+      :target: https://app.codacy.com/gh/alexdlaird/pyngrok/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade
+   .. image:: https://img.shields.io/readthedocs/pyngrok
+      :target: https://pyngrok.readthedocs.io/en/stable
+   .. image:: https://img.shields.io/github/license/alexdlaird/pyngrok
+      :target: https://github.com/alexdlaird/pyngrok
 
 ``pyngrok`` gives Python the complete `ngrok agent <https://ngrok.com/docs/gateway/agent>`_, with programmatic tunnels
 for ingress, inspection, webhooks, demos, and APIs. `ngrok <https://ngrok.com>`_ is a reverse proxy that opens secure

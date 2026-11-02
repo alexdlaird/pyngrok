@@ -126,13 +126,7 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
-html_js_files = [
-    (f"https://www.googletagmanager.com/gtag/js?id={google_analytics_id}", {"async": "async"}),
-    (None, {"body": "window.dataLayer = window.dataLayer || [];"
-                    "function gtag(){dataLayer.push(arguments);}"
-                    "gtag('js', new Date());"
-                    f"gtag('config', '{google_analytics_id}');"}),
-]
+html_context = {"google_analytics_id": google_analytics_id}
 html_extra_path = ["_html"]
 
 html_css_files = [
