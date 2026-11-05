@@ -292,7 +292,10 @@ class TestProcess(NgrokTestCase):
 
     def test_log_event_callback_error_does_not_stop_monitoring(self):
         # GIVEN
-        log_event_callback = mock.MagicMock(side_effect=ValueError("Callback failed"))
+        def raise_callback_error(log):
+            raise ValueError("Callback failed")
+
+        log_event_callback = mock.MagicMock(side_effect=raise_callback_error)
         pyngrok_config = self.copy_with_updates(self.pyngrok_config, log_event_callback=log_event_callback,
                                                 max_logs=10000)
         ngrok_process = self.given_process_that_logs_on_request(pyngrok_config)
