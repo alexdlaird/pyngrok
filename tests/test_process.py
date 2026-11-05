@@ -255,6 +255,7 @@ class TestProcess(NgrokTestCase):
         # GIVEN
         ngrok_process = self.given_process_that_logs_on_request(self.pyngrok_config)
         ngrok_process.start_monitor_thread()
+        self.wait_until(lambda: ngrok_process._monitor_thread_alive)
         ngrok_process.stop_monitor_thread()
 
         # WHEN
@@ -271,6 +272,7 @@ class TestProcess(NgrokTestCase):
         pyngrok_config = self.copy_with_updates(self.pyngrok_config, max_logs=10000)
         ngrok_process = self.given_process_that_logs_on_request(pyngrok_config, batches=2)
         ngrok_process.start_monitor_thread()
+        self.wait_until(lambda: ngrok_process._monitor_thread_alive)
         ngrok_process.stop_monitor_thread()
         ngrok_process.proc.stdin.write("go\n")
         ngrok_process.proc.stdin.flush()
