@@ -75,7 +75,7 @@ add_function_parentheses = False
 
 html_baseurl = "https://pyngrok.readthedocs.io/en/stable/"
 sitemap_url_scheme = "{link}"
-sitemap_excludes = ["search.html", "404.html"]
+sitemap_excludes = ["search.html", "404.html", "genindex.html", "py-modindex.html", "_modules/*"]
 
 ogp_site_url = html_baseurl
 ogp_image = f"{html_baseurl}_images/logo.png"
@@ -230,3 +230,23 @@ intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 rst_prolog = """
 .. |pyngrok_version| replace:: {pyngrok_version}
 """.format(pyngrok_version=version)
+
+
+def _canonicalize_root_page(app, pagename, templatename, context, doctree):
+    if pagename == app.config.root_doc:
+        context["pageurl"] = app.config.html_baseurl
+
+
+def _canonicalize_root_in_sitemap(app, exception):
+    sitemap_path = os.path.join(app.outdir, app.config.sitemap_filename)
+    if exception is None and os.path.exists(sitemap_path):
+        with open(sitemap_path) as f:
+            sitemap = f.read()
+        root_url = app.config.html_baseurl
+        with open(sitemap_path, "w") as f:
+            f.write(sitemap.replace(f"<loc>{root_url}index.html</loc>", f"<loc>{root_url}</loc>"))
+
+
+def setup(app):
+    app.connect("html-page-context", _canonicalize_root_page)
+    app.connect("build-finished", _canonicalize_root_in_sitemap, priority=900)

@@ -55,7 +55,7 @@ jobs:
           - python-version: "3.11"
             os: ubuntu-latest
           - python-version: "3.9"
-            os: ubuntu-latest
+            os: ubuntu-24.04
           - python-version: "pypy-3.11"
             os: ubuntu-latest
           - python-version: "pypy-3.9"

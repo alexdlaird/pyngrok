@@ -10,7 +10,7 @@ import sys
 import threading
 import time
 from http import HTTPStatus
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, IO, List, Optional
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -50,6 +50,7 @@ class NgrokProcess:
         self._client_connected = False
         self._monitor_thread: Optional[threading.Thread] = None
         self._monitor_thread_alive = False
+        self._drain_thread: Optional[threading.Thread] = None
 
     def __repr__(self) -> str:
         return f"<NgrokProcess: \"{self.api_url}\">"
@@ -107,7 +108,10 @@ class NgrokProcess:
             self.logs.pop(0)
 
         if self.pyngrok_config.log_event_callback is not None:
-            self.pyngrok_config.log_event_callback(log)
+            try:
+                self.pyngrok_config.log_event_callback(log)
+            except Exception:
+                logger.warning("An error occurred in \"log_event_callback\"", exc_info=True)
 
         return log
 
@@ -140,6 +144,9 @@ class NgrokProcess:
             return False
 
     def _monitor_process(self) -> None:
+        if self._drain_thread is not None:
+            self._drain_thread.join()
+
         self._monitor_thread_alive = True
         while self._monitor_thread_alive and self.proc.poll() is None:
             if self.proc.stdout is None:
@@ -150,6 +157,21 @@ class NgrokProcess:
             self._log_line(self.proc.stdout.readline())
 
         self._monitor_thread = None
+
+        self._start_drain_thread()
+
+    def _start_drain_thread(self) -> None:
+        stdout = self.proc.stdout
+        if stdout is None or self.proc.poll() is not None:
+            return
+
+        self._drain_thread = threading.Thread(target=self._drain_output, args=(stdout,), daemon=True)
+        self._drain_thread.start()
+
+    def _drain_output(self, stdout: IO[str]) -> None:
+        while self._monitor_thread is None and self.proc.poll() is None:
+            if not stdout.readline():
+                break
 
     def start_monitor_thread(self) -> None:
         """
@@ -449,6 +471,8 @@ def _start_process(pyngrok_config: PyngrokConfig) -> NgrokProcess:
 
             if pyngrok_config.monitor_thread:
                 ngrok_process.start_monitor_thread()
+            else:
+                ngrok_process._start_drain_thread()
 
         if ngrok_process.healthy() or ngrok_process.proc.poll() is not None:
             break

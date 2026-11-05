@@ -3,6 +3,8 @@ __license__ = "MIT"
 
 import os
 import platform
+import subprocess
+import sys
 import time
 import unittest
 from unittest import mock
@@ -11,7 +13,7 @@ from urllib.request import urlopen
 
 from pyngrok import installer, ngrok, process
 from pyngrok.exception import PyngrokNgrokError
-from pyngrok.process import NgrokLog
+from pyngrok.process import NgrokLog, NgrokProcess
 from tests.testcase import NgrokTestCase
 
 
@@ -248,6 +250,91 @@ class TestProcess(NgrokTestCase):
         self.assertFalse(monitor_thread.is_alive())
         self.assertIsNone(ngrok_process._monitor_thread)
         self.assertTrue(ngrok_process.pyngrok_config.monitor_thread)
+
+    def test_stopped_monitor_thread_keeps_draining_output(self):
+        # GIVEN
+        ngrok_process = self.given_process_that_logs_on_request(self.pyngrok_config)
+        ngrok_process.start_monitor_thread()
+        ngrok_process.stop_monitor_thread()
+
+        # WHEN
+        ngrok_process.proc.stdin.write("go\n")
+        ngrok_process.proc.stdin.flush()
+
+        # THEN
+        self.assertEqual(ngrok_process.proc.wait(timeout=30), 0,
+                         "ngrok blocked writing logs that nothing was reading")
+        self.assertLess(len(ngrok_process.logs), 10)
+
+    def test_restarted_monitor_thread_resumes_logging(self):
+        # GIVEN
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, max_logs=10000)
+        ngrok_process = self.given_process_that_logs_on_request(pyngrok_config, batches=2)
+        ngrok_process.start_monitor_thread()
+        ngrok_process.stop_monitor_thread()
+        ngrok_process.proc.stdin.write("go\n")
+        ngrok_process.proc.stdin.flush()
+        self.wait_until(lambda: ngrok_process._monitor_thread is None and ngrok_process._drain_thread is not None)
+
+        logs_while_stopped = len(ngrok_process.logs)
+
+        # WHEN
+        ngrok_process.start_monitor_thread()
+        monitor_thread = ngrok_process._monitor_thread
+        ngrok_process.proc.stdin.write("go\n")
+        ngrok_process.proc.stdin.flush()
+
+        # THEN
+        self.assertEqual(ngrok_process.proc.wait(timeout=30), 0)
+        monitor_thread.join(timeout=10)
+        self.assertLess(logs_while_stopped, 10)
+        self.assertGreater(len(ngrok_process.logs), 100)
+
+    def test_log_event_callback_error_does_not_stop_monitoring(self):
+        # GIVEN
+        def raise_callback_error(log):
+            raise ValueError("Callback failed")
+
+        log_event_callback = mock.MagicMock(side_effect=raise_callback_error)
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, log_event_callback=log_event_callback,
+                                                max_logs=10000)
+        ngrok_process = self.given_process_that_logs_on_request(pyngrok_config)
+        ngrok_process.start_monitor_thread()
+        monitor_thread = ngrok_process._monitor_thread
+
+        # WHEN
+        ngrok_process.proc.stdin.write("go\n")
+        ngrok_process.proc.stdin.flush()
+
+        # THEN
+        self.assertEqual(ngrok_process.proc.wait(timeout=30), 0,
+                         "Monitoring stopped at the first callback error, and ngrok blocked writing logs")
+        monitor_thread.join(timeout=10)
+        self.assertGreater(log_event_callback.call_count, 100)
+
+    def given_process_that_logs_on_request(self, pyngrok_config, batches=1):
+        writer = ("import sys\n"
+                  "line = 't=2026-01-01T00:00:00+0000 lvl=info msg=\"join connections\" obj=join id=' + 'x' * 60\n"
+                  f"for _ in range({batches}):\n"
+                  "    sys.stdin.readline()\n"
+                  "    for _ in range(1024):\n"
+                  "        print(line)\n"
+                  "    sys.stdout.flush()\n")
+        proc = subprocess.Popen([sys.executable, "-c", writer], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                universal_newlines=True)
+        self.addCleanup(proc.stdout.close)
+        self.addCleanup(proc.stdin.close)
+        self.addCleanup(proc.wait)
+        self.addCleanup(proc.kill)
+        return NgrokProcess(proc, pyngrok_config)
+
+    @staticmethod
+    def wait_until(condition, timeout=10):
+        deadline = time.time() + timeout
+        while not condition():
+            if time.time() > deadline:
+                raise AssertionError("Condition not met in time")
+            time.sleep(0.05)
 
     @mock.patch("subprocess.Popen")
     def test_retry_session_connection_failure(self, mock_proc_readline):
