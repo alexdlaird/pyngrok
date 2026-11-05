@@ -1,4 +1,4 @@
-.PHONY: all install nopyc clean create-test-resources delete-test-resources delete-temp-test-resources test docs check local validate-release test-downstream upload
+.PHONY: all install nopyc clean create-test-resources delete-test-resources delete-temp-test-resources test docs check local validate-release test-downstream
 
 SHELL := /usr/bin/env bash
 PYTHON_BIN ?= python
@@ -66,13 +66,13 @@ local:
 	)
 
 validate-release:
-	@if [[ "${VERSION}" == "" ]]; then echo "VERSION is not set" & exit 1 ; fi
+	@if [[ "${VERSION}" == "" ]]; then echo "VERSION is not set"; exit 1 ; fi
 
-	@if [[ $$(grep "__version__ = \"${VERSION}\"" pyngrok/__init__.py) == "" ]] ; then echo "Version not bumped in pyngrok/__init__.py" & exit 1 ; fi
+	@if [[ $$(grep "__version__ = \"${VERSION}\"" pyngrok/__init__.py) == "" ]] ; then echo "Version not bumped in pyngrok/__init__.py"; exit 1 ; fi
 
 	@if [ -f SECURITY.md ]; then \
 		MAJOR_MINOR=$$(echo "${VERSION}" | cut -d. -f1-2); \
-		if [[ $$(grep "| $${MAJOR_MINOR}\.x" SECURITY.md) == "" ]] ; then echo "SECURITY.md missing supported-versions entry for $${MAJOR_MINOR}.x" & exit 1 ; fi; \
+		if [[ $$(grep "| $${MAJOR_MINOR}\.x" SECURITY.md) == "" ]] ; then echo "SECURITY.md missing supported-versions entry for $${MAJOR_MINOR}.x"; exit 1 ; fi; \
 	fi
 
 test-downstream:
@@ -84,9 +84,3 @@ test-downstream:
 		cd pyngrok-example-flask && pytest -v && cd ..; \
 	)
 
-upload: local
-	@( \
-        $(PYTHON_BIN) -m pip install --upgrade twine && \
-		$(PYTHON_BIN) -m build && \
-		$(PYTHON_BIN) -m twine upload dist/*; \
-	)
