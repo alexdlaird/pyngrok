@@ -555,8 +555,8 @@ def api(*args: Any, pyngrok_config: Optional[PyngrokConfig] = None) -> NgrokApiR
         overriding :func:`~pyngrok.conf.get_default()`.
     :param args: The args to pass to the ``api`` command.
     :return: The response from executing the ``api`` command.
-    :raises: PyngrokNgrokError The ``ngrok`` process exited with an error.
-    :raises: CalledProcessError An error occurred while executing the process.
+    :raises: :class:`~pyngrok.exception.PyngrokNgrokError`: When the ``ngrok`` process exits with an error.
+    :raises: :py:class:`subprocess.CalledProcessError`: When an error occurs while executing the process.
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()

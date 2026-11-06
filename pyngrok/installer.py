@@ -94,7 +94,7 @@ def get_system() -> str:
 def get_arch() -> str:
     """
     Get the architecture of the current system. This will be ``i386`` for 32-bit systems, ``x86_64`` for 64-bit
-    systems, and have ``_arm`` appended for ARM systems. Special architectures like `s390x` and `ppc64le` will be
+    systems, and have ``_arm`` appended for ARM systems. Special architectures like ``s390x`` and ``ppc64le`` will be
     returned as-is.
 
     :return: The name of the architecture.
