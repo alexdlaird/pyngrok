@@ -36,7 +36,7 @@ Configuration
     :show-inheritance:
 
 Agent Interface
-------------------------
+---------------
 
 .. automodule:: pyngrok.agent
     :members:

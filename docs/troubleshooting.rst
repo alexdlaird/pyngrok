@@ -154,7 +154,7 @@ Check to see if you are able to access the `traffic inspection interface <https:
 via a web browser. If so, this at least means ``ngrok`` is able to start before throwing the error.
 
 ``ngrok`` Documentation
----------------------------
+-----------------------
 
 Familiarize yourself with the `ngrok documentation <https://ngrok.com/docs>`_, especially the sections pertaining to
 the config file (`v2 <https://ngrok.com/docs/agent/config/v2>`_ /
