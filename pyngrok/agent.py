@@ -20,7 +20,7 @@ class NgrokAgent:
 
     def __init__(self,
                  data: Dict[str, Any]) -> None:
-        #: The original tunnel data.
+        #: The original agent data.
         self.data: Dict[str, Any] = data
 
         #: The status of the agent.
@@ -46,11 +46,12 @@ class CapturedRequest:
 
     def __init__(self,
                  data: Dict[str, Any]) -> None:
-        #: The original tunnel data.
+        #: The original captured request data.
         self.data: Dict[str, Any] = data
 
-        #: The URI of the captured request.
+        #: The ID of the captured request.
         self.id: Optional[str] = data.get("id")
+        #: The URI of the captured request.
         self.uri: Optional[str] = data.get("uri")
         self.tunnel_name: Optional[str] = data.get("tunnel_name")
         self.remote_addr: Optional[str] = data.get("remote_addr")
@@ -78,7 +79,7 @@ def get_agent_status(pyngrok_config: Optional[PyngrokConfig] = None, ) -> NgrokA
 
     :param pyngrok_config: A ``pyngrok`` configuration to use when interacting with the ``ngrok`` binary,
         overriding :func:`~pyngrok.conf.get_default()`.
-    :return: The requests made to the tunnels.
+    :return: The ``ngrok`` agent status.
     """
     if pyngrok_config is None:
         pyngrok_config = conf.get_default()

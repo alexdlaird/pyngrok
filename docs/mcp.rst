@@ -6,11 +6,12 @@ MCP Servers
 available to remote MCP clients (for instance, cloud AI assistants) by tunneling to its Streamable HTTP transport. The
 examples below use the `MCP Python SDK <https://github.com/modelcontextprotocol/python-sdk>`_.
 
-Be sure to secure your server before opening a tunnel to it. Anyone with your tunnel's URL can reach the server, and MCP
-tools often act on your machine or your data, which is why every example here requires authentication. MCP clients call
-tools based on what the AI model reads, so only expose the tools a remote client needs. And if a server holds personal
-credentials (a login to one of your accounts, for instance), you may want to keep it on your machine with the ``stdio``
-transport instead. See the
+Be sure to secure your server before opening a tunnel to it. A tunnel's URL is public, and anyone who finds it can reach
+your server, which is why every example here requires authentication. MCP tools often act on your machine or your data,
+and MCP clients call them based on what the AI model reads, so only expose the tools a remote client needs. ``ngrok``
+terminates TLS at its edge, so requests and responses are decrypted on ``ngrok``'s servers on their way to and from
+yours. And if a server can reach data you'd rather keep private, you may want to keep it on your machine with the
+``stdio`` transport instead. See the
 `MCP security best practices <https://modelcontextprotocol.io/specification/latest/basic/security_best_practices>`_ for
 more.
 
@@ -64,8 +65,8 @@ to ``localhost``, the tunnel also rewrites the ``Host`` header. Create ``server.
         }]
     }
 
-    # Open a ngrok tunnel to the MCP server
-    public_url = ngrok.connect(port, traffic_policy=traffic_policy).public_url
+    # Open a ngrok tunnel to the MCP server, without keeping copies of its requests in ngrok's local inspector
+    public_url = ngrok.connect(port, traffic_policy=traffic_policy, inspect=False).public_url
     print(f"MCP server URL: {public_url}/mcp")
     print("Configure your MCP client to send the header: Authorization: Bearer <MCP_TOKEN>")
 
@@ -82,6 +83,10 @@ Next, generate a random token and start the server. If ``MCP_TOKEN`` isn't set (
 That's it! MCP clients that let you configure custom headers can now connect to ``<public_url>/mcp``, sending the
 header ``Authorization: Bearer <MCP_TOKEN>``. If you're using ``mcp`` 1.x, use ``FastMCP`` (from ``mcp.server.fastmcp``)
 instead, and pass any transport settings (like ``streamable_http_path``) to its constructor.
+
+Many cloud AI assistants can't send a custom header, and connect to a server by its URL alone. For those, the server
+should sign them in with OAuth instead (see `OAuth`_), or, if it doesn't access sensitive data, it can be served at a
+secret path (see `Clients That Can't Send Headers`_).
 
 Clients That Can't Send Headers
 -------------------------------
@@ -117,8 +122,8 @@ secret path instead. Create ``server.py`` with the following code:
         }]
     }
 
-    # Open a ngrok tunnel to the MCP server
-    public_url = ngrok.connect(port, traffic_policy=traffic_policy).public_url
+    # Open a ngrok tunnel to the MCP server, without keeping copies of its requests in ngrok's local inspector
+    public_url = ngrok.connect(port, traffic_policy=traffic_policy, inspect=False).public_url
     print(f"MCP server URL: {public_url}{mcp_path}")
 
     # Start the MCP server, serving it only at the secret path
@@ -132,29 +137,20 @@ data.
 OAuth
 -----
 
-If your server accesses sensitive data, it should implement OAuth as described in the
-`MCP authorization spec <https://modelcontextprotocol.io/specification/latest/basic/authorization>`_. MCP clients that
-support it will run the sign-in flow when your server asks for it, and ``ngrok`` forwards those requests to your server
-like any other. The `MCP Python SDK <https://github.com/modelcontextprotocol/python-sdk>`_ can act as the OAuth resource
-server for this.
+If your server accesses sensitive data, or your MCP clients can't send a custom header, it should implement OAuth as
+described in the `MCP authorization spec <https://modelcontextprotocol.io/specification/latest/basic/authorization>`_.
+MCP clients that support it run the sign-in flow when your server asks for it, and ``ngrok`` forwards those requests to
+your server like any other. The `MCP Python SDK <https://github.com/modelcontextprotocol/python-sdk>`_ can act as the
+OAuth authorization server for this, or as a resource server that checks tokens from another one. ``ngrok``'s own
+``oauth`` Traffic Policy action signs a person in with a browser session instead, which MCP clients connecting from the
+cloud can't complete.
 
-Restrict by IP
---------------
+A client that signs in keeps its token for your server's URL, so open the tunnel on a domain that stays the same (for
+instance, ``ngrok.connect(port, url="https://<your-domain>")``). Otherwise, clients have to sign in again every time
+the tunnel's URL changes.
 
-For an extra layer of protection, ``ngrok`` can limit requests to the IP ranges of known services. For example, to only
-allow requests from Anthropic's API servers, add this rule to the start of ``on_http_request`` in either example above:
-
-.. code-block:: python
-
-    {
-        "expressions": ["!('com.anthropic.api' in conn.client_ip.categories)"],
-        "actions": [{"type": "deny", "config": {"status_code": 403}}]
-    }
-
-Since this doesn't tell you which user is calling, use it alongside a token or secret rather than on its own. It will
-also reject clients running on your own machine. See
-`ngrok's MCP guide <https://ngrok.com/docs/gateway/api-gateway/mcp-gateway>`_ for other IP categories and more ways to
-protect your server.
+For a complete example, `amazon-orders-mcp <https://amazon-orders-mcp.readthedocs.io/remote.html>`_ serves remote
+clients through a ``pyngrok`` tunnel, signing them in with OAuth.
 
 Troubleshooting
 ---------------

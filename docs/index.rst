@@ -343,7 +343,7 @@ Configuration
 -----------------
 
 ``pyngrok``'s interactions with the ``ngrok`` binary can be configured using :class:`~pyngrok.conf.PyngrokConfig`.
-The default ``pyngrok_config`` object can updated with your own object using :func:`~pyngrok.conf.set_default`.
+The default ``pyngrok_config`` object can be updated with your own object using :func:`~pyngrok.conf.set_default`.
 
 .. code-block:: python
 
@@ -368,15 +368,15 @@ still running by calling its :func:`~pyngrok.process.NgrokProcess.healthy` metho
     If you need to customize the installation of ``ngrok``, perhaps specifying a timeout, proxy, use a custom mirror
     for the download, etc., you can do so by leveraging the :mod:`~pyngrok.installer` module. Keyword arguments in this
     module are ultimately passed down to :py:func:`urllib.request.urlopen`, so as long as you use the
-    :mod:`~pyngrok.installer` module yourself prior to invoking any :mod:`~pyngrok.ngrok` methods, you can can control
+    :mod:`~pyngrok.installer` module yourself prior to invoking any :mod:`~pyngrok.ngrok` methods, you can control
     how ``ngrok`` is installed and from where.
 
 Setting the ``authtoken`` or ``api_key``
 ----------------------------------------
 
-Running ``ngrok`` with an auth token and  API key enables access to more features available on your account (for
+Running ``ngrok`` with an auth token and API key enables access to more features available on your account (for
 instance, multiple concurrent tunnels, custom domains, use of
-`Internal Endpoints <https://ngrok.com/docs/universal-gateway/internal-endpoints/>`_, etc). You can obtain your
+`Internal Endpoints <https://ngrok.com/docs/universal-gateway/internal-endpoints/>`_, etc.). You can obtain your
 auth token and generate API keys from the `ngrok dashboard <https://dashboard.ngrok.com>`_, then install into
 ``ngrok``'s config file.
 
