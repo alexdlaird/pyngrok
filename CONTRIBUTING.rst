@@ -8,7 +8,7 @@ If you would like to contribute to the code, the process is pretty simple:
 1. Familiarise yourself with this package, `pyngrok's APIs <https://pyngrok.readthedocs.io/en/stable/api.html>`_ and other documentation, and `ngrok's documentation <https://ngrok.com/docs>`_.
 2. Fork `the repository on GitHub <https://github.com/alexdlaird/pyngrok>`_ and start implementing changes.
 3. Write a test that plainly validates the changes made.
-4. Build and test locally with ``make local`` and ``make test``.
+4. Build and test locally with ``make local`` and ``make test``, then run ``make test-downstream`` to ensure `pyngrok-example-flask <https://github.com/alexdlaird/pyngrok-example-flask>`_ still works with your changes.
 5. Ensure no linting errors were introduced by running ``make check``.
 6. Submit a `pull request <https://help.github.com/en/articles/creating-a-pull-request-from-a-fork>`_ to get the changes merged.
 
